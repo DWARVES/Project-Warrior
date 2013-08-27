@@ -1,6 +1,7 @@
 # Project Warrior
 
-The actual main project of DWARVES group. It's a fighting game, mainly inspired by the Super Smash Bros games by Nintendo.
+Project Warrior is a fighting game occuring in a brand new original universe, with gameplay inspired by Super Smash Bros. games from Nintendo.
+This is the actual main project of DWARVES organization, as its first major one.
 
 You can find the Game Design Document <a href="https://github.com/DWARVES/Warrior-GDD">there</a>.
 
@@ -27,5 +28,5 @@ You should type the following commands on linux (Window and Mac versions are not
 <li> make
 </ul>
 
-Replace -DTESTS=0 par -DTESTS=1 if you want to compile the tests.
+Replace -DTESTS=0 by -DTESTS=1 if you want to compile the tests.
 
