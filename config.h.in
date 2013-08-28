@@ -1,0 +1,9 @@
+
+#ifndef DEF_CONFIG
+#define DEF_CONFIG
+
+#cmakedefine HAVE_SYSSTAT_H
+#cmakedefine HAVE_DIRENT_H
+
+#endif//DEF_CONFIG
+
