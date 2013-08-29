@@ -5,7 +5,7 @@ set(lib libcore)
 
 # List file here
 add_library(${lib}
-	fakefs.cpp fakefs.hpp
+	fakefs-def.hpp fakefs.hpp
     pathParser.cpp pathParser.hpp
 	)
 
