@@ -22,6 +22,7 @@ namespace core
     SystemTime& SystemTime::operator=(const SystemTime& cp)
     {
         memcpy(m_tm, cp.m_tm, sizeof(*m_tm));
+        return *this;
     }
 
     SystemTime::~SystemTime()
@@ -100,6 +101,7 @@ namespace core
             case SECONDS:
                 return m_tm->tm_sec;
         }
+        return 0; /* Shouldn't happen, avoid warnings */
     }
 
     std::string SystemTime::format() const
@@ -142,6 +144,7 @@ namespace core
 
         time_t diff = std::max(0.0, difftime(time1, time2));
         set(diff, !m_local);
+        return *this;
     }
 
     SystemTime operator-(const SystemTime& t1, const SystemTime& t2)
