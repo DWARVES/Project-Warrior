@@ -7,5 +7,6 @@ set(lib libcore)
 add_library(${lib}
 	fakefs-def.hpp fakefs.hpp
     pathParser.cpp pathParser.hpp
+    systemtime.cpp systemtime.hpp
 	)
 
