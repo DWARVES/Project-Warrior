@@ -40,7 +40,7 @@ namespace core
 
         if(tm == NULL) {
             memset(m_tm, sizeof(*m_tm), 0);
-            logger::log("Couldn't get time structure from timestamp.", logger::ERROR, false);
+            logger::logd("Couldn't get time structure from timestamp.", logger::ERROR, false);
             return;
         }
 
@@ -106,7 +106,7 @@ namespace core
     {
         char* fmt = asctime(m_tm);
         if(fmt == NULL) {
-            logger::log("Couldn't convert time structure to ascii string.", logger::ERROR, false);
+            logger::logd("Couldn't convert time structure to ascii string.", logger::ERROR, false);
             return "";
         }
 
@@ -128,7 +128,7 @@ namespace core
         if(written != 0)
             ret = buffer;
         else
-            logger::log("Couldn't convert time structure to ascii string.", logger::ERROR, false);
+            logger::logd("Couldn't convert time structure to ascii string.", logger::ERROR, false);
 
         delete[] buffer;
         return ret;
