@@ -119,10 +119,13 @@ namespace core
     {
         char* buffer = new char[maxSize];
         size_t written = strftime(buffer, maxSize, format.c_str(), m_tm);
-        if(written == 0)
-            return std::string("");
-        else
-            return std::string(buffer);
+
+        std::string ret;
+        if(written != 0)
+            ret = buffer;
+
+        delete[] buffer;
+        return ret;
     }
 
     SystemTime& SystemTime::operator-=(const SystemTime& t)
