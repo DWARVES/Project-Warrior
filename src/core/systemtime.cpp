@@ -1,5 +1,6 @@
 
 #include "core/systemtime.hpp"
+#include "core/logger.hpp"
 #include <cstring>
 
 namespace core
@@ -39,6 +40,7 @@ namespace core
 
         if(tm == NULL) {
             memset(m_tm, sizeof(*m_tm), 0);
+            logger::log("Couldn't get time structure from timestamp.", logger::ERROR, false);
             return;
         }
 
@@ -103,8 +105,10 @@ namespace core
     std::string SystemTime::format() const
     {
         char* fmt = asctime(m_tm);
-        if(fmt == NULL)
-            return "Error";
+        if(fmt == NULL) {
+            logger::log("Couldn't convert time structure to ascii string.", logger::ERROR, false);
+            return "";
+        }
 
         for(size_t i = 0; i < strlen(fmt); ++i) {
             if(fmt[i] == '\n') {
@@ -123,6 +127,8 @@ namespace core
         std::string ret;
         if(written != 0)
             ret = buffer;
+        else
+            logger::log("Couldn't convert time structure to ascii string.", logger::ERROR, false);
 
         delete[] buffer;
         return ret;

@@ -1,5 +1,6 @@
 
 #include "core/pathParser.hpp"
+#include "core/logger.hpp"
 
 namespace core
 {
@@ -122,12 +123,16 @@ namespace core
                 m_actual = m_actual->parent;
                 return true;
             }
-            else
+            else {
+                logger::log("Tried to enter root's parent namespace.", logger::WARNING);
                 return false;
+            }
         }
 
-        if(!existsNamespace(name))
+        if(!existsNamespace(name)) {
+            logger::log(std::string("Tried to enter an unexistant namespace : ") + name, logger::WARNING);
             return false;
+        }
 
         _abr* root;
         if(path::absolute(name))
@@ -221,15 +226,19 @@ namespace core
                     break;
                 }
             }
-            if(!found)
+            if(!found) {
+                logger::log(std::string("Tried to link an entity to an unexistant entity : ") + target, logger::WARNING);
                 return false;
+            }
         }
 
         /* Find the target entity */
         size_t idx = parts.size() - 1;
         _entity* t = NULL;
-        if(root->entities.find(parts[idx]) == root->entities.end())
+        if(root->entities.find(parts[idx]) == root->entities.end()) {
+            logger::log(std::string("Tried to link an entity to an unexistant entity : ") + target, logger::WARNING);
             return false;
+        }
         else
             t = root->entities[parts[idx]];
 
@@ -241,8 +250,10 @@ namespace core
 
     template <typename T, typename L> bool FakeFS<T,L>::setEntityValue(const std::string& name, T* value)
     {
-        if(!existsEntity(name))
+        if(!existsEntity(name)) {
+            logger::log(std::string("Tried to set an unexistant entity : ") + name, logger::WARNING);
             return false;
+        }
         m_actual->entities[name]->value = value;
         return true;
     }
