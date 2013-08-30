@@ -16,23 +16,32 @@ namespace core
         static std::vector<_output> outputs;
         static unsigned int blocks;
         static Level lvlmin;
+        static bool initializated = false;
 
         void init()
         {
             blocks = 0;
             lvlmin = MSG;
+            initializated = true;
         }
 
         void free()
         {
+            if(!initializated)
+                return;
+
             for(size_t i = 0; i < outputs.size(); ++i) {
                 if(outputs[i].todel)
                     delete outputs[i].os;
             }
+            initializated = false;
         }
 
         void addOutput(std::ostream* os, bool todel)
         {
+            if(!initializated)
+                return;
+
             _output op;
             op.os = os;
             op.todel = todel;
@@ -41,11 +50,15 @@ namespace core
 
         void pushBlock()
         {
+            if(!initializated)
+                return;
             ++blocks;
         }
 
         void popBlock()
         {
+            if(!initializated)
+                return;
             if(blocks > 0)
                 --blocks;
         }
@@ -57,7 +70,7 @@ namespace core
 
         void log(const std::string& msg, Level lvl, bool date)
         {
-            if(lvl < lvlmin)
+            if(!initializated || lvl < lvlmin)
                 return;
 
             std::ostringstream whole; /* Complete msg (with date, blocks and level indication */
