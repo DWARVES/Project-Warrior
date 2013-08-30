@@ -68,12 +68,14 @@ namespace core
             lvlmin = min;
         }
 
-        void log(const std::string& msg, Level lvl, bool date)
+        void logmsg(const std::string& file, unsigned int line, const std::string& msg, Level lvl, bool date)
         {
             if(!initializated || lvl < lvlmin)
                 return;
 
             std::ostringstream whole; /* Complete msg (with date, blocks and level indication */
+
+            whole << "[" << file << ":" << line << "] ";
 
             if(date) {
                 SystemTime st; /* Constructor to local time */

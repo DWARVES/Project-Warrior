@@ -39,8 +39,13 @@ namespace core
          * If lvl < min, msg will not be displayed
          * msg must be only one line
          * if date = false, the date won't be showed
+         * file and line indicate the line of the code from where the message is written
          */
-        void log(const std::string& msg, Level lvl, bool date = true);
+        void logmsg(const std::string& file, unsigned int line, const std::string& msg, Level lvl, bool date = true);
+
+        /* Log helping macros */
+#define logd(msg, lvl, date) logmsg(__FILE__, __LINE__, msg, lvl, date)
+#define log(msg, lvl)        logmsg(__FILE__, __LINE__, msg, lvl)
     }
 }
 
