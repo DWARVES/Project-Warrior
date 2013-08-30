@@ -11,5 +11,7 @@ add_executable(pathParser-test pathParser-test.cpp)
 target_link_libraries(pathParser-test libcore)
 add_executable(systemTime-test systemTime-test.cpp)
 target_link_libraries(systemTime-test libcore)
+add_executable(logger-test logger-test.cpp)
+target_link_libraries(logger-test libcore)
 
 
