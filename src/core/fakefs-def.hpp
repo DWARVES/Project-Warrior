@@ -23,6 +23,15 @@ namespace core
         if(m_todel)
             delete m_lb;
     }
+            
+    template <typename T, typename L> void FakeFS<T,L>::clear()
+    {
+        freeAbr(m_root);
+        m_root = new _abr;
+        m_root->parent = NULL;
+        m_root->name.clear();
+        m_actual = m_root;
+    }
 
     template <typename T, typename L> bool FakeFS<T,L>::createNamespace(const std::string& name)
     {
@@ -313,6 +322,29 @@ namespace core
             ret.push_back(it->first);
         }
         return ret;
+    }
+            
+    template <typename T, typename L> template <typename Saver> bool FakeFS<T,L>::save(std::ostream& os, const Saver& sav, unsigned int tabs) const
+    {
+        save(os, tabs, m_root, sav);
+        return true;
+    }
+            
+    template <typename T, typename L> template <typename Saver> void FakeFS<T,L>::save(std::ostream& os, unsigned int tabs, const _abr* const abr, const Saver& sav) const
+    {
+        std::string tbs(tabs, '\t');
+
+        /* Store entities */
+        for(typename std::unordered_map<std::string, _entity*>::const_iterator it = abr->entities.begin(); it != abr->entities.end(); ++it) {
+            os << tbs << "\"" << it->first << "\" : \"" << sav(it->second->value) << "\"" << std::endl;
+        }
+
+        /* Store sub-namespaces */
+        for(size_t i = 0; i < abr->subs.size(); ++i) {
+            os << tbs << "\"" << abr->subs[i]->name << "\" : {" << std::endl;
+            save(os, tabs + 1, abr->subs[i], sav);
+            os << tbs << "}" << std::endl;
+        }
     }
 }
 

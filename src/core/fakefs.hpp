@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <istream>
+#include <ostream>
 
 namespace core
 {
@@ -40,6 +42,9 @@ namespace core
             FakeFS(const Liberator* lb = NULL, bool todel = false);
             FakeFS(const FakeFS&) = delete;
             ~FakeFS();
+
+            /* This functions will discard all the content and put the instance as it was just created */
+            void clear();
 
             /*******************************
              *   Namespace manipulation    *
@@ -85,6 +90,24 @@ namespace core
             /* Lists entities in current namespace */
             std::vector<std::string> listEntities() const;
 
+            /*******************************
+             *    Input/Output streams     *
+             *******************************/
+
+            /* Save the state of the FakeFS to an ostream
+             * Return false if something went wrong
+             * The output has a human-readable json-inspired syntax
+             * tabs is the number of 't' added at the beggining of each line
+             * Saver is a class with an operator() converting T to std::string
+             */
+            template <typename Saver> bool save(std::ostream& os, const Saver& sav, unsigned int tabs = 0) const;
+            /* Load a FakeFS struct from an istream
+             * Return false if something went wrong
+             * The previous content of the FakeFS instance will be discarded
+             * The input needs to be formatted as save format its output
+             * Loader is a class with an operator() converting std::string to T
+             */
+            template <typename Loader> bool load(const std::istream& path, const Loader& l);
 
         private:
             const Liberator* m_lb;
@@ -109,6 +132,9 @@ namespace core
             _abr* m_root;
             _abr* m_actual;
             void freeAbr(_abr* a);
+
+            /* I/O */
+            template <typename Saver> void save(std::ostream& os, unsigned int tabs, const _abr* const abr, const Saver& sav) const;
     };
 }
 
