@@ -8,15 +8,37 @@
 
 namespace core
 {
+    /* Useless liberator : just do nothing, for default */
+    template <typename T> class UselessLiberator
+    {
+        public:
+            void operator()(T value) const 
+            {
+                if(value) /* Avoid warnings */
+                    return;
+            }
+    };
+
+    /* Default pointer liberator, T must be a pointer */
+    template <typename T> class PointerLiberator
+    {
+        public:
+            void operator()(T value) const
+            {
+                if(value) delete value;
+            }
+    };
+
     /* T is the type of data stored
      * Liberator is a class which operator() free a T pointer
      * operator() must be const
      */
-    template <typename T, typename Liberator> class FakeFS
+    template <typename T, typename Liberator = UselessLiberator<T>> class FakeFS
     {
         public:
             /* If todel is true, lb will be free'd with delete */
-            FakeFS(const Liberator* lb, bool todel = false);
+            FakeFS(const Liberator* lb = NULL, bool todel = false);
+            FakeFS(const FakeFS&) = delete;
             ~FakeFS();
 
             /*******************************
@@ -41,7 +63,7 @@ namespace core
 
             /* Name can only be a simple name, not a path */
             /* Return false if name already exists */
-            bool createEntity(const std::string& name, T* value);
+            bool createEntity(const std::string& name, T value);
             void deleteEntity(const std::string& name);
             bool existsEntity(const std::string& name);
             /* Create a link named name to target
@@ -53,11 +75,11 @@ namespace core
             /* Return false if name does not exists
              * Last value is NOT free'd
              */
-            bool setEntityValue(const std::string& name, T* value);
-            /* Return NULL if name does not exists, but can also return NULL if name value is NULL
+            bool setEntityValue(const std::string& name, T value);
+            /* Return 0 if name does not exists, but can also return 0 if name value is 0
              * Use existsEntity method to be sure
              */
-            T* getEntityValue(const std::string& name);
+            T getEntityValue(const std::string& name);
 
 
         private:
@@ -68,7 +90,7 @@ namespace core
             struct _entity {
                 _entity *prev, *next;
                 unsigned int count;
-                T* value;
+                T value;
             };
             _entity* m_first;
             void freeEntity(_entity* e);
@@ -83,11 +105,6 @@ namespace core
             _abr* m_root;
             _abr* m_actual;
             void freeAbr(_abr* a);
-
-            /* To prevent usage */
-            FakeFS();
-            FakeFS(const FakeFS&);
-            FakeFS& operator=(const FakeFS&);
     };
 }
 

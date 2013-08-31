@@ -7,6 +7,10 @@ namespace core
     template <typename T, typename L> FakeFS<T,L>::FakeFS(const L* lb, bool todel)
         : m_lb(lb), m_todel(todel), m_first(NULL), m_root(NULL), m_actual(NULL)
     {
+        if(!m_lb)
+            m_lb = new L;
+        m_todel = true;
+
         m_root = new _abr;
         m_root->parent = NULL;
         m_root->name.clear();
@@ -168,7 +172,7 @@ namespace core
         return actualName;
     }
 
-    template <typename T, typename L> bool FakeFS<T,L>::createEntity(const std::string& name, T* value)
+    template <typename T, typename L> bool FakeFS<T,L>::createEntity(const std::string& name, T value)
     {
         /* If name already used */
         if(existsEntity(name))
@@ -248,7 +252,7 @@ namespace core
         return true;
     }
 
-    template <typename T, typename L> bool FakeFS<T,L>::setEntityValue(const std::string& name, T* value)
+    template <typename T, typename L> bool FakeFS<T,L>::setEntityValue(const std::string& name, T value)
     {
         if(!existsEntity(name)) {
             logger::log(std::string("Tried to set an unexistant entity : ") + name, logger::WARNING);
@@ -258,10 +262,10 @@ namespace core
         return true;
     }
 
-    template <typename T, typename L> T* FakeFS<T,L>::getEntityValue(const std::string& name)
+    template <typename T, typename L> T FakeFS<T,L>::getEntityValue(const std::string& name)
     {
         if(!existsEntity(name))
-            return NULL;
+            return static_cast<T>(0);
         return m_actual->entities[name]->value;
     }
     
