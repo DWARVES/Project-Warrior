@@ -4,14 +4,6 @@
 #include <vector>
 #include <sstream>
 
-class Deletor {
-    public:
-        void operator()(int* p) const {
-            if(p)
-                delete p;
-        }
-};
-
 std::vector<std::string> toTokens(const std::string& str)
 {
     std::string cpy(str);
@@ -35,7 +27,7 @@ std::vector<std::string> toTokens(const std::string& str)
     return ret;
 }
 
-bool parseCommand(std::string str, core::FakeFS<int, Deletor>* fs)
+bool parseCommand(std::string str, core::FakeFS<int*, core::PointerLiberator<int*>>* fs)
 {
     std::vector<std::string> tokens = toTokens(str);
     if(tokens.size() == 0)
@@ -120,14 +112,24 @@ bool parseCommand(std::string str, core::FakeFS<int, Deletor>* fs)
         std::cout << "Setting " << tokens[1] << " to " << *v << std::endl;
         return fs->setEntityValue(tokens[1], v);
     }
+    else if(tokens[0] == "ls") {
+        std::vector<std::string> list = fs->listNamespaces();
+        for(size_t i = 0; i < list.size(); ++i) {
+            std::cout << i << ". " << list[i] << "/" << std::endl;
+        }
+        list = fs->listEntities();
+        for(size_t i = 0; i < list.size(); ++i) {
+            std::cout << i << ". " << list[i] << std::endl;
+        }
+        return true;
+    }
     else
         return false;
 }
 
 int main()
 {
-    Deletor d;
-    core::FakeFS<int, Deletor> fs(&d, false);
+    core::FakeFS<int*, core::PointerLiberator<int*>> fs;
     std::string cmd;
 
     while(true) {
