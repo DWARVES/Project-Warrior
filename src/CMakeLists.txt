@@ -10,4 +10,6 @@ add_executable(${exe}
 
 add_subdirectory(core)
 target_link_libraries(${exe} libcore)
+add_subdirectory(events)
+target_link_libraries(${exe} libevents)
 
