@@ -295,5 +295,24 @@ namespace core
         }
         delete a;
     }
+    
+    template <typename T, typename L> std::vector<std::string> FakeFS<T,L>::listNamespaces() const
+    {
+        std::vector<std::string> ret(m_actual->subs.size());
+
+        for(size_t i = 0; i < ret.size(); ++i)
+            ret[i] = m_actual->subs[i]->name;
+        return ret;
+    }
+            
+    template <typename T, typename L> std::vector<std::string> FakeFS<T,L>::listEntities() const
+    {
+        std::vector<std::string> ret;
+
+        for(typename std::unordered_map<std::string, _entity*>::const_iterator it = m_actual->entities.begin(); it != m_actual->entities.end(); ++it) {
+            ret.push_back(it->first);
+        }
+        return ret;
+    }
 }
 

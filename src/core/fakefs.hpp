@@ -56,6 +56,8 @@ namespace core
             bool enterNamespace(const std::string& name);
             /* Return actual namespace */
             std::string actualNamespace() const;
+            /* Lists namespaces in the current one */
+            std::vector<std::string> listNamespaces() const;
 
             /*******************************
              *    Entities manipulation    *
@@ -80,6 +82,8 @@ namespace core
              * Use existsEntity method to be sure
              */
             T getEntityValue(const std::string& name);
+            /* Lists entities in current namespace */
+            std::vector<std::string> listEntities() const;
 
 
         private:
