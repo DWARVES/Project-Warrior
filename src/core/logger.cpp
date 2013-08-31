@@ -98,6 +98,8 @@ namespace core
                 case FATAL:
                     whole << "//!E!\\\\ ";
                     break;
+                default: /* Shouldn't happen, avoid warnings */
+                    break;
             }
 
             for(size_t i = 0; i < blocks; ++i)

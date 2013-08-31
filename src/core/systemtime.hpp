@@ -53,7 +53,7 @@ namespace core
              * fmt has the same syntax as strftime from time.h
              * Return length can never exceed maxSize characters
              */
-            std::string format(const std::string& format, size_t maxSize) const;
+            std::string format(const std::string& fmt, size_t maxSize) const;
 
             /* Diff between t and this
              * If t > this, this will be set to 0 (no negative time)

@@ -100,8 +100,9 @@ namespace core
                 return m_tm->tm_min;
             case SECONDS:
                 return m_tm->tm_sec;
+            default:
+                return 0; /* Shouldn't happen, avoid warnings */
         }
-        return 0; /* Shouldn't happen, avoid warnings */
     }
 
     std::string SystemTime::format() const
@@ -121,10 +122,10 @@ namespace core
         return std::string(fmt);
     }
 
-    std::string SystemTime::format(const std::string& format, size_t maxSize) const
+    std::string SystemTime::format(const std::string& fmt, size_t maxSize) const
     {
         char* buffer = new char[maxSize];
-        size_t written = strftime(buffer, maxSize, format.c_str(), m_tm);
+        size_t written = strftime(buffer, maxSize, fmt.c_str(), m_tm);
 
         std::string ret;
         if(written != 0)
@@ -142,7 +143,7 @@ namespace core
         time1 = mktime(m_tm);
         time2 = mktime(t.m_tm);
 
-        time_t diff = std::max(0.0, difftime(time1, time2));
+        time_t diff = std::max((time_t)0, (time_t)difftime(time1, time2));
         set(diff, !m_local);
         return *this;
     }
