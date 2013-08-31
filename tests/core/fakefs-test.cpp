@@ -124,7 +124,7 @@ bool parseCommand(std::string str, core::FakeFS<int, Deletor>* fs)
         return false;
 }
 
-int main(int argc, char *argv[])
+int main()
 {
     Deletor d;
     core::FakeFS<int, Deletor> fs(&d, false);
