@@ -7,4 +7,5 @@ link_directories(${DEMO_BINARY_DIR}/tests)
 # Each subdirectory has its own tests
 add_subdirectory(core)
 add_subdirectory(events)
+add_subdirectory(geometry)
 

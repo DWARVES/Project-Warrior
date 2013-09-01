@@ -16,4 +16,5 @@ add_subdirectory(core)
 target_link_libraries(${exe} libcore)
 add_subdirectory(events)
 target_link_libraries(${exe} libevents)
-
+add_subdirectory(geometry)
+target_link_libraries(${exe} libgeometry)
