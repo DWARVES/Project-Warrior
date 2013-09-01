@@ -395,7 +395,7 @@ namespace core
             else if(!boost::regex_match(line, cmt)
                     && !boost::regex_match(line, empty)) {
                 std::ostringstream oss;
-                oss << "Invalid line \"" << line << "\" while loading a FakeFS." << std::endl;
+                oss << "Invalid line \"" << line << "\" while loading a FakeFS.";
                 logger::logm(oss.str(), logger::WARNING);
             }
         }
