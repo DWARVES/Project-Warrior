@@ -6,7 +6,7 @@ link_directories(${DEMO_BINARY_DIR}/tests/core)
 
 # Each test here
 add_executable(fakefs-test fakefs-test.cpp)
-target_link_libraries(fakefs-test libcore)
+target_link_libraries(fakefs-test libcore ${Boost_REGEX_LIBRARY})
 add_executable(pathParser-test pathParser-test.cpp)
 target_link_libraries(pathParser-test libcore)
 add_executable(systemTime-test systemTime-test.cpp)

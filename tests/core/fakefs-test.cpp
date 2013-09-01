@@ -3,6 +3,12 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <fstream>
+
+#define USELOG
+#ifdef USELOG
+#include "core/logger.hpp"
+#endif
 
 std::vector<std::string> toTokens(const std::string& str)
 {
@@ -26,6 +32,27 @@ std::vector<std::string> toTokens(const std::string& str)
 
     return ret;
 }
+
+/* For saving */
+class Saver {
+    public:
+        std::string operator()(int* v) const {
+            std::ostringstream oss;
+            oss << *v;
+            return oss.str();
+        }
+};
+
+/* For loading */
+class Loader {
+    public:
+        int* operator()(const std::string& str) const {
+            std::istringstream iss(str);
+            int* v = new int;
+            iss >> *v;
+            return v;
+        }
+};
 
 bool parseCommand(std::string str, core::FakeFS<int*, core::PointerLiberator<int*>>* fs)
 {
@@ -123,12 +150,42 @@ bool parseCommand(std::string str, core::FakeFS<int*, core::PointerLiberator<int
         }
         return true;
     }
+    else if(tokens[0] == "clear") {
+        fs->clear();
+        return true;
+    }
+    else if(tokens[0] == "save") {
+        Saver sav;
+        if(tokens.size() < 2) {
+            fs->save(std::cout, sav);
+        }
+        else {
+            std::ofstream ofs(tokens[1]);
+            if(!ofs) return false;
+            fs->save(ofs, sav);
+        }
+        return true;
+    }
+    else if(tokens[0] == "load") {
+        if(tokens.size() < 2)
+            return false;
+        Loader ld;
+        std::ifstream ifs(tokens[1]);
+        if(!ifs) return false;
+        fs->load(ifs, ld);
+        return true;
+    }
     else
         return false;
 }
 
 int main()
 {
+#ifdef USELOG
+    core::logger::init();
+    core::logger::addOutput(&std::cout, false);
+#endif
+
     core::FakeFS<int*, core::PointerLiberator<int*>> fs;
     std::string cmd;
 
@@ -143,6 +200,9 @@ int main()
             std::cout << "Error while executing command." << std::endl;
     }
 
+#ifdef USELOG
+    core::logger::free();
+#endif
     return 0;
 }
 
