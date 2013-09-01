@@ -29,6 +29,8 @@ namespace events
             bool deleteNamespace(const std::string& name);
             bool enterNamespace(const std::string& name);
             bool existsNamespace(const std::string& name);
+            /* Indicate the actual namespace */
+            std::string actualNamespace();
 
             /* Create a variable and set it to value
              * Does not works if name is already used
@@ -40,6 +42,10 @@ namespace events
              * Return false if name does not exists
              */
             bool setVariable(const std::string& name, number_t nvalue);
+            /* Indicate if a variable exists
+             * Only accepts simples names, not paths
+             */
+            bool existsVariable(const std::string& name);
             /* Return the value of the variable named name
              * Return 0 if name does not exists
              */
@@ -50,12 +56,12 @@ namespace events
              * Return false if an error happened
              * Do not modifies the state
              */
-            bool save(const std::string& name) const;
+            bool save(const std::string& path) const;
             /* Load the variables from a file
              * If the file can't be read, return false and the actual state is not modified
              * It first clears the complete state, deleting all the variables and namespaces before charging
              */
-            bool load(const std::string& name);
+            bool load(const std::string& path);
 
         private:
             static core::FakeFS<Save::number_t>* m_fs;

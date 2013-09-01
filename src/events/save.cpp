@@ -1,5 +1,7 @@
 
 #include "events/save.hpp"
+#include "core/logger.hpp"
+#include <fstream>
 
 namespace events
 {
@@ -90,14 +92,46 @@ namespace events
             return m_fs->getEntityValue(name);
     }
 
-    bool Save::save(const std::string& name) const
+    bool Save::save(const std::string&path) const
     {
-        // TODO needs file parsing functions
+        std::ofstream ofs(path);
+        if(!ofs) {
+            core::logger::logm(std::string("Couldn't open file in writting mode : ") + path, core::logger::ERROR);
+            return false;
+        }
+
+        return m_fs->save(ofs,
+                [] (int v) {
+                    std::ostringstream oss;
+                    oss << v;
+                    return oss.str();
+                });
     }
 
-    bool Save::load(const std::string& name)
+    bool Save::load(const std::string& path)
     {
-        // TODO needs file parsing functions
+        std::ifstream ifs(path);
+        if(!ifs) {
+            core::logger::logm(std::string("Couldn't open file in reading mode : ") + path, core::logger::ERROR);
+            return false;
+        }
+
+        return m_fs->load(ifs,
+                [] (const std::string& str) {
+                    std::istringstream iss(str); int v;
+                    iss >> v;
+                    return v;
+                });
+    }
+
+    bool Save::existsVariable(const std::string& name)
+    {
+        return m_fs->existsEntity(name);
+    }
+            
+    std::string Save::actualNamespace()
+    {
+        return m_fs->actualNamespace();
     }
 }
 
