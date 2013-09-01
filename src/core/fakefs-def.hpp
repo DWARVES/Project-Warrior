@@ -1,6 +1,9 @@
 
 #include "core/pathParser.hpp"
 #include "core/logger.hpp"
+#include <boost/regex.hpp>
+#include <sstream>
+
 
 namespace core
 {
@@ -23,7 +26,7 @@ namespace core
         if(m_todel)
             delete m_lb;
     }
-            
+
     template <typename T, typename L> void FakeFS<T,L>::clear()
     {
         freeAbr(m_root);
@@ -109,7 +112,7 @@ namespace core
             root = m_root;
         else
             root = m_actual;
-        
+
         std::vector<std::string> parts = path::parts(name);
         size_t i;
         for(i = 0; i < parts.size(); ++i) {
@@ -137,13 +140,13 @@ namespace core
                 return true;
             }
             else {
-                logger::log("Tried to enter root's parent namespace.", logger::WARNING);
+                logger::logm("Tried to enter root's parent namespace.", logger::WARNING);
                 return false;
             }
         }
 
         if(!existsNamespace(name)) {
-            logger::log(std::string("Tried to enter an unexistant namespace : ") + name, logger::WARNING);
+            logger::logm(std::string("Tried to enter an unexistant namespace : ") + name, logger::WARNING);
             return false;
         }
 
@@ -240,7 +243,7 @@ namespace core
                 }
             }
             if(!found) {
-                logger::log(std::string("Tried to link an entity to an unexistant entity : ") + target, logger::WARNING);
+                logger::logm(std::string("Tried to link an entity to an unexistant entity : ") + target, logger::WARNING);
                 return false;
             }
         }
@@ -249,7 +252,7 @@ namespace core
         size_t idx = parts.size() - 1;
         _entity* t = NULL;
         if(root->entities.find(parts[idx]) == root->entities.end()) {
-            logger::log(std::string("Tried to link an entity to an unexistant entity : ") + target, logger::WARNING);
+            logger::logm(std::string("Tried to link an entity to an unexistant entity : ") + target, logger::WARNING);
             return false;
         }
         else
@@ -264,7 +267,7 @@ namespace core
     template <typename T, typename L> bool FakeFS<T,L>::setEntityValue(const std::string& name, T value)
     {
         if(!existsEntity(name)) {
-            logger::log(std::string("Tried to set an unexistant entity : ") + name, logger::WARNING);
+            logger::logm(std::string("Tried to set an unexistant entity : ") + name, logger::WARNING);
             return false;
         }
         m_actual->entities[name]->value = value;
@@ -277,7 +280,7 @@ namespace core
             return static_cast<T>(0);
         return m_actual->entities[name]->value;
     }
-    
+
     template <typename T, typename L> void FakeFS<T,L>::freeEntity(_entity* e)
     {
         e->count--;
@@ -304,7 +307,7 @@ namespace core
         }
         delete a;
     }
-    
+
     template <typename T, typename L> std::vector<std::string> FakeFS<T,L>::listNamespaces() const
     {
         std::vector<std::string> ret(m_actual->subs.size());
@@ -313,7 +316,7 @@ namespace core
             ret[i] = m_actual->subs[i]->name;
         return ret;
     }
-            
+
     template <typename T, typename L> std::vector<std::string> FakeFS<T,L>::listEntities() const
     {
         std::vector<std::string> ret;
@@ -323,13 +326,13 @@ namespace core
         }
         return ret;
     }
-            
+
     template <typename T, typename L> template <typename Saver> bool FakeFS<T,L>::save(std::ostream& os, const Saver& sav, unsigned int tabs) const
     {
         save(os, tabs, m_root, sav);
         return true;
     }
-            
+
     template <typename T, typename L> template <typename Saver> void FakeFS<T,L>::save(std::ostream& os, unsigned int tabs, const _abr* const abr, const Saver& sav) const
     {
         std::string tbs(tabs, '\t');
@@ -345,6 +348,60 @@ namespace core
             save(os, tabs + 1, abr->subs[i], sav);
             os << tbs << "}" << std::endl;
         }
+    }
+
+    template <typename T, typename L> template <typename Loader> bool FakeFS<T,L>::load(std::istream& is, const Loader& l)
+    {
+        clear();
+        load(is, l, m_root);
+        m_actual = m_root;
+        return true;
+    }
+
+    template <typename T, typename L> template <typename Loader> void FakeFS<T,L>::load(std::istream& is, const Loader& l, _abr* to)
+    {
+        std::string line;
+        boost::regex ent ("^\\s*\"(.+?)\"\\s*:\\s*\"(.+?)\".*$"); /* Regex for an entity : ^[spaces]"(key)"[spaces]:[spaces]"(value)" */
+        boost::regex nsp ("^\\s*\"(.+?)\"\\s*:\\s*{.*$");         /* Regex for namespace : ^[spaces]"(key)"[spaces]:[spaces]{ */
+        boost::regex cmt ("^\\s*//.*$");                          /* Regex for commentary : ^[spaces]// */
+        boost::regex end ("^\\s*\\}.*$");                         /* Regex for the end of a namespace : ^[spaces]} */
+        boost::regex empty ("^\\s*$");                            /* Regex for an empty line : ^[spaces]$ */
+        boost::smatch results;
+
+        /* Save actual pos */
+        _abr* lact = m_actual;
+        /* Allow use to use other functions like addEntity */
+        m_actual = to;
+
+        while(getline(is, line)) {
+            /* Is the line an entity */
+            if(boost::regex_match(line, results, ent)) {
+                createEntity(results[1], l(results[2]));
+            }
+            /* Is the line a new namespace */
+            else if(boost::regex_match(line, results, nsp)) {
+                _abr* n = new _abr;
+                n->parent = to;
+                n->name = results[1];
+                to->subs.push_back(n);
+                load(is, l, n);
+            }
+            /* Is the line the en of a namespace */
+            else if(boost::regex_match(line, end)) {
+                m_actual = lact;
+                return;
+            }
+            /* Is the line invalid */
+            else if(!boost::regex_match(line, cmt)
+                    && !boost::regex_match(line, empty)) {
+                std::ostringstream oss;
+                oss << "Invalid line \"" << line << "\" while loading a FakeFS." << std::endl;
+                logger::logm(oss.str(), logger::WARNING);
+            }
+        }
+
+        /* Restore m_actual to its last value */
+        m_actual = lact;
     }
 }
 

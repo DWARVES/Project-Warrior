@@ -104,10 +104,10 @@ namespace core
             /* Load a FakeFS struct from an istream
              * Return false if something went wrong
              * The previous content of the FakeFS instance will be discarded
-             * The input needs to be formatted as save format its output
+             * The input needs to be formatted as save formats its output
              * Loader is a class with an operator() converting std::string to T
              */
-            template <typename Loader> bool load(const std::istream& path, const Loader& l);
+            template <typename Loader> bool load(std::istream& is, const Loader& l);
 
         private:
             const Liberator* m_lb;
@@ -135,6 +135,7 @@ namespace core
 
             /* I/O */
             template <typename Saver> void save(std::ostream& os, unsigned int tabs, const _abr* const abr, const Saver& sav) const;
+            template <typename Loader> void load(std::istream& is, const Loader& l, _abr* to);
     };
 }
 
