@@ -45,7 +45,7 @@ namespace core
 
         /* Log helping macros */
 #define logd(msg, lvl, date) logmsg(__FILE__, __LINE__, msg, lvl, date)
-#define log(msg, lvl)        logmsg(__FILE__, __LINE__, msg, lvl)
+#define logm(msg, lvl)        logmsg(__FILE__, __LINE__, msg, lvl)
     }
 }
 
