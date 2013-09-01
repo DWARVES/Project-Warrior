@@ -7,6 +7,10 @@ set(exe warrior)
 # List file here
 add_executable(${exe}
 	main.cpp)
+target_link_libraries(
+    ${exe}
+    ${Boost_REGEX_LIBRARY}
+    )
 
 add_subdirectory(core)
 target_link_libraries(${exe} libcore)

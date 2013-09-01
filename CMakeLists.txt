@@ -6,6 +6,12 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 # TODO Add dependencies like SDL, OpengL, Box2D ...
 
+# Including Boost
+include(FindBoost)
+find_package(Boost COMPONENTS regex REQUIRED)
+link_directories(${Boost_REGEX_LIBRARY_DIR})
+include_directories(${Boost_REGEX_INCLUDE_DIR})
+
 # Includes checks
 include(CheckIncludeFiles)
 check_include_files("sys/types.h;sys/stat.h" HAVE_SYSSTAT_H)
