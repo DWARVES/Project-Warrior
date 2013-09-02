@@ -4,7 +4,7 @@
 
 #include "point.hpp"
 
-namespace Geometry
+namespace geometry
 {
 	struct Line
 	{

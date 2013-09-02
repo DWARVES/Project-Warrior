@@ -1,7 +1,7 @@
 
 #include "polygon.hpp"
 
-namespace Geometry
+namespace geometry
 {
 	Polygon::Polygon(const std::vector<Point>& pts)
 	{

@@ -7,14 +7,14 @@
 #include "geometry/point.hpp"
 #include "geometry/aabb.hpp"
 
-namespace Physics
+namespace physics
 {
     class Entity
     {
         public:
-            Entity(b2World* world, const Geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation = true);
+            Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation = true);
 
-            b2Fixture* createFixture(const std::string& name, const Geometry::Point& position, const Geometry::AABB& aabb, float density, float friction);
+            b2Fixture* createFixture(const std::string& name, const geometry::Point& position, const geometry::AABB& aabb, float density, float friction);
 
         protected:
             b2FixtureDef* createBaseFixtureDef(float density, float friction) const;

@@ -2,7 +2,7 @@
 #include "aabb.hpp"
 #include <algorithm>
 
-namespace Geometry
+namespace geometry
 {
 	AABB::AABB(float w, float h)
 	{

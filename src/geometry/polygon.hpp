@@ -5,7 +5,7 @@
 #include "point.hpp"
 #include <vector>
 
-namespace Geometry
+namespace geometry
 {
 	struct Polygon
 	{

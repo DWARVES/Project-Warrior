@@ -5,7 +5,7 @@
 #include "point.hpp"
 #include "line.hpp"
 
-namespace Geometry
+namespace geometry
 {
 	struct Circle
 	{

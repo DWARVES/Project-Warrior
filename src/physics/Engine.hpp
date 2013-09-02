@@ -7,14 +7,14 @@
 #include "geometry/point.hpp"
 #include "Entity.hpp"
 
-namespace Physics
+namespace physics
 {
     class Engine
     {
         public:
             Engine(const b2Vec2& gravity);
 
-            Entity* createEntity(const std::string& name, const Geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation = true);
+            Entity* createEntity(const std::string& name, const geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation = true);
 
         protected:
             b2World* m_world;

@@ -1,7 +1,7 @@
 
 #include "point.hpp"
 
-namespace Geometry
+namespace geometry
 {
     Point::Point()
     {}

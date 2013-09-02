@@ -2,7 +2,7 @@
 #include <cmath>
 #include "circle.hpp"
 
-namespace Geometry
+namespace geometry
 {
 	Circle::Circle(float r)
 	{

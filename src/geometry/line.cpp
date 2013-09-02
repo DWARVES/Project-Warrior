@@ -3,7 +3,7 @@
 #include <cmath>
 #include "line.hpp"
 
-namespace Geometry
+namespace geometry
 {
 	Line::Line(const Point& mp1, const Point& mp2)
 	{

@@ -4,13 +4,16 @@
 
 #include <Box2D/Box2D.h>
 
-#define DIST_SCALE 30.f
-#define ANGLE_SCALE (180 / b2_pi)
+namespace physics
+{
+    const float DIST_SCALE = 30.f;
+    const float ANGLE_SCALE = 180 / b2_pi;
 
-float toMeters(float pixels);
-float toPixels(float meters);
+    float toMeters(float pixels);
+    float toPixels(float meters);
 
-float toRadians(float degrees);
-float toDegrees(float radians);
+    float toRadians(float degrees);
+    float toDegrees(float radians);
+}
 
 #endif

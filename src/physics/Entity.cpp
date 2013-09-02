@@ -2,9 +2,9 @@
 #include "Entity.hpp"
 #include "unit_conversions.hpp"
 
-namespace Physics
+namespace physics
 {
-    Entity::Entity(b2World* world, const Geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation)
+    Entity::Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation)
     {
         b2BodyDef bodyDef;
         bodyDef.type = bodyType;
@@ -14,7 +14,7 @@ namespace Physics
         m_body->SetFixedRotation(fixedRotation);
     }
 
-    b2Fixture* Entity::createFixture(const std::string& name, const Geometry::Point& position, const Geometry::AABB& aabb, float density, float friction)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Point& position, const geometry::AABB& aabb, float density, float friction)
     {
         b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction);
         

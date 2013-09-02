@@ -2,7 +2,7 @@
 #ifndef DEF_GEOMETRY_POINT
 #define DEF_GEOMETRY_POINT
 
-namespace Geometry
+namespace geometry
 {
 	struct Point
 	{
