@@ -19,7 +19,7 @@ namespace physics
         b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction);
         
         b2PolygonShape shape;
-        shape.SetAsBox(toMeters(aabb.width / 2), toMeters(aabb.height / 2));
+        shape.SetAsBox(toMeters(aabb.width / 2), toMeters(aabb.height / 2), b2Vec2(toMeters(position.x), toMeters(position.y)), 0);
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
