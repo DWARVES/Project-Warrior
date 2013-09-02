@@ -6,7 +6,7 @@ namespace Geometry
 {
 	struct Point
 	{
-		Point();
+        Point();
 		Point(float mx, float my);
 		void set(float mx, float my);
 

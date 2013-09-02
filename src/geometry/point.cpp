@@ -3,10 +3,8 @@
 
 namespace Geometry
 {
-	Point::Point()
-	{
-        set(0, 0);
-    }
+    Point::Point()
+    {}
 
 	Point::Point(float mx, float my)
 	{

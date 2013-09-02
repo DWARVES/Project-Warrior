@@ -4,11 +4,6 @@
 
 namespace Geometry
 {
-	Circle::Circle()
-	{
-        set(0);
-    }
-
 	Circle::Circle(float r)
 	{
 		set(r);
@@ -28,6 +23,5 @@ namespace Geometry
 	{
 		set(diameter.length());
 	}
-
 }
 

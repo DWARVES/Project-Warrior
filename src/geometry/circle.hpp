@@ -9,13 +9,12 @@ namespace Geometry
 {
 	struct Circle
 	{
-		Circle();
-		Circle(float r);
-		Circle(const Line& diameter);
-		void set(float r);
-		void set(const Line& diameter);
+        Circle(float r);
+        Circle(const Line& diameter);
+        void set(float r);
+        void set(const Line& diameter);
 
-		float radius;
+        float radius;
 	};
 }
 

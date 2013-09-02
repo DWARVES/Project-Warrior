@@ -7,17 +7,12 @@
 
 namespace Geometry
 {
-	class Polygon
+	struct Polygon
 	{
-		public:
-			Polygon();
-			Polygon(const std::vector<Point>& pts);
-			void set(const std::vector<Point>& pts);
+        Polygon(const std::vector<Point>& pts);
+        void set(const std::vector<Point>& pts);
 
-			std::vector<Point> points() const;
-
-		private:
-			std::vector<Point> m_points;
+        std::vector<Point> points;
 	};
 }
 
