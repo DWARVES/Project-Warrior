@@ -32,7 +32,7 @@ int main()
                 std::cout << "Enter Y coord : ";
                 std::cin >> y;
 
-                Geometry::Point point(x, y);
+                geometry::Point point(x, y);
                 std::cout << "Your point coords are (" << point.x << ";" << point.y << ")." << std::endl;
             }
             break;
@@ -53,7 +53,7 @@ int main()
                 std::cout << "Enter the hotpoint y coord : ";
                 std::cin >> yhp;
 
-                Geometry::Line line(Geometry::Point(x1, y1), Geometry::Point(x2, y2), Geometry::Point(xhp, yhp));
+                geometry::Line line(geometry::Point(x1, y1), geometry::Point(x2, y2), geometry::Point(xhp, yhp));
                 std::cout << "Relatively to the hotpoint (" << xhp << ";" << yhp << "), your line starts at (" << line.p1.x << ";" << line.p1.y << "), ends at (" << line.p2.x << ";" << line.p2.y << ") and is " << line.length() << " long." << std::endl;
             }
             break;
