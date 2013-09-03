@@ -5,7 +5,10 @@
 #include <map>
 #include <Box2D/Box2D.h>
 #include "geometry/point.hpp"
+#include "geometry/line.hpp"
 #include "geometry/aabb.hpp"
+#include "geometry/circle.hpp"
+#include "geometry/polygon.hpp"
 
 namespace physics
 {
@@ -14,7 +17,10 @@ namespace physics
         public:
             Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation = true);
 
+            b2Fixture* createFixture(const std::string& name, const geometry::Point& position, const geometry::Line& line, float density, float friction);
             b2Fixture* createFixture(const std::string& name, const geometry::Point& position, const geometry::AABB& aabb, float density, float friction);
+            b2Fixture* createFixture(const std::string& name, const geometry::Point& position, const geometry::Circle& circle, float density, float friction);
+            b2Fixture* createFixture(const std::string& name, const geometry::Point& position, const geometry::Polygon& polygon, float density, float friction);
 
         protected:
             b2FixtureDef* createBaseFixtureDef(float density, float friction) const;
