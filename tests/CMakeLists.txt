@@ -8,4 +8,5 @@ link_directories(${DEMO_BINARY_DIR}/tests)
 add_subdirectory(core)
 add_subdirectory(events)
 add_subdirectory(geometry)
+add_subdirectory(lua)
 
