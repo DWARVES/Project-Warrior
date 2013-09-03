@@ -2,13 +2,8 @@
 #include "aabb.hpp"
 #include <algorithm>
 
-namespace Geometry
+namespace geometry
 {
-	AABB::AABB()
-	{
-        set(0, 0);
-    }
-
 	AABB::AABB(float w, float h)
 	{
         set(w, h);

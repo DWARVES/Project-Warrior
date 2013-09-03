@@ -2,13 +2,8 @@
 #include <cmath>
 #include "circle.hpp"
 
-namespace Geometry
+namespace geometry
 {
-	Circle::Circle()
-	{
-        set(0);
-    }
-
 	Circle::Circle(float r)
 	{
 		set(r);
@@ -28,6 +23,5 @@ namespace Geometry
 	{
 		set(diameter.length());
 	}
-
 }
 

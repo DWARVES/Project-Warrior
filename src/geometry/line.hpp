@@ -4,18 +4,19 @@
 
 #include "point.hpp"
 
-namespace Geometry
+namespace geometry
 {
 	struct Line
 	{
-		Line(Point mp1, Point mp2);
-		Line(Point mp1, Point mp2, Point ori);
-		void set(Point mp1, Point mp2);
-		void set(Point mp1, Point mp2, Point ori);
+        Line();
+        Line(const Point& mp1, const Point& mp2);
+        Line(const Point& mp1, const Point& mp2, const Point& ori);
+        void set(const Point& mp1, const Point& mp2);
+        void set(const Point& mp1, const Point& mp2, const Point& ori);
 
         float length() const;
 
-		Point p1, p2;
+        Point p1, p2;
 	};
 }
 

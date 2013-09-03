@@ -4,11 +4,10 @@
 
 #include "point.hpp"
 
-namespace Geometry
+namespace geometry
 {
     struct AABB
     {
-        AABB();
         AABB(float w, float h);
         AABB(Point p1, Point p2);
         void set(float w, float h);

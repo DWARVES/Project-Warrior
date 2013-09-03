@@ -1,12 +1,10 @@
 
 #include "point.hpp"
 
-namespace Geometry
+namespace geometry
 {
-	Point::Point()
-	{
-        set(0, 0);
-    }
+    Point::Point()
+    {}
 
 	Point::Point(float mx, float my)
 	{

@@ -21,4 +21,6 @@ add_subdirectory(geometry)
 target_link_libraries(${exe} libgeometry)
 add_subdirectory(lua)
 target_link_libraries(${exe} liblua)
+add_subdirectory(physics)
+target_link_libraries(${exe} libphysics)
 
