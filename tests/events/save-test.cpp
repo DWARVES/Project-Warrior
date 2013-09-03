@@ -68,11 +68,13 @@ bool parseCommand(std::string str)
         if(tokens.size() < 3)
             return false;
         std::istringstream iss(tokens[2]);
-        int v;
+        long int v;
         iss >> v;
         std::cout << "Creating entity " << tokens[1] << " with value " << v << std::endl;
         if(save.createVariable(tokens[1], v))
             return true;
+        else
+            return false;
     }
     else if(tokens[0] == "rm") {
         if(tokens.size() < 2)
@@ -84,7 +86,7 @@ bool parseCommand(std::string str)
     else if(tokens[0] == "cat") {
         if(tokens.size() < 2)
             return false;
-        int v = save.getVariable(tokens[1]);
+        long int v = save.getVariable(tokens[1]);
         if(!v) {
             if(!save.existsVariable(tokens[1])) { // TODO
                 std::cout << "Entity " << tokens[1] << "does not exists." << std::endl;
@@ -102,7 +104,7 @@ bool parseCommand(std::string str)
         if(tokens.size() < 3)
             return false;
         std::istringstream iss(tokens[2]);
-        int v;
+        long int v;
         iss >> v;
         std::cout << "Setting " << tokens[1] << " to " << v << std::endl;
         return save.setVariable(tokens[1], v);
