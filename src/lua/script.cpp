@@ -59,9 +59,19 @@ namespace lua
         return ret;
     }
             
-    void Script::addArg()
+    void Script::addArgs()
     {
         /* Do nothing, for internal use */
+    }
+            
+    void Script::addArg(const std::string& str)
+    {
+        lua_pushstring(m_state, str.c_str());
+    }
+            
+    void Script::addArg(double number)
+    {
+        lua_pushnumber(m_state, number);
     }
             
     Script::VarType Script::typeVariable(const std::string& name)
@@ -100,6 +110,15 @@ namespace lua
     void Script::setVariable(const std::string& name, const char* str)
     {
         setVariable(name, std::string(str));
+    }
+            
+    void Script::setVariable(const std::string& name, double number)
+    {
+        if(!loaded())
+            throw lua::exception("Tryed to use a non loaded script");
+
+        lua_pushnumber(m_state, number);
+        lua_setglobal(m_state, name.c_str());
     }
 }
 

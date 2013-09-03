@@ -65,20 +65,18 @@ namespace lua
             };
             VarType typeVariable(const std::string& name);
             /* Returns a variable value.
-             * T must be either std::string, bool or a number type (undefined behaviour if it is not)
+             * T must be either std::string, bool or a number type (undefined behaviour if it is not, double is conseilled : native lua number type)
              * Can't return neither a table, an userdata nor a nil variale
              * It will throw an exception of type lua::exception if name refers to a variable like the one mentionned the line above
              * It will also throw an exception if the script is not loaded
              */
             template <typename T> T getVariable(const std::string& name);
-            /* Only handle std::string and number types
-             * Do not use explicit template : implicit allow overload to works
-             * If the script is not loaded, it will throw an exception of type lua::exception
+            /* If the script is not loaded, it will throw an exception of type lua::exception
              * If the variable didn't existed before, it will create it.
              */
             void setVariable(const std::string& name, const std::string& str);
             void setVariable(const std::string& name, const char* str);
-            template <typename T> void setVariable(const std::string& name, T number);
+            void setVariable(const std::string& name, double number);
 
             // TODO registering functions and classes
 
@@ -86,10 +84,14 @@ namespace lua
             lua_State* m_state;
             bool m_loaded;
 
-            /* Add an arg to a lua state */
-            template<typename T, typename... Args> void addArg(T type, Args... args);
+            /* Used to recursively parse variadic template */
+            template<typename T, typename... Args> void addArgs(T type, Args... args);
             /* Do nothing, just the end of the args */
-            void addArg();
+            void addArgs();
+            /* Used to add a string argument */
+            void addArg(const std::string& str);
+            /* Used to add a number */
+            void addArg(double number);
     };
 
     /******************************************
@@ -115,7 +117,7 @@ namespace lua
         /* Parse arguments */
         unsigned short int nbArgs = sizeof...(Args);
         if(nbArgs != 0)
-            addArg(args...);
+            addArgs(args...);
 
         /* Call the function */
         lua_call(m_state, nbArgs, ret);
@@ -147,14 +149,10 @@ namespace lua
             return boost::lexical_cast<Ret>(0);
     }
 
-    template<typename T, typename... Args> void Script::addArg(T type, Args... args)
+    template<typename T, typename... Args> void Script::addArgs(T type, Args... args)
     {
-        if(typeid(T) == typeid(std::string))
-            lua_pushstring(m_state, boost::lexical_cast<std::string>(type).c_str());
-        else
-            lua_pushnumber(m_state, boost::lexical_cast<double>(type));
-
-        addArg(args...);
+        addArg(type); /* Use overload to determine the right treatment */
+        addArgs(args...);
     }
             
     template <typename T> T Script::getVariable(const std::string& name)
@@ -200,15 +198,6 @@ namespace lua
                 throw lua::exception("Invalid type when reading variable form lua script");
             }
         }
-    }
-            
-    template <typename T> void Script::setVariable(const std::string& name, T number)
-    {
-        if(!loaded())
-            throw lua::exception("Tryed to use a non loaded script");
-
-        lua_pushnumber(m_state, static_cast<double>(number));
-        lua_setglobal(m_state, name.c_str());
     }
 }
 
