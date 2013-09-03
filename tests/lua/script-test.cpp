@@ -7,14 +7,31 @@ int main()
 {
     core::logger::init();
     core::logger::addOutput(&std::cout);
+    core::logger::logm("Begin of the program", core::logger::MSG);
 
     try {
+        /* Creating and loading */
+        core::logger::logm("Creating lua script object.", core::logger::MSG);
         lua::Script scr;
+
+        core::logger::logm("Loading lua script.", core::logger::MSG);
         if(!scr.load("script.lua")) {
             core::logger::logm("Couldn't load s.lua.", core::logger::ERROR);
             throw lua::exception("Script couldn't be loaded.");
         }
 
+        /* Variables methods */
+        std::cout << "Type of \"var\" variable : " << scr.typeVariable("var") << std::endl;;
+        std::cout << "Type of \"num\" variable : " << scr.typeVariable("num") << std::endl;;
+        std::cout << "Value of \"var\" variable : " << scr.getVariable<std::string>("var") << std::endl;
+        std::cout << "Value of \"num\" variable : " << scr.getVariable<bool>("num") << std::endl;
+        scr.setVariable("num", "Hello world !");
+        std::cout << "Value of \"num\" variable : " << scr.getVariable<std::string>("num") << std::endl;
+        scr.setVariable("num", 3.14);
+        std::cout << "Value of \"num\" variable : " << scr.getVariable<double>("num") << std::endl;
+
+        /* Function methods */
+        core::logger::logm("Testing and calling functions.", core::logger::MSG);
         if(!scr.existsFunction("un")) {
             std::cout << "Function un doesn't exists." << std::endl;
         }

@@ -1,4 +1,7 @@
 
+var = "Hello"
+num = true
+
 add = function(a, b, c)
     return a + b + c
 end
