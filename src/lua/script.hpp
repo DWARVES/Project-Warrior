@@ -18,7 +18,7 @@ namespace lua
             /* Will throw an exception of type lua::exception if can't load lua context */
             Script();
             /* If path can't be loaded, it will just set loaded to false */
-            Script(const std::string& path);
+            explicit Script(const std::string& path);
             Script(const Script&) = delete;
             ~Script();
 
@@ -30,6 +30,10 @@ namespace lua
             /* Check if the script has been correctly loaded */
             bool loaded() const;
 
+            /*************************************************
+             *         Functions check and call              *
+             *************************************************/
+
             /* Check if the function exists in the script
              * If the script wasn't loaded, it always return false
              */
@@ -40,12 +44,43 @@ namespace lua
              * Implicit templates types won't works if you use const char* for strings as arguments
              * Args are the types of the arguments
              * It only handle some types for the functions : std::string and any number type (but only number, undetermined behaviour if not, may launch boost::bad_lexical_cast).
-             * It will throw an lua::exception if the lua function does not exists
+             * It will throw an lua::exception if the lua function does not exists or if the script is not loaded
              */
             template <typename Ret, typename... Args> Ret callFunction(const std::string& name, bool ret, Args... args);
 
-            // TODO variable access function
-            // TODO registering functions
+            /*************************************************
+             *             Variables access                  *
+             *************************************************/
+
+            /* Return the type of the variable
+             * Always return none if the script is not loaded
+             */
+            enum VarType {
+                NUMBER, /* Any type of number : there is no distinction between int, double, float ... in lua */
+                STRING, /* A simple string */
+                BOOL,   /* Boolean value */
+                TABLE,  /* A lua table */
+                USER,   /* An userdata variable */
+                NIL,    /* Nil value : the variable doesn't exist or it has been declared as nil */
+            };
+            VarType typeVariable(const std::string& name);
+            /* Returns a variable value.
+             * T must be either std::string, bool or a number type (undefined behaviour if it is not)
+             * Can't return neither a table, an userdata nor a nil variale
+             * It will throw an exception of type lua::exception if name refers to a variable like the one mentionned the line above
+             * It will also throw an exception if the script is not loaded
+             */
+            template <typename T> T getVariable(const std::string& name);
+            /* Only handle std::string and number types
+             * Do not use explicit template : implicit allow overload to works
+             * If the script is not loaded, it will throw an exception of type lua::exception
+             * If the variable didn't existed before, it will create it.
+             */
+            void setVariable(const std::string& name, const std::string& str);
+            void setVariable(const std::string& name, const char* str);
+            template <typename T> void setVariable(const std::string& name, T number);
+
+            // TODO registering functions and classes
 
         private:
             lua_State* m_state;
@@ -57,11 +92,17 @@ namespace lua
             void addArg();
     };
 
-    /* Implementation of templates methods */
+    /******************************************
+     *  Implementation of templates methods   *
+     ******************************************/
+
     /* Use of boost::lexical_cast prevents compile-time errors */
 
     template <typename Ret, typename... Args> Ret Script::callFunction(const std::string& name, bool ret, Args... args)
     {
+        if(!loaded())
+            throw lua::exception("Tryed to execute a function from a non loaded script.");
+
         /* Prepare function */
         lua_getglobal(m_state, name.c_str());
         if(!lua_isfunction(m_state, -1)) {
@@ -114,6 +155,60 @@ namespace lua
             lua_pushnumber(m_state, boost::lexical_cast<double>(type));
 
         addArg(args...);
+    }
+            
+    template <typename T> T Script::getVariable(const std::string& name)
+    {
+        if(!loaded()) {
+            core::logger::logm("Tryed to get a variable from a non loaded script", core::logger::WARNING);
+            throw lua::exception("Tryed to use a non loaded script");
+        }
+
+        lua_settop(m_state, 0);
+        lua_getglobal(m_state, name.c_str());
+
+        if(typeid(T) == typeid(std::string)) {
+            if(lua_isstring(m_state, 1)) {
+                return boost::lexical_cast<T>( lua_tostring(m_state, 1) );
+            }
+            else {
+                std::ostringstream oss;
+                oss << "Tryed to get " << name << " lua variable as string, which is not its type.";
+                core::logger::logm(oss.str(), core::logger::WARNING);
+                throw lua::exception("Invalid type when reading variable form lua script");
+            }
+        }
+        else if(typeid(T) == typeid(bool)) {
+            if(lua_isboolean(m_state, 1)) {
+                return boost::lexical_cast<T>( lua_toboolean(m_state, 1) );
+            }
+            else {
+                std::ostringstream oss;
+                oss << "Tryed to get " << name << " lua variable as boolean, which is not its type.";
+                core::logger::logm(oss.str(), core::logger::WARNING);
+                throw lua::exception("Invalid type when reading variable form lua script");
+            }
+        }
+        else { /* Let's assume the type is a number */
+            if(lua_isnumber(m_state, 1)) {
+                return boost::lexical_cast<T>( lua_tonumber(m_state, 1) );
+            }
+            else {
+                std::ostringstream oss;
+                oss << "Tryed to get " << name << " lua variable as a " << typeid(T).name() << ", which is not its type.";
+                core::logger::logm(oss.str(), core::logger::WARNING);
+                throw lua::exception("Invalid type when reading variable form lua script");
+            }
+        }
+    }
+            
+    template <typename T> void Script::setVariable(const std::string& name, T number)
+    {
+        if(!loaded())
+            throw lua::exception("Tryed to use a non loaded script");
+
+        lua_pushnumber(m_state, static_cast<double>(number));
+        lua_setglobal(m_state, name.c_str());
     }
 }
 
