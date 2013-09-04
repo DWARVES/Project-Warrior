@@ -9,4 +9,4 @@ add_subdirectory(core)
 add_subdirectory(events)
 add_subdirectory(geometry)
 add_subdirectory(lua)
-
+add_subdirectory(physics)

@@ -15,12 +15,13 @@ namespace physics
     class Entity
     {
         public:
+            Entity();
             Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation = true);
 
-            b2Fixture* createFixture(const std::string& name, const geometry::Point& position, const geometry::Line& line, float density, float friction);
-            b2Fixture* createFixture(const std::string& name, const geometry::Point& position, const geometry::AABB& aabb, float density, float friction);
-            b2Fixture* createFixture(const std::string& name, const geometry::Point& position, const geometry::Circle& circle, float density, float friction);
-            b2Fixture* createFixture(const std::string& name, const geometry::Point& position, const geometry::Polygon& polygon, float density, float friction);
+            b2Fixture* createFixture(const std::string& name, const geometry::Line& line, float density, float friction);
+            b2Fixture* createFixture(const std::string& name, const geometry::AABB& aabb, float density, float friction, const geometry::Point& position = geometry::Point(0, 0));
+            b2Fixture* createFixture(const std::string& name, const geometry::Circle& circle, float density, float friction, const geometry::Point& position = geometry::Point(0, 0));
+            b2Fixture* createFixture(const std::string& name, const geometry::Polygon& polygon, float density, float friction);
 
         protected:
             b2FixtureDef* createBaseFixtureDef(float density, float friction) const;

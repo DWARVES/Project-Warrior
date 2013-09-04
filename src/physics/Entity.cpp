@@ -4,6 +4,9 @@
 
 namespace physics
 {
+    Entity::Entity()
+    {}
+
     Entity::Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation)
     {
         b2BodyDef bodyDef;
@@ -16,19 +19,19 @@ namespace physics
 
     // createFixtures overloaded functions
 
-    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Point& position, const geometry::Line& line, float density, float friction)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Line& line, float density, float friction)
     {
         b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction);
         
         b2EdgeShape shape;
-        shape.Set(b2Vec2(toMeters(position.x + line.p1.x), toMeters(position.y + line.p1.y)), b2Vec2(toMeters(position.x + line.p2.x), toMeters(position.y + line.p2.y)));
+        shape.Set(b2Vec2(toMeters(line.p1.x), toMeters(line.p1.y)), b2Vec2(toMeters(line.p2.x), toMeters(line.p2.y)));
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
         return m_fixtures[name];
     }
 
-    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Point& position, const geometry::AABB& aabb, float density, float friction)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::AABB& aabb, float density, float friction, const geometry::Point& position)
     {
         b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction);
         
@@ -40,7 +43,7 @@ namespace physics
         return m_fixtures[name];
     }
 
-    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Point& position, const geometry::Circle& circle, float density, float friction)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Circle& circle, float density, float friction, const geometry::Point& position)
     {
         b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction);
         
@@ -53,7 +56,7 @@ namespace physics
         return m_fixtures[name];
     }
 
-    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Point& position, const geometry::Polygon& polygon, float density, float friction)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Polygon& polygon, float density, float friction)
     {
         b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction);
         
@@ -61,7 +64,7 @@ namespace physics
         unsigned int ptnb = (unsigned int)polygon.points.size();
         b2Vec2 *points = new b2Vec2[ptnb];
         for(unsigned int i = 0 ; i < ptnb ; ++i)
-            points[i] = b2Vec2(toMeters(position.x + polygon.points[i].x), toMeters(position.y + polygon.points[i].y));
+            points[i].Set(toMeters(polygon.points[i].x), toMeters(polygon.points[i].y));
         shape.Set(points, ptnb);
         fixtureDef->shape = &shape;
 
