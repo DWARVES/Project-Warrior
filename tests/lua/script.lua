@@ -1,4 +1,7 @@
 
+num = true
+var = xargs("Hello world", true, 42, 27, false)
+
 add = function(a, b, c)
     return a + b + c
 end

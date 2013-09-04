@@ -59,9 +59,73 @@ namespace lua
         return ret;
     }
             
-    void Script::addArg()
+    void Script::addArgs()
     {
         /* Do nothing, for internal use */
+    }
+            
+    void Script::addArg(const std::string& str)
+    {
+        lua_pushstring(m_state, str.c_str());
+    }
+            
+    void Script::addArg(double number)
+    {
+        lua_pushnumber(m_state, number);
+    }
+            
+    Script::VarType Script::typeVariable(const std::string& name)
+    {
+        if(!loaded())
+            return NIL;
+
+        lua_settop(m_state, 0);
+        lua_getglobal(m_state, name.c_str());
+
+        VarType ret = NIL;
+        if(lua_isnumber(m_state, 1))
+            ret = NUMBER;
+        else if(lua_isstring(m_state, 1))
+            ret = STRING;
+        else if(lua_isboolean(m_state, 1))
+            ret = BOOL;
+        else if(lua_istable(m_state, 1))
+            ret = TABLE;
+        else if(lua_isuserdata(m_state, 1))
+            ret = USER;
+
+        lua_pop(m_state, 1);
+        return ret;
+    }
+            
+    void Script::setVariable(const std::string& name, const std::string& str)
+    {
+        if(!loaded())
+            throw lua::exception("Tryed to use a non loaded script");
+
+        lua_pushstring(m_state, str.c_str());
+        lua_setglobal(m_state, name.c_str());
+    }
+            
+    void Script::setVariable(const std::string& name, const char* str)
+    {
+        setVariable(name, std::string(str));
+    }
+            
+    void Script::setVariable(const std::string& name, double number)
+    {
+        if(!loaded())
+            throw lua::exception("Tryed to use a non loaded script");
+
+        lua_pushnumber(m_state, number);
+        lua_setglobal(m_state, name.c_str());
+    }
+            
+    void Script::registerFunction(luaFnPtr fn, const std::string& name)
+    {
+        if(!m_state)
+            throw lua::exception("Tryed to use a non initialized script.");
+        lua_register(m_state, name.c_str(), fn);
     }
 }
 
