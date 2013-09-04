@@ -14,6 +14,8 @@ namespace physics
         public:
             Engine(const b2Vec2& gravity);
 
+            Entity* getEntity(const std::string& name) const;
+
             Entity* createEntity(const std::string& name, const geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation = true);
 
         protected:

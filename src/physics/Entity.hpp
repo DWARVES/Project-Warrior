@@ -18,6 +18,8 @@ namespace physics
             Entity();
             Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation = true);
 
+            b2Fixture* getFixture(const std::string& name) const;
+
             b2Fixture* createFixture(const std::string& name, const geometry::Line& line, float density, float friction);
             b2Fixture* createFixture(const std::string& name, const geometry::AABB& aabb, float density, float friction, const geometry::Point& position = geometry::Point(0, 0));
             b2Fixture* createFixture(const std::string& name, const geometry::Circle& circle, float density, float friction, const geometry::Point& position = geometry::Point(0, 0));

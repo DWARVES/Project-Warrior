@@ -17,6 +17,11 @@ namespace physics
         m_body->SetFixedRotation(fixedRotation);
     }
 
+    b2Fixture* Entity::getFixture(const std::string& name) const
+    {
+        return m_fixtures[name];
+    }
+
     // createFixtures overloaded functions
 
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::Line& line, float density, float friction)
@@ -28,7 +33,7 @@ namespace physics
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
-        return m_fixtures[name];
+        getFixture[name];
     }
 
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::AABB& aabb, float density, float friction, const geometry::Point& position)
@@ -40,7 +45,7 @@ namespace physics
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
-        return m_fixtures[name];
+        getFixture[name];
     }
 
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::Circle& circle, float density, float friction, const geometry::Point& position)
@@ -53,7 +58,7 @@ namespace physics
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
-        return m_fixtures[name];
+        getFixture[name];
     }
 
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::Polygon& polygon, float density, float friction)
@@ -69,7 +74,7 @@ namespace physics
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
-        return m_fixtures[name];
+        getFixture[name];
     }
 
     // createBaseFixtureDef, used in createFixture overloaded functions to avoid code repetitions
