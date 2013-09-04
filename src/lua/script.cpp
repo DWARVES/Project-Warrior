@@ -120,6 +120,13 @@ namespace lua
         lua_pushnumber(m_state, number);
         lua_setglobal(m_state, name.c_str());
     }
+            
+    void Script::registerFunction(luaFnPtr fn, const std::string& name)
+    {
+        if(!m_state)
+            throw lua::exception("Tryed to use a non initialized script.");
+        lua_register(m_state, name.c_str(), fn);
+    }
 }
 
 

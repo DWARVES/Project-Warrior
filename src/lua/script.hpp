@@ -78,7 +78,18 @@ namespace lua
             void setVariable(const std::string& name, const char* str);
             void setVariable(const std::string& name, double number);
 
-            // TODO registering functions and classes
+            /*************************************************
+             *      Functions and classes registering        *
+             *************************************************/
+
+            /* The function must return how many returns it has in lua
+             * The arguments must be taken from the lua stack
+             * name is the name the function will have in the lua script
+             * It can be called even if the script is not loaded, but if the initialization failed
+             */
+            typedef int (*luaFnPtr)(lua_State* st);
+            void registerFunction(luaFnPtr fn, const std::string& name);
+
 
         private:
             lua_State* m_state;
