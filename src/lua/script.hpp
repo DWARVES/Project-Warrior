@@ -43,7 +43,7 @@ namespace lua
              * For no return, do NOT put void in the template, put any value (not important, as long it is not void), and set ret to false
              * Implicit templates types won't works if you use const char* for strings as arguments
              * Args are the types of the arguments
-             * It only handle some types for the functions : std::string and any number type (but only number, undetermined behaviour if not, may launch boost::bad_lexical_cast).
+             * It only handle some types for the functions : std::string (and const char*), bool and any number type (but only number, undetermined behaviour if not, may launch boost::bad_lexical_cast).
              * It will throw an lua::exception if the lua function does not exists or if the script is not loaded
              */
             template <typename Ret, typename... Args> Ret callFunction(const std::string& name, bool ret, Args... args);
@@ -97,12 +97,11 @@ namespace lua
 
             /* Used to recursively parse variadic template */
             template<typename T, typename... Args> void addArgs(T type, Args... args);
+			template<typename... Args> void addArgs(const std::string& str, Args... args);
+			template<typename... Args> void addArgs(const char* str, Args... args);
+			template<typename... Args> void addArgs(bool b, Args... args);
             /* Do nothing, just the end of the args */
             void addArgs();
-            /* Used to add a string argument */
-            void addArg(const std::string& str);
-            /* Used to add a number */
-            void addArg(double number);
     };
 
     /******************************************
@@ -162,9 +161,27 @@ namespace lua
 
     template<typename T, typename... Args> void Script::addArgs(T type, Args... args)
     {
-        addArg(type); /* Use overload to determine the right treatment */
+        lua_pushnumber(m_state, static_cast<double>(type));
         addArgs(args...);
     }
+			
+	template<typename... Args> void Script::addArgs(const std::string& str, Args... args)
+	{
+        lua_pushstring(m_state, str.c_str());
+		addArgs(args...);
+	}
+			
+	template<typename... Args> void Script::addArgs(const char* str, Args... args)
+	{
+        lua_pushstring(m_state, str);
+		addArgs(args...);
+	}
+			
+	template<typename... Args> void Script::addArgs(bool b, Args... args)
+	{
+		lua_pushboolean(m_state, static_cast<int>(b));
+		addArgs(args...);
+	}
             
     template <typename T> T Script::getVariable(const std::string& name)
     {

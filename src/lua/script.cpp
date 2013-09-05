@@ -64,16 +64,6 @@ namespace lua
         /* Do nothing, for internal use */
     }
             
-    void Script::addArg(const std::string& str)
-    {
-        lua_pushstring(m_state, str.c_str());
-    }
-            
-    void Script::addArg(double number)
-    {
-        lua_pushnumber(m_state, number);
-    }
-            
     Script::VarType Script::typeVariable(const std::string& name)
     {
         if(!loaded())
