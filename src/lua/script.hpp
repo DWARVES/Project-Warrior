@@ -40,13 +40,13 @@ namespace lua
             bool existsFunction(const std::string& name);
             /* The first template is the return type of the function
              * It only handle lua function with one or zero return value
-             * For no return, do NOT put void in the template, put any value (not important, as long it is not void), and set ret to false
+             * If you don't want to get any result, just set ret to NULL
              * Implicit templates types won't works if you use const char* for strings as arguments
              * Args are the types of the arguments
              * It only handle some types for the functions : std::string (and const char*), bool and any number type (but only number, undetermined behaviour if not, may launch boost::bad_lexical_cast).
              * It will throw an lua::exception if the lua function does not exists or if the script is not loaded
              */
-            template <typename Ret, typename... Args> Ret callFunction(const std::string& name, bool ret, Args... args);
+            template <typename Ret, typename... Args> void callFunction(const std::string& name, Ret* ret, Args... args);
 
             /*************************************************
              *             Variables access                  *
@@ -97,9 +97,14 @@ namespace lua
 
             /* Used to recursively parse variadic template */
             template<typename T, typename... Args> void addArgs(T type, Args... args);
-			template<typename... Args> void addArgs(const std::string& str, Args... args);
-			template<typename... Args> void addArgs(const char* str, Args... args);
-			template<typename... Args> void addArgs(bool b, Args... args);
+            template<typename... Args> void addArgs(const std::string& str, Args... args);
+            template<typename... Args> void addArgs(const char* str, Args... args);
+            template<typename... Args> void addArgs(bool b, Args... args);
+            /* Get the return of a function */
+            template<typename T> void getRet(T* r);
+            void getRet(std::string* r);
+            void getRet(bool* r);
+            void getRet(void* v);
             /* Do nothing, just the end of the args */
             void addArgs();
     };
@@ -110,7 +115,7 @@ namespace lua
 
     /* Use of boost::lexical_cast prevents compile-time errors */
 
-    template <typename Ret, typename... Args> Ret Script::callFunction(const std::string& name, bool ret, Args... args)
+    template <typename Ret, typename... Args> void Script::callFunction(const std::string& name, Ret* ret, Args... args)
     {
         if(!loaded())
             throw lua::exception("Tryed to execute a function from a non loaded script.");
@@ -130,33 +135,12 @@ namespace lua
             addArgs(args...);
 
         /* Call the function */
-        lua_call(m_state, nbArgs, ret);
+        lua_call(m_state, nbArgs, (ret?1:0));
 
         /* Get return value */
         if(ret) {
-            if(typeid(Ret) == typeid(std::string)) {
-                if(!lua_isstring(m_state, -1)) {
-                    std::ostringstream oss;
-                    oss << "Invalid return type for lua function : \"" << name << "\".";
-                    core::logger::logm(oss.str(), core::logger::WARNING);
-                    return boost::lexical_cast<Ret>("");
-                }
-                else
-                    return boost::lexical_cast<Ret>(lua_tostring(m_state, -1));
-            }
-            else {
-                if(!lua_isstring(m_state, -1)) {
-                    std::ostringstream oss;
-                    oss << "Invalid return type for lua function : \"" << name << "\".";
-                    core::logger::logm(oss.str(), core::logger::WARNING);
-                    return boost::lexical_cast<Ret>(0);
-                }
-                else
-                    return boost::lexical_cast<Ret>( lua_tonumber(m_state, -1) );
-            }
+            getRet(ret);
         }
-        else
-            return boost::lexical_cast<Ret>(0);
     }
 
     template<typename T, typename... Args> void Script::addArgs(T type, Args... args)
@@ -164,24 +148,29 @@ namespace lua
         lua_pushnumber(m_state, static_cast<double>(type));
         addArgs(args...);
     }
-			
-	template<typename... Args> void Script::addArgs(const std::string& str, Args... args)
-	{
+            
+    template<typename... Args> void Script::addArgs(const std::string& str, Args... args)
+    {
         lua_pushstring(m_state, str.c_str());
-		addArgs(args...);
-	}
-			
-	template<typename... Args> void Script::addArgs(const char* str, Args... args)
-	{
+        addArgs(args...);
+    }
+            
+    template<typename... Args> void Script::addArgs(const char* str, Args... args)
+    {
         lua_pushstring(m_state, str);
-		addArgs(args...);
-	}
-			
-	template<typename... Args> void Script::addArgs(bool b, Args... args)
-	{
-		lua_pushboolean(m_state, static_cast<int>(b));
-		addArgs(args...);
-	}
+        addArgs(args...);
+    }
+            
+    template<typename... Args> void Script::addArgs(bool b, Args... args)
+    {
+        lua_pushboolean(m_state, static_cast<int>(b));
+        addArgs(args...);
+    }
+            
+    template<typename T> void Script::getRet(T* r)
+    {
+        *r = static_cast<T>(lua_tonumber(m_state, -1));
+    }
             
     template <typename T> T Script::getVariable(const std::string& name)
     {

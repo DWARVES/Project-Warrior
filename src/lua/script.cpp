@@ -64,6 +64,22 @@ namespace lua
         /* Do nothing, for internal use */
     }
             
+    void Script::getRet(std::string* r)
+    {
+        *r = lua_tostring(m_state, -1);
+    }
+            
+    void Script::getRet(bool* r)
+    {
+        *r = lua_toboolean(m_state, -1);
+    }
+            
+    void Script::getRet(void* v)
+    {
+        /* Do nothing, just to handle void return */
+        if(v) {}
+    }
+            
     Script::VarType Script::typeVariable(const std::string& name)
     {
         if(!loaded())
