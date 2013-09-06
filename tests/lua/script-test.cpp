@@ -63,13 +63,14 @@ int main()
             std::cout << "Function un doesn't exists." << std::endl;
         }
         if(scr.existsFunction("echo")) {
-            /* Must use explicit template types for conversion from const char* to std::string */
-            scr.callFunction<int, std::string, std::string, int>("echo", false, "Hello world", "Second line", 27);
+            scr.callFunction<void>("echo", NULL, "Hello world", "Second line", 27, false);
         }
         if(scr.existsFunction("add")) {
-            std::cout << "Ret value for add : " << scr.callFunction<float>("add", true, 1.f, 2.5f, 50.f) << std::endl;
+            float r;
+            scr.callFunction("add", &r, 1.f, 2.5f, 50.f);
+            std::cout << "Ret value for add : " << r << std::endl;
         }
-        scr.callFunction<int>("unexists", false); /* Try call of unexistent function */
+        scr.callFunction<void>("unexists", NULL); /* Try call of unexistent function */
     }
     catch(const lua::exception& e) {
         core::logger::logm(std::string("Lua exception catched : ") + e.what(), core::logger::FATAL);
