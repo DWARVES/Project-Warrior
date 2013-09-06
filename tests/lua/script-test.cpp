@@ -50,12 +50,19 @@ int main()
         /* Variables methods */
         std::cout << "Type of \"var\" variable : " << scr.typeVariable("var") << std::endl;
         std::cout << "Type of \"num\" variable : " << scr.typeVariable("num") << std::endl;
-        std::cout << "Value of \"var\" variable : " << scr.getVariable<std::string>("var") << std::endl;
-        std::cout << "Value of \"num\" variable : " << scr.getVariable<bool>("num") << std::endl;
+        std::string sval;
+        bool bval;
+        double dval;
+        scr.getVariable("var", sval);
+        std::cout << "Value of \"var\" variable : " << sval << std::endl;
+        scr.getVariable("num", bval);
+        std::cout << "Value of \"num\" variable : " << bval << std::endl;
         scr.setVariable("num", "Hello world !");
-        std::cout << "Value of \"num\" variable : " << scr.getVariable<std::string>("num") << std::endl;
+        scr.getVariable("num", sval);
+        std::cout << "Value of \"num\" variable : " << sval << std::endl;
         scr.setVariable("num", 3.14);
-        std::cout << "Value of \"num\" variable : " << scr.getVariable<double>("num") << std::endl;
+        scr.getVariable("num", dval);
+        std::cout << "Value of \"num\" variable : " << dval << std::endl;
 
         /* Function methods */
         core::logger::logm("Testing and calling functions.", core::logger::MSG);

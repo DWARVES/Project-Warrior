@@ -104,6 +104,32 @@ namespace lua
         return ret;
     }
             
+    void Script::getVariable(const std::string& name, std::string& val)
+    {
+        gettop(name);
+        if(lua_isstring(m_state, 1))
+            val = lua_tostring(m_state, 1);
+        else {
+            std::ostringstream oss;
+            oss << "Tryed to get " << name << " lua variable as string, which is not its type.";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            throw lua::exception("Invalid type when reading variable form lua script");
+        }
+    }
+            
+    void Script::getVariable(const std::string& name, bool& val)
+    {
+        gettop(name);
+        if(lua_isboolean(m_state, 1))
+            val = lua_toboolean(m_state, 1);
+        else {
+            std::ostringstream oss;
+            oss << "Tryed to get " << name << " lua variable as boolean, which is not its type.";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            throw lua::exception("Invalid type when reading variable form lua script");
+        }
+    }
+            
     void Script::setVariable(const std::string& name, const std::string& str)
     {
         if(!loaded())
@@ -132,6 +158,17 @@ namespace lua
         if(!m_state)
             throw lua::exception("Tryed to use a non initialized script.");
         lua_register(m_state, name.c_str(), fn);
+    }
+            
+    void Script::gettop(const std::string& name)
+    {
+        if(!loaded()) {
+            core::logger::logm("Tryed to get a variable from a non loaded script", core::logger::WARNING);
+            throw lua::exception("Tryed to use a non loaded script");
+        }
+
+        lua_settop(m_state, 0);
+        lua_getglobal(m_state, name.c_str());
     }
 }
 
