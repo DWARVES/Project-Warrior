@@ -4,6 +4,72 @@
 #include "core/logger.hpp"
 #include <iostream>
 
+class Adder
+{
+    public:
+        Adder() {
+            isPrecious = false;
+            m_value = m_added = 0;
+        }
+        Adder(lua_State* st) : Adder() {
+            std::vector<lua::Script::VarType> args = lua::helper::listArguments(st);
+            if(args.size() != 1 || args[0] != lua::Script::NUMBER)
+                return;
+            m_value = m_added = static_cast<int>(lua_tonumber(st, 1));
+        }
+
+        int addSome(lua_State* st) {
+            std::vector<lua::Script::VarType> args = lua::helper::listArguments(st);
+            if(args.size() != 1 || args[0] != lua::Script::NUMBER)
+                return 0;
+            m_added += static_cast<int>(lua_tonumber(st, 1));
+            return lua::helper::returnNumber(st, m_added);
+        }
+
+        int getAdded(lua_State* st) {
+            std::vector<lua::Script::VarType> args = lua::helper::listArguments(st);
+            if(args.size() != 0)
+                return 0;
+            else
+                return lua::helper::returnNumber(st, m_added);
+        }
+
+        int setValue(lua_State* st) {
+            std::vector<lua::Script::VarType> args = lua::helper::listArguments(st);
+            if(args.size() != 1 || args[0] != lua::Script::NUMBER)
+                return 0;
+            m_value = lua_tonumber(st, 1);
+            return 0;
+        }
+
+        int getValue(lua_State* st) {
+            return lua::helper::returnNumber(st, m_value);
+        }
+
+    private:
+        int m_value;
+        int m_added;
+
+    public:
+        /* For lua exposure */
+        static const char* className;
+        static const lua::Luna<Adder>::FunctionType methods[];
+        static const lua::Luna<Adder>::PropertyType properties[];
+        bool isExisting;
+        bool isPrecious;
+};
+
+const char* Adder::className = "Additionner";
+const lua::Luna<Adder>::FunctionType Adder::methods[] = {
+    {"add", &Adder::addSome},
+    {"get", &Adder::getAdded},
+    {NULL, NULL}
+};
+const lua::Luna<Adder>::PropertyType Adder::properties[] = {
+    {"value", &Adder::getValue, &Adder::setValue},
+    {NULL, NULL, NULL}
+};
+
 int function(lua_State* st)
 {
     std::vector<lua::Script::VarType> args = lua::helper::listArguments(st);
@@ -39,6 +105,10 @@ int main()
         /* Registering functions */
         core::logger::logm("Testing exposure of functions.", core::logger::MSG);
         scr.registerFunction(function, "xargs");
+
+        /* Registering classes */
+        core::logger::logm("Testing exposure of classes.", core::logger::MSG);
+        scr.registerClass<Adder>();
 
         /* loading */
         core::logger::logm("Loading lua script.", core::logger::MSG);
