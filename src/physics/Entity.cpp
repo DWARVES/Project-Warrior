@@ -87,4 +87,18 @@ namespace physics
 
         return fixtureDef;
     }
+
+    // Apply a force to the entity m_body's center
+
+    void Entity::applyForceToCenter(const b2Vec2& force)
+    {
+        m_body->ApplyForce(force, m_body->GetWorldCenter());
+    }
+
+    // Apply a force to the entity's m_body at a point of the world
+
+    void Entity::applyForceToPoint(const b2Vec2& force, const geometry::Point& point)
+    {
+        m_body->ApplyForce(force, b2Vec2(point.x, point.y));
+    }
 }

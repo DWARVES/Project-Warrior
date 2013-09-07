@@ -25,6 +25,9 @@ namespace physics
             b2Fixture* createFixture(const std::string& name, const geometry::Circle& circle, float density, float friction, const geometry::Point& position = geometry::Point(0, 0));
             b2Fixture* createFixture(const std::string& name, const geometry::Polygon& polygon, float density, float friction);
 
+            void applyForceToCenter(const b2Vec2& force);
+            void applyForceToPoint(const b2Vec2& force, const geometry::Point& point);
+
         protected:
             b2FixtureDef* createBaseFixtureDef(float density, float friction) const;
 

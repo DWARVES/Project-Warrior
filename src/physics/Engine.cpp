@@ -18,4 +18,14 @@ namespace physics
         m_entities[name] = new Entity(m_world, position, bodyType, fixedRotation);
         return m_entities.at(name);
     }
+
+    void Engine::applyForceToCenter(const std::string& entityName, const b2Vec2& force)
+    {
+        m_entities.at(entityName)->applyForceToCenter(force);
+    }
+
+    void Engine::applyForceToPoint(const std::string& entityName, const b2Vec2& force, const geometry::Point& point)
+    {
+        m_entities.at(entityName)->applyForceToPoint(force, point);
+    }
 }
