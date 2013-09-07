@@ -34,7 +34,7 @@ namespace lua
              *************************************************/
 
             /* Check if the function exists in the script
-             * If the script wasn't loaded, it always return false
+             * If the script wasn't loaded, it will throw an lua::nonloaded_exception
              */
             bool existsFunction(const std::string& name);
             /* The first template is the return type of the function
@@ -43,7 +43,7 @@ namespace lua
              * Implicit templates types won't works if you use const char* for strings as arguments
              * Args are the types of the arguments
              * It only handle some types for the functions : std::string (and const char*), bool and any number type (but only number, undetermined behaviour if not).
-             * It will throw an lua::exception if the lua function does not exists or if the script is not loaded
+             * It will throw an lua::functionaccess_exception if the lua function does not exists and a lua::nonloaded_exception if the script is not loaded
              */
             template <typename Ret, typename... Args> void callFunction(const std::string& name, Ret* ret, Args... args);
 
@@ -52,7 +52,7 @@ namespace lua
              *************************************************/
 
             /* Return the type of the variable
-             * Always return none if the script is not loaded
+             * It will throw a lua::nonloaded_exception if the script is not loaded
              */
             enum VarType {
                 NUMBER, /* Any type of number : there is no distinction between int, double, float ... in lua */
@@ -66,9 +66,9 @@ namespace lua
             /* Store the value of a lua variable in a C variable.
              * It can store either std::string, bool or a number type (undefined behaviour if it is not, double is conseilled : native lua number type)
              * Can't return neither a table, an userdata nor a nil variale
-             * It will throw an exception of type lua::exception if name refers to a variable like the one mentionned the line above
-             * It will also throw an exception if the script is not loaded
-             * Finally, it will throw an exception if the type of the dest variable in C is not the same as the lua variable
+             * It will throw an exception of type lua::vartype_exception if name refers to a variable like the one mentionned the line above
+             * It will also throw an exception if the type of the dest variable in C is not the same as the lua variable
+             * Finally, it will throw a lua::nonloaded_exception if the script is not loaded
              */
             template <typename T> void getVariable(const std::string& name, T& val);
             void getVariable(const std::string& name, std::string& val);
@@ -87,7 +87,7 @@ namespace lua
             /* The function must return how many returns it has in lua
              * The arguments must be taken from the lua stack
              * name is the name the function will have in the lua script
-             * It can be called even if the script is not loaded, but if the initialization failed
+             * It can be called even if the script is not loaded, but if the initialization failed, it will throw an lua::nonloaded_exception
              */
             typedef int (*luaFnPtr)(lua_State* st);
             void registerFunction(luaFnPtr fn, const std::string& name);
@@ -111,7 +111,7 @@ namespace lua
             void addArgs();
 
             /* Put a lua variable to the top of the stack
-             * Throw a lua::exception if the script is not loaded
+             * Throw a lua::nonloaded_exception if the script is not loaded
              */
             void gettop(const std::string& name);
     };
@@ -123,7 +123,7 @@ namespace lua
     template <typename Ret, typename... Args> void Script::callFunction(const std::string& name, Ret* ret, Args... args)
     {
         if(!loaded())
-            throw lua::exception("Tryed to execute a function from a non loaded script.");
+            throw lua::nonloaded_exception();
 
         /* Prepare function */
         lua_getglobal(m_state, name.c_str());
@@ -131,7 +131,7 @@ namespace lua
             std::ostringstream oss;
             oss << "Tryed to call an unexisting lua function : \"" << name << "\".";
             core::logger::logm(oss.str(), core::logger::WARNING);
-            throw lua::exception("Tryed to call an unexisting lua function.");
+            throw lua::functionaccess_exception(name.c_str());
         }
 
         /* Parse arguments */
@@ -187,7 +187,7 @@ namespace lua
             std::ostringstream oss;
             oss << "Tryed to get " << name << " lua variable as a " << typeid(T).name() << ", which is not its type.";
             core::logger::logm(oss.str(), core::logger::WARNING);
-            throw lua::exception("Invalid type when reading variable form lua script");
+            throw lua::vartype_exception(typeid(T).name(), "unknown", name.c_str());
         }
     }
 }

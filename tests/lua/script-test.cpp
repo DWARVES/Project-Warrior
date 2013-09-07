@@ -44,7 +44,7 @@ int main()
         core::logger::logm("Loading lua script.", core::logger::MSG);
         if(!scr.load("script.lua")) {
             core::logger::logm("Couldn't load s.lua.", core::logger::ERROR);
-            throw lua::exception("Script couldn't be loaded.");
+            throw lua::program_exception("Script couldn't be loaded.");
         }
 
         /* Variables methods */
@@ -79,7 +79,7 @@ int main()
         }
         scr.callFunction<void>("unexists", NULL); /* Try call of unexistent function */
     }
-    catch(const lua::exception& e) {
+    catch(const lua::exception& e) { /* Will catch all lua exceptions, shouldn't happen */
         core::logger::logm(std::string("Lua exception catched : ") + e.what(), core::logger::FATAL);
         return 1;
     }
