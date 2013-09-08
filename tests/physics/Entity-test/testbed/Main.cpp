@@ -68,8 +68,8 @@ static void Resize(int32 w, int32 h)
 
 static b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
 {
-	float32 u = x / float32(tw);
-	float32 v = (th - y) / float32(th);
+	float32 u = float32(x) / float32(tw);
+	float32 v = float32(th - y) / float32(th);
 
 	float32 ratio = float32(tw) / float32(th);
 	b2Vec2 extents(ratio * 25.0f, 25.0f);
@@ -103,7 +103,7 @@ static void SimulationLoop()
 	b2Vec2 oldCenter = settings.viewCenter;
 	settings.hz = settingsHz;
 	test->Step(&settings);
-	if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
+	if (std::abs(oldCenter.x - settings.viewCenter.x) > 0.00001f || std::abs(oldCenter.y - settings.viewCenter.y) > 0.00001f)
 	{
 		Resize(width, height);
 	}
@@ -235,6 +235,8 @@ static void KeyboardSpecial(int key, int x, int y)
 		settings.viewCenter.Set(0.0f, 20.0f);
 		Resize(width, height);
 		break;
+    default: // Shouldn't happen
+        break;
 	}
 }
 
@@ -258,7 +260,6 @@ static void Mouse(int32 button, int32 state, int32 x, int32 y)
 		b2Vec2 p = ConvertScreenToWorld(x, y);
 		if (state == GLUT_DOWN)
 		{
-			b2Vec2 p = ConvertScreenToWorld(x, y);
 			if (mod == GLUT_ACTIVE_SHIFT)
 			{
 				test->ShiftMouseDown(p);
