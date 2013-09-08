@@ -95,13 +95,15 @@ namespace lua
             /* Will register a class (passed as template parameter)
              * This class must contain some static members :
              *      const char* className -> the name of the class in lua
-             *      const Luna<T>::FunctionType methods[] -> the members, which must have the same signature as a function (see registerFunction), must end by {NULL, NULL} : example {"MyCoolFunctionName", &Foo::function}
-             *      const Luna<T>::PropertyType properties[] -> the variables, must be defined by a setter and a getter, must end by {NULL, NULL, NULL} : example {"MemberName", &Foo::getter, &Foo::Setter}
+             *      const Script::Methods<T> methods[] -> the members, which must have the same signature as a function (see registerFunction), must end by {NULL, NULL} : example {"MyCoolFunctionName", &Foo::function}
+             *      const Script::Properties<T> properties[] -> the variables, must be defined by a setter and a getter, must end by {NULL, NULL, NULL} : example {"MemberName", &Foo::getter, &Foo::Setter}
              * The class must also contains the following two members
              *      bool isExisting -> for internal use, do not modify nor set it
              *      bool isPrecious -> tell lua not to garbage collect the object, must be set on the constructor
              * It will work even if the script is not loaded, but it will throw a lua::nonloaded_exception if the script is not initialized.
              */
+            template<typename T> using Methods = typename internal::Luna<T>::FunctionType;
+            template<typename T> using Properties = typename internal::Luna<T>::PropertyType;
             template<typename T> void registerClass();
 
 
@@ -207,7 +209,7 @@ namespace lua
     {
         if(!m_state)
             throw lua::nonloaded_exception();
-        Luna<T>::Register(m_state, NULL);
+        internal::Luna<T>::Register(m_state, NULL);
     }
 }
 
