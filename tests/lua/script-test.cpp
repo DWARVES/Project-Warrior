@@ -53,8 +53,6 @@ class Adder
     public:
         /* For lua exposure */
         static const char* className;
-        // static const lua::Luna<Adder>::FunctionType methods[];
-        // static const lua::Luna<Adder>::PropertyType properties[];
         static const lua::Script::Methods<Adder> methods[];
         static const lua::Script::Properties<Adder> properties[];
         bool isExisting;
@@ -62,13 +60,11 @@ class Adder
 };
 
 const char* Adder::className = "Additionner";
-// const lua::Luna<Adder>::FunctionType Adder::methods[] = {
 const lua::Script::Methods<Adder> Adder::methods[] = {
     {"add", &Adder::addSome},
     {"get", &Adder::getAdded},
     {NULL, NULL}
 };
-// const lua::Luna<Adder>::PropertyType Adder::properties[] = {
 const lua::Script::Properties<Adder> Adder::properties[] = {
     {"value", &Adder::getValue, &Adder::setValue},
     {NULL, NULL, NULL}
