@@ -17,7 +17,7 @@ class EntityTest : public Test
         EntityTest()
         {
             square = new physics::Entity(m_world, Point(-300, 50), b2_dynamicBody, ROTATION_NOT_FIXED);
-            square->createFixture("body", AABB(100, 100), 0.1, 1);
+            square->createFixture("body", AABB(100, 100), 0.1f, 1);
 
             physics::Entity circle(m_world, Point(-100, 50), b2_dynamicBody, ROTATION_NOT_FIXED);
             circle.createFixture("body", Circle(50), 1, 1);
