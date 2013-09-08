@@ -3,6 +3,7 @@
 #define DEF_LUA_SCRIPT
 
 #include "lua/exception.hpp"
+#include "luna.hpp"
 #include "core/logger.hpp"
 #include <lua.hpp>
 #include <string>
@@ -91,6 +92,19 @@ namespace lua
              */
             typedef int (*luaFnPtr)(lua_State* st);
             void registerFunction(luaFnPtr fn, const std::string& name);
+            /* Will register a class (passed as template parameter)
+             * This class must contain some static members :
+             *      const char* className -> the name of the class in lua
+             *      const Script::Methods<T> methods[] -> the members, which must have the same signature as a function (see registerFunction), must end by {NULL, NULL} : example {"MyCoolFunctionName", &Foo::function}
+             *      const Script::Properties<T> properties[] -> the variables, must be defined by a setter and a getter, must end by {NULL, NULL, NULL} : example {"MemberName", &Foo::getter, &Foo::Setter}
+             * The class must also contains the following two members
+             *      bool isExisting -> for internal use, do not modify nor set it
+             *      bool isPrecious -> tell lua not to garbage collect the object, must be set on the constructor
+             * It will work even if the script is not loaded, but it will throw a lua::nonloaded_exception if the script is not initialized.
+             */
+            template<typename T> using Methods = typename internal::Luna<T>::FunctionType;
+            template<typename T> using Properties = typename internal::Luna<T>::PropertyType;
+            template<typename T> void registerClass();
 
 
         private:
@@ -189,6 +203,13 @@ namespace lua
             core::logger::logm(oss.str(), core::logger::WARNING);
             throw lua::vartype_exception(typeid(T).name(), "unknown", name.c_str());
         }
+    }
+    
+    template<typename T> void Script::registerClass()
+    {
+        if(!m_state)
+            throw lua::nonloaded_exception();
+        internal::Luna<T>::Register(m_state, NULL);
     }
 }
 
