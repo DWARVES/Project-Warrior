@@ -19,13 +19,33 @@ namespace physics
         return m_entities.at(name);
     }
 
-    void Engine::applyForceToCenter(const std::string& entityName, const b2Vec2& force)
+    void Engine::applyForce(const std::string& entityName, const b2Vec2& force)
     {
-        m_entities.at(entityName)->applyForceToCenter(force);
+        m_entities.at(entityName)->applyForce(force);
     }
 
-    void Engine::applyForceToPoint(const std::string& entityName, const b2Vec2& force, const geometry::Point& point)
+    void Engine::applyForce(const std::string& entityName, const b2Vec2& force, const geometry::Point& point)
     {
-        m_entities.at(entityName)->applyForceToPoint(force, point);
+        m_entities.at(entityName)->applyForce(force, point);
+    }
+
+    void Engine::applyLinearImpulse(const std::string& entityName, const b2Vec2& force)
+    {
+        m_entities.at(entityName)->applyLinearImpulse(force);
+    }
+
+    void Engine::applyLinearImpulse(const std::string& entityName, const b2Vec2& force, const geometry::Point& point)
+    {
+        m_entities.at(entityName)->applyLinearImpulse(force, point);
+    }
+
+    void Engine::applyTorque(const std::string& entityName, float force)
+    {
+        m_entities.at(entityName)->applyTorque(force);
+    }
+
+    void Engine::applyAngularImpulse(const std::string& entityName, float force)
+    {
+        m_entities.at(entityName)->applyAngularImpulse(force);
     }
 }

@@ -22,8 +22,6 @@ namespace physics
         return m_fixtures.at(name);
     }
 
-    // createFixtures overloaded functions
-
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::Line& line, float density, float friction)
     {
         b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction);
@@ -77,8 +75,6 @@ namespace physics
         return m_fixtures.at(name);
     }
 
-    // createBaseFixtureDef, used in createFixture overloaded functions to avoid code repetitions
-
     b2FixtureDef* Entity::createBaseFixtureDef(float density, float friction) const
     {
         b2FixtureDef *fixtureDef = new b2FixtureDef;
@@ -88,17 +84,33 @@ namespace physics
         return fixtureDef;
     }
 
-    // Apply a force to the entity m_body's center
-
-    void Entity::applyForceToCenter(const b2Vec2& force)
+    void Entity::applyForce(const b2Vec2& force)
     {
         m_body->ApplyForce(force, m_body->GetWorldCenter());
     }
 
-    // Apply a force to the entity's m_body at a point of the world
-
-    void Entity::applyForceToPoint(const b2Vec2& force, const geometry::Point& point)
+    void Entity::applyForce(const b2Vec2& force, const geometry::Point& point)
     {
         m_body->ApplyForce(force, b2Vec2(point.x, point.y));
+    }
+
+    void Entity::applyLinearImpulse(const b2Vec2& force)
+    {
+        m_body->ApplyLinearImpulse(force, m_body->GetWorldCenter());
+    }
+
+    void Entity::applyLinearImpulse(const b2Vec2& force, const geometry::Point& point)
+    {
+        m_body->ApplyLinearImpulse(force, b2Vec2(point.x, point.y));
+    }
+
+    void Entity::applyTorque(float force)
+    {
+        m_body->ApplyTorque(force);
+    }
+
+    void Entity::applyAngularImpulse(float force)
+    {
+        m_body->ApplyAngularImpulse(force);
     }
 }
