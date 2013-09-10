@@ -11,23 +11,27 @@ find_package(Boost COMPONENTS regex REQUIRED)
 link_directories(${Boost_REGEX_LIBRARY_DIR})
 include_directories(${Boost_REGEX_INCLUDE_DIR})
 
-# Inclusion de la SDL2
+# Including de la SDL2
 include(FindSDL2)
 find_package(SDL2 REQUIRED)
 link_directories(${SDL2_LIBRARY_DIR})
 include_directories(${SDL2_INCLUDE_DIR})
 
-# Inclusion de SDL2_image
+# Inclufing de SDL2_image
 include(FindSDL2_image)
 find_package(SDL2_image REQUIRED)
 link_directories(${SDL2_IMAGE_LIBRARY_DIR})
 include_directories(${SDL2_IMAGE_INCLUDE_DIR})
 
-# Inclusion OpenGL
+# Including OpenGL
 include(FindOpenGL)
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
 
+# Including Lua
+include(FindLua)
+find_package(Lua 5.2 REQUIRED)
+include_directories(${LUA_INCLUDE_DIR})
 
 # Includes checks
 include(CheckIncludeFiles)
@@ -35,10 +39,6 @@ check_include_files("sys/types.h;sys/stat.h" HAVE_SYSSTAT_H)
 check_include_files("dirent.h" HAVE_DIRENT_H)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-# Include lua
-# TODO tests presence and system-indepedant detection
-set(LUA_LIBRARY "/usr/lib/liblua.so")
 
 include_directories(src/)
 add_subdirectory(src/)
