@@ -40,6 +40,7 @@ int main()
 
         /* Freeing everything */
         core::logger::free();
+        events::Save::quit();
     }
     catch(const std::exception& e) {
         std::cout << "An exception was caught : " << e.what() << std::endl;
