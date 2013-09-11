@@ -215,7 +215,7 @@ namespace core
         m_actual->entities.erase(it);
     }
 
-    template <typename T, typename L> bool FakeFS<T,L>::existsEntity(const std::string& name)
+    template <typename T, typename L> bool FakeFS<T,L>::existsEntity(const std::string& name) const
     {
         return m_actual->entities.find(name) != m_actual->entities.end();
     }
@@ -274,7 +274,7 @@ namespace core
         return true;
     }
 
-    template <typename T, typename L> T FakeFS<T,L>::getEntityValue(const std::string& name)
+    template <typename T, typename L> T FakeFS<T,L>::getEntityValue(const std::string& name) const
     {
         if(!existsEntity(name))
             return static_cast<T>(0);

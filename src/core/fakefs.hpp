@@ -72,7 +72,7 @@ namespace core
             /* Return false if name already exists */
             bool createEntity(const std::string& name, T value);
             void deleteEntity(const std::string& name);
-            bool existsEntity(const std::string& name);
+            bool existsEntity(const std::string& name) const;
             /* Create a link named name to target
              * target can be a whole path and not only a simple name
              * return false if name already exists or of target dosn't exists
@@ -86,7 +86,7 @@ namespace core
             /* Return 0 if name does not exists, but can also return 0 if name value is 0
              * Use existsEntity method to be sure
              */
-            T getEntityValue(const std::string& name);
+            T getEntityValue(const std::string& name) const;
             /* Lists entities in current namespace */
             std::vector<std::string> listEntities() const;
 
