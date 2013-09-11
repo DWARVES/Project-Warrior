@@ -46,15 +46,15 @@ namespace graphics
              *     Virtual size      *
              *************************/
             /* The virtual size is a size used to place and draw elements */
-            void setVirtualSize(unsigned int w, unsigned int h);
+            void setVirtualSize(int w, int h);
             /* It is the same as setVirtualSize(windowWidth(), windowHeight()) */
             void disableVirtualSize();
             /* If r, it will add black bands on the side of the screen to preserve the ratio */
             void preserveRatio(bool r);
             /* Get information about virtual size */
             bool preserveRatio() const;
-            unsigned int getVirtualWidth() const;
-            unsigned int getVirtualHeight() const;
+            int getVirtualWidth() const;
+            int getVirtualHeight() const;
             bool isEnabled() const; /* Is the virtual size different from the window size */
 
             /*************************
@@ -84,8 +84,8 @@ namespace graphics
             /*************************
              *  Textures management  *
              *************************/
-            unsigned int getTextureWidth(const std::string& name) const;
-            unsigned int getTextureHeight(const std::string& name) const;
+            int getTextureWidth(const std::string& name) const;
+            int getTextureHeight(const std::string& name) const;
             bool setTextureHotpoint(const std::string& name, int x, int y);
 
             /*************************
@@ -95,10 +95,13 @@ namespace graphics
             void rotate(float angle);
             void scale(float x, float y);
             void move(float x, float y);
+            void push();
+            bool pop();
 
             /*************************
              *       Drawing         *
              *************************/
+            /* Playing movies */
             /* The hotpoint is only used for blitTexture */
             void blitTexture(const std::string& name, const geometry::Point& pos);
             /* If width < 0, will use the default width */
@@ -114,9 +117,15 @@ namespace graphics
             /* Set and get default width */
             unsigned int defaultWidth(unsigned int nval);
             unsigned int defaultWidth() const;
+            /* Must be called at the begin and the end of each draw cycle */
+            void beginDraw();
+            void endDraw();
 
         private:
             SDL_Window* m_win;
+            SDL_GLContext m_ctx;
+            int m_virtualW, m_virtualH;
+            bool m_virtualR;
 
             /**************************
              *   Fake-FS structure    *
@@ -138,13 +147,14 @@ namespace graphics
                     void operator()(Entity* tofree) const;
             };
 
-            // core::FakeFS<Entity*, EntityLiberator> m_fs;
+            core::FakeFS<Entity*, EntityLiberator> m_fs;
 
             /**************************
              *   Internal functions   *
              **************************/
             /* Windows */
             void logWindow(bool full, bool ended, bool sdlerr = false);
+            bool glContext();
     };
 }
 
