@@ -20,6 +20,10 @@ int main()
     }
     
     cont = gfx->openWindow("Test graphics::Graphics", 800, 600);
+    if(!cont)
+        return 1;
+    gfx->setVirtualSize(600, 400);
+    gfx->preserveRatio(true);
 
     while(cont) {
         SDL_WaitEvent(&ev);
@@ -40,6 +44,7 @@ int main()
         }
     }
 
+    gfx->preserveRatio(false); /* Just for testing logging */
     delete gfx;
     core::logger::free();
     return 0;
