@@ -15,6 +15,8 @@
 #include "graphics/font.hpp"
 #include "graphics/color.hpp"
 
+# include <SDL.h>
+
 namespace graphics
 {
     class Graphics
@@ -26,18 +28,18 @@ namespace graphics
             /*************************
              *  Window manipulation  *
              *************************/
-            /* Opens a window of size w*h and of depth d */
-            bool openWindow(unsigned int w, unsigned int h, unsigned int d);
+            /* Opens a window of size w*h */
+            bool openWindow(const std::string& name, int w, int h);
             /* Opens a window with the fullscreen size and default depth
-             * The min* arguments precise the minimal value for window size and depth : will fail if return false if can't create a window of at least these values
+             * The min* arguments precise the minimal value for window size : will fail if return false if can't create a window of at least these values
              */
-            bool openFullscreenWindow(unsigned int minw = 0, unsigned int minh = 0, unsigned int mind = 0);
+            bool openFullscreenWindow(const std::string& name, int minw = 0, int minh = 0);
             /* Closes the window (necessary if you wants to open a new window) */
             void closeWindow();
             /* Get Information about the window */
-            unsigned int windowWindth() const;
-            unsigned int windowHeight() const;
-            unsigned int windowDepth() const;
+            int windowWidth() const;
+            int windowHeight() const;
+            int windowDepth() const;
             bool isWindowOpen() const;
 
             /*************************
@@ -114,6 +116,8 @@ namespace graphics
             unsigned int defaultWidth() const;
 
         private:
+            SDL_Window* m_win;
+
             /**************************
              *   Fake-FS structure    *
              **************************/
@@ -134,7 +138,13 @@ namespace graphics
                     void operator()(Entity* tofree) const;
             };
 
-            core::FakeFS<Entity*, EntityLiberator> m_fs;
+            // core::FakeFS<Entity*, EntityLiberator> m_fs;
+
+            /**************************
+             *   Internal functions   *
+             **************************/
+            /* Windows */
+            void logWindow(bool full, bool ended, bool sdlerr = false);
     };
 }
 
