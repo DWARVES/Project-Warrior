@@ -10,3 +10,5 @@ add_subdirectory(events)
 add_subdirectory(geometry)
 add_subdirectory(lua)
 add_subdirectory(physics)
+add_subdirectory(graphics)
+
