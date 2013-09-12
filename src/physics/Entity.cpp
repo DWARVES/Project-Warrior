@@ -7,11 +7,12 @@ namespace physics
     Entity::Entity()
     {}
 
-    Entity::Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation)
+    Entity::Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, float gravityScale, bool fixedRotation)
     {
         b2BodyDef bodyDef;
         bodyDef.type = bodyType;
         bodyDef.position = b2Vec2(toMeters(position.x), toMeters(position.y));
+        bodyDef.gravityScale = gravityScale;
 
         m_body = world->CreateBody(&bodyDef);
         m_body->SetFixedRotation(fixedRotation);

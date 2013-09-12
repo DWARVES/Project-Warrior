@@ -15,8 +15,18 @@ namespace physics
     class Entity
     {
         public:
+            typedef enum
+            {
+                Character = 0x0001,
+                Attack = 0x0002,
+                Platform = 0x0004,
+                Obstacle = 0x0008,
+
+            } Type;
+
+        public:
             Entity();
-            Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation = true);
+            Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, float gravityScale = 1, bool fixedRotation = true);
 
             b2Fixture* getFixture(const std::string& name) const; // Returns a pointer to the fixture named "name" in the entity fixtures map
             

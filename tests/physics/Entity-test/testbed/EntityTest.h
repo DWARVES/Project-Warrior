@@ -16,13 +16,13 @@ class EntityTest : public Test
 
         EntityTest()
         {
-            square = new physics::Entity(m_world, Point(-300, 50), b2_dynamicBody, ROTATION_NOT_FIXED);
+            square = new physics::Entity(m_world, Point(-300, 50), b2_dynamicBody, 0, ROTATION_NOT_FIXED);
             square->createFixture("body", AABB(100, 100), 0.1f, 1);
 
-            circle = new physics::Entity(m_world, Point(-100, 50), b2_dynamicBody, ROTATION_NOT_FIXED);
+            circle = new physics::Entity(m_world, Point(-100, 50), b2_dynamicBody, 1, ROTATION_NOT_FIXED);
             circle->createFixture("body", Circle(50), 1, 1);
 
-            polygon = new physics::Entity(m_world, Point(100, 50), b2_dynamicBody, ROTATION_NOT_FIXED);
+            polygon = new physics::Entity(m_world, Point(100, 50), b2_dynamicBody, 1, ROTATION_NOT_FIXED);
             std::vector<Point> vertices;
             vertices.push_back(Point(-25, 0));
             vertices.push_back(Point(0, -50));
