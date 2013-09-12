@@ -95,13 +95,14 @@ namespace graphics
             void rotate(float angle);
             void scale(float x, float y);
             void move(float x, float y);
+            void identity();
             void push();
             bool pop();
 
             /*************************
              *       Drawing         *
              *************************/
-            /* Playing movies */
+            /* TODO Playing movies */
             /* The hotpoint is only used for blitTexture */
             void blitTexture(const std::string& name, const geometry::Point& pos);
             /* If width < 0, will use the default width */

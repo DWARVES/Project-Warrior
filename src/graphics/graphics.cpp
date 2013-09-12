@@ -376,5 +376,9 @@ namespace graphics
         glPopMatrix();
         return glGetError() != GL_STACK_UNDERFLOW;
     }
-
+            
+    void Graphics::identity()
+    {
+        glLoadIdentity();
+    }
 }
