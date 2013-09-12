@@ -25,6 +25,14 @@ int main()
     gfx->setVirtualSize(600, 400);
     gfx->preserveRatio(true);
 
+    gfx->move(2.0f, 5.0f);
+    gfx->push();
+    gfx->rotate(45);
+    gfx->push();
+    while(gfx->pop()) {
+        std::cout << "Poping a matrix." << std::endl;
+    }
+
     while(cont) {
         SDL_WaitEvent(&ev);
         switch(ev.type) {

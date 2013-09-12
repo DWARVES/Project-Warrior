@@ -2,6 +2,7 @@
 #include "graphics/graphics.hpp"
 #include "core/logger.hpp"
 #include <sstream>
+#include <GL/gl.h>
 
 namespace graphics
 {
@@ -346,4 +347,34 @@ namespace graphics
         ent->stored.text->hotpoint(geometry::Point((float)x,(float)y));
         return true;
     }
+
+    /*************************
+     *    Transformations    *
+     *************************/
+    void Graphics::rotate(float angle)
+    {
+        glRotatef(angle, 0, 0, 1);
+    }
+
+    void Graphics::scale(float x, float y)
+    {
+        glScalef(x, y, 1.0f);
+    }
+
+    void Graphics::move(float x, float y)
+    {
+        glTranslatef(x, y, 0.0f);
+    }
+
+    void Graphics::push()
+    {
+        glPushMatrix();
+    }
+
+    bool Graphics::pop()
+    {
+        glPopMatrix();
+        return glGetError() != GL_STACK_UNDERFLOW;
+    }
+
 }
