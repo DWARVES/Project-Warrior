@@ -9,7 +9,9 @@ namespace graphics
     {
         Texture::Texture()
             : m_loaded(false), m_id(0), m_w(0), m_h(0)
-        {}
+        {
+            m_hp.x = m_hp.y = 0.0f;
+        }
 
         Texture::~Texture()
         {

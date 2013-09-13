@@ -46,15 +46,18 @@ namespace graphics
              *     Virtual size      *
              *************************/
             /* The virtual size is a size used to place and draw elements */
-            void setVirtualSize(int w, int h);
+            void setVirtualSize(float w, float h);
             /* It is the same as setVirtualSize(windowWidth(), windowHeight()) */
             void disableVirtualSize();
             /* If r, it will add black bands on the side of the screen to preserve the ratio */
             void preserveRatio(bool r);
+            /* By default, the Y axs is from top to bottom. This method allows you to invert it */
+            void invertYAxis(bool inv);
             /* Get information about virtual size */
             bool preserveRatio() const;
-            int getVirtualWidth() const;
-            int getVirtualHeight() const;
+            float getVirtualWidth() const;
+            float getVirtualHeight() const;
+            bool isYAxisInverted() const;
             bool isEnabled() const; /* Is the virtual size different from the window size */
 
             /*************************
@@ -106,18 +109,17 @@ namespace graphics
             /* The hotpoint is only used for blitTexture */
             void blitTexture(const std::string& name, const geometry::Point& pos);
             /* If width < 0, will use the default width */
-            void draw(const geometry::Point& point, const Color& col, int width = -1);
-            void draw(const geometry::Line& line, const std::string& text, float repeatX = 1.0, float repeatY = 1.0, int width = -1);
-            void draw(const geometry::Line& line, const Color& col, int width = -1);
-            void draw(const geometry::AABB& aabb, const std::string& text, float repeatX = 1.0, float repeatY = 1.0);
+            void draw(const geometry::Point& point, const Color& col, float width = -1.0f);
+            void draw(const geometry::Line& line, const Color& col, float width = -1.0f);
+            void draw(const geometry::AABB& aabb, const std::string& text, float repeatX = 1.0f, float repeatY = 1.0f);
             void draw(const geometry::AABB& aabb, const Color& col);
-            void draw(const geometry::Circle& circle, const std::string& text, float repeatX = 1.0, float repeatY = 1.0);
+            void draw(const geometry::Circle& circle, const std::string& text, float repeatX = 1.0f, float repeatY = 1.0f);
             void draw(const geometry::Circle& circle, const Color& col);
-            void draw(const geometry::Polygon& poly, const std::string& text, float repeatX = 1.0, float repeatY = 1.0);
+            void draw(const geometry::Polygon& poly, const std::string& text, float repeatX = 1.0f, float repeatY = 1.0f);
             void draw(const geometry::Polygon& poly, const Color& col);
             /* Set and get default width */
-            unsigned int defaultWidth(unsigned int nval);
-            unsigned int defaultWidth() const;
+            float defaultWidth(float nval);
+            float defaultWidth() const;
             /* Must be called at the begin and the end of each draw cycle */
             void beginDraw();
             void endDraw();
@@ -125,8 +127,15 @@ namespace graphics
         private:
             SDL_Window* m_win;
             SDL_GLContext m_ctx;
-            int m_virtualW, m_virtualH;
+            /* Virtual size */
+            float m_virtualW, m_virtualH;
+            float m_appliedW, m_appliedH;
+            float m_bandWidth;
+            bool m_bandLR; /* Must the black bands be on left and right or up and down */
             bool m_virtualR;
+            bool m_yinvert;
+            /* Drawing */
+            float m_lineWidth;
 
             /**************************
              *   Fake-FS structure    *
@@ -156,6 +165,9 @@ namespace graphics
             /* Windows */
             void logWindow(bool full, bool ended, bool sdlerr = false);
             bool glContext();
+            /* Virtual size */
+            void computeBands();
+            void logVirtual();
     };
 }
 
