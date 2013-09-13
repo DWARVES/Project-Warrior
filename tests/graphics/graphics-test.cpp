@@ -22,9 +22,13 @@ int main()
     cont = gfx->openWindow("Test graphics::Graphics", 800, 600);
     if(!cont)
         return 1;
-    gfx->setVirtualSize(600, 400);
+    std::cout << "Is virtual size setted ? " << gfx->isEnabled() << std::endl;
+    gfx->setVirtualSize(300, 200);
     gfx->preserveRatio(true);
+    std::cout << "Is virtual size setted ? " << gfx->isEnabled() << std::endl;
+    gfx->defaultWidth(5.0f); /* Default width for points and lines */
 
+    /* Useless, just for testing matrix stacking */
     gfx->move(2.0f, 5.0f);
     gfx->push();
     gfx->rotate(45);
@@ -32,6 +36,35 @@ int main()
     while(gfx->pop()) {
         std::cout << "Poping a matrix." << std::endl;
     }
+
+    /* Textures */
+    gfx->createNamespace("pictures");
+    gfx->enterNamespace("pictures");
+    if(!gfx->loadTexture("default", "img.png"))
+        return 1;
+    gfx->enterNamespace("/");
+    gfx->createNamespace("textures");
+    gfx->enterNamespace("textures");
+    if(!gfx->loadTexture("default", "text.png"))
+        return 1;
+    gfx->enterNamespace("/");
+
+    /* Primitives */
+    geometry::AABB aabb(60.0f, 60.0f);
+    geometry::Line line;
+    line.p1.x = 25.0f;
+    line.p1.y = 100.0f;
+    line.p2.x = 100.0f;
+    line.p2.y = 25.0f;
+    geometry::Polygon poly;
+    poly.points.push_back(geometry::Point(.0f,.0f));
+    poly.points.push_back(geometry::Point(30.0f,.0f));
+    poly.points.push_back(geometry::Point(.0f,30.0f));
+    geometry::Circle circle;
+    circle.radius = 20.0f;
+
+    graphics::Color color;
+    color.g = 255;
 
     while(cont) {
         SDL_WaitEvent(&ev);
@@ -44,12 +77,41 @@ int main()
                     cont = false;
                 break;
             case SDL_KEYDOWN:
-                if(ev.key.keysym.sym == SDLK_q)
-                    cont = false;
+                switch(ev.key.keysym.sym) {
+                    case SDLK_q:
+                    case SDLK_ESCAPE:
+                        cont = false;
+                        break;
+                    case SDLK_i:
+                        gfx->invertYAxis(!gfx->isYAxisInverted());
+                        break;
+                    default:
+                        break;
+                }
                 break;
             default:
                 break;
         }
+
+        gfx->beginDraw();
+        gfx->move(gfx->getVirtualWidth() / 2 - 30.0f, gfx->getVirtualHeight() / 2 - 30.0f);
+        gfx->enterNamespace("/");
+        gfx->enterNamespace("textures");
+        gfx->draw(aabb, "default", 2.0f, 3.0f);
+        gfx->enterNamespace("/");
+        gfx->enterNamespace("pictures");
+        gfx->blitTexture("default", geometry::Point(5.0f, 5.0f));
+        gfx->enterNamespace("/");
+        gfx->enterNamespace("textures");
+        gfx->draw(geometry::Point(-30.0f, -30.0f), color, 20);
+        gfx->draw(line, color);
+        gfx->push();
+        gfx->move(70.0f, 70.0f);
+        gfx->draw(poly, "default", 10.0f, 10.0f);
+        gfx->pop();
+        gfx->move(70.0f, -20.0f);
+        gfx->draw(circle, "default");
+        gfx->endDraw();
     }
 
     gfx->preserveRatio(false); /* Just for testing logging */
