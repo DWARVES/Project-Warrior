@@ -5,6 +5,11 @@
 
 namespace geometry
 {
+    Line::Line()
+    {
+        /* Do nothing, p1 and p2 default constructors are enough */
+    }
+
 	Line::Line(const Point& mp1, const Point& mp2)
 	{
         set(mp1, mp2);

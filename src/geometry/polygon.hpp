@@ -9,6 +9,7 @@ namespace geometry
 {
 	struct Polygon
 	{
+        Polygon();
         Polygon(const std::vector<Point>& pts);
         void set(const std::vector<Point>& pts);
 

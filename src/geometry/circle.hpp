@@ -9,6 +9,7 @@ namespace geometry
 {
 	struct Circle
 	{
+        Circle();
         Circle(float r);
         Circle(const Line& diameter);
         void set(float r);

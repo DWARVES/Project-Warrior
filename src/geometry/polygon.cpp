@@ -3,6 +3,11 @@
 
 namespace geometry
 {
+    Polygon::Polygon()
+    {
+        /* do nothing, std::vector default constructor is enough */
+    }
+
 	Polygon::Polygon(const std::vector<Point>& pts)
 	{
         set(pts);

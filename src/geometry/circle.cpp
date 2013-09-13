@@ -4,6 +4,10 @@
 
 namespace geometry
 {
+    Circle::Circle()
+        : radius(0.0f)
+    {}
+
 	Circle::Circle(float r)
 	{
 		set(r);
