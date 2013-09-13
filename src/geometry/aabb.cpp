@@ -4,6 +4,10 @@
 
 namespace geometry
 {
+    AABB::AABB()
+        : width(0.0f), height(0.0f)
+    {}
+
 	AABB::AABB(float w, float h)
 	{
         set(w, h);
