@@ -4,7 +4,11 @@
 namespace graphics
 {
     Color::Color()
-        : r(0), g(0), b(0), a(0)
+        : r(0), g(0), b(0), a(255)
+    {}
+            
+    Color::Color(Uint8 mr, Uint8 mg, Uint8 mb, Uint8 ma)
+        : r(mr), g(mg), b(mb), a(ma)
     {}
 
     void Color::set(Uint8 mr, Uint8 mg, Uint8 mb, Uint8 ma)
