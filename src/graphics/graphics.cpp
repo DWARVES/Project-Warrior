@@ -347,7 +347,16 @@ namespace graphics
         Entity* ent = new Entity;
         ent->type = MOVIE;
         ent->stored.movie = mov;
-        return true;
+
+        if(!m_fs.createEntity(name, ent)) {
+            delete mov;
+            std::ostringstream oss;
+            oss << "Couldn't create entity for movie file : \"" << path << "\"";
+            core::logger::logm(oss.str(), core::logger::ERROR);
+            return false;
+        }
+        else
+            return true;
     }
 
     bool Graphics::loadFont(const std::string& name, const std::string& path)
@@ -356,7 +365,7 @@ namespace graphics
             return false;
 
         internal::Font* font = new internal::Font;
-        if(!font->load(path)) {
+        if(!font->load(path, "ABCDEFGHIJKLMNOPQRSTUVWXYZ! ")) { /* TODO choose the right letters to put there */
             delete font;
             return false;
         }
@@ -364,7 +373,16 @@ namespace graphics
         Entity* ent = new Entity;
         ent->type = FONT;
         ent->stored.font = font;
-        return true;
+
+        if(!m_fs.createEntity(name, ent)) {
+            delete font;
+            std::ostringstream oss;
+            oss << "Couldn't create entity for font file : \"" << path << "\"";
+            core::logger::logm(oss.str(), core::logger::ERROR);
+            return false;
+        }
+        else
+            return true;
     }
 
     bool Graphics::loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt)
@@ -614,7 +632,7 @@ namespace graphics
     {
         /* TODO handle concaves polygons */
         if(rctype(text) != TEXT) {
-            core::logger::logm(std::string("Tried to use an unexistant texture (circle blitting) : ") + text, core::logger::WARNING);
+            core::logger::logm(std::string("Tried to use an unexistant texture (polygon blitting) : ") + text, core::logger::WARNING);
             return;
         }
 
@@ -656,6 +674,17 @@ namespace graphics
         for(size_t i = 0; i < poly.points.size(); ++i)
             glVertex2f(poly.points[i].x, poly.points[i].y);
         glEnd();
+    }
+            
+    void Graphics::draw(const std::string& str, const std::string& font)
+    {
+        if(rctype(font) != FONT) {
+            core::logger::logm(std::string("Tried to use an unexistant font (text drawing) : ") + font, core::logger::WARNING);
+            return;
+        }
+
+        internal::Font* f = m_fs.getEntityValue(font)->stored.font;
+        f->draw(str, geometry::Point(0.0f, 0.0f));
     }
 
     float Graphics::defaultWidth(float nval)

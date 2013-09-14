@@ -117,6 +117,7 @@ namespace graphics
             void draw(const geometry::Circle& circle, const Color& col);
             void draw(const geometry::Polygon& poly, const std::string& text, float repeatX = 1.0f, float repeatY = 1.0f);
             void draw(const geometry::Polygon& poly, const Color& col);
+            void draw(const std::string& str, const std::string& font); /* Write a text with the selected font */
             /* Set and get default width */
             float defaultWidth(float nval);
             float defaultWidth() const;
