@@ -47,6 +47,8 @@ int main()
     gfx->enterNamespace("textures");
     if(!gfx->loadTexture("default", "text.png"))
         return 1;
+    if(!gfx->loadFont("font", "font.png"))
+        return 1;
     gfx->enterNamespace("/");
 
     /* Primitives */
@@ -65,6 +67,11 @@ int main()
 
     graphics::Color color;
     color.g = 255;
+
+    /* Background */
+    geometry::AABB bgaabb(300.0f, 200.0f);
+    graphics::Color bgc;
+    bgc.r = bgc.g = bgc.b = 127;
 
     while(cont) {
         SDL_WaitEvent(&ev);
@@ -94,9 +101,11 @@ int main()
         }
 
         gfx->beginDraw();
-        gfx->move(gfx->getVirtualWidth() / 2 - 30.0f, gfx->getVirtualHeight() / 2 - 30.0f);
+        gfx->draw(bgaabb, bgc);
         gfx->enterNamespace("/");
         gfx->enterNamespace("textures");
+        gfx->draw("HELLO WORLD!\nIT WORKS!", "font");
+        gfx->move(gfx->getVirtualWidth() / 2 - 30.0f, gfx->getVirtualHeight() / 2 - 30.0f);
         gfx->draw(aabb, "default", 2.0f, 3.0f);
         gfx->enterNamespace("/");
         gfx->enterNamespace("pictures");
