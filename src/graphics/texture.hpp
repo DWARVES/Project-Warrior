@@ -4,6 +4,7 @@
 
 #include <string>
 #include <GL/glu.h>
+#include <SDL.h>
 #include "geometry/point.hpp"
 
 namespace graphics
@@ -18,6 +19,8 @@ namespace graphics
                 Texture(const Texture& cp) = delete;
                 ~Texture();
                 bool load(const std::string& path);
+                SDL_Surface* preload(const std::string& path);
+                bool loadsdl(SDL_Surface* src); /* src wont be free'd */
 
                 /* Get infos about the texture */
                 bool loaded() const;

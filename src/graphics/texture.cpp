@@ -1,6 +1,5 @@
 
 #include "graphics/texture.hpp"
-#include <SDL.h>
 #include <SDL_image.h>
 
 namespace graphics
@@ -18,13 +17,13 @@ namespace graphics
             if(m_loaded)
                 glDeleteTextures(1, &m_id);
         }
-
-        bool Texture::load(const std::string& path)
+                
+        SDL_Surface* Texture::preload(const std::string& path)
         {
             /* Load the picture with SDL_image */
             SDL_Surface* src = IMG_Load(path.c_str());
             if(src == NULL)
-                return false;
+                return NULL;
 
             /* Convert it to the right format */
             Uint32 rmask, gmask, bmask, amask;
@@ -51,26 +50,39 @@ namespace graphics
             SDL_Surface* converted = SDL_ConvertSurface(src, &fmt, 0);
             SDL_FreeSurface(src);
             if(converted == NULL )
-                return false;
+                return NULL;
+            return converted;
+        }
 
+        bool Texture::loadsdl(SDL_Surface* src)
+        {
             /* Convert it to the opengl format */
             GLuint id;
             glGenTextures(1, &id);
             glBindTexture(GL_TEXTURE_2D, id);
-            glTexImage2D(GL_TEXTURE_2D, 0, 4, converted->w,
-                    converted->h, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                    converted->pixels);
+            glTexImage2D(GL_TEXTURE_2D, 0, 4, src->w,
+                    src->h, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                    src->pixels);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
             /* Store it */
             m_id = id;
-            m_w = converted->w;
-            m_h = converted->h;
+            m_w = src->w;
+            m_h = src->h;
             m_loaded = true;
 
-            /* Free temporary objects */
-            SDL_FreeSurface(converted);
+            return true;
+        }
+
+        bool Texture::load(const std::string& path)
+        {
+            SDL_Surface* surf = preload(path);
+            if(surf == NULL)
+                return false;
+            if(!loadsdl(surf))
+                return false;
+            SDL_FreeSurface(surf);
             return true;
         }
 
