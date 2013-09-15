@@ -75,9 +75,12 @@ namespace graphics
             return true;
         }
                 
-        bool Texture::loadgl(GLuint id)
+        bool Texture::loadgl(GLuint id, int w, int h)
         {
             m_id = id;
+            m_loaded = true;
+            m_w = w;
+            m_h = h;
             return true;
         }
 

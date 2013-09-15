@@ -168,13 +168,6 @@ namespace graphics
             /* Windows */
             void logWindow(bool full, bool ended, bool sdlerr = false);
             bool glContext();
-            /* OpenGL extensions functions */
-            PFNGLGENFRAMEBUFFERSPROC        glGenFramebuffers;
-            PFNGLBINDFRAMEBUFFERPROC        glBindFramebuffer;
-            PFNGLFRAMEBUFFERTEXTUREPROC     glFramebufferTexture;
-            PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus;
-            PFNGLDELETEFRAMEBUFFERSPROC     glDeleteFramebuffers;
-            PFNGLDRAWBUFFERSPROC            glDrawBuffers;
             /* Virtual size */
             void computeBands();
             void logVirtual();

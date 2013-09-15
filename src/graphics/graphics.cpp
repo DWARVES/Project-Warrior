@@ -144,26 +144,8 @@ namespace graphics
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
         m_ctx = SDL_GL_CreateContext(m_win);
-
-        const char* exts = (const char*)glGetString(GL_EXTENSIONS);
-        if(strstr(exts, "GL_ARB_framebuffer_object") == NULL) {
-            core::logger::logm("OpenGL GL_ARB_framebuffer_object extension is not usable with this hardware.", core::logger::ERROR);
-            return false;
-        }
-        else if(strstr(exts, "GL_ARB_draw_buffers") == NULL) {
-            core::logger::logm("OpenGL GL_ARB_draw_buffers extension is not usable with this hardware.", core::logger::ERROR);
-            return false;
-        }
-
-        /* FIXME : warnings because casting from void* to function pointer */
-        glGenFramebuffers =        (PFNGLGENFRAMEBUFFERSPROC)        SDL_GL_GetProcAddress("glGenFramebuffers");
-        glBindFramebuffer =        (PFNGLBINDFRAMEBUFFERPROC)        SDL_GL_GetProcAddress("glBindFramebuffer");
-        glFramebufferTexture =     (PFNGLFRAMEBUFFERTEXTUREPROC)     SDL_GL_GetProcAddress("glFramebufferTexture");
-        glCheckFramebufferStatus = (PFNGLCHECKFRAMEBUFFERSTATUSPROC) SDL_GL_GetProcAddress("glCheckFramebufferStatus");
-        glDeleteFramebuffers =     (PFNGLDELETEFRAMEBUFFERSPROC)     SDL_GL_GetProcAddress("glDeleteFramebuffers");
-        glDrawBuffers =            (PFNGLDRAWBUFFERSPROC)            SDL_GL_GetProcAddress("glDrawBuffers");
-
         return m_ctx != 0;
     }
 
@@ -418,57 +400,41 @@ namespace graphics
         internal::Font* f;
         f = m_fs.getEntityValue(font)->stored.font;
 
-        /* Generating a buffer to render to */
-        GLuint buffer = 0;
-        glGenFramebuffers(1, &buffer);
-        std::cout << "Buffer is : " << buffer << std::endl;
-        glBindFramebuffer(GL_FRAMEBUFFER, buffer);
+        /* Generating the texture buffer */
+        geometry::AABB tsize = f->stringSize(txt);
+        size_t size = (size_t)tsize.width * (size_t)tsize.height * 4;
+        std::cout << "Size : " << tsize.width << "x" << tsize.height << " (" << size << ")" << std::endl;
+        unsigned char* buffer = new unsigned char[size];
+        for(size_t i = 0; i < size; ++i)
+            buffer[i] = 0;
 
-        /* Generating a texture */
-        GLuint text;
+        /* Generating a texture to render to */
+        GLuint text = 0;
         glGenTextures(1, &text);
         glBindTexture(GL_TEXTURE_2D, text);
-        geometry::AABB tsize = f->stringSize(name);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)tsize.width, (int)tsize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-        /* Configure the buffer */
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, text, 0);
-        switch(glGetError()) {
-            case GL_INVALID_ENUM:
-                std::cout << "Invalid call to glFramebufferTexture." << std::endl;
-                break;
-            case GL_INVALID_OPERATION:
-                std::cout << "Couldn't attach texture to famebuffer." << std::endl;
-                break;
-            default:
-                break;
-        }
-
-        GLenum err;
-        if((err = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
-            std::ostringstream oss;
-            oss << "Coudln't generate framebuffer, error code is : " << err;
-            core::logger::logm(oss.str(), core::logger::WARNING);
-            glDeleteTextures(1, &text);
-            glDeleteFramebuffers(1, &buffer);
-            return false;
-        }
-
-        /* Activate the framebuffer */
-        GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
-        glDrawBuffers(1, buffers);
-        glViewport(0, 0, (int)tsize.width, (int)tsize.height);
+        glTexImage2D(GL_TEXTURE_2D, 0, 4, (int)tsize.width, (int)tsize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        delete[] buffer;
 
         /* Drawing */
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        int viewport[4];
+        glGetIntegerv(GL_VIEWPORT, viewport);
+        glViewport(0, 0, (int)tsize.width, (int)tsize.height);
         f->draw(txt, geometry::Point(0.0f, 0.0f));
 
+        /* TMP TESTS */
+        Color c(0, 255, 0);
+        draw(tsize, c);
+
         /* Storing and freeing */
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindTexture(GL_TEXTURE_2D, text);
+        glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, (int)tsize.width, (int)tsize.height, 0);
+        glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
         internal::Texture* t = new internal::Texture;
-        t->loadgl(text);
-        glDeleteFramebuffers(1, &buffer);
+        t->loadgl(text, (int)tsize.width, (int)tsize.height);
 
         Entity* ent = new Entity;
         ent->type = TEXT;
