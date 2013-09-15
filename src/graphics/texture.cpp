@@ -74,6 +74,12 @@ namespace graphics
 
             return true;
         }
+                
+        bool Texture::loadgl(GLuint id)
+        {
+            m_id = id;
+            return true;
+        }
 
         bool Texture::load(const std::string& path)
         {

@@ -2,7 +2,7 @@
 #include "graphics/graphics.hpp"
 #include "core/logger.hpp"
 #include <sstream>
-#include <GL/gl.h>
+#include <cstring>
 
 namespace graphics
 {
@@ -144,8 +144,26 @@ namespace graphics
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
         m_ctx = SDL_GL_CreateContext(m_win);
+
+        const char* exts = (const char*)glGetString(GL_EXTENSIONS);
+        if(strstr(exts, "GL_ARB_framebuffer_object") == NULL) {
+            core::logger::logm("OpenGL GL_ARB_framebuffer_object extension is not usable with this hardware.", core::logger::ERROR);
+            return false;
+        }
+        else if(strstr(exts, "GL_ARB_draw_buffers") == NULL) {
+            core::logger::logm("OpenGL GL_ARB_draw_buffers extension is not usable with this hardware.", core::logger::ERROR);
+            return false;
+        }
+
+        /* FIXME : warnings because casting from void* to function pointer */
+        glGenFramebuffers =        (PFNGLGENFRAMEBUFFERSPROC)        SDL_GL_GetProcAddress("glGenFramebuffers");
+        glBindFramebuffer =        (PFNGLBINDFRAMEBUFFERPROC)        SDL_GL_GetProcAddress("glBindFramebuffer");
+        glFramebufferTexture =     (PFNGLFRAMEBUFFERTEXTUREPROC)     SDL_GL_GetProcAddress("glFramebufferTexture");
+        glCheckFramebufferStatus = (PFNGLCHECKFRAMEBUFFERSTATUSPROC) SDL_GL_GetProcAddress("glCheckFramebufferStatus");
+        glDeleteFramebuffers =     (PFNGLDELETEFRAMEBUFFERSPROC)     SDL_GL_GetProcAddress("glDeleteFramebuffers");
+        glDrawBuffers =            (PFNGLDRAWBUFFERSPROC)            SDL_GL_GetProcAddress("glDrawBuffers");
+
         return m_ctx != 0;
     }
 
@@ -324,6 +342,7 @@ namespace graphics
 
         if(!m_fs.createEntity(name, ent)) {
             delete text;
+            delete ent;
             std::ostringstream oss;
             oss << "Couldn't create entity for picture file : \"" << path << "\"";
             core::logger::logm(oss.str(), core::logger::ERROR);
@@ -350,6 +369,7 @@ namespace graphics
 
         if(!m_fs.createEntity(name, ent)) {
             delete mov;
+            delete ent;
             std::ostringstream oss;
             oss << "Couldn't create entity for movie file : \"" << path << "\"";
             core::logger::logm(oss.str(), core::logger::ERROR);
@@ -365,7 +385,7 @@ namespace graphics
             return false;
 
         internal::Font* font = new internal::Font;
-        if(!font->load(path, "ABCDEFGHIJKLMNOPQRSTUVWXYZ! ")) { /* TODO choose the right letters to put there */
+        if(!font->load(path, "ABCDEFGHIJKLMNOPQRSTUVWXYZ! ")) { /* FIXME choose the right letters to put there */
             delete font;
             return false;
         }
@@ -376,6 +396,7 @@ namespace graphics
 
         if(!m_fs.createEntity(name, ent)) {
             delete font;
+            delete ent;
             std::ostringstream oss;
             oss << "Couldn't create entity for font file : \"" << path << "\"";
             core::logger::logm(oss.str(), core::logger::ERROR);
@@ -387,8 +408,81 @@ namespace graphics
 
     bool Graphics::loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt)
     {
-        /* TODO */
-        return !name.empty() && !font.empty() && !txt.empty();
+        if(m_fs.existsEntity(name))
+            return false;
+        else if(rctype(font) != FONT) {
+            core::logger::logm(std::string("Tryed to use an unvalid font : ") + font, core::logger::WARNING);
+            return false;
+        }
+
+        internal::Font* f;
+        f = m_fs.getEntityValue(font)->stored.font;
+
+        /* Generating a buffer to render to */
+        GLuint buffer = 0;
+        glGenFramebuffers(1, &buffer);
+        std::cout << "Buffer is : " << buffer << std::endl;
+        glBindFramebuffer(GL_FRAMEBUFFER, buffer);
+
+        /* Generating a texture */
+        GLuint text;
+        glGenTextures(1, &text);
+        glBindTexture(GL_TEXTURE_2D, text);
+        geometry::AABB tsize = f->stringSize(name);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)tsize.width, (int)tsize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+        /* Configure the buffer */
+        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, text, 0);
+        switch(glGetError()) {
+            case GL_INVALID_ENUM:
+                std::cout << "Invalid call to glFramebufferTexture." << std::endl;
+                break;
+            case GL_INVALID_OPERATION:
+                std::cout << "Couldn't attach texture to famebuffer." << std::endl;
+                break;
+            default:
+                break;
+        }
+
+        GLenum err;
+        if((err = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
+            std::ostringstream oss;
+            oss << "Coudln't generate framebuffer, error code is : " << err;
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            glDeleteTextures(1, &text);
+            glDeleteFramebuffers(1, &buffer);
+            return false;
+        }
+
+        /* Activate the framebuffer */
+        GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+        glDrawBuffers(1, buffers);
+        glViewport(0, 0, (int)tsize.width, (int)tsize.height);
+
+        /* Drawing */
+        f->draw(txt, geometry::Point(0.0f, 0.0f));
+
+        /* Storing and freeing */
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        internal::Texture* t = new internal::Texture;
+        t->loadgl(text);
+        glDeleteFramebuffers(1, &buffer);
+
+        Entity* ent = new Entity;
+        ent->type = TEXT;
+        ent->stored.text = t;
+        if(!m_fs.createEntity(name, ent)) {
+            delete t;
+            delete ent;
+            std::ostringstream oss;
+            oss << "Couldn't create entity for text texture : \"" << txt << "\"";
+            core::logger::logm(oss.str(), core::logger::ERROR);
+            return false;
+        }
+        else
+            return true;
     }
 
     void Graphics::free(const std::string& name)
@@ -630,7 +724,7 @@ namespace graphics
 
     void Graphics::draw(const geometry::Polygon& poly, const std::string& text, float repeatX, float repeatY)
     {
-        /* TODO handle concaves polygons */
+        /* FIXME handle concaves polygons */
         if(rctype(text) != TEXT) {
             core::logger::logm(std::string("Tried to use an unexistant texture (polygon blitting) : ") + text, core::logger::WARNING);
             return;
@@ -667,7 +761,7 @@ namespace graphics
 
     void Graphics::draw(const geometry::Polygon& poly, const Color& col)
     {
-        /* TODO handle concaves polygons */
+        /* FIXME handle concaves polygons */
         glDisable(GL_TEXTURE_2D);
         glBegin(GL_POLYGON);
         glColor4ub(col.r, col.g, col.b, col.a);

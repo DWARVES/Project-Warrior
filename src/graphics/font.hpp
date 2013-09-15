@@ -4,6 +4,7 @@
 
 #include "graphics/texture.hpp"
 #include "geometry/point.hpp"
+#include "geometry/aabb.hpp"
 #include <string>
 #include <unordered_map>
 
@@ -26,7 +27,7 @@ namespace graphics
                 void draw(const std::string& str, const geometry::Point& pos);
 
                 /* Information access */
-                float widthString(const std::string& str) const;
+                geometry::AABB stringSize(const std::string& str) const;
                 float widthLetter(char l) const;
                 bool hasLetter(char l) const;
                 bool isLoaded() const;

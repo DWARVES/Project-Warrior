@@ -101,25 +101,27 @@ namespace graphics
             }
         }
 
-        float Font::widthString(const std::string& str) const
+        geometry::AABB Font::stringSize(const std::string& str) const
         {
             std::vector<float> widths(1,0);
             size_t act = 0;
             float width = 0;
+            float height = m_yspacing;
             for(size_t i = 0; i < str.size(); ++i) {
                 if(str[i] == '\n') {
                     width = std::max(width, widths[act]);
                     widths.push_back(0);
                     ++act;
+                    height += m_yspacing;
                 }
-                if(hasLetter(str[i]))
+                else if(hasLetter(str[i]))
                     widths[act] += m_letters.find(str[i])->second.w;
                 else
                     widths[act] += m_xspacing; /* Non existant characters are replaced by spaces */
             }
 
             width = std::max(width, widths[act]);
-            return width;
+            return geometry::AABB(width, height);
         }
 
         float Font::widthLetter(char l) const

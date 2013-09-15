@@ -21,6 +21,7 @@ namespace graphics
                 bool load(const std::string& path);
                 SDL_Surface* preload(const std::string& path);
                 bool loadsdl(SDL_Surface* src); /* src wont be free'd */
+                bool loadgl(GLuint id); /* id mustn't be free'd by the user */
 
                 /* Get infos about the texture */
                 bool loaded() const;

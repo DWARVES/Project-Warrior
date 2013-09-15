@@ -15,7 +15,9 @@
 #include "graphics/font.hpp"
 #include "graphics/color.hpp"
 
-# include <SDL.h>
+#include <SDL.h>
+#include <GL/gl.h>
+#include <GL/glext.h>
 
 namespace graphics
 {
@@ -166,6 +168,13 @@ namespace graphics
             /* Windows */
             void logWindow(bool full, bool ended, bool sdlerr = false);
             bool glContext();
+            /* OpenGL extensions functions */
+            PFNGLGENFRAMEBUFFERSPROC        glGenFramebuffers;
+            PFNGLBINDFRAMEBUFFERPROC        glBindFramebuffer;
+            PFNGLFRAMEBUFFERTEXTUREPROC     glFramebufferTexture;
+            PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus;
+            PFNGLDELETEFRAMEBUFFERSPROC     glDeleteFramebuffers;
+            PFNGLDRAWBUFFERSPROC            glDrawBuffers;
             /* Virtual size */
             void computeBands();
             void logVirtual();
