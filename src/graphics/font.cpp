@@ -78,6 +78,7 @@ namespace graphics
         {
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, m_text->glID());
+            glColor4ub(255, 255, 255, 255);
 
             geometry::Point actPos = pos;
             for(size_t i = 0; i < str.size(); ++i) {
