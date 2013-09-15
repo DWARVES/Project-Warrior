@@ -49,6 +49,9 @@ int main()
         return 1;
     if(!gfx->loadFont("font", "font.png"))
         return 1;
+    graphics::Color c(255, 255, 255);
+    if(!gfx->loadTextureFromText("text", "font", "HY EVERYBODY\nIT WORKS!", c, true))
+        return 1;
     gfx->enterNamespace("/");
 
     /* Primitives */
@@ -114,6 +117,7 @@ int main()
         gfx->enterNamespace("textures");
         gfx->draw(geometry::Point(-30.0f, -30.0f), color, 20);
         gfx->draw(line, color);
+        gfx->blitTexture("text", geometry::Point(30.0f, 30.0f));
         gfx->push();
         gfx->move(70.0f, 70.0f);
         gfx->draw(poly, "default", 10.0f, 10.0f);
