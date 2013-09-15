@@ -388,8 +388,11 @@ namespace graphics
             return true;
     }
 
-    bool Graphics::loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt)
+    bool Graphics::loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt, const Color& bgc, bool alpha)
     {
+        /* FIXME transparent background of the generated texture */
+        if(alpha) {} /* avoid warnings */
+
         if(m_fs.existsEntity(name))
             return false;
         else if(rctype(font) != FONT) {
@@ -418,21 +421,26 @@ namespace graphics
         delete[] buffer;
 
         /* Drawing */
+        glClearColor(bgc.r, bgc.g, bgc.b, bgc.a);
+        glClearDepth(1.0f);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        int viewport[4];
-        glGetIntegerv(GL_VIEWPORT, viewport);
+        glOrtho(0, tsize.width, 0, tsize.height, 1, -1);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glClear(GL_COLOR_BUFFER_BIT);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        int vp[4];
+        glGetIntegerv(GL_VIEWPORT, vp);
         glViewport(0, 0, (int)tsize.width, (int)tsize.height);
         f->draw(txt, geometry::Point(0.0f, 0.0f));
-
-        /* TMP TESTS */
-        Color c(0, 255, 0);
-        draw(tsize, c);
 
         /* Storing and freeing */
         glBindTexture(GL_TEXTURE_2D, text);
         glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, (int)tsize.width, (int)tsize.height, 0);
-        glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
+        glViewport(vp[0], vp[1], vp[2], vp[3]);
         internal::Texture* t = new internal::Texture;
         t->loadgl(text, (int)tsize.width, (int)tsize.height);
 
