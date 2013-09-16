@@ -24,7 +24,7 @@ namespace graphics
                 bool load(const std::string& path, const std::string& letters);
 
                 /* Drawing */
-                void draw(const std::string& str, const geometry::Point& pos);
+                void draw(const std::string& str, const geometry::Point& pos, bool smooth = true);
 
                 /* Information access */
                 geometry::AABB stringSize(const std::string& str) const;

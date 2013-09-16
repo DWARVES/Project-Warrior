@@ -74,11 +74,20 @@ namespace graphics
             return ret;
         }
 
-        void Font::draw(const std::string& str, const geometry::Point& pos)
+        void Font::draw(const std::string& str, const geometry::Point& pos, bool smooth)
         {
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, m_text->glID());
             glColor4ub(255, 255, 255, 255);
+
+            if(smooth) {
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            }
+            else {
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            }
 
             geometry::Point actPos = pos;
             for(size_t i = 0; i < str.size(); ++i) {

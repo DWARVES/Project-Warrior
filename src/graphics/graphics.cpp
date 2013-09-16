@@ -390,7 +390,6 @@ namespace graphics
 
     bool Graphics::loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt, const Color& bgc, bool alpha, unsigned char precision)
     {
-        /* FIXME quality lose of the rendering */
         if(alpha) {} /* avoid warnings */
 
         if(m_fs.existsEntity(name))
@@ -425,7 +424,7 @@ namespace graphics
         int vp[4];
         glGetIntegerv(GL_VIEWPORT, vp);
         glViewport(0, 0, (int)tsize.width, (int)tsize.height);
-        f->draw(txt, geometry::Point(0.0f, 0.0f));
+        f->draw(txt, geometry::Point(0.0f, 0.0f), false);
 
         /* Getting the texture rendered */
         glReadPixels(0, 0, (int)tsize.width, (int)tsize.height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
