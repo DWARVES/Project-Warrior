@@ -79,8 +79,9 @@ namespace graphics
             /* Will create a texture in which the txt text is rendered with font
              * bgc is the color of the background, because trasparency is not handled
              * If alpha is set, the bgc will be transparent (FIXME not handled yet)
+             * precision precise the deviation allowed from bgc to still have alpha appliqued
              */
-            bool loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt, const Color& bgc, bool alpha = false);
+            bool loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt, const Color& bgc, bool alpha = false, unsigned char precision = 5);
             /* Will free the ressource wathever its type is */
             void free(const std::string& name);
             /* Return the type of a ressource or NONE if name doesn't exists */

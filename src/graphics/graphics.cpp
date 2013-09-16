@@ -232,17 +232,17 @@ namespace graphics
         }
         logVirtual();
     }
-            
+
     void Graphics::invertYAxis(bool inv)
     {
         m_yinvert = inv;
     } 
-            
+
     bool Graphics::isYAxisInverted() const
     {
         return m_yinvert;
     }
-            
+
     void Graphics::logVirtual()
     {
         std::ostringstream oss;
@@ -388,9 +388,9 @@ namespace graphics
             return true;
     }
 
-    bool Graphics::loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt, const Color& bgc, bool alpha)
+    bool Graphics::loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt, const Color& bgc, bool alpha, unsigned char precision)
     {
-        /* FIXME transparent background of the generated texture */
+        /* FIXME quality lose of the rendering */
         if(alpha) {} /* avoid warnings */
 
         if(m_fs.existsEntity(name))
@@ -406,19 +406,9 @@ namespace graphics
         /* Generating the texture buffer */
         geometry::AABB tsize = f->stringSize(txt);
         size_t size = (size_t)tsize.width * (size_t)tsize.height * 4;
-        std::cout << "Size : " << tsize.width << "x" << tsize.height << " (" << size << ")" << std::endl;
         unsigned char* buffer = new unsigned char[size];
         for(size_t i = 0; i < size; ++i)
             buffer[i] = 0;
-
-        /* Generating a texture to render to */
-        GLuint text = 0;
-        glGenTextures(1, &text);
-        glBindTexture(GL_TEXTURE_2D, text);
-        glTexImage2D(GL_TEXTURE_2D, 0, 4, (int)tsize.width, (int)tsize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        delete[] buffer;
 
         /* Drawing */
         glClearColor(bgc.r, bgc.g, bgc.b, bgc.a);
@@ -437,12 +427,32 @@ namespace graphics
         glViewport(0, 0, (int)tsize.width, (int)tsize.height);
         f->draw(txt, geometry::Point(0.0f, 0.0f));
 
-        /* Storing and freeing */
+        /* Getting the texture rendered */
+        glReadPixels(0, 0, (int)tsize.width, (int)tsize.height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        /* Applying transparency */
+        if(alpha) {
+            for(size_t i = 0; i < (size/4); ++i) {
+                if(std::abs((short)buffer[i*4] - (short)bgc.r) <= (short)precision
+                        && std::abs((short)buffer[i*4 + 1] - (short)bgc.g) <= (short)precision
+                        && std::abs((short)buffer[i*4 + 2] - (short)bgc.b) <= (short)precision) {
+                    buffer[i*4 + 3] = 0;
+                }
+            }
+        }
+
+        /* Generating a texture to store the pixels */
+        GLuint text = 0;
+        glGenTextures(1, &text);
         glBindTexture(GL_TEXTURE_2D, text);
-        glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, (int)tsize.width, (int)tsize.height, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, 4, (int)tsize.width, (int)tsize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+        /* Storing and freeing */
         glViewport(vp[0], vp[1], vp[2], vp[3]);
         internal::Texture* t = new internal::Texture;
         t->loadgl(text, (int)tsize.width, (int)tsize.height);
+        delete[] buffer;
 
         Entity* ent = new Entity;
         ent->type = TEXT;
@@ -743,7 +753,7 @@ namespace graphics
             glVertex2f(poly.points[i].x, poly.points[i].y);
         glEnd();
     }
-            
+
     void Graphics::draw(const std::string& str, const std::string& font)
     {
         if(rctype(font) != FONT) {
