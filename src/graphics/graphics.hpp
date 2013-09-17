@@ -80,8 +80,9 @@ namespace graphics
              * bgc is the color of the background, because trasparency is not handled
              * If alpha is set, the bgc will be transparent (FIXME not handled yet)
              * precision precise the deviation allowed from bgc to still have alpha appliqued
+             * pts is the heights in units of the rendered font, if it's negative, default height will be used
              */
-            bool loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt, const Color& bgc, bool alpha = false, unsigned char precision = 5);
+            bool loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt, const Color& bgc, float pts = -1.0f, bool alpha = false, unsigned char precision = 5);
             /* Will free the ressource wathever its type is */
             void free(const std::string& name);
             /* Return the type of a ressource or NONE if name doesn't exists */
@@ -123,7 +124,7 @@ namespace graphics
             void draw(const geometry::Circle& circle, const Color& col);
             void draw(const geometry::Polygon& poly, const std::string& text, float repeatX = 1.0f, float repeatY = 1.0f);
             void draw(const geometry::Polygon& poly, const Color& col);
-            void draw(const std::string& str, const std::string& font); /* Write a text with the selected font */
+            void draw(const std::string& str, const std::string& font, float pts = -1.0f); /* Write a text with the selected font */
             /* Set and get default width */
             float defaultWidth(float nval);
             float defaultWidth() const;

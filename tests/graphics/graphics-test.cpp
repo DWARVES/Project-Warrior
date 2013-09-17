@@ -50,7 +50,7 @@ int main()
     if(!gfx->loadFont("font", "font.png"))
         return 1;
     graphics::Color c(255, 255, 255);
-    if(!gfx->loadTextureFromText("text", "font", "HY EVERYBODY\nIT WORKS!", c, true))
+    if(!gfx->loadTextureFromText("text", "font", "HY EVERYBODY\nIT WORKS!", c, -1.0f, true))
         return 1;
     gfx->enterNamespace("/");
 
@@ -107,7 +107,7 @@ int main()
         gfx->draw(bgaabb, bgc);
         gfx->enterNamespace("/");
         gfx->enterNamespace("textures");
-        gfx->draw("HELLO WORLD!\nIT WORKS!", "font");
+        gfx->draw("HELLO WORLD!\nIT WORKS!", "font", 20.0f);
         gfx->move(gfx->getVirtualWidth() / 2 - 30.0f, gfx->getVirtualHeight() / 2 - 30.0f);
         gfx->draw(aabb, "default", 2.0f, 3.0f);
         gfx->enterNamespace("/");

@@ -74,7 +74,7 @@ namespace graphics
             return ret;
         }
 
-        void Font::draw(const std::string& str, const geometry::Point& pos, bool smooth)
+        void Font::draw(const std::string& str, const geometry::Point& pos, float size, bool smooth)
         {
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, m_text->glID());
@@ -90,44 +90,56 @@ namespace graphics
             }
 
             geometry::Point actPos = pos;
+            float fact = 1.0f;
+            if(size < 0.0f)
+                size = m_yspacing;
+            else
+                fact = size / m_yspacing;
+
             for(size_t i = 0; i < str.size(); ++i) {
                 if(str[i] == '\n') {
                     actPos.x = pos.x;
-                    actPos.y += (float)m_yspacing;
+                    actPos.y += size;
                 }
                 else if(!hasLetter(str[i])) { /* If the letter is not found, draw a space */
-                    actPos.x += (float)m_xspacing;
+                    actPos.x += m_xspacing * fact;
                 }
                 else { /* Draw the letter */
                     Letter l = m_letters[str[i]];
                     glBegin(GL_QUADS);
-                    glTexCoord2f(l.lt.x, l.lt.y); glVertex2f(actPos.x,       actPos.y);
-                    glTexCoord2f(l.rb.x, l.lt.y); glVertex2f(actPos.x + l.w, actPos.y);
-                    glTexCoord2f(l.rb.x, l.rb.y); glVertex2f(actPos.x + l.w, actPos.y + l.h);
-                    glTexCoord2f(l.lt.x, l.rb.y); glVertex2f(actPos.x,       actPos.y + l.h);
+                    glTexCoord2f(l.lt.x, l.lt.y); glVertex2f(actPos.x,              actPos.y);
+                    glTexCoord2f(l.rb.x, l.lt.y); glVertex2f(actPos.x + l.w * fact, actPos.y);
+                    glTexCoord2f(l.rb.x, l.rb.y); glVertex2f(actPos.x + l.w * fact, actPos.y + l.h * fact);
+                    glTexCoord2f(l.lt.x, l.rb.y); glVertex2f(actPos.x,              actPos.y + l.h * fact);
                     glEnd();
-                    actPos.x += (float)l.w;
+                    actPos.x += (float)l.w * fact;
                 }
             }
         }
 
-        geometry::AABB Font::stringSize(const std::string& str) const
+        geometry::AABB Font::stringSize(const std::string& str, float size) const
         {
             std::vector<float> widths(1,0);
             size_t act = 0;
             float width = 0;
-            float height = m_yspacing;
+            float height = size;
+            float fact = 1.0f;
+            if(size < 0.0f)
+                size = m_yspacing;
+            else
+                fact = size / m_yspacing;
+
             for(size_t i = 0; i < str.size(); ++i) {
                 if(str[i] == '\n') {
                     width = std::max(width, widths[act]);
                     widths.push_back(0);
                     ++act;
-                    height += m_yspacing;
+                    height += size;
                 }
                 else if(hasLetter(str[i]))
-                    widths[act] += m_letters.find(str[i])->second.w;
+                    widths[act] += (m_letters.find(str[i])->second.w * fact);
                 else
-                    widths[act] += m_xspacing; /* Non existant characters are replaced by spaces */
+                    widths[act] += (m_xspacing * fact); /* Non existant characters are replaced by spaces */
             }
 
             width = std::max(width, widths[act]);

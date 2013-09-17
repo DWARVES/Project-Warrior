@@ -388,10 +388,8 @@ namespace graphics
             return true;
     }
 
-    bool Graphics::loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt, const Color& bgc, bool alpha, unsigned char precision)
+    bool Graphics::loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt, const Color& bgc, float pts, bool alpha, unsigned char precision)
     {
-        if(alpha) {} /* avoid warnings */
-
         if(m_fs.existsEntity(name))
             return false;
         else if(rctype(font) != FONT) {
@@ -403,7 +401,7 @@ namespace graphics
         f = m_fs.getEntityValue(font)->stored.font;
 
         /* Generating the texture buffer */
-        geometry::AABB tsize = f->stringSize(txt);
+        geometry::AABB tsize = f->stringSize(txt, pts);
         size_t size = (size_t)tsize.width * (size_t)tsize.height * 4;
         unsigned char* buffer = new unsigned char[size];
         for(size_t i = 0; i < size; ++i)
@@ -424,7 +422,7 @@ namespace graphics
         int vp[4];
         glGetIntegerv(GL_VIEWPORT, vp);
         glViewport(0, 0, (int)tsize.width, (int)tsize.height);
-        f->draw(txt, geometry::Point(0.0f, 0.0f), false);
+        f->draw(txt, geometry::Point(0.0f, 0.0f), pts, false);
 
         /* Getting the texture rendered */
         glReadPixels(0, 0, (int)tsize.width, (int)tsize.height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
@@ -753,7 +751,7 @@ namespace graphics
         glEnd();
     }
 
-    void Graphics::draw(const std::string& str, const std::string& font)
+    void Graphics::draw(const std::string& str, const std::string& font, float pts)
     {
         if(rctype(font) != FONT) {
             core::logger::logm(std::string("Tried to use an unexistant font (text drawing) : ") + font, core::logger::WARNING);
@@ -761,7 +759,7 @@ namespace graphics
         }
 
         internal::Font* f = m_fs.getEntityValue(font)->stored.font;
-        f->draw(str, geometry::Point(0.0f, 0.0f));
+        f->draw(str, geometry::Point(0.0f, 0.0f), pts);
     }
 
     float Graphics::defaultWidth(float nval)
