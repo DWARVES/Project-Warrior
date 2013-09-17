@@ -130,12 +130,12 @@ namespace graphics
             std::vector<float> widths(1,0);
             size_t act = 0;
             float width = 0;
-            float height = size;
             float fact = 1.0f;
             if(size < 0.0f)
                 size = m_yspacing;
             else
                 fact = size / m_yspacing;
+            float height = size;
 
             for(size_t i = 0; i < str.size(); ++i) {
                 if(str[i] == '\n') {
