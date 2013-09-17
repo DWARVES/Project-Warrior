@@ -28,6 +28,11 @@ include(FindOpenGL)
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
 
+# Including FFMPEG
+include(FindFFMPEG)
+find_package(FFMPEG REQUIRED)
+include_directories(${FFMPEG_INCLUDE_DIR})
+
 # Including Lua
 include(FindLua)
 find_package(Lua 5.2 REQUIRED)
