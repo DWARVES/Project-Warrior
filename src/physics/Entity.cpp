@@ -7,7 +7,7 @@ namespace physics
     Entity::Entity()
     {}
 
-    Entity::Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, float gravityScale, bool fixedRotation)
+    Entity::Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, uint16 type, uint16 collideWith, float gravityScale, bool fixedRotation) : m_type(type), m_collideWith(collideWith)
     {
         b2BodyDef bodyDef;
         bodyDef.type = bodyType;
@@ -23,9 +23,9 @@ namespace physics
         return m_fixtures.at(name);
     }
 
-    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Line& line, float density, float friction)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Line& line, float density, float friction, uint16 type, uint16 collideWith)
     {
-        b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction);
+        b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction, type, collideWith);
         
         b2EdgeShape shape;
         shape.Set(b2Vec2(toMeters(line.p1.x), toMeters(line.p1.y)), b2Vec2(toMeters(line.p2.x), toMeters(line.p2.y)));
@@ -35,9 +35,9 @@ namespace physics
         return m_fixtures.at(name);
     }
 
-    b2Fixture* Entity::createFixture(const std::string& name, const geometry::AABB& aabb, float density, float friction, const geometry::Point& position)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::AABB& aabb, float density, float friction, uint16 type, uint16 collideWith, const geometry::Point& position)
     {
-        b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction);
+        b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction, type, collideWith);
         
         b2PolygonShape shape;
         shape.SetAsBox(toMeters(aabb.width / 2), toMeters(aabb.height / 2), b2Vec2(toMeters(position.x), toMeters(position.y)), 0);
@@ -47,9 +47,9 @@ namespace physics
         return m_fixtures.at(name);
     }
 
-    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Circle& circle, float density, float friction, const geometry::Point& position)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Circle& circle, float density, float friction, uint16 type, uint16 collideWith, const geometry::Point& position)
     {
-        b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction);
+        b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction, type, collideWith);
         
         b2CircleShape shape;
         shape.m_p.Set(toMeters(position.x), toMeters(position.y));
@@ -60,9 +60,9 @@ namespace physics
         return m_fixtures.at(name);
     }
 
-    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Polygon& polygon, float density, float friction)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Polygon& polygon, float density, float friction, uint16 type, uint16 collideWith)
     {
-        b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction);
+        b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction, type, collideWith);
         
         b2PolygonShape shape;
         unsigned int ptnb = (unsigned int)polygon.points.size();
@@ -76,11 +76,21 @@ namespace physics
         return m_fixtures.at(name);
     }
 
-    b2FixtureDef* Entity::createBaseFixtureDef(float density, float friction) const
+    b2FixtureDef* Entity::createBaseFixtureDef(float density, float friction, uint16 type, uint16 collideWith) const
     {
         b2FixtureDef *fixtureDef = new b2FixtureDef;
+
         fixtureDef->density = density;
         fixtureDef->friction = friction;
+
+        if(type != Type::ThisType)
+            fixtureDef->filter.categoryBits = type;
+        else
+            fixtureDef->filter.categoryBits = m_type;
+        if(collideWith != Type::ThisCollideWith)
+            fixtureDef->filter.maskBits = collideWith;
+        else
+            fixtureDef->filter.maskBits = m_collideWith;
 
         return fixtureDef;
     }
