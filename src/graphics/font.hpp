@@ -45,6 +45,7 @@ namespace graphics
 
                 /* Internal methods */
                 Uint32 pixel(SDL_Surface* s, int x, int y);
+                void pixel(SDL_Surface* s, int x, int y, Uint32 pix);
                 void fitToChar(Letter* l, SDL_Surface* surf, Uint32 bg);
         };
     }

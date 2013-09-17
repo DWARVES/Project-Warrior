@@ -62,6 +62,14 @@ namespace graphics
                 m_letters[ letters[i] ] = l;
             }
 
+            /* Deleting separators */
+            for(int x = 0; x < surf->w; ++x) {
+                for(int y = 0; y < surf->h; ++y) {
+                    if(pixel(surf, x, y) == sepColor)
+                        pixel(surf, x, y, bg);
+                }
+            }
+
             /* Saving */
             m_xspacing = (float)wd;
             m_yspacing = (float)hd;
@@ -168,6 +176,12 @@ namespace graphics
         {
             Uint32* pixels = (Uint32*)s->pixels;
             return pixels[ y * s->w + x ];
+        }
+
+        void Font::pixel(SDL_Surface* s, int x, int y, Uint32 pix)
+        {
+            Uint32* pixels = (Uint32*)s->pixels;
+            pixels[ y * s->w + x ] = pix;
         }
                 
         void Font::fitToChar(Letter* l, SDL_Surface* surf, Uint32 bg)
