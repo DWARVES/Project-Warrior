@@ -125,6 +125,8 @@ namespace graphics
             void draw(const geometry::Polygon& poly, const std::string& text, float repeatX = 1.0f, float repeatY = 1.0f);
             void draw(const geometry::Polygon& poly, const Color& col);
             void draw(const std::string& str, const std::string& font, float pts = -1.0f); /* Write a text with the selected font */
+            /* Return false when the video ended */
+            bool play(const std::string& movie, const geometry::AABB& rect);
             /* Set and get default width */
             float defaultWidth(float nval);
             float defaultWidth() const;

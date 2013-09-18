@@ -29,6 +29,7 @@ namespace graphics
     {
         m_win = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_OPENGL);
         logWindow(false, m_win != NULL, m_win == NULL);
+        internal::Movie::init();
 
         if(m_win != NULL) {
             bool ctx = glContext();
@@ -70,6 +71,7 @@ namespace graphics
 
     void Graphics::closeWindow()
     {
+        internal::Movie::free();
         if(m_win)
         {
             core::logger::logm("Destroying the window.", core::logger::MSG);
@@ -760,6 +762,19 @@ namespace graphics
 
         internal::Font* f = m_fs.getEntityValue(font)->stored.font;
         f->draw(str, geometry::Point(0.0f, 0.0f), pts);
+    }
+            
+    bool Graphics::play(const std::string& movie, const geometry::AABB& rect)
+    {
+        if(rctype(movie) != MOVIE) {
+            core::logger::logm(std::string("Tried to play an unexistant movie : ") + movie, core::logger::WARNING);
+            return false;
+        }
+
+        internal::Movie* m = m_fs.getEntityValue(movie)->stored.movie;
+        bool ret = m->updateFrame();
+        m->displayFrame(rect);
+        return ret;
     }
 
     float Graphics::defaultWidth(float nval)
