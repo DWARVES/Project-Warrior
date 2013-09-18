@@ -1,129 +1,80 @@
-# Locate ffmpeg
-# This module defines
-# FFMPEG_LIBRARIES
-# FFMPEG_FOUND, if false, do not try to link to ffmpeg
-# FFMPEG_INCLUDE_DIR, where to find the headers
+# - Try to find ffmpeg libraries (libavcodec, libavformat and libavutil)
+# Once done this will define
 #
-# $FFMPEG_DIR is an environment variable that would
-# correspond to the ./configure --prefix=$FFMPEG_DIR
+# FFMPEG_FOUND - system has ffmpeg or libav
+# FFMPEG_INCLUDE_DIR - the ffmpeg include directory
+# FFMPEG_LIBRARIES - Link these to use ffmpeg
+# FFMPEG_LIBAVCODEC
+# FFMPEG_LIBAVFORMAT
+# FFMPEG_LIBAVUTIL
 #
-# Created by Robert Osfield.
+# Copyright (c) 2008 Andreas Schneider <mail@cynapses.org>
+# Modified for other libraries by Lasse Kärkkäinen <tronic>
+# Modified for Hedgewars by Stepik777
+#
+# Redistribution and use is allowed according to the terms of the New
+# BSD license.
+#
 
-#use pkg-config to find various modes
-INCLUDE(FindPkgConfig OPTIONAL)
+if (FFMPEG_LIBRARIES AND FFMPEG_INCLUDE_DIR)
+    # in cache already
+    set(FFMPEG_FOUND TRUE)
+else (FFMPEG_LIBRARIES AND FFMPEG_INCLUDE_DIR)
+    # use pkg-config to get the directories and then use these values
+    # in the FIND_PATH() and FIND_LIBRARY() calls
+    find_package(PkgConfig)
+    if (PKG_CONFIG_FOUND)
+        pkg_check_modules(_FFMPEG_AVCODEC libavcodec)
+        pkg_check_modules(_FFMPEG_AVFORMAT libavformat)
+        pkg_check_modules(_FFMPEG_AVUTIL libavutil)
+    endif (PKG_CONFIG_FOUND)
 
-IF(PKG_CONFIG_FOUND)
+    find_path(FFMPEG_AVCODEC_INCLUDE_DIR
+        NAMES libavcodec/avcodec.h
+        PATHS ${_FFMPEG_AVCODEC_INCLUDE_DIRS} /usr/include /usr/local/include /opt/local/include /sw/include
+        PATH_SUFFIXES ffmpeg libav
+        )
 
-    INCLUDE(FindPkgConfig)
+    find_library(FFMPEG_LIBAVCODEC
+        NAMES avcodec
+        PATHS ${_FFMPEG_AVCODEC_LIBRARY_DIRS} /usr/lib /usr/local/lib /opt/local/lib /sw/lib
+        )
 
-    pkg_check_modules(FFMPEG_LIBAVFORMAT libavformat)
-    pkg_check_modules(FFMPEG_LIBAVDEVICE libavdevice)
-    pkg_check_modules(FFMPEG_LIBAVCODEC libavcodec)
-    pkg_check_modules(FFMPEG_LIBAVUTIL libavutil)
-    pkg_check_modules(FFMPEG_LIBSWSCALE libswscale)
+    find_library(FFMPEG_LIBAVFORMAT
+        NAMES avformat
+        PATHS ${_FFMPEG_AVFORMAT_LIBRARY_DIRS} /usr/lib /usr/local/lib /opt/local/lib /sw/lib
+        )
 
-ENDIF(PKG_CONFIG_FOUND)
+    find_library(FFMPEG_LIBAVUTIL
+        NAMES avutil
+        PATHS ${_FFMPEG_AVUTIL_LIBRARY_DIRS} /usr/lib /usr/local/lib /opt/local/lib /sw/lib
+        )
 
-# If FFMPEG was not found with pkgconfig, try to find it through other means.
-IF(NOT FFMPEG_LIBAVFORMAT_FOUND)
+    if (FFMPEG_LIBAVCODEC AND FFMPEG_LIBAVFORMAT)
+        set(FFMPEG_FOUND TRUE)
+    endif()
 
-    # Macro to find header and lib directories
-    # example: FFMPEG_FIND(AVFORMAT avformat avformat.h)
-    MACRO(FFMPEG_FIND varname shortname headername)
-        # First try to find header directly in include directory
-        FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS ${headername}
-            ${FFMPEG_ROOT}/include
-            $ENV{FFMPEG_DIR}/include
-            $ENV{OSGDIR}/include
-            $ENV{OSG_ROOT}/include
-            ~/Library/Frameworks
-            /Library/Frameworks
-            /usr/local/include
-            /usr/include/
-            /sw/include # Fink
-            /opt/local/include # DarwinPorts
-            /opt/csw/include # Blastwave
-            /opt/include
-            /usr/freeware/include
+    if (FFMPEG_FOUND)
+        set(FFMPEG_INCLUDE_DIR ${FFMPEG_AVCODEC_INCLUDE_DIR})
+
+        set(FFMPEG_LIBRARIES
+            ${FFMPEG_LIBAVCODEC}
+            ${FFMPEG_LIBAVFORMAT}
+            ${FFMPEG_LIBAVUTIL}
             )
 
-        # If not found, try to find it in a subdirectory. Tanguy's build has
-        # avformat.h in include/libavformat, so this catches that case. If that's
-        # standard, perhaps we can keep just this case.
-        IF(NOT FFMPEG_${varname}_INCLUDE_DIRS)
-            FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS lib${shortname}/${headername}
-                ${FFMPEG_ROOT}/include
-                $ENV{FFMPEG_DIR}/include
-                $ENV{OSGDIR}/include
-                $ENV{OSG_ROOT}/include
-                ~/Library/Frameworks
-                /Library/Frameworks
-                /usr/local/include
-                /usr/include/
-                /sw/include # Fink
-                /opt/local/include # DarwinPorts
-                /opt/csw/include # Blastwave
-                /opt/include
-                /usr/freeware/include
-                )
-        ENDIF(NOT FFMPEG_${varname}_INCLUDE_DIRS)
+    endif (FFMPEG_FOUND)
 
-        FIND_LIBRARY(FFMPEG_${varname}_LIBRARIES
-            NAMES ${shortname}
-            PATHS
-            ${FFMPEG_ROOT}/lib
-            $ENV{FFMPEG_DIR}/lib
-            $ENV{OSGDIR}/lib
-            $ENV{OSG_ROOT}/lib
-            ~/Library/Frameworks
-            /Library/Frameworks
-            /usr/local/lib
-            /usr/local/lib64
-            /usr/lib
-            /usr/lib64
-            /sw/lib
-            /opt/local/lib
-            /opt/csw/lib
-            /opt/lib
-            /usr/freeware/lib64
-            )
+    if (FFMPEG_FOUND)
+        if (NOT FFMPEG_FIND_QUIETLY)
+            message(STATUS "Found FFMPEG or Libav: ${FFMPEG_LIBRARIES}, ${FFMPEG_INCLUDE_DIR}")
+        endif (NOT FFMPEG_FIND_QUIETLY)
+    else (FFMPEG_FOUND)
+        if (FFMPEG_FIND_REQUIRED)
+            message(FATAL_ERROR "Could not find libavcodec or libavformat or libavutil")
+        endif (FFMPEG_FIND_REQUIRED)
+    endif (FFMPEG_FOUND)
 
-        IF (FFMPEG_${varname}_LIBRARIES)
-            SET(FFMPEG_${varname}_FOUND 1)
-        ENDIF(FFMPEG_${varname}_LIBRARIES)
+endif (FFMPEG_LIBRARIES AND FFMPEG_INCLUDE_DIR)
 
-    ENDMACRO(FFMPEG_FIND)
-
-    SET(FFMPEG_ROOT "$ENV{FFMPEG_DIR}" CACHE PATH "Location of FFMPEG")
-
-    FFMPEG_FIND(LIBAVFORMAT avformat avformat.h)
-    FFMPEG_FIND(LIBAVDEVICE avdevice avdevice.h)
-    FFMPEG_FIND(LIBAVCODEC avcodec avcodec.h)
-    FFMPEG_FIND(LIBAVUTIL avutil avutil.h)
-    FFMPEG_FIND(LIBSWSCALE swscale swscale.h) # not sure about the header to look for here.
-
-ENDIF(NOT FFMPEG_LIBAVFORMAT_FOUND)
-
-SET(FFMPEG_FOUND "NO")
-# Note we don't check FFMPEG_LIBSWSCALE_FOUND here, it's optional.
-IF (FFMPEG_LIBAVFORMAT_FOUND AND FFMPEG_LIBAVDEVICE_FOUND AND FFMPEG_LIBAVCODEC_FOUND AND FFMPEG_LIBAVUTIL_FOUND)
-
-    SET(FFMPEG_FOUND "YES")
-
-    SET(FFMPEG_INCLUDE_DIRS ${FFMPEG_LIBAVFORMAT_INCLUDE_DIRS})
-
-    SET(FFMPEG_LIBRARY_DIRS ${FFMPEG_LIBAVFORMAT_LIBRARY_DIRS})
-
-    # Note we don't add FFMPEG_LIBSWSCALE_LIBRARIES here, it will be added if found later.
-    SET(FFMPEG_LIBRARIES
-        ${FFMPEG_LIBAVFORMAT_LIBRARIES}
-        ${FFMPEG_LIBAVDEVICE_LIBRARIES}
-        ${FFMPEG_LIBAVCODEC_LIBRARIES}
-        ${FFMPEG_LIBAVUTIL_LIBRARIES})
-
-ELSE (FFMPEG_LIBAVFORMAT_FOUND AND FFMPEG_LIBAVDEVICE_FOUND AND FFMPEG_LIBAVCODEC_FOUND AND FFMPEG_LIBAVUTIL_FOUND)
-
-    MESSAGE(STATUS "Could not find FFMPEG")
-
-ENDIF(FFMPEG_LIBAVFORMAT_FOUND AND FFMPEG_LIBAVDEVICE_FOUND AND FFMPEG_LIBAVCODEC_FOUND AND FFMPEG_LIBAVUTIL_FOUND)
 
