@@ -5,7 +5,7 @@ set(lib libphysics)
 
 # List file here
 add_library(${lib}
-    Engine.cpp              Engine.hpp
+    World.cpp               World.hpp
     Entity.cpp              Entity.hpp
     unit_conversions.cpp    unit_conversions.hpp
 	)
