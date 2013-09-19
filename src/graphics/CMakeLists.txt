@@ -10,5 +10,6 @@ add_library(${lib}
     movie.cpp    movie.hpp
     font.cpp     font.hpp
     color.cpp    color.hpp
+    exts.cpp     exts.hpp
 	)
 
