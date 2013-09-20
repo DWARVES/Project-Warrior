@@ -21,11 +21,17 @@ namespace graphics
                 bool checkAndLoadExtensions();
                 /* Load the shaders, the extensions must have already been loaded */
                 bool load();
+                /* Enable/disable the shader for the rendering */
+                void enable(bool e = true);
 
             private:
                 Extensions* m_exts;
                 GLuint m_vertex;
                 GLuint m_fragment;
+                GLuint m_program;
+
+                /* Internal methods */
+                void logCompileError(GLuint shader);
         };
     }
 }
