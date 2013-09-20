@@ -32,6 +32,7 @@ namespace physics
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
+
         return m_fixtures.at(name);
     }
 
@@ -44,6 +45,7 @@ namespace physics
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
+
         return m_fixtures.at(name);
     }
 
@@ -57,6 +59,7 @@ namespace physics
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
+
         return m_fixtures.at(name);
     }
 
@@ -73,6 +76,7 @@ namespace physics
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
+
         return m_fixtures.at(name);
     }
 
