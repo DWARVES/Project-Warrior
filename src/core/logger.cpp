@@ -8,7 +8,7 @@ namespace core
 {
     namespace logger
     {
-        /* Global variables difinition */
+        /* Global variables definitions */
         struct _output {
             std::ostream* os;
             bool todel;

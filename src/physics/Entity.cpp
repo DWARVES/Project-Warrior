@@ -1,13 +1,14 @@
 
 #include "Entity.hpp"
 #include "unit_conversions.hpp"
+#include "core/logger.hpp"
 
 namespace physics
 {
     Entity::Entity()
     {}
 
-    Entity::Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, uint16 type, uint16 collideWith, float gravityScale, bool fixedRotation) : m_type(type), m_collideWith(collideWith)
+    Entity::Entity(const std::string& name, b2World* world, const geometry::Point& position, const b2BodyType& bodyType, uint16 type, uint16 collideWith, float gravityScale, bool fixedRotation) : m_name(name), m_type(type), m_collideWith(collideWith)
     {
         b2BodyDef bodyDef;
         bodyDef.type = bodyType;
@@ -20,36 +21,50 @@ namespace physics
 
     b2Fixture* Entity::getFixture(const std::string& name) const
     {
+        if(!m_fixtures.count(name))
+        {
+            core::logger::logm("Tried to get unexisting fixture \"" + name + "\" from entity \"" + m_name + "\" : returned NULL.", core::logger::WARNING);
+            return NULL;
+        }
+
         return m_fixtures.at(name);
     }
 
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::Line& line, float density, float friction, uint16 type, uint16 collideWith)
     {
-        b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction, type, collideWith);
+        b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith);
+        if(fixtureDef == NULL)
+            return NULL;
         
         b2EdgeShape shape;
         shape.Set(b2Vec2(toMeters(line.p1.x), toMeters(line.p1.y)), b2Vec2(toMeters(line.p2.x), toMeters(line.p2.y)));
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
+
         return m_fixtures.at(name);
     }
 
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::AABB& aabb, float density, float friction, uint16 type, uint16 collideWith, const geometry::Point& position)
     {
-        b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction, type, collideWith);
+        b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith);
+        if(fixtureDef == NULL)
+            return NULL;
         
         b2PolygonShape shape;
         shape.SetAsBox(toMeters(aabb.width / 2), toMeters(aabb.height / 2), b2Vec2(toMeters(position.x), toMeters(position.y)), 0);
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
+
         return m_fixtures.at(name);
     }
 
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::Circle& circle, float density, float friction, uint16 type, uint16 collideWith, const geometry::Point& position)
     {
-        b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction, type, collideWith);
+        b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith);
+        if(fixtureDef == NULL)
+            return NULL;
         
         b2CircleShape shape;
         shape.m_p.Set(toMeters(position.x), toMeters(position.y));
@@ -57,12 +72,15 @@ namespace physics
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
+
         return m_fixtures.at(name);
     }
 
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::Polygon& polygon, float density, float friction, uint16 type, uint16 collideWith)
     {
-        b2FixtureDef* fixtureDef = createBaseFixtureDef(density, friction, type, collideWith);
+        b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith);
+        if(fixtureDef == NULL)
+            return NULL;
         
         b2PolygonShape shape;
         unsigned int ptnb = (unsigned int)polygon.points.size();
@@ -73,11 +91,18 @@ namespace physics
         fixtureDef->shape = &shape;
 
         m_fixtures[name] = m_body->CreateFixture(fixtureDef);
+
         return m_fixtures.at(name);
     }
 
-    b2FixtureDef* Entity::createBaseFixtureDef(float density, float friction, uint16 type, uint16 collideWith) const
+    b2FixtureDef* Entity::createBaseFixtureDef(const std::string& name, float density, float friction, uint16 type, uint16 collideWith) const
     {
+        if(m_fixtures.count(name))
+        {
+            core::logger::logm("Tried to override existing fixture \"" + name + "\" in entity \"" + m_name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
+            return NULL;
+        }
+
         b2FixtureDef *fixtureDef = new b2FixtureDef;
 
         fixtureDef->density = density;

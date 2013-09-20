@@ -24,6 +24,7 @@ target_link_libraries (
 	Entity-test
     libphysics
     libgeometry
+    libcore
 	Box2D
 	glut
 	glui

@@ -32,7 +32,7 @@ namespace physics
 
         public:
             Entity();
-            Entity(b2World* world, const geometry::Point& position, const b2BodyType& bodyType, uint16 type = Type::Default, uint16 collideWith = Type::All, float gravityScale = 1, bool fixedRotation = true);
+            Entity(const std::string& name, b2World* world, const geometry::Point& position, const b2BodyType& bodyType, uint16 type = Type::Default, uint16 collideWith = Type::All, float gravityScale = 1, bool fixedRotation = true);
 
             b2Fixture* getFixture(const std::string& name) const; // Returns a pointer to the fixture named "name" in the entity fixtures map
             
@@ -53,9 +53,10 @@ namespace physics
             void applyAngularImpulse(float force); // Apply an angular impulse to the entity's body
 
         protected:
-            b2FixtureDef* createBaseFixtureDef(float density, float friction, uint16 type, uint16 collideWith) const; // Creates a base b2FixtureDef based on density, friction and collision parameters, and return a pointer to it ; used in createFixture overloaded functions to avoid code repetitions
+            b2FixtureDef* createBaseFixtureDef(const std::string& name, float density, float friction, uint16 type, uint16 collideWith) const; // Creates a base b2FixtureDef based on density, friction and collision parameters, and return a pointer to it ; used in createFixture overloaded functions to avoid code repetitions
 
         protected:
+            std::string m_name; // The entity name
             b2Body* m_body; // The b2Body of the entity, used in Box2D simulations
             std::map<std::string, b2Fixture*> m_fixtures; // A map containing all the fixtures of the body, allowing to access them with a specific name given by the user when created
             uint16 m_type, m_collideWith;
