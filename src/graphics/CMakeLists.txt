@@ -11,5 +11,6 @@ add_library(${lib}
     font.cpp     font.hpp
     color.cpp    color.hpp
     exts.cpp     exts.hpp
+    shaders.cpp  shaders.hpp
 	)
 
