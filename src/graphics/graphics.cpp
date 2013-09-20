@@ -155,18 +155,14 @@ namespace graphics
         }
 
         /* Extensions */
-        if(!m_exts.loadList()) {
-            core::logger::logm("Couldn't load the openGL extension system, needed for all graphical operations.", core::logger::FATAL);
+        if(!m_exts.init()) {
+            core::logger::logm("Couldn't init the openGL extension system, needed for all graphical operations.", core::logger::FATAL);
             return false;
         }
 
         /* Shaders */
-        if(!m_shads.checkExtensions()) {
+        if(!m_shads.checkAndLoadExtensions()) {
             core::logger::logm("Hardware does not support shaders, needed for all graphical operations.", core::logger::FATAL);
-            return false;
-        }
-        if(!m_shads.loadExtensions()) {
-            core::logger::logm("Couldn't open openGL extensions needed by shaders, needed for all graphical operations.", core::logger::FATAL);
             return false;
         }
         if(!m_shads.load()) {

@@ -10,11 +10,11 @@
 #include "geometry/aabb.hpp"
 #include "geometry/polygon.hpp"
 
+#include "graphics/shaders.hpp"
 #include "graphics/texture.hpp"
 #include "graphics/movie.hpp"
 #include "graphics/font.hpp"
 #include "graphics/exts.hpp"
-#include "graphics/shaders.hpp"
 #include "graphics/color.hpp"
 
 #include <SDL.h>

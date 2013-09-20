@@ -4,12 +4,6 @@
 #include <sstream>
 #include <iostream>
 
-/* OpenGL extensions */
-#define GLEXT(type, name) (m_exts->call<type>(#name))
-#define glCreateShader(type) GLEXT(PFNGLCREATESHADERPROC, glCreateShaderARB)(type)
-#define glDeleteShader(shad) GLEXT(PFNGLDELETESHADERPROC, glDeleteShaderARB)(shad)
-#define glIsShader(shad)     GLEXT(PFNGLISSHADERPROC,     glIsShaderARB)(shad)
-
 namespace graphics
 {
     namespace internal
@@ -26,7 +20,7 @@ namespace graphics
                 glDeleteShader(m_fragment);
         }
 
-        bool Shaders::checkExtensions() const
+        bool Shaders::checkAndLoadExtensions()
         {
             if(!m_exts->has("GL_ARB_shading_language_100")) {
                 core::logger::logm("Hardware does not support GL_ARB_shading_language_100, needed for shaders.", core::logger::WARNING);
@@ -47,16 +41,6 @@ namespace graphics
             return true;
         }
 
-        bool Shaders::loadExtensions()
-        {
-            bool ret = true;
-            ret &= m_exts->load("glCreateShaderARB");
-            ret &= m_exts->load("glDeleteShaderARB");
-            ret &= m_exts->load("glIsShaderARB");
-
-            return ret;
-        }
-                
         bool Shaders::load()
         {
             m_vertex = glCreateShader(GL_VERTEX_SHADER);
@@ -66,7 +50,7 @@ namespace graphics
                 std::cout << "Vertex couldn't be loaded." << std::endl;
                 return false;
             }
-            else if(!glIsShader(m_vertex) != GL_TRUE) {
+            else if(glIsShader(m_vertex) != GL_TRUE) {
                 std::cout << "Fragment couldn't be loaded." << std::endl;
                 return false;
             }
