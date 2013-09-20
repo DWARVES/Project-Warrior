@@ -146,8 +146,14 @@ namespace graphics
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
         m_ctx = SDL_GL_CreateContext(m_win);
+        
+        if(m_exts.has("ARB_GL_vertex_shader")) {
+            m_exts.load("glCreateVertexARB");
+            GLuint shader = GLEF(PFNGLCREATESHADERPROC, glCreateVertexARB)(GL_VERTEX_SHADER);
+            if(shader) {}
+        }
+
         return m_ctx != 0;
     }
 

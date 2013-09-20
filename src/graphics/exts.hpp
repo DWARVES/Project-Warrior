@@ -41,27 +41,14 @@ namespace graphics
                 bool isLoaded(const std::string& name) const;
 
                 /* Returns a pointer to an extension function which must be loaded
-                 * T is the name of the ptr type in opengl (like PFNSOMETHINGPROC)
                  * Will throw an ext_not_loaded exception if the function was not loaded
                  */
-                template<typename T> T operator()(const std::string& name) const;
+                void* operator()(const std::string& name) const;
 
             private:
                 const char* m_exts;
                 std::map<std::string, void*> m_funcs;
         };
-                
-        template<typename T> T Extensions::operator()(const std::string& name) const
-        {
-            if(!isLoaded(name)) {
-                std::ostringstream oss;
-                oss << "Tryed to call an OpenGL extension function which was not loaded : " << name;
-                core::logger::logm(oss.str(), core::logger::ERROR);
-                throw ext_not_loaded(name.c_str());
-            }
-
-            return dynamic_cast<T>(m_funcs.at(name));
-        }
     }
 }
 

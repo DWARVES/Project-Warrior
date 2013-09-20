@@ -46,6 +46,18 @@ namespace graphics
         {
             return m_funcs.find(name) != m_funcs.end();
         }
+                
+        void* Extensions::operator()(const std::string& name) const
+        {
+            if(!isLoaded(name)) {
+                std::ostringstream oss;
+                oss << "Tryed to call an OpenGL extension function which was not loaded : " << name;
+                core::logger::logm(oss.str(), core::logger::ERROR);
+                throw ext_not_loaded(name.c_str());
+            }
+
+            return m_funcs.at(name);
+        }
 
     }
 }
