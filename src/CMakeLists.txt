@@ -15,6 +15,7 @@ target_link_libraries(
     ${SDL2_IMAGE_LIBRARIES}
     ${OPENGL_LIBRARIES}
     ${FFMPEG_LIBRARIES}
+    ${GLEW_LIBRARIES}
     )
 
 add_subdirectory(core)
