@@ -14,6 +14,7 @@
 #include "graphics/movie.hpp"
 #include "graphics/font.hpp"
 #include "graphics/exts.hpp"
+#include "graphics/shaders.hpp"
 #include "graphics/color.hpp"
 
 #include <SDL.h>
@@ -139,6 +140,7 @@ namespace graphics
             SDL_Window* m_win;
             SDL_GLContext m_ctx;
             internal::Extensions m_exts;
+            internal::Shaders m_shads;
             /* Virtual size */
             float m_virtualW, m_virtualH;
             float m_appliedW, m_appliedH;
@@ -177,8 +179,6 @@ namespace graphics
             /* Windows */
             void logWindow(bool full, bool ended, bool sdlerr = false);
             bool glContext();
-            /* Help for extensions */
-#define GLEF(type,name) ((type)m_exts(#name))
             /* Virtual size */
             void computeBands();
             void logVirtual();

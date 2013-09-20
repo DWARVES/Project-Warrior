@@ -10,7 +10,7 @@ namespace graphics
     const float deg2rad = 0.0174532925199433f;
 
     Graphics::Graphics()
-        : m_win(NULL), m_ctx(0),
+        : m_win(NULL), m_ctx(0), m_shads(&m_exts),
         m_virtualW(0.0f), m_virtualH(0.0f), m_appliedW(0.0f), m_appliedH(0.0f), m_bandWidth(0.0f),
         m_bandLR(true), m_virtualR(false), m_yinvert(false),
         m_lineWidth(1.0f)
@@ -142,19 +142,39 @@ namespace graphics
 
     bool Graphics::glContext()
     {
+        /* Opening OpenGL */
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
         m_ctx = SDL_GL_CreateContext(m_win);
-        
-        if(m_exts.has("ARB_GL_vertex_shader")) {
-            m_exts.load("glCreateVertexARB");
-            GLuint shader = GLEF(PFNGLCREATESHADERPROC, glCreateVertexARB)(GL_VERTEX_SHADER);
-            if(shader) {}
+
+        if(m_ctx == 0) {
+            core::logger::logm("Couldn't create the openGL context, needed for all graphical operations.", core::logger::FATAL);
+            return false;
         }
 
-        return m_ctx != 0;
+        /* Extensions */
+        if(!m_exts.loadList()) {
+            core::logger::logm("Couldn't load the openGL extension system, needed for all graphical operations.", core::logger::FATAL);
+            return false;
+        }
+
+        /* Shaders */
+        if(!m_shads.checkExtensions()) {
+            core::logger::logm("Hardware does not support shaders, needed for all graphical operations.", core::logger::FATAL);
+            return false;
+        }
+        if(!m_shads.loadExtensions()) {
+            core::logger::logm("Couldn't open openGL extensions needed by shaders, needed for all graphical operations.", core::logger::FATAL);
+            return false;
+        }
+        if(!m_shads.load()) {
+            core::logger::logm("Couldn't load shaders, needed for all graphical operations.", core::logger::FATAL);
+            return false;
+        }
+
+        return true;
     }
 
     /*************************
