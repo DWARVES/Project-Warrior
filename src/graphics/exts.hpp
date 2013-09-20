@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <exception>
+#include <sstream>
 #include "core/logger.hpp"
 
 namespace graphics
@@ -44,12 +45,31 @@ namespace graphics
                 /* Returns a pointer to an extension function which must be loaded
                  * Will throw an ext_not_loaded exception if the function was not loaded
                  */
-                void* operator()(const std::string& name) const;
+                template<typename T> T call(const std::string& name) const;
 
             private:
                 const char* m_exts;
                 std::map<std::string, void*> m_funcs;
         };
+                
+        template<typename FN> union PtrToFn {
+            FN fn;
+            void* ptr;
+        };
+
+        template<typename T> T Extensions::call(const std::string& name) const
+        {
+            if(!isLoaded(name)) {
+                std::ostringstream oss;
+                oss << "Tryed to call an OpenGL extension function which was not loaded : " << name;
+                core::logger::logm(oss.str(), core::logger::ERROR);
+                throw ext_not_loaded(name.c_str());
+            }
+
+            PtrToFn<T> tr;
+            tr.ptr = m_funcs.at(name);
+            return tr.fn;
+        }
     }
 }
 

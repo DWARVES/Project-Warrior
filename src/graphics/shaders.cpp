@@ -5,7 +5,7 @@
 #include <iostream>
 
 /* OpenGL extensions */
-#define GLEXT(type, name) ((type)(*m_exts)(#name))
+#define GLEXT(type, name) (m_exts->call<type>(#name))
 #define glCreateShader(type) GLEXT(PFNGLCREATESHADERPROC, glCreateShaderARB)(type)
 #define glDeleteShader(shad) GLEXT(PFNGLDELETESHADERPROC, glDeleteShaderARB)(shad)
 #define glIsShader(shad)     GLEXT(PFNGLISSHADERPROC,     glIsShaderARB)(shad)

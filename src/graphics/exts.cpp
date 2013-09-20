@@ -2,10 +2,7 @@
 #include "graphics/exts.hpp"
 #include <GL/glu.h>
 #include <SDL.h>
-#include <sstream>
 #include <string>
-
-#include <iostream>
 
 namespace graphics
 {
@@ -34,7 +31,6 @@ namespace graphics
         bool Extensions::loadList()
         {
             m_exts = (const char*)glGetString(GL_EXTENSIONS);
-            std::cout << "Extensions : " << m_exts << std::endl;
             if(m_exts == NULL)
                 return false;
             else
@@ -72,19 +68,6 @@ namespace graphics
         {
             return m_funcs.find(name) != m_funcs.end();
         }
-                
-        void* Extensions::operator()(const std::string& name) const
-        {
-            if(!isLoaded(name)) {
-                std::ostringstream oss;
-                oss << "Tryed to call an OpenGL extension function which was not loaded : " << name;
-                core::logger::logm(oss.str(), core::logger::ERROR);
-                throw ext_not_loaded(name.c_str());
-            }
-
-            return m_funcs.at(name);
-        }
-
     }
 }
 
