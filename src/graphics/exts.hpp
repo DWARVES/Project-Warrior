@@ -5,7 +5,6 @@
 #include <string>
 #include <map>
 #include <exception>
-#include <sstream>
 #include "core/logger.hpp"
 
 namespace graphics
@@ -34,6 +33,8 @@ namespace graphics
                 Extensions();
                 Extensions(const Extensions&) = delete;
 
+                /* Get the list of supported extensions, must be the first function called */
+                bool loadList();
                 /* Check if the hardware supports an extension */
                 bool has(const std::string& name) const;
                 /* Load a function from an extension */

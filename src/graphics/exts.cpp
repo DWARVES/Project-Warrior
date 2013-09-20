@@ -2,7 +2,10 @@
 #include "graphics/exts.hpp"
 #include <GL/glu.h>
 #include <SDL.h>
-#include <cstring>
+#include <sstream>
+#include <string>
+
+#include <iostream>
 
 namespace graphics
 {
@@ -25,8 +28,18 @@ namespace graphics
 
 
         Extensions::Extensions()
-            : m_exts((const char*)glGetString(GL_EXTENSIONS))
+            : m_exts(NULL)
         {}
+                
+        bool Extensions::loadList()
+        {
+            m_exts = (const char*)glGetString(GL_EXTENSIONS);
+            std::cout << "Extensions : " << m_exts << std::endl;
+            if(m_exts == NULL)
+                return false;
+            else
+                return true;
+        }
 
         bool Extensions::has(const std::string& name) const
         {
@@ -39,7 +52,20 @@ namespace graphics
             if(isLoaded(name))
                 return true;
             m_funcs[name] = SDL_GL_GetProcAddress(name.c_str());
-            return true;
+
+            if(!m_funcs[name]) {
+                std::ostringstream oss;
+                oss << "Couldn't get the openGL extension function " << name;
+                core::logger::logm(oss.str(), core::logger::WARNING);
+                m_funcs.erase(name);
+                return false;
+            }
+            else {
+                std::ostringstream oss;
+                oss << "Loaded the openGL extension function " << name;
+                core::logger::logm(oss.str(), core::logger::MSG);
+                return true;
+            }
         }
 
         bool Extensions::isLoaded(const std::string& name) const
