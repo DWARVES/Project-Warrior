@@ -2,6 +2,7 @@
 #ifndef DEF_GRAPHICS_FONT
 #define DEF_GRAPHICS_FONT
 
+#include "graphics/shaders.hpp"
 #include "graphics/texture.hpp"
 #include "geometry/point.hpp"
 #include "geometry/aabb.hpp"
@@ -15,8 +16,9 @@ namespace graphics
         class Font
         {
             public:
-                Font();
+                Font() = delete;
                 Font(const Font&) = delete;
+                Font(Shaders* shads);
                 ~Font();
                 /* letters describe what letter is each part of the texture
                  * It's from left to right and up to bottom
@@ -42,6 +44,7 @@ namespace graphics
                 float m_yspacing; /* Distance between lines */
                 float m_xspacing; /* spaces width */
                 Texture* m_text;
+                Shaders* m_shads;
 
                 /* Internal methods */
                 Uint32 pixel(SDL_Surface* s, int x, int y);

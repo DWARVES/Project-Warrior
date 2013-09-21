@@ -6,8 +6,8 @@ namespace graphics
 {
     namespace internal
     {
-        Font::Font()
-            : m_yspacing(0), m_xspacing(0), m_text(NULL)
+        Font::Font(Shaders* shads)
+            : m_yspacing(0), m_xspacing(0), m_text(NULL), m_shads(shads)
         {}
 
         Font::~Font()
@@ -84,7 +84,8 @@ namespace graphics
 
         void Font::draw(const std::string& str, const geometry::Point& pos, float size, bool smooth)
         {
-            glEnable(GL_TEXTURE_2D);
+            m_shads->text(true);
+            m_shads->yuv(false);
             glBindTexture(GL_TEXTURE_2D, m_text->glID());
             glColor4ub(255, 255, 255, 255);
 

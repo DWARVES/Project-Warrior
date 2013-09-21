@@ -390,7 +390,7 @@ namespace graphics
         if(m_fs.existsEntity(name))
             return false;
 
-        internal::Font* font = new internal::Font;
+        internal::Font* font = new internal::Font(&m_shads);
         if(!font->load(path, "ABCDEFGHIJKLMNOPQRSTUVWXYZ! ")) { /* FIXME choose the right letters to put there */
             delete font;
             return false;
@@ -592,7 +592,8 @@ namespace graphics
         ori.x -= text->hotpoint().x;
         ori.y -= text->hotpoint().y;
 
-        glEnable(GL_TEXTURE_2D);
+        m_shads.text(true);
+        m_shads.yuv(false);
         glBindTexture(GL_TEXTURE_2D, text->glID());
 
         glColor4ub(255, 255, 255, 255);
@@ -608,7 +609,9 @@ namespace graphics
     {
         if(width >= 0.0f)
             glPointSize(width);
+        m_shads.text(false);
 
+        m_shads.yuv(false);
         glBegin(GL_POINTS);
         glColor4ub(col.r, col.g, col.b, col.a);
         glVertex2f(point.x, point.y);
@@ -622,7 +625,8 @@ namespace graphics
         if(width >= 0)
             glLineWidth(width);
 
-        glDisable(GL_TEXTURE_2D);
+        m_shads.text(false);
+        m_shads.yuv(false);
         glBegin(GL_LINES);
         glColor4ub(col.r, col.g, col.b, col.a);
         glVertex2f(line.p1.x, line.p1.y);
@@ -640,9 +644,10 @@ namespace graphics
         }
 
         internal::Texture* t = m_fs.getEntityValue(text)->stored.text;
-        glEnable(GL_TEXTURE_2D);
+        m_shads.text(true);
         glBindTexture(GL_TEXTURE_2D, t->glID());
         glColor4ub(255, 255, 255, 255);
+        m_shads.yuv(false);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.0f,   0.0f);    glVertex2f(0.0f,       0.0f);
@@ -654,7 +659,8 @@ namespace graphics
 
     void Graphics::draw(const geometry::AABB& aabb, const Color& col)
     {
-        glDisable(GL_TEXTURE_2D);
+        m_shads.text(false);
+        m_shads.yuv(false);
         glBegin(GL_QUADS);
         glColor4ub(col.r, col.g, col.b, col.a);
         glVertex2f(0.0f,       0.0f);
@@ -672,9 +678,10 @@ namespace graphics
         }
 
         internal::Texture* t = m_fs.getEntityValue(text)->stored.text;
-        glEnable(GL_TEXTURE_2D);
+        m_shads.text(true);
         glBindTexture(GL_TEXTURE_2D, t->glID());
         glColor4ub(255, 255, 255, 255);
+        m_shads.yuv(false);
 
         float lx = std::cos(0.0f) * circle.radius;
         float ly = std::sin(0.0f) * circle.radius;
@@ -706,8 +713,9 @@ namespace graphics
 
     void Graphics::draw(const geometry::Circle& circle, const Color& col)
     {
-        glDisable(GL_TEXTURE_2D);
+        m_shads.text(false);
         glColor4ub(col.r, col.g, col.b, col.a);
+        m_shads.yuv(false);
         float lx = std::cos(0.0f) * circle.radius;
         float ly = std::sin(0.0f) * circle.radius;
 
@@ -736,9 +744,10 @@ namespace graphics
         }
 
         internal::Texture* t = m_fs.getEntityValue(text)->stored.text;
-        glEnable(GL_TEXTURE_2D);
+        m_shads.text(true);
         glBindTexture(GL_TEXTURE_2D, t->glID());
         glColor4ub(255, 255, 255, 255);
+        m_shads.yuv(false);
 
         float minx, maxx, miny, maxy;
         for(size_t i = 0; i < poly.points.size(); ++i) {
@@ -767,7 +776,8 @@ namespace graphics
     void Graphics::draw(const geometry::Polygon& poly, const Color& col)
     {
         /* FIXME handle concaves polygons */
-        glDisable(GL_TEXTURE_2D);
+        m_shads.text(false);
+        m_shads.yuv(false);
         glBegin(GL_POLYGON);
         glColor4ub(col.r, col.g, col.b, col.a);
         for(size_t i = 0; i < poly.points.size(); ++i)
@@ -795,6 +805,7 @@ namespace graphics
 
         internal::Movie* m = m_fs.getEntityValue(movie)->stored.movie;
         bool ret = m->updateFrame();
+        m_shads.yuv(true);
         m->displayFrame(rect);
         return ret;
     }
@@ -829,7 +840,7 @@ namespace graphics
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        m_shads.enable();
+        m_shads.enable(true);
     }
 
     void Graphics::endDraw()

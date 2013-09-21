@@ -10,12 +10,25 @@ namespace graphics
         /***************************
          *      Shaders src        *
          ***************************/
-        static const char* fragmentSrc = "void main(void) {\n"
-            "gl_FragColor = gl_Color;\n"
+        static const char* fragmentSrc =
+            "uniform sampler2D tex;\n"
+            "uniform float texture;\n"
+            "uniform float yuv;\n"
+            "void main(void) {\n"
+            "    vec4 color;\n"
+            "    if(texture > 0.0f) color = texture2D(tex, gl_TexCoord[0].st);\n"
+            "    else color = gl_Color;\n"
+            "    if(yuv > 0.0f) color.r = color.r;\n"
+            "    gl_FragColor = color;\n"
             "}";
 
-        static const char* vertexSrc = "void main(void) {\n"
-            "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+        static const char* vertexSrc =
+            "uniform float texture;\n"
+            "void main(void) {\n"
+            "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+            "    gl_FrontColor = gl_Color;\n"
+            //"    if(texture > 0.0f) gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;\n"
+            "    if(texture > 0.0f) gl_TexCoord[0] = gl_MultiTexCoord0;\n"
             "}";
 
         /***************************
@@ -23,7 +36,8 @@ namespace graphics
          ***************************/
 
         Shaders::Shaders(Extensions* exts)
-            : m_exts(exts), m_vertex(0), m_fragment(0), m_program(0)
+            : m_exts(exts), m_vertex(0), m_fragment(0), m_program(0),
+            m_yuv(-1), m_text(-1)
         {}
 
         Shaders::~Shaders()
@@ -96,7 +110,7 @@ namespace graphics
 
             /* Creating the fragment shader */
             m_fragment = glCreateShader(GL_FRAGMENT_SHADER);
-            if(glIsShader(m_vertex) != GL_TRUE) {
+            if(glIsShader(m_fragment) != GL_TRUE) {
                 core::logger::logm("Couldn't create fragment shader.", core::logger::WARNING);
                 return false;
             }
@@ -119,8 +133,8 @@ namespace graphics
             }
 
             /* Attaching the shaders to the program */
-            glAttachShader(m_vertex, m_program);
-            glAttachShader(m_fragment, m_program);
+            glAttachShader(m_program, m_vertex);
+            glAttachShader(m_program, m_fragment);
 
             /* Linking the program */
             glLinkProgram(m_program);
@@ -140,16 +154,58 @@ namespace graphics
                 }
                 return false;
             }
+            glUseProgram(m_program);
+
+            /* Getting the uniforms */
+            if(!loadUniform(&m_yuv, "yuv")) return false;
+            yuv(false);
+            if(!loadUniform(&m_text, "texture")) return false;
+
+            /* Preparing the texture */
+            GLint tex = -1;
+            if(!loadUniform(&tex, "tex")) return false;
+            glUniform1i(tex, 0);
 
             return true;
         }
-                
+
+        bool Shaders::loadUniform(GLint* id, const char* name)
+        {
+            *id = glGetUniformLocation(m_program, name);
+            if(*id < 0) {
+                std::ostringstream oss;
+                oss << "Couldn't get \"" << name << "\" uniform from shader program : \"" << gluErrorString(glGetError()) << "\".";
+                core::logger::logm(oss.str(), core::logger::WARNING);
+                return false;
+            }
+            else
+                return true;
+        }
+
         void Shaders::enable(bool e)
         {
             if(e)
                 glUseProgram(m_program);
             else
                 glUseProgram(0);
+        }
+
+        void Shaders::yuv(bool y)
+        {
+            glUseProgram(m_program);
+            if(y)
+                glUniform1f(m_yuv, 1.0f);
+            else
+                glUniform1f(m_yuv, -1.0f);
+        }
+
+        void Shaders::text(bool t)
+        {
+            glUseProgram(m_program);
+            if(t)
+                glUniform1f(m_text, 1.0f);
+            else
+                glUniform1f(m_text, -1.0f);
         }
     }
 }
