@@ -13,13 +13,15 @@ namespace physics
             {
                 public:
                     constexpr static float 
-                        Lightweight = 0.9f,
+                        Lightweight = 0.85f,
                         Medium = 1.0f,
-                        Heavy = 1.1f;
+                        Heavy = 1.15f;
             };
 
         public:
             Character(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& size, float weight);
+
+            void jump(float vel);
     };
 }
 

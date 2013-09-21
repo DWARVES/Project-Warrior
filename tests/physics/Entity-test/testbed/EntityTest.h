@@ -69,9 +69,9 @@ class EntityTest : public Test
             switch(key)
             {
                 case 'a':
-                    square1->applyLinearImpulse(0, 200);
-                    square2->applyLinearImpulse(0, 200);
-                    square3->applyLinearImpulse(0, 200);
+                    square1->jump(25);
+                    square2->jump(25);
+                    square3->jump(25);
                     break;
                 case 'e':
                     polygon->applyAngularImpulse(10);
