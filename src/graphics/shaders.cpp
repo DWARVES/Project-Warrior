@@ -18,7 +18,15 @@ namespace graphics
             "    vec4 color;\n"
             "    if(texture > 0.0f) color = texture2D(tex, gl_TexCoord[0].st);\n"
             "    else color = gl_Color;\n"
-            "    if(yuv > 0.0f) color.r = color.r;\n"
+            /* YUV to RGB convertion */
+            "    if(yuv > 0.0) {\n"
+            "        mat4 to;\n"
+            "        to[0][0]=1.0; to[1][0]=0.0;      to[2][0]=1.13983;  to[3][0]=0.0;\n"
+            "        to[0][1]=1.0; to[1][1]=-0.39465; to[2][1]=-0.58060; to[3][1]=0.0;\n"
+            "        to[0][2]=1.0; to[1][2]=2.03211;  to[2][2]=0.0;      to[3][2]=0.0;\n"
+            "        to[0][3]=0.0; to[1][3]=0.0;      to[2][3]=0.0;      to[3][3]=1.0;\n"
+            "        color = to * color;\n"
+            "    }\n"
             "    gl_FragColor = color;\n"
             "}";
 
@@ -27,7 +35,6 @@ namespace graphics
             "void main(void) {\n"
             "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
             "    gl_FrontColor = gl_Color;\n"
-            //"    if(texture > 0.0f) gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;\n"
             "    if(texture > 0.0f) gl_TexCoord[0] = gl_MultiTexCoord0;\n"
             "}";
 
