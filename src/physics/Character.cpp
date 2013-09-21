@@ -3,6 +3,8 @@
 
 namespace physics
 {
-    Character::Character(b2World* world, const geometry::Point& position, const geometry::AABB& aabb, float gravityScale) : Entity(world, position, b2_dynamicBody, Entity::Type::Character, ~(Entity::Type::Platform), gravityScale, true)
-    {}
+    Character::Character(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& size, float weight) : Entity(name, world, position, b2_dynamicBody, Entity::Type::Character, ~(Entity::Type::Platform), weight, true)
+    {
+        createFixture("body", size, weight, 1);
+    }
 }

@@ -7,6 +7,7 @@ set(lib libphysics)
 add_library(${lib}
     World.cpp               World.hpp
     Entity.cpp              Entity.hpp
+    Character.cpp           Character.hpp
     unit_conversions.cpp    unit_conversions.hpp
 	)
 

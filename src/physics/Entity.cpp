@@ -120,24 +120,24 @@ namespace physics
         return fixtureDef;
     }
 
-    void Entity::applyForce(const b2Vec2& force)
+    void Entity::applyForce(float forceX, float forceY)
     {
-        m_body->ApplyForce(force, m_body->GetWorldCenter());
+        m_body->ApplyForce(b2Vec2(forceX, forceY), m_body->GetWorldCenter());
     }
 
-    void Entity::applyForce(const b2Vec2& force, const geometry::Point& point)
+    void Entity::applyForce(float forceX, float forceY, const geometry::Point& point)
     {
-        m_body->ApplyForce(force, b2Vec2(point.x, point.y));
+        m_body->ApplyForce(b2Vec2(forceX, forceY), b2Vec2(point.x, point.y));
     }
 
-    void Entity::applyLinearImpulse(const b2Vec2& force)
+    void Entity::applyLinearImpulse(float forceX, float forceY)
     {
-        m_body->ApplyLinearImpulse(force, m_body->GetWorldCenter());
+        m_body->ApplyLinearImpulse(b2Vec2(forceX, forceY), m_body->GetWorldCenter());
     }
 
-    void Entity::applyLinearImpulse(const b2Vec2& force, const geometry::Point& point)
+    void Entity::applyLinearImpulse(float forceX, float forceY, const geometry::Point& point)
     {
-        m_body->ApplyLinearImpulse(force, b2Vec2(point.x, point.y));
+        m_body->ApplyLinearImpulse(b2Vec2(forceX, forceY), b2Vec2(point.x, point.y));
     }
 
     void Entity::applyTorque(float force)
@@ -148,5 +148,20 @@ namespace physics
     void Entity::applyAngularImpulse(float force)
     {
         m_body->ApplyAngularImpulse(force);
+    }
+
+    void Entity::setXLinearVelocity(float velX)
+    {
+        m_body->SetLinearVelocity(b2Vec2(velX, m_body->GetLinearVelocity().y));
+    }
+
+    void Entity::setYLinearVelocity(float velY)
+    {
+        m_body->SetLinearVelocity(b2Vec2(m_body->GetLinearVelocity().x, velY));
+    }
+
+    void Entity::setLinearVelocity(float velX, float velY)
+    {
+        m_body->SetLinearVelocity(b2Vec2(velX, velY));
     }
 }
