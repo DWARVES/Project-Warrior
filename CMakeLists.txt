@@ -38,6 +38,8 @@ include_directories(${GLEW_INCLUDE_DIR})
 include(FindFFMPEG)
 find_package(FFMPEG REQUIRED)
 include_directories(${FFMPEG_INCLUDE_DIR})
+# FIXME improve swscale detection
+set(FFMPEG_LIBRARIES "${FFMPEG_LIBRARIES};/usr/lib/libswscale.so")
 
 # Including Lua
 include(FindLua)
