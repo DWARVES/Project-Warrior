@@ -9,6 +9,7 @@ extern "C" {
 #include <libavformat/avformat.h>
 }
 #include "geometry/aabb.hpp"
+#include "graphics/shaders.hpp"
 #include "graphics/texture.hpp"
 
 namespace graphics
@@ -18,7 +19,9 @@ namespace graphics
         class Movie
         {
             public:
-                Movie();
+                Movie(Shaders* s);
+                Movie() = delete;
+                Movie(const Movie&) = delete;
                 ~Movie();
                 bool load(const std::string& path);
 
@@ -50,6 +53,7 @@ namespace graphics
                 float m_speed;
                 Uint32 m_ltime;
                 Uint32 m_stime;
+                Shaders* m_s;
 
                 bool m_begin;
                 AVPacket m_packet;
@@ -62,6 +66,7 @@ namespace graphics
                 int m_video;
                 
                 Texture m_text;
+                AVPicture m_rgb;
         };
     }
 }

@@ -4,6 +4,7 @@
 #include "core/logger.hpp"
 extern "C" {
 #include <libavutil/avutil.h>
+#include <libswscale/swscale.h>
 }
 #include <sstream>
 #include <algorithm>
@@ -12,16 +13,70 @@ namespace graphics
 {
     namespace internal
     {
-        Movie::Movie()
-            : m_playing(false), m_speed(1.0f), m_ltime(0), m_stime(0),
+        void SaveFrame(AVPicture *pFrame, int width, int height)
+        {
+            static int iFrame = 0;
+            FILE *pFile;
+            char szFilename[32];
+            int  y;
+
+            // Open file
+            sprintf(szFilename, "frames/frame%d.ppm", iFrame);
+            pFile=fopen(szFilename, "wb");
+            if(pFile==NULL)
+                return;
+
+            // Write header
+            fprintf(pFile, "P6\n%d %d\n255\n", width, height);
+
+            // Write pixel data
+            for(y=0; y<height; y++)
+                fwrite(pFrame->data[0]+y*pFrame->linesize[0], 1, width*3, pFile);
+
+            // Close file
+            fclose(pFile);
+            ++iFrame;
+        }
+
+        void saveTexture(GLuint id) {
+            static int iFrame = 0;
+            /* Get the texture pixmap */
+            int width, height;
+            glBindTexture(GL_TEXTURE_2D, id);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &height);
+            char* buffer = new char[width * height * 3];
+            glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_BYTE, buffer);
+            
+            /* Convert it to an SDL picture */
+            SDL_Surface* surf = SDL_CreateRGBSurfaceFrom(buffer, width, height, 24, width * 3, 0, 0, 0, 0);
+            if(surf == NULL) {
+                core::logger::logm("Couldn't save the opengl texture.", core::logger::MSG);
+                return;
+            }
+
+            /* Save it */
+            char file[32];
+            sprintf(file, "texts/frame%d.bmp", iFrame);
+            SDL_SaveBMP(surf, file);
+            delete[] buffer;
+            ++iFrame;
+        }
+
+        Movie::Movie(Shaders* s)
+            : m_playing(false), m_speed(1.0f), m_ltime(0), m_stime(0), m_s(s),
             m_begin(true), m_sbytes(0),
             m_ctx(NULL), m_codecCtx(NULL), m_codec(NULL), m_frame(NULL), m_video(-1)
-        {}
+        {
+            m_rgb.data[0] = NULL;
+        }
 
         Movie::~Movie()
         {
             if(m_frame != NULL)
                 av_free(m_frame);
+            if(m_rgb.data[0] != NULL)
+                avpicture_free(&m_rgb);
             if(m_codecCtx != NULL)
                 avcodec_close(m_codecCtx);
             if(m_ctx != NULL)
@@ -80,8 +135,12 @@ namespace graphics
                 return false;
             }
 
-            /* Allocate the frame */
+            /* Allocate the frames */
             m_frame = avcodec_alloc_frame();
+            if(avpicture_alloc(&m_rgb, PIX_FMT_RGB24, 256, 256) < 0) {
+                core::logger::logm("Couldn't generate rgb AVPicture for movie playing.", core::logger::WARNING);
+                return false;
+            }
 
             /* Create the GL texture */
             GLuint text;
@@ -93,13 +152,6 @@ namespace graphics
 
         void Movie::displayFrame(const geometry::AABB& rect, bool r) const
         {
-            /* Sending it to openGL texture */
-            glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, m_text.glID());
-            /* FIXME convert YUV to RGB */
-            glTexImage2D(GL_TEXTURE_2D, 0, 3, m_codecCtx->width, m_codecCtx->height, 0,
-                    GL_RGB, GL_UNSIGNED_BYTE, m_frame->data);
-
             /* Compute the size */
             geometry::AABB applied;
             geometry::Point dec;
@@ -123,7 +175,11 @@ namespace graphics
             }
 
             /* Draw the frame */
+            m_s->yuv(false);
+            m_s->text(true);
+            glBindTexture(GL_TEXTURE_2D, m_text.glID());
             glTranslatef(dec.x, dec.y, 0.0f);
+            glColor3ub(255, 255, 255);
             glBegin(GL_QUADS);
             glTexCoord2f(0.0f,0.0f); glVertex2f(0.0f,          0.0f);
             glTexCoord2f(1.0f,0.0f); glVertex2f(applied.width, 0.0f);
@@ -156,7 +212,7 @@ namespace graphics
                     m_sbytes -= bytesDecoded;
 
                     if(frameFinished)
-                        return true;
+                        goto to_rgb;
                 }
 
                 /* Get the next packet, skipping all packets that are not for this stream */
@@ -180,7 +236,35 @@ loop_exit:
                 m_packet.data = NULL;
             }
 
-            return frameFinished != 0;
+            if(frameFinished == 0) {
+                core::logger::logm("Couldn't decode the next video frame.", core::logger::WARNING);
+                return false;
+            }
+
+to_rgb:
+            /* Converting the frame to rgb */
+            /* FIXME must cvtCtx be free'd ? */
+            /* FIXME find the right type for cvtCtx */
+            auto cvtCtx = sws_getContext(m_codecCtx->width, m_codecCtx->height, m_codecCtx->pix_fmt, 
+                    256, 256, PIX_FMT_RGB24, SWS_BICUBIC,
+                    NULL, NULL, NULL);
+            if(cvtCtx == NULL) {
+                core::logger::logm("Couldn't convert the frame, undefined graphic behaviour may happen.", core::logger::WARNING);
+                /* Not considered as a fatal error (jumping one frame shouldn't impact too much, so return true */
+                return true;
+            }
+            sws_scale(cvtCtx, (const uint8_t* const*)m_frame->data, m_frame->linesize, 0, m_codecCtx->height,
+                    m_rgb.data, m_rgb.linesize);
+            SaveFrame(&m_rgb, 256, 256);
+
+            /* Sending it to openGL texture */
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, m_text.glID());
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0,
+                    GL_RGB, GL_UNSIGNED_BYTE, m_frame->data[0]);
+            saveTexture(m_text.glID());
+
+            return true;
         }
 
         bool Movie::updateFrame()
@@ -221,7 +305,11 @@ loop_exit:
 
         unsigned int Movie::frameTime() const
         {
-            return static_cast<unsigned int>(1000.0f * (float)m_codecCtx->time_base.num / (float)m_codecCtx->time_base.den);
+            unsigned int ret = static_cast<unsigned int>(1000.0f * (float)m_codecCtx->time_base.num / (float)m_codecCtx->time_base.den);
+            if(ret > 5)
+                return ret;
+            else /* If the frametime is lower than five, set it to 30fps = 33frametime */
+                return 33;
         }
 
         float Movie::ratio() const

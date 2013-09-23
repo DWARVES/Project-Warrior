@@ -363,7 +363,7 @@ namespace graphics
         if(m_fs.existsEntity(name))
             return false;
 
-        internal::Movie* mov = new internal::Movie;
+        internal::Movie* mov = new internal::Movie(&m_shads);
         if(!mov->load(path)) {
             delete mov;
             return false;
@@ -805,7 +805,6 @@ namespace graphics
 
         internal::Movie* m = m_fs.getEntityValue(movie)->stored.movie;
         bool ret = m->updateFrame();
-        m_shads.yuv(true);
         m->displayFrame(rect);
         return ret;
     }
