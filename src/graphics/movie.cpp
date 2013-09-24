@@ -4,7 +4,6 @@
 #include "core/logger.hpp"
 extern "C" {
 #include <libavutil/avutil.h>
-#include <libswscale/swscale.h>
 }
 #include <sstream>
 #include <algorithm>
@@ -66,7 +65,8 @@ namespace graphics
         Movie::Movie(Shaders* s)
             : m_playing(false), m_speed(1.0f), m_ltime(0), m_stime(0), m_s(s),
             m_begin(true), m_sbytes(0),
-            m_ctx(NULL), m_codecCtx(NULL), m_codec(NULL), m_frame(NULL), m_video(-1)
+            m_ctx(NULL), m_codecCtx(NULL), m_codec(NULL), m_frame(NULL), m_video(-1),
+            m_swsCtx(NULL), m_fplay(true)
         {
             m_rgb.data[0] = NULL;
         }
@@ -81,6 +81,8 @@ namespace graphics
                 avcodec_close(m_codecCtx);
             if(m_ctx != NULL)
                 avformat_close_input(&m_ctx);
+            if(m_swsCtx != NULL)
+                sws_freeContext(m_swsCtx);
         }
 
         bool Movie::load(const std::string& path)
@@ -146,6 +148,10 @@ namespace graphics
             GLuint text;
             glGenTextures(1, &text);
             m_text.loadgl(text, m_codecCtx->width, m_codecCtx->height);
+            glBindTexture(GL_TEXTURE_2D, text);
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
             return true;
         }
@@ -179,7 +185,6 @@ namespace graphics
             m_s->text(true);
             glBindTexture(GL_TEXTURE_2D, m_text.glID());
             glTranslatef(dec.x, dec.y, 0.0f);
-            glColor3ub(255, 255, 255);
             glBegin(GL_QUADS);
             glTexCoord2f(0.0f,0.0f); glVertex2f(0.0f,          0.0f);
             glTexCoord2f(1.0f,0.0f); glVertex2f(applied.width, 0.0f);
@@ -243,26 +248,24 @@ loop_exit:
 
 to_rgb:
             /* Converting the frame to rgb */
-            /* FIXME must cvtCtx be free'd ? */
-            /* FIXME find the right type for cvtCtx */
-            auto cvtCtx = sws_getContext(m_codecCtx->width, m_codecCtx->height, m_codecCtx->pix_fmt, 
+            m_swsCtx = sws_getCachedContext(m_swsCtx, m_codecCtx->width, m_codecCtx->height, m_codecCtx->pix_fmt, 
                     256, 256, PIX_FMT_RGB24, SWS_BICUBIC,
                     NULL, NULL, NULL);
-            if(cvtCtx == NULL) {
+            if(m_swsCtx == NULL) {
                 core::logger::logm("Couldn't convert the frame, undefined graphic behaviour may happen.", core::logger::WARNING);
-                /* Not considered as a fatal error (jumping one frame shouldn't impact too much, so return true */
+                /* Not considered as a fatal error (jumping one frame shouldn't impact too much, so returns true */
                 return true;
             }
-            sws_scale(cvtCtx, (const uint8_t* const*)m_frame->data, m_frame->linesize, 0, m_codecCtx->height,
+            sws_scale(m_swsCtx, (const uint8_t* const*)m_frame->data, m_frame->linesize, 0, m_codecCtx->height,
                     m_rgb.data, m_rgb.linesize);
-            SaveFrame(&m_rgb, 256, 256);
+            // SaveFrame(&m_rgb, 256, 256);
 
             /* Sending it to openGL texture */
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, m_text.glID());
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0,
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 256, 256, 0,
                     GL_RGB, GL_UNSIGNED_BYTE, m_frame->data[0]);
-            saveTexture(m_text.glID());
+            // saveTexture(m_text.glID());
 
             return true;
         }

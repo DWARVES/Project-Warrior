@@ -80,7 +80,8 @@ int main()
     /* Background */
     geometry::AABB bgaabb(300.0f, 200.0f);
     graphics::Color bgc;
-    bgc.r = bgc.g = bgc.b = 127;
+    bgc.r = bgc.g = 127;
+    bgc.b = 255;
 
     while(cont) {
         while(SDL_PollEvent(&ev)) {
