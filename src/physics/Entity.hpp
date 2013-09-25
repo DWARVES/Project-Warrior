@@ -35,6 +35,7 @@ namespace physics
             Entity(const std::string& name, b2World* world, const geometry::Point& position, const b2BodyType& bodyType, uint16 type = Type::Default, uint16 collideWith = Type::All, float gravityScale = 1, bool fixedRotation = true);
 
             b2Fixture* getFixture(const std::string& name) const; // Returns a pointer to the fixture named "name" in the entity fixtures map
+            void setFixedRotation(bool fixedRotation);
             
             // Overloaded functions used to add a fixture to the entity's body depending on its geometric shape, returning a pointer the user can use to access it (can also be done later with getFixture())
             b2Fixture* createFixture(const std::string& name, const geometry::Line& line, float density, float friction, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith);

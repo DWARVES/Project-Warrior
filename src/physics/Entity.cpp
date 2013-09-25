@@ -30,6 +30,11 @@ namespace physics
         return m_fixtures.at(name);
     }
 
+    void Entity::setFixedRotation(bool fixedRotation)
+    {
+        m_body->SetFixedRotation(fixedRotation);
+    }
+
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::Line& line, float density, float friction, uint16 type, uint16 collideWith)
     {
         b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith);
