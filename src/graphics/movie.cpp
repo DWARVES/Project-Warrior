@@ -230,16 +230,17 @@ to_rgb:
         {
             if(m_begin) {
                 m_ltime = SDL_GetTicks();
-                m_stime = static_cast<Uint32>(m_speed * (float)frameTime());
+                m_stime = frameTime();
                 return nextFrame();
             }
 
             Uint32 etime = SDL_GetTicks() - m_ltime;
+            etime = static_cast<Uint32>((float)etime * m_speed);
             while(etime > m_stime) {
                 if(!nextFrame())
                     return false;
                 etime -= m_stime;
-                m_stime = static_cast<Uint32>(m_speed * (float)frameTime());
+                m_stime = frameTime();
             }
             m_stime -= etime;
             m_ltime = SDL_GetTicks();
