@@ -16,9 +16,10 @@ namespace graphics
             : m_playing(false), m_speed(1.0f), m_ltime(0), m_stime(0), m_s(s),
             m_begin(true), m_sbytes(0),
             m_ctx(NULL), m_codecCtx(NULL), m_codec(NULL), m_frame(NULL), m_video(-1),
-            m_swsCtx(NULL)
+            m_swsCtx(NULL), m_first(true)
         {
             m_rgb.data[0] = NULL;
+            m_packet.data = NULL;
         }
 
         Movie::~Movie()
@@ -33,6 +34,14 @@ namespace graphics
                 avformat_close_input(&m_ctx);
             if(m_swsCtx != NULL)
                 sws_freeContext(m_swsCtx);
+            clean();
+        }
+                
+        void Movie::clean()
+        {
+            if(m_packet.data != NULL)
+                av_free_packet(&m_packet);
+            m_packet.data = NULL;
         }
 
         bool Movie::load(const std::string& path)
@@ -148,8 +157,10 @@ namespace graphics
             int bytesDecoded;
             int frameFinished;
 
-            if(m_begin)
-                m_packet.data = NULL;
+            if(m_begin) {
+                clean();
+                m_begin = false;
+            }
 
             /* Decode packets until we have decoded a complete frame */
             while(true) {
@@ -210,9 +221,10 @@ to_rgb:
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, m_text.glID());
 
-            if(m_begin) {
+            if(m_first) {
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 256, 256, 0,
                         GL_RGB, GL_UNSIGNED_BYTE, m_frame->data[0]);
+                m_first = false;
             }
 
             for(GLint y = 0; y < 256; ++y) {
@@ -220,7 +232,6 @@ to_rgb:
                         GL_RGB, GL_UNSIGNED_BYTE, m_rgb.data[0] + y*m_rgb.linesize[0]);
             }
 
-            m_begin = false;
 
             return true;
         }
@@ -249,7 +260,7 @@ to_rgb:
         void Movie::replay()
         {
             m_begin = true;
-            /* TODO */
+            av_seek_frame(m_ctx, m_video, 0, AVSEEK_FLAG_ANY);
         }
 
         void Movie::speed(float fact)
