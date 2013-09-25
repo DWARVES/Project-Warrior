@@ -12,6 +12,9 @@ namespace graphics
 {
     namespace internal
     {
+        const int movieWidth = 512;
+        const int movieHeight = 256;
+
         Movie::Movie(Shaders* s)
             : m_playing(false), m_speed(1.0f), m_ltime(0), m_stime(0), m_s(s),
             m_begin(true), m_sbytes(0),
@@ -98,7 +101,7 @@ namespace graphics
 
             /* Allocate the frames */
             m_frame = avcodec_alloc_frame();
-            if(avpicture_alloc(&m_rgb, PIX_FMT_RGB24, 256, 256) < 0) {
+            if(avpicture_alloc(&m_rgb, PIX_FMT_RGB24, movieWidth, movieHeight) < 0) {
                 core::logger::logm("Couldn't generate rgb AVPicture for movie playing.", core::logger::WARNING);
                 return false;
             }
@@ -207,7 +210,7 @@ loop_exit:
 to_rgb:
             /* Converting the frame to rgb */
             m_swsCtx = sws_getCachedContext(m_swsCtx, m_codecCtx->width, m_codecCtx->height, m_codecCtx->pix_fmt, 
-                    256, 256, PIX_FMT_RGB24, SWS_BICUBIC,
+                    movieWidth, movieHeight, PIX_FMT_RGB24, SWS_BICUBIC,
                     NULL, NULL, NULL);
             if(m_swsCtx == NULL) {
                 core::logger::logm("Couldn't convert the frame, undefined graphic behaviour may happen.", core::logger::WARNING);
@@ -222,13 +225,13 @@ to_rgb:
             glBindTexture(GL_TEXTURE_2D, m_text.glID());
 
             if(m_first) {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 256, 256, 0,
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, movieWidth, movieHeight, 0,
                         GL_RGB, GL_UNSIGNED_BYTE, m_frame->data[0]);
                 m_first = false;
             }
 
-            for(GLint y = 0; y < 256; ++y) {
-                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, y, 256, 1,
+            for(GLint y = 0; y < movieHeight; ++y) {
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, y, movieWidth, 1,
                         GL_RGB, GL_UNSIGNED_BYTE, m_rgb.data[0] + y*m_rgb.linesize[0]);
             }
 
