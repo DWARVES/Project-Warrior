@@ -131,7 +131,6 @@ namespace graphics
             }
 
             /* Draw the frame */
-            m_s->yuv(false);
             m_s->text(true);
             glBindTexture(GL_TEXTURE_2D, m_text.glID());
             glTranslatef(dec.x, dec.y, 0.0f);

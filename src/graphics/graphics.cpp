@@ -629,7 +629,6 @@ namespace graphics
         ori.y -= text->hotpoint().y;
 
         m_shads.text(true);
-        m_shads.yuv(false);
         glBindTexture(GL_TEXTURE_2D, text->glID());
 
         glColor4ub(255, 255, 255, 255);
@@ -647,7 +646,6 @@ namespace graphics
             glPointSize(width);
         m_shads.text(false);
 
-        m_shads.yuv(false);
         glBegin(GL_POINTS);
         glColor4ub(col.r, col.g, col.b, col.a);
         glVertex2f(point.x, point.y);
@@ -662,7 +660,6 @@ namespace graphics
             glLineWidth(width);
 
         m_shads.text(false);
-        m_shads.yuv(false);
         glBegin(GL_LINES);
         glColor4ub(col.r, col.g, col.b, col.a);
         glVertex2f(line.p1.x, line.p1.y);
@@ -683,7 +680,6 @@ namespace graphics
         m_shads.text(true);
         glBindTexture(GL_TEXTURE_2D, t->glID());
         glColor4ub(255, 255, 255, 255);
-        m_shads.yuv(false);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.0f,   0.0f);    glVertex2f(0.0f,       0.0f);
@@ -696,7 +692,6 @@ namespace graphics
     void Graphics::draw(const geometry::AABB& aabb, const Color& col)
     {
         m_shads.text(false);
-        m_shads.yuv(false);
         glBegin(GL_QUADS);
         glColor4ub(col.r, col.g, col.b, col.a);
         glVertex2f(0.0f,       0.0f);
@@ -717,7 +712,6 @@ namespace graphics
         m_shads.text(true);
         glBindTexture(GL_TEXTURE_2D, t->glID());
         glColor4ub(255, 255, 255, 255);
-        m_shads.yuv(false);
 
         float lx = std::cos(0.0f) * circle.radius;
         float ly = std::sin(0.0f) * circle.radius;
@@ -751,7 +745,6 @@ namespace graphics
     {
         m_shads.text(false);
         glColor4ub(col.r, col.g, col.b, col.a);
-        m_shads.yuv(false);
         float lx = std::cos(0.0f) * circle.radius;
         float ly = std::sin(0.0f) * circle.radius;
 
@@ -783,7 +776,6 @@ namespace graphics
         m_shads.text(true);
         glBindTexture(GL_TEXTURE_2D, t->glID());
         glColor4ub(255, 255, 255, 255);
-        m_shads.yuv(false);
 
         float minx, maxx, miny, maxy;
         for(size_t i = 0; i < poly.points.size(); ++i) {
@@ -813,7 +805,6 @@ namespace graphics
     {
         /* FIXME handle concaves polygons */
         m_shads.text(false);
-        m_shads.yuv(false);
         glBegin(GL_POLYGON);
         glColor4ub(col.r, col.g, col.b, col.a);
         for(size_t i = 0; i < poly.points.size(); ++i)

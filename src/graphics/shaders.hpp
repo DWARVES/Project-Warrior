@@ -23,8 +23,6 @@ namespace graphics
                 bool load();
                 /* Enable/disable the shader for the rendering */
                 void enable(bool e = true);
-                /* Must render as yuv ? */
-                void yuv(bool y = true);
                 /* Use texture in rendering ? */
                 void text(bool t = true);
 
@@ -35,7 +33,6 @@ namespace graphics
                 GLuint m_program;
 
                 /* Uniforms */
-                GLint m_yuv;
                 GLint m_text;
 
                 /* Internal methods */

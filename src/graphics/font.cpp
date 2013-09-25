@@ -85,7 +85,6 @@ namespace graphics
         void Font::draw(const std::string& str, const geometry::Point& pos, float size, bool smooth)
         {
             m_shads->text(true);
-            m_shads->yuv(false);
             glBindTexture(GL_TEXTURE_2D, m_text->glID());
             glColor4ub(255, 255, 255, 255);
 

@@ -13,26 +13,10 @@ namespace graphics
         static const char* fragmentSrc =
             "uniform sampler2D tex;\n"
             "uniform float texture;\n"
-            "uniform float yuv;\n"
             "void main(void) {\n"
             "    vec4 color;\n"
             "    if(texture > 0.0f) color = texture2D(tex, gl_TexCoord[0].st);\n"
             "    else color = gl_Color;\n"
-            /* YUV to RGB convertion */
-            "    if(yuv > 0.0) {\n"
-            "        color.r = color.r * 255.0;\n"
-            "        color.g = color.g * 255.0;\n"
-            "        color.b = color.b * 255.0;\n"
-            "        mat4 to;\n"
-            "        to[0][0]=1.0; to[1][0]=0.0;      to[2][0]=1.13983;  to[3][0]=0.0;\n"
-            "        to[0][1]=1.0; to[1][1]=-0.39465; to[2][1]=-0.58060; to[3][1]=0.0;\n"
-            "        to[0][2]=1.0; to[1][2]=2.03211;  to[2][2]=0.0;      to[3][2]=0.0;\n"
-            "        to[0][3]=0.0; to[1][3]=0.0;      to[2][3]=0.0;      to[3][3]=1.0;\n"
-            "        color = to * color;\n"
-            "        color.r = color.r / 255.0;\n"
-            "        color.g = color.g / 255.0;\n"
-            "        color.b = color.b / 255.0;\n"
-            "    }\n"
             "    gl_FragColor = color;\n"
             "}";
 
@@ -50,7 +34,7 @@ namespace graphics
 
         Shaders::Shaders(Extensions* exts)
             : m_exts(exts), m_vertex(0), m_fragment(0), m_program(0),
-            m_yuv(-1), m_text(-1)
+            m_text(-1)
         {}
 
         Shaders::~Shaders()
@@ -170,8 +154,6 @@ namespace graphics
             glUseProgram(m_program);
 
             /* Getting the uniforms */
-            if(!loadUniform(&m_yuv, "yuv")) return false;
-            yuv(false);
             if(!loadUniform(&m_text, "texture")) return false;
 
             /* Preparing the texture */
@@ -201,15 +183,6 @@ namespace graphics
                 glUseProgram(m_program);
             else
                 glUseProgram(0);
-        }
-
-        void Shaders::yuv(bool y)
-        {
-            glUseProgram(m_program);
-            if(y)
-                glUniform1f(m_yuv, 1.0f);
-            else
-                glUniform1f(m_yuv, -1.0f);
         }
 
         void Shaders::text(bool t)
