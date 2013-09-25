@@ -53,12 +53,6 @@ int main()
     if(!gfx->loadTextureFromText("text", "font", "HY EVERYBODY\nIT WORKS!", c, -1.0f, true))
         return 1;
     gfx->enterNamespace("/");
-    gfx->createNamespace("videos");
-    gfx->enterNamespace("videos");
-    if(!gfx->loadMovie("vid", "movie"))
-        return 1;
-    bool playing = true;
-    gfx->enterNamespace("/");
 
     /* Primitives */
     geometry::AABB aabb(60.0f, 60.0f);
@@ -113,12 +107,6 @@ int main()
 
         gfx->beginDraw();
         gfx->draw(bgaabb, bgc);
-        gfx->enterNamespace("/");
-        gfx->enterNamespace("videos");
-        if(playing) {
-            playing = gfx->play("vid", bgaabb);
-            if(!playing) std::cout << "The video ended ! Won't play again." << std::endl;
-        }
         gfx->enterNamespace("/");
         gfx->enterNamespace("textures");
         gfx->draw("HELLO WORLD!\nIT WORKS!", "font", 20.0f);
