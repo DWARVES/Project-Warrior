@@ -80,7 +80,7 @@ namespace graphics
             bool loadFont(const std::string& name, const std::string& path);
             /* Will create a texture in which the txt text is rendered with font
              * bgc is the color of the background, because trasparency is not handled
-             * If alpha is set, the bgc will be transparent (FIXME not handled yet)
+             * If alpha is set, the bgc will be transparent
              * precision precise the deviation allowed from bgc to still have alpha appliqued
              * pts is the heights in units of the rendered font, if it's negative, default height will be used
              */
@@ -99,6 +99,14 @@ namespace graphics
             int getTextureWidth(const std::string& name) const;
             int getTextureHeight(const std::string& name) const;
             bool setTextureHotpoint(const std::string& name, int x, int y);
+            
+            /*************************
+             *   Movies management   *
+             *************************/
+            /* Will return 0.0f if name does not design a video */
+            float getMovieSpeed(const std::string& name) const;
+            float setMovieSpeed(const std::string& name, float nspeed) const;
+            void rewindMovie(const std::string& name);
 
             /*************************
              *    Transformations    *
@@ -128,7 +136,7 @@ namespace graphics
             void draw(const geometry::Polygon& poly, const Color& col);
             void draw(const std::string& str, const std::string& font, float pts = -1.0f); /* Write a text with the selected font */
             /* Return false when the video ended */
-            bool play(const std::string& movie, const geometry::AABB& rect);
+            bool play(const std::string& movie, const geometry::AABB& rect, bool ratio = true);
             /* Set and get default width */
             float defaultWidth(float nval);
             float defaultWidth() const;

@@ -69,7 +69,6 @@ namespace graphics
                 Texture m_text;
                 AVPicture m_rgb;
                 SwsContext* m_swsCtx;
-                bool m_fplay;
         };
     }
 }

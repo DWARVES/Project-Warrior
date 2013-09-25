@@ -537,6 +537,42 @@ namespace graphics
     }
 
     /*************************
+     *   Movies management   *
+     *************************/
+    float Graphics::getMovieSpeed(const std::string& name) const
+    {
+        if(rctype(name) != MOVIE) {
+            core::logger::logm("Tryed to access to non-loaded video : " + name, core::logger::WARNING);
+            return 0.0f;
+        }
+        else
+            return m_fs.getEntityValue(name)->stored.movie->speed();
+    }
+
+    float Graphics::setMovieSpeed(const std::string& name, float nspeed) const
+    {
+        if(rctype(name) != MOVIE) {
+            core::logger::logm("Tryed to access to non-loaded video : " + name, core::logger::WARNING);
+            return 0.0f;
+        }
+        else {
+            internal::Movie* mov = m_fs.getEntityValue(name)->stored.movie;
+            mov->speed(nspeed);
+            return mov->speed();
+        }
+    }
+
+    void Graphics::rewindMovie(const std::string& name)
+    {
+        if(rctype(name) != MOVIE) {
+            core::logger::logm("Tryed to access to non-loaded video : " + name, core::logger::WARNING);
+            return;
+        }
+        else
+            m_fs.getEntityValue(name)->stored.movie->replay();
+    }
+
+    /*************************
      *    Transformations    *
      *************************/
     void Graphics::rotate(float angle)
@@ -795,8 +831,8 @@ namespace graphics
         internal::Font* f = m_fs.getEntityValue(font)->stored.font;
         f->draw(str, geometry::Point(0.0f, 0.0f), pts);
     }
-            
-    bool Graphics::play(const std::string& movie, const geometry::AABB& rect)
+
+    bool Graphics::play(const std::string& movie, const geometry::AABB& rect, bool ratio)
     {
         if(rctype(movie) != MOVIE) {
             core::logger::logm(std::string("Tried to play an unexistant movie : ") + movie, core::logger::WARNING);
@@ -805,7 +841,7 @@ namespace graphics
 
         internal::Movie* m = m_fs.getEntityValue(movie)->stored.movie;
         bool ret = m->updateFrame();
-        m->displayFrame(rect);
+        m->displayFrame(rect, ratio);
         return ret;
     }
 

@@ -12,61 +12,11 @@ namespace graphics
 {
     namespace internal
     {
-        void SaveFrame(AVPicture *pFrame, int width, int height)
-        {
-            static int iFrame = 0;
-            FILE *pFile;
-            char szFilename[32];
-            int  y;
-
-            // Open file
-            sprintf(szFilename, "frames/frame%d.ppm", iFrame);
-            pFile=fopen(szFilename, "wb");
-            if(pFile==NULL)
-                return;
-
-            // Write header
-            fprintf(pFile, "P6\n%d %d\n255\n", width, height);
-
-            // Write pixel data
-            for(y=0; y<height; y++)
-                fwrite(pFrame->data[0]+y*pFrame->linesize[0], 1, width*3, pFile);
-
-            // Close file
-            fclose(pFile);
-            ++iFrame;
-        }
-
-        void saveTexture(GLuint id) {
-            static int iFrame = 0;
-            /* Get the texture pixmap */
-            int width, height;
-            glBindTexture(GL_TEXTURE_2D, id);
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &height);
-            char* buffer = new char[width * height * 3];
-            glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_BYTE, buffer);
-            
-            /* Convert it to an SDL picture */
-            SDL_Surface* surf = SDL_CreateRGBSurfaceFrom(buffer, width, height, 24, width * 3, 0, 0, 0, 0);
-            if(surf == NULL) {
-                core::logger::logm("Couldn't save the opengl texture.", core::logger::MSG);
-                return;
-            }
-
-            /* Save it */
-            char file[32];
-            sprintf(file, "texts/frame%d.bmp", iFrame);
-            SDL_SaveBMP(surf, file);
-            delete[] buffer;
-            ++iFrame;
-        }
-
         Movie::Movie(Shaders* s)
             : m_playing(false), m_speed(1.0f), m_ltime(0), m_stime(0), m_s(s),
             m_begin(true), m_sbytes(0),
             m_ctx(NULL), m_codecCtx(NULL), m_codec(NULL), m_frame(NULL), m_video(-1),
-            m_swsCtx(NULL), m_fplay(true)
+            m_swsCtx(NULL)
         {
             m_rgb.data[0] = NULL;
         }
@@ -199,10 +149,8 @@ namespace graphics
             int bytesDecoded;
             int frameFinished;
 
-            if(m_begin) {
-                m_begin = false;
+            if(m_begin)
                 m_packet.data = NULL;
-            }
 
             /* Decode packets until we have decoded a complete frame */
             while(true) {
@@ -242,7 +190,7 @@ loop_exit:
             }
 
             if(frameFinished == 0) {
-                core::logger::logm("Couldn't decode the next video frame.", core::logger::WARNING);
+                core::logger::logm("Couldn't decode the next video frame, may be the end of the video.", core::logger::MSG);
                 return false;
             }
 
@@ -258,14 +206,22 @@ to_rgb:
             }
             sws_scale(m_swsCtx, (const uint8_t* const*)m_frame->data, m_frame->linesize, 0, m_codecCtx->height,
                     m_rgb.data, m_rgb.linesize);
-            // SaveFrame(&m_rgb, 256, 256);
 
             /* Sending it to openGL texture */
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, m_text.glID());
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 256, 256, 0,
-                    GL_RGB, GL_UNSIGNED_BYTE, m_frame->data[0]);
-            // saveTexture(m_text.glID());
+
+            if(m_begin) {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 256, 256, 0,
+                        GL_RGB, GL_UNSIGNED_BYTE, m_frame->data[0]);
+            }
+
+            for(GLint y = 0; y < 256; ++y) {
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, y, 256, 1,
+                        GL_RGB, GL_UNSIGNED_BYTE, m_rgb.data[0] + y*m_rgb.linesize[0]);
+            }
+
+            m_begin = false;
 
             return true;
         }
@@ -298,7 +254,8 @@ to_rgb:
 
         void Movie::speed(float fact)
         {
-            m_speed = fact;
+            if(fact > 0.1f)
+                m_speed = fact;
         }
 
         float Movie::speed() const
