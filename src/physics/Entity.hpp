@@ -35,7 +35,22 @@ namespace physics
             Entity(const std::string& name, b2World* world, const geometry::Point& position, const b2BodyType& bodyType, uint16 type = Type::Default, uint16 collideWith = Type::All, float gravityScale = 1, bool fixedRotation = true);
 
             b2Fixture* getFixture(const std::string& name) const; // Returns a pointer to the fixture named "name" in the entity fixtures map
-            void setFixedRotation(bool fixedRotation);
+            geometry::Point getPosition(); // Returns the current position of the entity
+
+            // Functions to get the entity linear velocity
+            float getXLinearVelocity();
+            float getYLinearVelocity();
+
+            float getAngularVelocity(); // Get angular velocity
+
+            // Functions to set the entity linear velocity
+            void setXLinearVelocity(float velX);
+            void setYLinearVelocity(float velY);
+            void setLinearVelocity(float velX, float velY);
+
+            void setAngularVelocity(float omega); // Set angular velocity
+
+            void setFixedRotation(bool fixedRotation); // Set fixedRotation either true or false
             
             // Overloaded functions used to add a fixture to the entity's body depending on its geometric shape, returning a pointer the user can use to access it (can also be done later with getFixture())
             b2Fixture* createFixture(const std::string& name, const geometry::Line& line, float density, float friction, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith);
@@ -52,11 +67,6 @@ namespace physics
 
             void applyTorque(float force); // Apply an angular force (torque) to the entity's body
             void applyAngularImpulse(float force); // Apply an angular impulse to the entity's body
-
-            // Functions to set the entity linear velocity
-            void setXLinearVelocity(float velX);
-            void setYLinearVelocity(float velY);
-            void setLinearVelocity(float velX, float velY);
 
         protected:
             b2FixtureDef* createBaseFixtureDef(const std::string& name, float density, float friction, uint16 type, uint16 collideWith) const; // Creates a base b2FixtureDef based on density, friction and collision parameters, and return a pointer to it ; used in createFixture overloaded functions to avoid code repetitions
