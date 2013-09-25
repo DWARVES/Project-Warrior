@@ -136,6 +136,7 @@ int main()
     gfx->preserveRatio(false); /* Just for testing logging */
     delete gfx;
     core::logger::free();
+    SDL_Quit();
     return 0;
 }
 

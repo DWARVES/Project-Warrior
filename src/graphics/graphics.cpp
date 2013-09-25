@@ -772,13 +772,19 @@ namespace graphics
             return;
         }
 
+        if(poly.points.size() == 0)
+            return;
+
         internal::Texture* t = m_fs.getEntityValue(text)->stored.text;
         m_shads.text(true);
         glBindTexture(GL_TEXTURE_2D, t->glID());
         glColor4ub(255, 255, 255, 255);
 
-        float minx, maxx, miny, maxy;
-        for(size_t i = 0; i < poly.points.size(); ++i) {
+        float minx = poly.points[0].x;
+        float miny = poly.points[0].y;
+        float maxx = poly.points[0].x;
+        float maxy = poly.points[0].y;
+        for(size_t i = 1; i < poly.points.size(); ++i) {
             if(poly.points[i].x < minx)
                 minx = poly.points[i].x;
             else if(poly.points[i].x > maxx)

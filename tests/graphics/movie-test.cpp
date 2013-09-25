@@ -88,6 +88,7 @@ int main()
 
     delete gfx;
     core::logger::free();
+    SDL_Quit();
     return 0;
 }
 
