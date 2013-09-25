@@ -30,6 +30,51 @@ namespace physics
         return m_fixtures.at(name);
     }
 
+    geometry::Point Entity::getPosition()
+    {
+        return geometry::Point(m_body->GetPosition().x, m_body->GetPosition().y);
+    }
+
+    float Entity::getXLinearVelocity()
+    {
+        return m_body->GetLinearVelocity().x;
+    }
+
+    float Entity::getYLinearVelocity()
+    {
+        return m_body->GetLinearVelocity().y;
+    }
+
+    float Entity::getAngularVelocity()
+    {
+        return m_body->GetAngularVelocity();
+    }
+
+    void Entity::setXLinearVelocity(float velX)
+    {
+        m_body->SetLinearVelocity(b2Vec2(velX, m_body->GetLinearVelocity().y));
+    }
+
+    void Entity::setYLinearVelocity(float velY)
+    {
+        m_body->SetLinearVelocity(b2Vec2(m_body->GetLinearVelocity().x, velY));
+    }
+
+    void Entity::setLinearVelocity(float velX, float velY)
+    {
+        m_body->SetLinearVelocity(b2Vec2(velX, velY));
+    }
+
+    void Entity::setAngularVelocity(float omega)
+    {
+        m_body->SetAngularVelocity(omega);
+    }
+
+    void Entity::setFixedRotation(bool fixedRotation)
+    {
+        m_body->SetFixedRotation(fixedRotation);
+    }
+
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::Line& line, float density, float friction, uint16 type, uint16 collideWith)
     {
         b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith);
@@ -148,20 +193,5 @@ namespace physics
     void Entity::applyAngularImpulse(float force)
     {
         m_body->ApplyAngularImpulse(force);
-    }
-
-    void Entity::setXLinearVelocity(float velX)
-    {
-        m_body->SetLinearVelocity(b2Vec2(velX, m_body->GetLinearVelocity().y));
-    }
-
-    void Entity::setYLinearVelocity(float velY)
-    {
-        m_body->SetLinearVelocity(b2Vec2(m_body->GetLinearVelocity().x, velY));
-    }
-
-    void Entity::setLinearVelocity(float velX, float velY)
-    {
-        m_body->SetLinearVelocity(b2Vec2(velX, velY));
     }
 }

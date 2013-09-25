@@ -30,7 +30,7 @@ class EntityTest : public Test
             square2 = new Character("Square 2", m_world, Point(-500, 50), AABB(100, 100), Character::Weight::Medium);
             square3 = new Character("Square 3", m_world, Point(-700, 50), AABB(100, 100), Character::Weight::Lightweight);
 
-            circle = new Entity("Spectre attack", m_world, Point(-100, 50), b2_dynamicBody, Entity::Type::Attack, ~(Entity::Type::Obstacle | Entity::Type::Platform), 1, ROTATION_NOT_FIXED);
+            circle = new Entity("Spectre attack", m_world, Point(-100, 500), b2_dynamicBody, Entity::Type::Attack, ~(Entity::Type::Obstacle | Entity::Type::Platform), 1, ROTATION_NOT_FIXED);
             circle->createFixture("body", Circle(50), 1, 1);
 
             polygon = new Entity("Ghost attack", m_world, Point(100, 50), b2_dynamicBody, Entity::Type::Attack, ~(Entity::Type::Character | Entity::Type::Platform), 1, ROTATION_NOT_FIXED);
