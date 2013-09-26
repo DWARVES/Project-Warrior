@@ -31,4 +31,6 @@ add_subdirectory(physics)
 target_link_libraries(${exe} libphysics)
 add_subdirectory(graphics)
 target_link_libraries(${exe} libgraphics)
+add_subdirectory(audio)
+target_link_libraries(${exe} libaudio)
 
