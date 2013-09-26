@@ -17,11 +17,16 @@ find_package(SDL2 REQUIRED)
 link_directories(${SDL2_LIBRARY_DIR})
 include_directories(${SDL2_INCLUDE_DIR})
 
-# Inclufing SDL2_image
+# Including SDL2_image
 include(FindSDL2_image)
 find_package(SDL2_image REQUIRED)
 link_directories(${SDL2_IMAGE_LIBRARY_DIR})
 include_directories(${SDL2_IMAGE_INCLUDE_DIR})
+
+# Including SDL2_mixer
+include(FindSDL2_mixer)
+find_package(SDL2_mixer REQUIRED)
+include_directories(${SDLMIXER_INCLUDE_DIR})
 
 # Including OpenGL
 include(FindOpenGL)
