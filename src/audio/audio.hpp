@@ -2,6 +2,11 @@
 #ifndef DEF_AUDIO_AUDIO
 #define DEF_AUDIO_AUDIO
 
+#include <string>
+#include "core/fakefs.hpp"
+#include "music.hpp"
+#include "sound.hpp"
+
 namespace audio
 {
     class Audio
@@ -14,7 +19,7 @@ namespace audio
             /*************************
              *   Opening the audio   *
              *************************/
-            bool init(int frequency);
+            bool init(int freq);
             int frequency() const;
 
             /*************************
@@ -29,20 +34,79 @@ namespace audio
             /*************************
              * Namespaces managment  *
              *************************/
+            bool enterNamespace(const std::string& name);
+            bool createNamespace(const std::string& name);
+            void deleteNamespace(const std::string& name);
+            std::string actualNamespace() const;
 
             /*************************
              *  Ressources loading   *
              *************************/
+            bool loadSound(const std::string& name, const std::string& path);
+            /* Will load a text file with the path to the music and the loop_begin and loop_end indications */
+            bool loadMusic(const std::string& name, const std::string& path);
+            /* Load directly a music file */
+            bool loadRawMusic(const std::string& name, const std::string& path);
+            void free(const std::string& name);
+            /* Return the type of a ressource or NONE if name doesn't exists */
+            enum RcType {SOUND, MUSIC, NONE};
+            RcType rctype(const std::string& name) const;
+            bool link(const std::string& name, const std::string& target);
 
             /*************************
              *   Music managment     *
              *************************/
+            /* Set the begin of the repetition loop of a music in seconds
+             * If begin is after the end or outside the music, it will not be changed
+             */
+            size_t musicBeginLoop(const std::string& name, size_t secs);
+            size_t musicBeginLoop(const std::string& name) const;
+            /* If the end is before the beggining, it will not be changed */
+            size_t musicEndLoop(const std::string& name, size_t secs);
+            size_t musicEndLoop(const std::string& name) const;
 
             /*************************
              *       Playing         *
              *************************/
+            /* Only one music can be played once */
+            /* If loops <= 0, the music will be played witheout end
+             * If name designate a sound, loops will be ignored
+             */
+            void play(const std::string& name, int loops = 0);
+            void rewind(const std::string& name);
+            /* Play the end of a music */
+            void end(const std::string& name);
 
         private:
+            int m_freq;
+            unsigned char m_musV;
+            unsigned char m_sndV;
+
+            /*************************
+             *   Fake-Fs structure   *
+             *************************/
+            struct Entity
+            {
+                union Stored { /* The value really stored */
+                    internal::Music* music;
+                    internal::Sound* sound;
+                };
+                Stored stored;
+                RcType type;
+            };
+
+            class EntityLiberator
+            {
+                public:
+                    void operator()(Entity* tofree) const;
+            };
+
+            core::FakeFS<Entity*, EntityLiberator> m_fs;
+
+            /*************************
+             *  Internal functions   *
+             *************************/
+            unsigned char clamp(unsigned char volume) const;
     };
 }
 
