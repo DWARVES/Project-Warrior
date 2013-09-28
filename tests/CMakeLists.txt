@@ -11,4 +11,5 @@ add_subdirectory(geometry)
 add_subdirectory(lua)
 add_subdirectory(physics)
 add_subdirectory(graphics)
+add_subdirectory(audio)
 
