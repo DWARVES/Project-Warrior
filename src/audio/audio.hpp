@@ -66,16 +66,31 @@ namespace audio
             size_t musicEndLoop(const std::string& name) const;
 
             /*************************
+             *   Callbacks type      *
+             *************************/
+            /* Callbacks must inherits from this class */
+            class Callback
+            {
+                public:
+                    virtual operator()(Audio*) = 0;
+            };
+
+            /*************************
              *       Playing         *
              *************************/
             /* Only one music can be played once */
             /* If loops <= 0, the music will be played witheout end
+             * Else, the end will be played after the loops are finished, and then cb is called if not NULL
              * If name designate a sound, loops will be ignored
              */
-            void play(const std::string& name, int loops = 0);
+            void play(const std::string& name, int loops = 0, Callback* cb = NULL);
             void rewind(const std::string& name);
             /* Play the end of a music */
             void end(const std::string& name);
+            /* Will check the position of the playing music and call the necessary callbacks
+             * Must be called in every frame
+             */
+            void update();
 
         private:
             int m_freq;

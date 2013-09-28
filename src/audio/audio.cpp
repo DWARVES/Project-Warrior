@@ -139,6 +139,10 @@ namespace audio
     void Audio::end(const std::string& name)
     {
     }
+            
+    void Audio::update()
+    {
+    }
 
     unsigned char Audio::clamp(unsigned char volume) const
     {
