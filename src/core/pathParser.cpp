@@ -4,16 +4,16 @@
 #include <cstring>
 
 #ifdef HAVE_SYSSTAT_H
-    #include <sys/types.h>
-    #include <sys/stat.h>
+#  include <sys/types.h>
+#  include <sys/stat.h>
 #else
-    #error "sys/stat.h is needed."
+#  error "sys/stat.h is needed."
 #endif
 
 #ifdef HAVE_DIRENT_H
-    #include <dirent.h>
+#  include <dirent.h>
 #else
-    #error "dirent.h is needed."
+#  error "dirent.h is needed."
 #endif
 
 namespace core
@@ -21,7 +21,7 @@ namespace core
     namespace path
     {
         std::string cleanSep(const std::string& p)
-		{
+        {
             std::string np; /* New path */
             bool sep = false; /* Is the previous letter a '/' */
 
@@ -39,10 +39,10 @@ namespace core
             }
 
             return np;
-		}
+        }
 
         std::vector<std::string> parts(const std::string& p)
-		{
+        {
             std::vector<std::string> vparts;
             std::string apart; /* A part of the path */
 
@@ -63,10 +63,10 @@ namespace core
             }
 
             return vparts;
-		}
+        }
 
         std::string extension(const std::string& p)
-		{
+        {
             std::string ext;
             bool ended = false; /* Found a '.' ? */
             std::string::const_reverse_iterator it = p.crbegin();
@@ -94,10 +94,10 @@ namespace core
             }
 
             return ext;
-		}
+        }
 
         std::string head(const std::string& p, bool ext)
-		{
+        {
             std::string hd; /* The head */
             std::string::const_reverse_iterator it = p.crbegin();
 
@@ -105,7 +105,7 @@ namespace core
             while(it != p.crend() && *it == '/') {
                 ++it;
             }
-            
+
             for(; it != p.crend(); ++it) {
                 if(*it == '/') {
                     break;
@@ -119,10 +119,37 @@ namespace core
             }
 
             return hd;
-		}
+        }
+        
+        std::string body(const std::string& p, bool tdir)
+        {
+            /* If it's a directory and tdir is set, no transformations needed */
+            if(tdir && type(p) == Type::Dir)
+                return p;
+
+            std::string body;
+            bool inbody = false; /* Is parsing the body ? */
+            std::string::const_reverse_iterator it = p.crbegin();
+
+            /* We skips the finals '/' */
+            while(it != p.crend() && *it == '/') {
+                ++it;
+            }
+
+            for(; it != p.crend(); ++it) {
+                /* The body is before the last '/' */
+                if(!inbody && *it == '/')
+                    inbody = true;
+                else if(inbody)
+                    body.insert(0, 1, *it);
+            }
+
+            return body;
+
+        }
 
         bool absolute(const std::string& p)
-		{
+        {
             size_t idx = 0;
 
             while(idx < p.size() && p[idx] == ' ') {
@@ -135,10 +162,10 @@ namespace core
             else {
                 return true;
             }
-		}
+        }
 
         Type type(const std::string& p)
-		{
+        {
 #ifdef HAVE_SYSSTAT_H
             struct stat buffer;
 
@@ -158,10 +185,10 @@ namespace core
             else
                 return Type::Unknown;
 #endif//HAVE_SYSSTAT_H
-		}
+        }
 
         std::vector<std::string> dirContents(const std::string& dir)
-		{
+        {
 #ifdef HAVE_DIRENT_H
             std::vector<std::string> contents;
 
@@ -179,7 +206,7 @@ namespace core
             closedir(d);
             return contents;
 #endif//HAVE_DIRENT_H
-		}
+        }
     }
 }
 

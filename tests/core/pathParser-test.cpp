@@ -22,6 +22,8 @@ int main()
 
     std::cout << "The head : " << core::path::head(path, true) << " (without extension : " << core::path::head(path, false) << ")" << std::endl;
 
+    std::cout << "The body : " << core::path::body(path, false) << " (just dir : " << core::path::body(path, true) << ")" << std::endl;
+
     std::cout << "Is absolute ? " << (core::path::absolute(path) ? "yes" : "no") << std::endl;
 
     core::path::Type t = core::path::type(path);

@@ -7,6 +7,7 @@
 
 namespace core
 {
+    /* All the functions works only for unix-like path */
     namespace path
     {
         /* Remove doubles '/' */
@@ -22,6 +23,11 @@ namespace core
          * If ext = false, remove the extension (if any)
          */
         std::string head(const std::string& p, bool ext = true);
+
+        /* Return body : '/home/fred/file.txt' -> '/home/fred'
+         * If tdir, will remove the head only if it's not a directory
+         */
+        std::string body(const std::string& p, bool tdir = false);
 
         /* Is the path absolute, could have been named 'hasRoot' */
         bool absolute(const std::string& p);
