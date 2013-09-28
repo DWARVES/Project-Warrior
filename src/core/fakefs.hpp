@@ -14,10 +14,9 @@ namespace core
     template <typename T> class UselessLiberator
     {
         public:
-            void operator()(T value) const 
+            T operator()(T value) const 
             {
-                if(value) /* Avoid warnings */
-                    return;
+                return value; /* Avoid warnings */
             }
     };
 
