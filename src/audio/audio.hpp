@@ -59,11 +59,11 @@ namespace audio
             /* Set the begin of the repetition loop of a music in seconds
              * If begin is after the end or outside the music, it will not be changed
              */
-            size_t musicBeginLoop(const std::string& name, size_t secs);
-            size_t musicBeginLoop(const std::string& name) const;
+            int musicBeginLoop(const std::string& name, int secs);
+            int musicBeginLoop(const std::string& name) const;
             /* If the end is before the beggining, it will not be changed */
-            size_t musicEndLoop(const std::string& name, size_t secs);
-            size_t musicEndLoop(const std::string& name) const;
+            int musicEndLoop(const std::string& name, int secs);
+            int musicEndLoop(const std::string& name) const;
 
             /*************************
              *   Callbacks type      *
@@ -72,7 +72,8 @@ namespace audio
             class Callback
             {
                 public:
-                    virtual operator()(Audio*) = 0;
+                    virtual void operator()(Audio*) = 0;
+                    virtual ~Callback();
             };
 
             /*************************
@@ -82,11 +83,11 @@ namespace audio
             /* If loops <= 0, the music will be played witheout end
              * Else, the end will be played after the loops are finished, and then cb is called if not NULL
              * If name designate a sound, loops will be ignored
+             * If tofree, cb is free'd after use
              */
-            void play(const std::string& name, int loops = 0, Callback* cb = NULL);
-            void rewind(const std::string& name);
-            /* Play the end of a music */
-            void end(const std::string& name);
+            void play(const std::string& name, int loops = 0, Callback* cb = NULL, bool tofree = false);
+            /* Play the end of a music, cb is called at the end */
+            void end(const std::string& name, Callback* cb = NULL, bool tofree = false);
             /* Will check the position of the playing music and call the necessary callbacks
              * Must be called in every frame
              */
@@ -96,6 +97,12 @@ namespace audio
             int m_freq;
             unsigned char m_musV;
             unsigned char m_sndV;
+            Uint32 m_btime;
+            Callback* m_cb;
+            int m_loops;
+            int m_beg, m_end;
+            bool m_playing;
+            bool m_tofree;
 
             /*************************
              *   Fake-Fs structure   *
