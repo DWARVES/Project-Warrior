@@ -9,5 +9,6 @@ add_library(${lib}
     pathParser.cpp pathParser.hpp
     systemtime.cpp systemtime.hpp
     logger.cpp     logger.hpp
+    config.cpp     config.hpp
 	)
 
