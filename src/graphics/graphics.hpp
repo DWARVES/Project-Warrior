@@ -122,7 +122,6 @@ namespace graphics
             /*************************
              *       Drawing         *
              *************************/
-            /* TODO Playing movies */
             /* The hotpoint is only used for blitTexture */
             void blitTexture(const std::string& name, const geometry::Point& pos);
             /* If width < 0, will use the default width */

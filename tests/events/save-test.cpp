@@ -60,7 +60,7 @@ bool parseCommand(std::string str)
         save.deleteNamespace(tokens[1]);
         return true;
     }
-    else if(tokens[0] == "pwd") { // TODO
+    else if(tokens[0] == "pwd") {
         std::cout << "Actual namespace : " << save.actualNamespace() << std::endl;
         return true;
     }
@@ -88,7 +88,7 @@ bool parseCommand(std::string str)
             return false;
         long int v = save.getVariable(tokens[1]);
         if(!v) {
-            if(!save.existsVariable(tokens[1])) { // TODO
+            if(!save.existsVariable(tokens[1])) {
                 std::cout << "Entity " << tokens[1] << "does not exists." << std::endl;
                 return false;
             }
