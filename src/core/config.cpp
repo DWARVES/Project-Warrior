@@ -1,8 +1,7 @@
 
 #include "config.hpp"
-#include "logger.hpp"
 #include <fstream>
-#include <sstream>
+#include <boost/regex.hpp>
 
 namespace core
 {
@@ -14,7 +13,72 @@ namespace core
 
     bool Config::args(int argc, char *argv[])
     {
-        /* TODO */
+        boost::regex longc  ("^--([^=]*)$");      /* Regex for a long-named argument without value in it */
+        boost::regex longcv ("^--([^=]*)=(.*)$"); /* Regex for a long-named argument with value in it */
+        boost::regex shortc ("^-([^-].*)$");          /* Regex for a short-named argument */
+        boost::smatch results;
+        std::string tostore; /* Name of the option in which storing the value */
+
+        for(int i = 1; i < argc; ++i) {
+            /* Is the arg a long-named option without value */
+            if(boost::regex_match(std::string(argv[i]), results, longc)) {
+                std::string name = results[1];
+                std::cout << "Name : " << name << " from " << argv[i] << std::endl;
+                if(!m_fs.existsEntity(name)) {
+                    std::ostringstream oss;
+                    oss << "Passed an unrecognized argument : \"" << name << "\"."; 
+                    core::logger::logm(oss.str(), core::logger::WARNING);
+                    return false;
+                }
+                tostore = name;
+                m_fs.setEntityValue(tostore, "1"); /* If a value is set, it will override this */
+            }
+
+            /* Is the arg a long-named option with value */
+            else if(boost::regex_match(std::string(argv[i]), results, longcv)) {
+                std::string name = results[1];
+                if(!m_fs.existsEntity(name)) {
+                    std::ostringstream oss;
+                    oss << "Passed an unrecognized argument : \"" << name << "\"."; 
+                    core::logger::logm(oss.str(), core::logger::WARNING);
+                    return false;
+                }
+                m_fs.setEntityValue(results[1], results[2]);
+                tostore.clear();
+            }
+
+            /* Is the arg a short-named option */
+            else if(boost::regex_match(std::string(argv[i]), results, shortc)) {
+                std::string lst = results[1];
+                for(size_t j = 0; j < lst.size(); ++j) {
+                    if(m_shorts.find(lst[j]) == m_shorts.end()) {
+                        if(!m_fs.existsEntity(results[1])) {
+                            std::ostringstream oss;
+                            oss << "Passed an unrecognized one-letter argument : '" << lst[j] << "'."; 
+                            core::logger::logm(oss.str(), core::logger::WARNING);
+                            return false;
+                        }
+                    }
+                    tostore = m_shorts[lst[j]];
+                    m_fs.setEntityValue(tostore, "1"); /* If a value is set, it will override this */
+                }
+            }
+
+            /* Is the arg a value */
+            else {
+                if(tostore == "") {
+                    std::ostringstream oss;
+                    oss << "Option value \"" << argv[i] << "\" witheout option corresponding in command line.";
+                    logger::logm(oss.str(), logger::WARNING);
+                    continue; /* Non-fatal error */
+                }
+                /* tostore existence should have been tested before */
+                m_fs.setEntityValue(tostore, argv[i]);
+                tostore.clear();
+            }
+        }
+
+        return true;
     }
 
     bool Config::cfg(const std::string& path)
@@ -36,7 +100,7 @@ namespace core
             logger::logm(oss.str(), logger::ERROR);
             return false;
         }
-        logger::logm("Load config file : " + path, logger::ERROR);
+        logger::logm("Loaded config file : " + path, logger::MSG);
 
         /* Merging it */
         std::vector<std::string> ents = file.listEntities();
@@ -60,7 +124,7 @@ namespace core
             os << "\"" << it->first;
             if(it->second.s != 0)
                 os << "," << it->second.s;
-            os << "\" : " << it->second.d;
+            os << "\" : " << it->second.d << "\n";
         }
     }
 
@@ -70,7 +134,6 @@ namespace core
     }
 
 }
-
 
 
 
