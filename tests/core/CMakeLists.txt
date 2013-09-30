@@ -13,5 +13,7 @@ add_executable(systemTime-test systemTime-test.cpp)
 target_link_libraries(systemTime-test libcore)
 add_executable(logger-test logger-test.cpp)
 target_link_libraries(logger-test libcore)
+add_executable(config-test config-test.cpp)
+target_link_libraries(config-test libcore ${Boost_REGEX_LIBRARY})
 
 
