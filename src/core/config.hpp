@@ -89,8 +89,11 @@ namespace core
             logger::logm(os.str(), logger::WARNING);
             return false;
         }
-        else
+        else {
+            /* Storing the short name */
+            m_shorts[sname] = lname;
             return true;
+        }
     }
             
     template <typename T> T Config::get(const std::string& name)
