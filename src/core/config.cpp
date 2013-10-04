@@ -20,10 +20,11 @@ namespace core
         std::string tostore; /* Name of the option in which storing the value */
 
         for(int i = 1; i < argc; ++i) {
+            std::string arg(argv[i]);
+
             /* Is the arg a long-named option without value */
-            if(boost::regex_match(std::string(argv[i]), results, longc)) {
+            if(boost::regex_match(arg, results, longc)) {
                 std::string name = results[1];
-                std::cout << "Name : " << name << " from " << argv[i] << std::endl;
                 if(!m_fs.existsEntity(name)) {
                     std::ostringstream oss;
                     oss << "Passed an unrecognized argument : \"" << name << "\"."; 
@@ -35,7 +36,7 @@ namespace core
             }
 
             /* Is the arg a long-named option with value */
-            else if(boost::regex_match(std::string(argv[i]), results, longcv)) {
+            else if(boost::regex_match(arg, results, longcv)) {
                 std::string name = results[1];
                 if(!m_fs.existsEntity(name)) {
                     std::ostringstream oss;
@@ -48,16 +49,14 @@ namespace core
             }
 
             /* Is the arg a short-named option */
-            else if(boost::regex_match(std::string(argv[i]), results, shortc)) {
+            else if(boost::regex_match(arg, results, shortc)) {
                 std::string lst = results[1];
                 for(size_t j = 0; j < lst.size(); ++j) {
                     if(m_shorts.find(lst[j]) == m_shorts.end()) {
-                        if(!m_fs.existsEntity(results[1])) {
-                            std::ostringstream oss;
-                            oss << "Passed an unrecognized one-letter argument : '" << lst[j] << "'."; 
-                            core::logger::logm(oss.str(), core::logger::WARNING);
-                            return false;
-                        }
+                        std::ostringstream oss;
+                        oss << "Passed an unrecognized one-letter argument : '" << lst[j] << "'."; 
+                        core::logger::logm(oss.str(), core::logger::WARNING);
+                        return false;
                     }
                     tostore = m_shorts[lst[j]];
                     m_fs.setEntityValue(tostore, "1"); /* If a value is set, it will override this */
@@ -68,7 +67,7 @@ namespace core
             else {
                 if(tostore == "") {
                     std::ostringstream oss;
-                    oss << "Option value \"" << argv[i] << "\" witheout option corresponding in command line.";
+                    oss << "Option value \"" << arg << "\" witheout option corresponding in command line.";
                     logger::logm(oss.str(), logger::WARNING);
                     continue; /* Non-fatal error */
                 }

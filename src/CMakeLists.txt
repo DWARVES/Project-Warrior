@@ -33,4 +33,6 @@ add_subdirectory(graphics)
 target_link_libraries(${exe} libgraphics)
 add_subdirectory(audio)
 target_link_libraries(${exe} libaudio)
+add_subdirectory(gui)
+target_link_libraries(${exe} libgui)
 
