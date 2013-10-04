@@ -35,4 +35,6 @@ add_subdirectory(audio)
 target_link_libraries(${exe} libaudio)
 add_subdirectory(gui)
 target_link_libraries(${exe} libgui)
+add_subdirectory(events)
+target_link_libraries(${exe} libevents)
 
