@@ -1,5 +1,5 @@
 
-#include "events/save.hpp"
+#include "gameplay/save.hpp"
 #include "core/logger.hpp"
 #include "lua/script.hpp"
 #include "lua/saveExposure.hpp"
@@ -13,8 +13,8 @@ int main()
         /* Initializing */
         core::logger::init();
         core::logger::addOutput(&std::cout);
-        events::Save::init();
-        events::Save sav;
+        gameplay::Save::init();
+        gameplay::Save sav;
         sav.createNamespace("ev1");
         sav.createNamespace("ev2");
         lua::Script ev1, ev2;
@@ -40,7 +40,7 @@ int main()
 
         /* Freeing everything */
         core::logger::free();
-        events::Save::quit();
+        gameplay::Save::quit();
     }
     catch(const std::exception& e) {
         std::cout << "An exception was caught : " << e.what() << std::endl;

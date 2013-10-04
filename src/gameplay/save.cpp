@@ -1,9 +1,9 @@
 
-#include "events/save.hpp"
+#include "gameplay/save.hpp"
 #include "core/logger.hpp"
 #include <fstream>
 
-namespace events
+namespace gameplay
 {
     core::FakeFS<Save::number_t>* Save::m_fs = NULL;
 

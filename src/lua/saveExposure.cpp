@@ -61,7 +61,7 @@ namespace lua
                     || args[1] != Script::NUMBER)
                 return helper::returnBoolean(st, false);
             bool ret = m_sav.setVariable(lua_tostring(st, 1),
-                    static_cast<events::Save::number_t>(lua_tonumber(st, 2)));
+                    static_cast<gameplay::Save::number_t>(lua_tonumber(st, 2)));
             return helper::returnBoolean(st, ret);
         }
 
@@ -81,7 +81,7 @@ namespace lua
             if(args.size() != 1
                     || args[0] != Script::STRING)
                 return helper::returnNumber(st, 0);
-            events::Save::number_t ret = m_sav.getVariable(lua_tostring(st, 1));
+            gameplay::Save::number_t ret = m_sav.getVariable(lua_tostring(st, 1));
             return helper::returnNumber(st, static_cast<double>(ret));
         }
         

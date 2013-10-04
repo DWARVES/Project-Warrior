@@ -21,8 +21,8 @@ target_link_libraries(
 
 add_subdirectory(core)
 target_link_libraries(${exe} libcore)
-add_subdirectory(events)
-target_link_libraries(${exe} libevents)
+add_subdirectory(gameplay)
+target_link_libraries(${exe} libgameplay)
 add_subdirectory(geometry)
 target_link_libraries(${exe} libgeometry)
 add_subdirectory(lua)

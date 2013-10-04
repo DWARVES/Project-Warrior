@@ -8,6 +8,6 @@ link_directories(${DEMO_BINARY_DIR}/tests/lua)
 add_executable(script-test script-test.cpp)
 target_link_libraries(script-test libcore liblua ${LUA_LIBRARIES})
 add_executable(saveexposure-test saveexposure-test.cpp)
-target_link_libraries(saveexposure-test libevents libcore liblua ${LUA_LIBRARIES} ${Boost_REGEX_LIBRARY})
+target_link_libraries(saveexposure-test libgameplay libcore liblua ${LUA_LIBRARIES} ${Boost_REGEX_LIBRARY})
 
 

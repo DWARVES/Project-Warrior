@@ -1,5 +1,5 @@
 
-#include "events/save.hpp"
+#include "gameplay/save.hpp"
 #include <iostream>
 #include <vector>
 #include <sstream>
@@ -35,7 +35,7 @@ std::vector<std::string> toTokens(const std::string& str)
 
 bool parseCommand(std::string str)
 {
-    events::Save save;
+    gameplay::Save save;
 
     std::vector<std::string> tokens = toTokens(str);
     if(tokens.size() == 0)
@@ -132,7 +132,7 @@ int main()
     core::logger::addOutput(&std::cout, false);
 #endif
 
-    events::Save::init();
+    gameplay::Save::init();
     std::string cmd;
 
     while(true) {
@@ -146,7 +146,7 @@ int main()
             std::cout << "Error while executing command." << std::endl;
     }
 
-    events::Save::quit();
+    gameplay::Save::quit();
 #ifdef USELOG
     core::logger::free();
 #endif

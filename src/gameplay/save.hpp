@@ -1,11 +1,11 @@
 
-#ifndef DEF_EVENTS_SAVE
-#define DEF_EVENTS_SAVE
+#ifndef DEF_GAMEPLAY_SAVE
+#define DEF_GAMEPLAY_SAVE
 
 #include <string>
 #include "core/fakefs.hpp"
 
-namespace events
+namespace gameplay
 {
     /* Save is a singlebone : all the methods modifies an only global instance */
     class Save

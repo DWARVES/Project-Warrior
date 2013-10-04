@@ -3,7 +3,7 @@
 #define DEF_LUA_SAVEEXPOSURE
 
 #include "lua/script.hpp"
-#include "events/save.hpp"
+#include "gameplay/save.hpp"
 
 namespace lua
 {
@@ -36,7 +36,7 @@ namespace lua
                 static void expose(Script* scr);
 
             private:
-                events::Save m_sav;
+                gameplay::Save m_sav;
         };
     }
 }
