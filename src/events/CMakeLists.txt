@@ -7,6 +7,7 @@ set(lib libevents)
 add_library(${lib}
     events.cpp events.hpp
     key.cpp    key.hpp
-    keymap.hpp
+    keymap.hpp button.hpp
+    windowstate.hpp
 	)
 

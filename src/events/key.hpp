@@ -25,6 +25,7 @@ namespace events
             std::string name() const;
             /* Returns the symbol of the key */
             KeyType getSym() const;
+            operator KeyType() const;
             /* Returns the symbol of the key if the keyboard was qwerty, it's a layout-independant information */
             KeyType getPos() const;
             /* Returns the human readable name of the key layout-independant */

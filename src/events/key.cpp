@@ -269,6 +269,11 @@ namespace events
     {
         return m_key;
     }
+            
+    Key::operator KeyType() const
+    {
+        return m_key;
+    }
 
     KeyType Key::getPos() const
     {
