@@ -287,7 +287,9 @@ namespace events
 
     void Key::setChar(char c)
     {
-        if(c > SDLK_TAB && c < SDLK_z) /* Ascii printable caracters */
+        if(c >= 'A' && c <= 'Z') /* Majuscules must be mapped to minus */
+            m_key = static_cast<SDL_Keycode>(c - 'A' + 'a');
+        else if(c > SDLK_TAB && c < SDLK_z) /* Ascii printable caracters */
             m_key = static_cast<SDL_Keycode>(c);
         else
             m_key = SDLK_UNKNOWN;

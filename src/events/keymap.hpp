@@ -11,6 +11,7 @@ namespace events
      * It just help the use of the Key class
      */
     enum class KeyMap : KeyType {
+        /* Letters are not defined because they are easy to use with a char */
         Escape = SDLK_ESCAPE,
         /* Defined twice as Enter and Return, because both names can be used */
         Enter = SDLK_RETURN,
