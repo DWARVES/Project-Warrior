@@ -4,7 +4,6 @@
 
 #include <vector>
 #include <string>
-#include <unordered_map>
 #include "key.hpp"
 #include "button.hpp"
 #include "windowstate.hpp"
@@ -79,6 +78,7 @@ namespace events
             geometry::Point mousePos() const;
             /* Returns the move of the mouse between the two previous calls to update */
             geometry::Point mouseRel() const;
+            /* TODO mouse rel and setPos */
 
             /************************
              *       Window         *
@@ -111,8 +111,11 @@ namespace events
              * Put back to zero in each call to update
              */
             std::vector<std::string> dropped() const;
-            /* Must the application quit */
+            /* The program was requested to be end
+             * Once it returned true, it will do so until quitAbort is called
+             */
             bool quit() const;
+            void quitAbort();
 
         private:
             /* Keybord events */
@@ -120,10 +123,10 @@ namespace events
                 bool state;               /* Pressed or released */
                 unsigned int pressT;      /* Timestamp of when it was last pressed */
                 geometry::Point pressP;   /* Position of the pointer when it was last pressed */
-                unsigned int releasedT;   /* Timestamp of when it was last released */
+                unsigned int releaseT;   /* Timestamp of when it was last released */
                 geometry::Point releaseP; /* Position of the pointer when it was last released */
             };
-            std::unordered_map<KeyType,KeyEvent> m_keys; /* Array of events */
+            KeyEvent m_keys[SDL_NUM_SCANCODES]; /* Array of events, indexed by scancodes */
             std::vector<Key> m_lastPressedK;
             std::vector<Key> m_lastReleasedK;
 
@@ -132,7 +135,7 @@ namespace events
                 bool state;               /* Pressed or released */
                 unsigned int pressT;      /* Timestamp of when it was last pressed */
                 geometry::Point pressP;   /* Position of the pointer when it was last pressed */
-                unsigned int releasedT;   /* Timestamp of when it was last released */
+                unsigned int releaseT;   /* Timestamp of when it was last released */
                 geometry::Point releaseP; /* Position of the pointer when it was last released */
             };
             ButtonEvent m_buttons[Uint8(Button::Last)]; /* Array of button */
@@ -149,10 +152,17 @@ namespace events
                 bool lost;
             };
             WindowEvent m_wins[Uint8(WindowState::Last)];
+            bool m_closed;
 
             /* Miscellaneous */
             geometry::Point m_wheel;
             std::vector<std::string> m_dropped;
+            bool m_quit;
+
+            /* Internal functions */
+            void initKeys();
+            void initButtons();
+            void initStates();
     };
 }
 
