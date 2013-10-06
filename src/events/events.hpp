@@ -109,6 +109,7 @@ namespace events
             geometry::Point wheel() const;
             /* If some files were dropped in the window, their paths are returned
              * Put back to zero in each call to update
+             * FIXME doesn't seem to be working
              */
             std::vector<std::string> dropped() const;
             /* The program was requested to be end
@@ -163,6 +164,12 @@ namespace events
             void initKeys();
             void initButtons();
             void initStates();
+            void process(SDL_KeyboardEvent* ev);
+            void process(SDL_MouseMotionEvent* ev);
+            void process(SDL_MouseWheelEvent* ev);
+            void process(SDL_MouseButtonEvent* ev);
+            void process(SDL_DropEvent* ev);
+            void process(SDL_WindowEvent* ev);
     };
 }
 

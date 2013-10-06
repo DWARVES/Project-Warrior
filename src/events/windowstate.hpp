@@ -9,10 +9,10 @@ namespace events
     enum class WindowState : Uint8 {
         Visible,    /* Shown or hidden */
         Minimized,  /* Minimized or restored */
-        Maximized,  /* Maximized or restored */
         MouseFocus,
         InputFocus,
         /* The following states can only be earned, hasState and lostState will always returns false */
+        Maximized,
         Moved,
         Resized,
         Exposed,    /* The window needs to be redrawn */
