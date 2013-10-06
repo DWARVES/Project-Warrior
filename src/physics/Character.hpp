@@ -19,7 +19,7 @@ namespace physics
             };
 
         public:
-            Character(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& size, float weight);
+            Character(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& rect, float weight);
 
             void jump(float vel);
     };

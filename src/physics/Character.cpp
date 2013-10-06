@@ -3,9 +3,9 @@
 
 namespace physics
 {
-    Character::Character(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& size, float weight) : Entity(name, world, position, b2_dynamicBody, Entity::Type::Character, ~(Entity::Type::Platform), 1, true)
+    Character::Character(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& rect, float weight) : Entity(name, world, position, b2_dynamicBody, Entity::Type::Character)
     {
-        createFixture("body", size, weight, 1);
+        createFixture("body", rect, weight, 1);
     }
 
     void Character::jump(float vel)
