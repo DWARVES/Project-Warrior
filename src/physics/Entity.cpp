@@ -17,6 +17,7 @@ namespace physics
 
         m_body = world->CreateBody(&bodyDef);
         m_body->SetFixedRotation(fixedRotation);
+        m_body->SetUserData(this);
     }
 
     b2Fixture* Entity::getFixture(const std::string& name) const
@@ -30,7 +31,12 @@ namespace physics
         return m_fixtures.at(name);
     }
 
-    geometry::Point Entity::getPosition()
+    uint16 Entity::getType() const
+    {
+        return m_type;
+    }
+
+    geometry::Point Entity::getPosition() const
     {
         return geometry::Point(m_body->GetPosition().x, m_body->GetPosition().y);
     }

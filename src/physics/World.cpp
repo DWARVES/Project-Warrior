@@ -7,6 +7,8 @@ namespace physics
     World::World(const b2Vec2& gravity)
     {
         m_world = new b2World(gravity);
+        m_colManager = new CollisionManager();
+        m_world->SetContactListener(m_colManager);
     }
 
     Entity* World::getEntity(const std::string& name) const

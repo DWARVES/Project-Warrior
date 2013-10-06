@@ -3,7 +3,7 @@
 #define DEF_PHYSICS_ENTITY
 
 #include <map>
-#include <Box2D/Box2D.h>
+#include "Box2D/Box2D.h"
 #include "geometry/point.hpp"
 #include "geometry/line.hpp"
 #include "geometry/aabb.hpp"
@@ -35,7 +35,8 @@ namespace physics
             Entity(const std::string& name, b2World* world, const geometry::Point& position, const b2BodyType& bodyType, uint16 type = Type::Default, uint16 collideWith = Type::All, float gravityScale = 1, bool fixedRotation = true);
 
             b2Fixture* getFixture(const std::string& name) const; // Returns a pointer to the fixture named "name" in the entity fixtures map
-            geometry::Point getPosition(); // Returns the current position of the entity
+            uint16 getType() const; // Returns the type of the Entity
+            geometry::Point getPosition() const; // Returns the current position of the entity
 
             // Functions to get the entity linear velocity
             float getXLinearVelocity();
@@ -53,10 +54,10 @@ namespace physics
             void setFixedRotation(bool fixedRotation); // Set fixedRotation either true or false
             
             // Overloaded functions used to add a fixture to the entity's body depending on its geometric shape, returning a pointer the user can use to access it (can also be done later with getFixture())
-            b2Fixture* createFixture(const std::string& name, const geometry::Line& line, float density, float friction, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith);
-            b2Fixture* createFixture(const std::string& name, const geometry::AABB& aabb, float density, float friction, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, const geometry::Point& position = geometry::Point(0, 0));
-            b2Fixture* createFixture(const std::string& name, const geometry::Circle& circle, float density, float friction, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, const geometry::Point& position = geometry::Point(0, 0));
-            b2Fixture* createFixture(const std::string& name, const geometry::Polygon& polygon, float density, float friction, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith);
+            b2Fixture* createFixture(const std::string& name, const geometry::Line& line, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith);
+            b2Fixture* createFixture(const std::string& name, const geometry::AABB& aabb, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, const geometry::Point& position = geometry::Point(0, 0));
+            b2Fixture* createFixture(const std::string& name, const geometry::Circle& circle, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, const geometry::Point& position = geometry::Point(0, 0));
+            b2Fixture* createFixture(const std::string& name, const geometry::Polygon& polygon, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith);
 
             // Overloaded functions used to apply a linear force to the entity's body ; the force is applied to its center when the point is not specified
             void applyForce(float forceX, float forceY);
@@ -73,9 +74,10 @@ namespace physics
 
         protected:
             std::string m_name; // The entity name
+            uint16 m_type, m_collideWith;
+
             b2Body* m_body; // The b2Body of the entity, used in Box2D simulations
             std::map<std::string, b2Fixture*> m_fixtures; // A map containing all the fixtures of the body, allowing to access them with a specific name given by the user when created
-            uint16 m_type, m_collideWith;
     };
 }
 

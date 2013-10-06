@@ -3,8 +3,9 @@
 #define DEF_PHYSICS_WORLD
 
 #include <map>
-#include <Box2D/Box2D.h>
+#include "Box2D/Box2D.h"
 #include "geometry/point.hpp"
+#include "CollisionManager.hpp"
 #include "Entity.hpp"
 
 namespace physics
@@ -20,6 +21,7 @@ namespace physics
 
         protected:
             b2World* m_world; // The world used in Box2D for simulation, containing all the bodies and fixtures (that we grouped in the Entity class)
+            CollisionManager* m_colManager; // The collision manager, used for advanced collisions management not possible with masks
             std::map<std::string, Entity*> m_entities; // A map containing all the entities of the world, allowing to access them with a specific name given by the user when created
 
     };
