@@ -26,15 +26,26 @@
 #include <cstddef>
 #include <limits>
 
+/* Functions added by Lucas8, used to prevent warnings */
+#define EPSILON 0.00001f
+inline bool b2FloatEqual(const float& f1, const float& f2)
+{
+    return (std::abs(f1-f2) < EPSILON);
+}
+
+inline bool b2FloatDiff(const float& f1, const float& f2)
+{
+    return (std::abs(f1-f2) > EPSILON);
+}
+#undef EPSILON
+/* End of functions added by Lucas8 */
+
 /// This function is used to ensure that a floating point number is
 /// not a NaN or infinity.
 inline bool b2IsValid(float32 x)
 {
-	if (x != x)
-	{
-		// NaN.
+	if (std::isnan(x))
 		return false;
-	}
 
 	float32 infinity = std::numeric_limits<float32>::infinity();
 	return -infinity < x && x < infinity;
@@ -67,7 +78,7 @@ struct b2Vec2
 	b2Vec2() {}
 
 	/// Construct using coordinates.
-	b2Vec2(float32 x, float32 y) : x(x), y(y) {}
+	b2Vec2(float32 mx, float32 my) : x(mx), y(my) {}
 
 	/// Set this vector to all zeros.
 	void SetZero() { x = 0.0f; y = 0.0f; }
@@ -158,7 +169,7 @@ struct b2Vec3
 	b2Vec3() {}
 
 	/// Construct using coordinates.
-	b2Vec3(float32 x, float32 y, float32 z) : x(x), y(y), z(z) {}
+	b2Vec3(float32 mx, float32 my, float32 mz) : x(mx), y(my), z(mz) {}
 
 	/// Set this vector to all zeros.
 	void SetZero() { x = 0.0f; y = 0.0f; z = 0.0f; }
@@ -236,7 +247,7 @@ struct b2Mat22
 		float32 a = ex.x, b = ey.x, c = ex.y, d = ey.y;
 		b2Mat22 B;
 		float32 det = a * d - b * c;
-		if (det != 0.0f)
+		if (b2FloatDiff(det,0.0f))
 		{
 			det = 1.0f / det;
 		}
@@ -251,7 +262,7 @@ struct b2Mat22
 	{
 		float32 a11 = ex.x, a12 = ey.x, a21 = ex.y, a22 = ey.y;
 		float32 det = a11 * a22 - a12 * a21;
-		if (det != 0.0f)
+		if (b2FloatDiff(det,0.0f))
 		{
 			det = 1.0f / det;
 		}
@@ -472,7 +483,7 @@ inline b2Vec2 operator * (float32 s, const b2Vec2& a)
 
 inline bool operator == (const b2Vec2& a, const b2Vec2& b)
 {
-	return a.x == b.x && a.y == b.y;
+	return b2FloatEqual(a.x,b.x) && b2FloatEqual(a.y,b.y);
 }
 
 inline float32 b2Distance(const b2Vec2& a, const b2Vec2& b)

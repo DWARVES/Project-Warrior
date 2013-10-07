@@ -21,6 +21,7 @@
 
 #include <Box2D/Collision/b2Collision.h>
 #include <Box2D/Common/b2GrowableStack.h>
+#include <Box2D/Common/b2Math.h>
 
 #define b2_nullNode (-1)
 
@@ -258,7 +259,7 @@ inline void b2DynamicTree::RayCast(T* callback, const b2RayCastInput& input) con
 
 			float32 value = callback->RayCastCallback(subInput, nodeId);
 
-			if (value == 0.0f)
+			if (b2FloatEqual(value,0.0f))
 			{
 				// The client has terminated the ray cast.
 				return;

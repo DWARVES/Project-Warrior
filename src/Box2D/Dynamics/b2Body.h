@@ -615,7 +615,7 @@ inline void b2Body::SetBullet(bool flag)
 	}
 	else
 	{
-		m_flags &= ~e_bulletFlag;
+		m_flags &= static_cast<uint16>(~e_bulletFlag);
 	}
 }
 
@@ -636,7 +636,7 @@ inline void b2Body::SetAwake(bool flag)
 	}
 	else
 	{
-		m_flags &= ~e_awakeFlag;
+		m_flags &= static_cast<uint16>(~e_awakeFlag);
 		m_sleepTime = 0.0f;
 		m_linearVelocity.SetZero();
 		m_angularVelocity = 0.0f;
@@ -663,7 +663,7 @@ inline void b2Body::SetFixedRotation(bool flag)
 	}
 	else
 	{
-		m_flags &= ~e_fixedRotationFlag;
+		m_flags &= static_cast<uint16>(~e_fixedRotationFlag);
 	}
 
 	ResetMassData();
@@ -682,7 +682,7 @@ inline void b2Body::SetSleepingAllowed(bool flag)
 	}
 	else
 	{
-		m_flags &= ~e_autoSleepFlag;
+		m_flags &= static_cast<uint16>(~e_autoSleepFlag);
 		SetAwake(true);
 	}
 }
