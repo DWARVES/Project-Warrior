@@ -54,6 +54,18 @@ namespace events
             bool caps() const;
 
             /************************
+             *     Text input       *
+             ************************/
+            /* Returns the input capted in the last call to update */
+            std::string lastInput() const;
+            /* Returns the input capted since the last call to clearInput */
+            std::string fullInput() const;
+            void clearInput();
+            /* Enable the input */
+            void enableInput(bool e);
+            bool isInputEnabled() const;
+
+            /************************
              *       Buttons        *
              ************************/
             /* Buttons pressed in last update call */
@@ -136,6 +148,11 @@ namespace events
             std::vector<Key> m_lastPressedK;
             std::vector<Key> m_lastReleasedK;
 
+            /* Input events */
+            std::string m_lastInput;
+            std::string m_fullInput;
+            bool m_input;
+
             /* Button events */
             struct ButtonEvent {
                 bool state;               /* Pressed or released */
@@ -175,6 +192,7 @@ namespace events
             void process(SDL_MouseButtonEvent* ev);
             void process(SDL_DropEvent* ev);
             void process(SDL_WindowEvent* ev);
+            void process(SDL_TextInputEvent* ev);
     };
 }
 

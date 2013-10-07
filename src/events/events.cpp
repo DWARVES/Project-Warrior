@@ -6,7 +6,7 @@
 namespace events
 {
     Events::Events()
-        : m_mrel(0.0f,0.0f), m_closed(false), m_wheel(0.0f,0.0f), m_quit(false)
+        : m_input(false), m_mrel(0.0f,0.0f), m_closed(false), m_wheel(0.0f,0.0f), m_quit(false)
     {
         initKeys();
         initButtons();
@@ -23,7 +23,7 @@ namespace events
         ev.releaseP = geometry::Point(0.0f, 0.0f);
 
         for(unsigned int k = SDL_SCANCODE_UNKNOWN; k < SDL_NUM_SCANCODES; ++k)
-            m_keys[k]   = ev;
+            m_keys[k] = ev;
     }
 
     void Events::initButtons()
@@ -58,6 +58,7 @@ namespace events
         /* Initialising */
         m_lastPressedK.clear();
         m_lastReleasedK.clear();
+        m_lastInput.clear();
         m_lastPressedB.clear();
         m_lastReleasedB.clear();
         m_mrel = geometry::Point(0.0f, 0.0f);
@@ -94,6 +95,9 @@ namespace events
                     break;
                 case SDL_DROPFILE:
                     process(&ev.drop);
+                    break;
+                case SDL_TEXTINPUT:
+                    process(&ev.text);
                     break;
                 default:
                     break;
@@ -223,6 +227,12 @@ namespace events
         if(change)
             m_wins[(Uint8)id].state = nvalue;
     }
+            
+    void Events::process(SDL_TextInputEvent* ev)
+    {
+        m_lastInput += ev->text;
+        m_fullInput += ev->text;
+    }
 
     /************************
      *       Keyboard       *
@@ -301,6 +311,40 @@ namespace events
     bool Events::caps() const
     {
         return (SDL_GetModState() & KMOD_CAPS) == KMOD_CAPS;
+    }
+
+    /************************
+     *     Text input       *
+     ************************/
+    std::string Events::lastInput() const
+    {
+        return m_lastInput;
+    }
+
+    std::string Events::fullInput() const
+    {
+        return m_fullInput;
+    }
+
+    void Events::clearInput()
+    {
+        m_fullInput.clear();
+    }
+
+    void Events::enableInput(bool e)
+    {
+        if(m_input == e) /* Nothing change */
+            return;
+        if(e)
+            SDL_StartTextInput();
+        else
+            SDL_StopTextInput();
+        m_input = e;
+    }
+
+    bool Events::isInputEnabled() const
+    {
+        return m_input;
     }
 
     /************************
