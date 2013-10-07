@@ -1,5 +1,7 @@
 
 #include "events.hpp"
+#include "core/logger.hpp"
+#include <sstream>
 
 namespace events
 {
@@ -361,6 +363,24 @@ namespace events
     geometry::Point Events::mouseRel() const
     {
         return m_mrel;
+    }
+
+    bool Events::mouseRelMode(bool enable)
+    {
+        SDL_bool st = (enable ? SDL_TRUE : SDL_FALSE);
+        if(SDL_SetRelativeMouseMode(st) < 0) {
+            std::ostringstream oss;
+            oss << "Couldn't enable relative mouse mode : \"" << SDL_GetError() << "\".";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            return false;
+        }
+        else
+            return true;
+    }
+            
+    bool Events::mouseRelMode() const
+    {
+        return (SDL_GetRelativeMouseMode() == SDL_TRUE) ? true : false;
     }
 
     /************************

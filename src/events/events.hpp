@@ -78,7 +78,12 @@ namespace events
             geometry::Point mousePos() const;
             /* Returns the move of the mouse between the two previous calls to update */
             geometry::Point mouseRel() const;
-            /* TODO mouse rel and setPos */
+            /* The mouse will disappear and stay at the same place, so only relative mouse movement will be reported if enabled
+             * Returns false if the sdl driver doesn't support it
+             */
+            bool mouseRelMode(bool enable);
+            /* Check if mouseRelMode is enabled */
+            bool mouseRelMode() const;
 
             /************************
              *       Window         *
