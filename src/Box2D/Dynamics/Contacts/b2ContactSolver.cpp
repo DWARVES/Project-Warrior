@@ -238,7 +238,7 @@ void b2ContactSolver::InitializeVelocityConstraints()
 			else
 			{
 				// The constraints are redundant, just use one.
-				// TODO_ERIN use deepest?
+				// todo_ERIN use deepest?
 				vc->pointCount = 1;
 			}
 		}

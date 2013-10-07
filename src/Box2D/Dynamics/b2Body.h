@@ -42,7 +42,7 @@ enum b2BodyType
 	b2_kinematicBody,
 	b2_dynamicBody
 
-	// TODO_ERIN
+	// todo_ERIN
 	//b2_bulletBody,
 };
 
