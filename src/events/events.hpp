@@ -32,16 +32,16 @@ namespace events
             /* Keys released in last update call */
             std::vector<Key> lastKeysReleased() const;
             /* Time when this key was last pressed */
-            unsigned int lastKeyPress(KeyType k) const;
+            unsigned int lastKeyPress(Key k) const;
             /* Time when this key was last released */
-            unsigned int lastKeyRelease(KeyType k) const;
+            unsigned int lastKeyRelease(Key k) const;
             /* Returns the time during which the key was pressed, or 0 if it's not pressed */
-            unsigned int timeKeyPressed(KeyType k) const;
+            unsigned int timeKeyPressed(Key k) const;
             /* Position of the pointer when the key was last pressed */
-            geometry::Point posKeyPress(KeyType k) const;
+            geometry::Point posKeyPress(Key k) const;
             /* Position of the pointer when the key was last released */
-            geometry::Point posKeyRelease(KeyType k) const;
-            bool isKeyPressed(KeyType k) const;
+            geometry::Point posKeyRelease(Key k) const;
+            bool isKeyPressed(Key k) const;
 
             /************************
              *      Modifiers       *

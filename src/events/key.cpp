@@ -251,6 +251,12 @@ namespace events
     {
         setSym(k);
     }
+            
+    Key::Key(KeyMap m)
+        : Key()
+    {
+        setSym(m);
+    }
 
     char Key::getChar() const
     {
@@ -303,6 +309,11 @@ namespace events
     void Key::setSym(KeyType sym)
     {
         m_key = sym;
+    }
+            
+    void Key::setSym(KeyMap map)
+    {
+        m_key = (KeyType)map;
     }
 
     void Key::setPos(KeyType pos)

@@ -247,17 +247,17 @@ namespace events
         return m_lastReleasedK;
     }
 
-    unsigned int Events::lastKeyPress(KeyType k) const
+    unsigned int Events::lastKeyPress(Key k) const
     {
         return m_keys[SDL_GetScancodeFromKey(k)].pressT;
     }
 
-    unsigned int Events::lastKeyRelease(KeyType k) const
+    unsigned int Events::lastKeyRelease(Key k) const
     {
         return m_keys[SDL_GetScancodeFromKey(k)].releaseT;
     }
 
-    unsigned int Events::timeKeyPressed(KeyType k) const
+    unsigned int Events::timeKeyPressed(Key k) const
     {
         if(!isKeyPressed(k))
             return 0;
@@ -265,17 +265,17 @@ namespace events
             return SDL_GetTicks() - m_keys[SDL_GetScancodeFromKey(k)].pressT;
     }
 
-    geometry::Point Events::posKeyPress(KeyType k) const
+    geometry::Point Events::posKeyPress(Key k) const
     {
         return m_keys[SDL_GetScancodeFromKey(k)].pressP;
     }
 
-    geometry::Point Events::posKeyRelease(KeyType k) const
+    geometry::Point Events::posKeyRelease(Key k) const
     {
         return m_keys[SDL_GetScancodeFromKey(k)].releaseP;
     }
 
-    bool Events::isKeyPressed(KeyType k) const
+    bool Events::isKeyPressed(Key k) const
     {
         return m_keys[SDL_GetScancodeFromKey(k)].state;
     }

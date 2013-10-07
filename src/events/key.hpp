@@ -4,20 +4,18 @@
 
 #include <SDL.h>
 #include <string>
+#include "keymap.hpp"
+#include "keytype.hpp"
 
 namespace events
 {
-    /* KeyType must be an integer, the user does not need to know it's real size
-     * SDL_Keycode is already a typedef used by SDL to Sint32
-     */
-    typedef SDL_Keycode KeyType;
-
     class Key
     {
         public:
             Key();
             Key(char c);
             Key(KeyType k);
+            Key(KeyMap m);
 
             /* Returns the corresponding char of the key */
             char getChar() const;
@@ -33,6 +31,7 @@ namespace events
 
             void setChar(char c);
             void setSym(KeyType sym);
+            void setSym(KeyMap map);
             void setPos(KeyType pos);
 
         private:

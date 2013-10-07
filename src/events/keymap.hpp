@@ -3,6 +3,7 @@
 #define DEF_EVENTS_KEYMAP
 
 #include "key.hpp"
+#include "keytype.hpp"
 #include <SDL.h>
 
 namespace events
