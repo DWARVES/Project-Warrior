@@ -21,9 +21,9 @@
 #include "Test.h"
 #include "Render.h"
 
-#include "EntityTest.h"
+#include "PhysicsTest.h"
 
 TestEntry g_testEntries[] =
 {
-    {"Entity Test", EntityTest::Create}
+    {"Physics Test", PhysicsTest::Create}
 };

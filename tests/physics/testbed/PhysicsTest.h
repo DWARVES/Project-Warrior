@@ -1,7 +1,8 @@
-#ifndef DEF_ENTITYTEST_H
-#define DEF_ENTITYTEST_H
+#ifndef DEF_PHYSICSTEST_H
+#define DEF_PHYSICSTEST_H
 
 #include "physics/CollisionManager.hpp"
+#include "physics/World.hpp"
 #include "physics/Entity.hpp"
 #include "physics/Character.hpp"
 #include "physics/Attack.hpp"
@@ -16,34 +17,36 @@
 using namespace geometry;
 using namespace physics;
 
-class EntityTest : public Test
+class PhysicsTest : public Test
 {
     public:
 
         CollisionManager *colManager;
+
+        World *world;
 
         Attack *circle, *polygon;
         Character *square1, *square2, *square3;
         Platform *platform;
         Obstacle *ground;
 
-        EntityTest()
+        PhysicsTest()
         {
-            core::logger::init();
-            core::logger::addOutput(&std::cout);
-
             m_world->SetGravity(b2Vec2(0, -40));
             colManager = new CollisionManager();
             m_world->SetContactListener(colManager);
 
-            square1 = new Character("Square 1", m_world, Point(-300, 50), AABB(100, 100), Character::Weight::Heavy);
-            square2 = new Character("Square 2", m_world, Point(-500, 50), AABB(100, 100), Character::Weight::Medium);
-            square3 = new Character("Square 3", m_world, Point(-700, 50), AABB(100, 100), Character::Weight::Lightweight);
+            world = new World(m_world);
 
-            circle = new Attack("Spectre attack", m_world, Point(-100, 500), b2_dynamicBody, Attack::CollideType::Spectre);
+            square1 = world->createCharacter("Square 1", Point(-300, 50), AABB(100, 100), Character::Weight::Heavy);
+            square2 = world->createCharacter("Square 2", Point(-500, 50), AABB(100, 100), Character::Weight::Medium);
+            square3 = world->createCharacter("Square 3", Point(-700, 50), AABB(100, 100), Character::Weight::Lightweight);
+
+            circle = world->createAttack("Spectre attack", Point(-100, 500), b2_dynamicBody, Attack::CollideType::Spectre);
             circle->createFixture("body", Circle(50));
 
-            polygon = new Attack("Ghost attack", m_world, Point(100, 50), b2_dynamicBody, Attack::CollideType::Ghost);
+            polygon = world->createAttack("Ghost attack", Point(100, 50), b2_dynamicBody, Attack::CollideType::Ghost);
+            //polygon = world->getEntity("Ghost Attack").get();
             std::vector<Point> vertices;
             vertices.push_back(Point(-25, 0));
             vertices.push_back(Point(0, -50));
@@ -51,19 +54,17 @@ class EntityTest : public Test
             vertices.push_back(Point(0, 50));
             polygon->createFixture("body", Polygon(vertices));
 
-            platform = new Platform("Platform of the death", m_world, Point(-100, 300), AABB(500, 20));
+            platform = world->createPlatform("Platform of the death", Point(-100, 300), AABB(500, 20));
 
-            ground = new Obstacle("Ground", m_world, Point(0, 0), AABB(2500, 1));
+            ground = world->createObstacle("Ground", Point(0, 0), AABB(2500, 1));
 
             // Testing different errors
             ground->createFixture("body", Line(Point(0, 0), Point(2500, 0), Point(1250, 0)), 1, 1);
             b2Fixture* f = ground->getFixture("pouet");
         }
 
-        ~EntityTest()
-        {
-            core::logger::free();
-        }
+        ~PhysicsTest()
+        {}
 
         void Step(Settings* settings)
         {
@@ -72,7 +73,7 @@ class EntityTest : public Test
 
         static Test* Create()
         {
-            return new EntityTest;
+            return new PhysicsTest;
         }
 
         void Keyboard(unsigned char key)
