@@ -9,8 +9,8 @@ namespace physics
     class Obstacle : public Entity
     {
         public:
-            Obstacle(const std::string& name, b2World* world, const geometry::Point& position);
-            Obstacle(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& rect, float friction = 1);
+            Obstacle(const std::string& name, b2World* world, const geometry::Point& position); // Create an empty obstacle (without fixture)
+            Obstacle(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& rect, float friction = 1); // Create a basic obstacle with AABB fixture
     };
 }
 

@@ -20,6 +20,11 @@ namespace physics
         m_body->SetUserData(this);
     }
 
+    b2Body* Entity::getBody() const
+    {
+        return m_body;
+    }
+
     b2Fixture* Entity::getFixture(const std::string& name) const
     {
         if(!m_fixtures.count(name))

@@ -1,6 +1,7 @@
 
 #include "World.hpp"
 #include "core/logger.hpp"
+#include <iostream>
 
 namespace physics
 {
@@ -9,30 +10,133 @@ namespace physics
         m_world = new b2World(gravity);
         m_colManager = new CollisionManager();
         m_world->SetContactListener(m_colManager);
+
+        core::logger::init();
+        core::logger::addOutput(&std::cout);
     }
 
-    Entity* World::getEntity(const std::string& name) const
+    World::World(b2World* world) : m_world(world)
     {
-        if(!m_entities.count(name))
-        {
+        core::logger::init();
+        core::logger::addOutput(&std::cout);
+    }
+
+    World::~World()
+    {
+        core::logger::free();
+    }
+
+    std::shared_ptr<Entity> World::getEntity(const std::string& name) const
+    {
+        if(!existsEntity(name)) {
             core::logger::logm("Tried to get unexisting entity \"" + name + "\" : returned NULL.", core::logger::WARNING);
             return NULL;
         }
-
+        
         return m_entities.at(name);
     }
 
-    Entity* World::createEntity(const std::string& name, const geometry::Point& position, const b2BodyType& bodyType, bool fixedRotation)
+    bool World::existsEntity(const std::string& name) const
     {
         if(m_entities.count(name))
-        {
+            return true;
+        else
+            return false;
+    }
+
+    Entity* World::createEntity(const std::string& name, const geometry::Point& position, const b2BodyType& bodyType, uint16 type, uint16 collideWith, float gravityScale, bool fixedRotation)
+    {
+        if(!existsEntity(name)) {
+            Entity *entity = new Entity(name, m_world, position, bodyType, type, collideWith, gravityScale, fixedRotation);
+            m_entities[name] = std::shared_ptr<Entity>(entity);
+            core::logger::logm("The entity \"" + name + "\" has been created.", core::logger::MSG);
+            return entity;
+        }
+        else {
             core::logger::logm("Tried to override the existing entity \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
             return NULL;
         }
+    }
+    
+    Character* World::createCharacter(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float weight)
+    {
+        if(!existsEntity(name)) {
+            Character *character = new Character(name, m_world, position, rect, weight);
+            m_entities[name] = std::shared_ptr<Character>(character);
+            core::logger::logm("The character \"" + name + "\" has been created.", core::logger::MSG);
+            return character;
+        }
+        else {
+            core::logger::logm("Tried to override the existing character \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
+            return NULL;
+        }
+    }
 
-        m_entities[name] = new Entity(name, m_world, position, bodyType, fixedRotation);
-        core::logger::logm("The entity \"" + name + "\" has been created.", core::logger::MSG);
+    Attack* World::createAttack(const std::string& name, const geometry::Point& position, const b2BodyType& bodyType, uint16 collideWith, float gravityScale, bool fixedRotation)
+    {
+        if(!existsEntity(name)) {
+            Attack *attack = new Attack(name, m_world, position, bodyType, collideWith, gravityScale, fixedRotation);
+            m_entities[name] = std::shared_ptr<Attack>(attack);
+            core::logger::logm("The attack \"" + name + "\" has been created.", core::logger::MSG);
+            return attack;
+        }
+        else {
+            core::logger::logm("Tried to override the existing attack \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
+            return NULL;
+        }
+    }
+    
+    Platform* World::createPlatform(const std::string& name, const geometry::Point& position)
+    {
+        if(!existsEntity(name)) {
+            Platform *platform = new Platform(name, m_world, position);
+            m_entities[name] = std::shared_ptr<Platform>(platform);
+            core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::MSG);
+            return platform;
+        }
+        else {
+            core::logger::logm("Tried to override the existing platform \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
+            return NULL;
+        }
+    }
+    Platform* World::createPlatform(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float friction)
+    {
+        if(!existsEntity(name)) {
+            Platform *platform = new Platform(name, m_world, position, rect, friction);
+            m_entities[name] = std::shared_ptr<Platform>(platform);
+            core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::MSG);
+            return platform;
+        }       
+        else {
+            core::logger::logm("Tried to override the existing platform \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
+            return NULL;
+        }
+    }
 
-        return m_entities.at(name);
+    Obstacle* World::createObstacle(const std::string& name, const geometry::Point& position)
+    {
+        if(!existsEntity(name)) {
+            Obstacle *obstacle = new Obstacle(name, m_world, position);
+            m_entities[name] = std::shared_ptr<Obstacle>(obstacle);
+            core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::MSG);
+            return obstacle;
+        }
+        else {
+            core::logger::logm("Tried to override the existing obstacle \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
+            return NULL;
+        }
+    }
+    Obstacle* World::createObstacle(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float friction)
+    {
+        if(!existsEntity(name)) {
+            Obstacle *obstacle = new Obstacle(name, m_world, position, rect, friction);
+            m_entities[name] = std::shared_ptr<Obstacle>(obstacle);
+            core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::MSG);
+            return obstacle;
+        }
+        else {
+            core::logger::logm("Tried to override the existing obstacle \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
+            return NULL;
+        }
     }
 }
