@@ -6,6 +6,7 @@
 #include <string>
 #include "key.hpp"
 #include "button.hpp"
+#include "joystick.hpp"
 #include "windowstate.hpp"
 #include "geometry/point.hpp"
 #include "geometry/aabb.hpp"
@@ -115,7 +116,29 @@ namespace events
             /************************
              *      Joystick        *
              ************************/
-            /* TODO */
+            /* TODO report hotplug and unplug of joysticks */
+            int numJoysticks() const;
+            /* Direct access to state can be done through the Joystick structure */
+            /* Returns NULL if couldn't load the joystick
+             * The pointer returned will be used to access states an functions
+             * It mustn't be free'd by the user
+             */
+            Joystick* openJoystick(JoystickID id);
+            /* The pointer won't be valid anymore */
+            void closeJoystick(Joystick* j);
+            /* The last pressed and released buttons for a joystick */
+            std::vector<int> lastJoyButtonsPressed(Joystick* j) const;
+            std::vector<int> lastJoyButtonsReleased(Joystick* j) const;
+            /* Time of last press and release of a button */
+            unsigned int lastJoyButtonPress(Joystick* j, int b) const;
+            unsigned int lastJoyButtonRelease(Joystick* j, int b) const;
+            unsigned int timeJoyButtonPressed(Joystick* j, int b) const;
+            /* Position of the pointer when the buttons where released or pressed */
+            geometry::Point posJoyButtonPress(Joystick* j, int b) const;
+            geometry::Point posJoyButtonRelease(Joystick* j, int b) const;
+            /* What changed, return indexes */
+            std::vector<int> lastAxesMoved(Joystick* j) const;
+            std::vector<int> lastHatsMoved(Joystick* j) const;
 
             /************************
              *    Miscellaneous     *
@@ -176,6 +199,22 @@ namespace events
             };
             WindowEvent m_wins[Uint8(WindowState::Last)];
             bool m_closed;
+
+            /* Joystick */
+            struct JoystickButtonEvent {
+                unsigned int pressT;
+                geometry::Point pressP;
+                unsigned int releaseT;
+                geometry::Point releaseP;
+            };
+            typedef std::unordered_map<int,JoystickButtonEvent> JoyButtonMap;
+
+            struct JoystickEvent {
+                JoyButtonMap buttons;
+                std::vector<int> laxis;
+                std::vector<int> lhats;
+            };
+            std::map<Joystick*,JoystickEvent> m_joys;
 
             /* Miscellaneous */
             geometry::Point m_wheel;

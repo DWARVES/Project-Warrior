@@ -227,7 +227,7 @@ namespace events
         if(change)
             m_wins[(Uint8)id].state = nvalue;
     }
-            
+
     void Events::process(SDL_TextInputEvent* ev)
     {
         m_lastInput += ev->text;
@@ -421,7 +421,7 @@ namespace events
         else
             return true;
     }
-            
+
     bool Events::mouseRelMode() const
     {
         return (SDL_GetRelativeMouseMode() == SDL_TRUE) ? true : false;
@@ -453,6 +453,57 @@ namespace events
     void Events::closeAbort()
     {
         m_closed = false;
+    }
+
+    /************************
+     *      Joystick        *
+     ************************/
+    int Events::numJoysticks() const
+    {
+    }
+
+    Joystick* Events::openJoystick(JoystickID id)
+    {
+    }
+
+    void Events::closeJoystick(Joystick* j)
+    {
+    }
+
+    std::vector<int> Events::lastJoyButtonsPressed(Joystick* j) const
+    {
+    }
+
+    std::vector<int> Events::lastJoyButtonsReleased(Joystick* j) const
+    {
+    }
+
+    unsigned int Events::lastJoyButtonPress(Joystick* j, int b) const
+    {
+    }
+
+    unsigned int Events::lastJoyButtonRelease(Joystick* j, int b) const
+    {
+    }
+
+    unsigned int Events::timeJoyButtonPressed(Joystick* j, int b) const
+    {
+    }
+
+    geometry::Point Events::posJoyButtonPress(Joystick* j, int b) const
+    {
+    }
+
+    geometry::Point Events::posJoyButtonRelease(Joystick* j, int b) const
+    {
+    }
+
+    std::vector<int> Events::lastAxesMoved(Joystick* j) const
+    {
+    }
+
+    std::vector<int> Events::lastHatsMoved(Joystick* j) const
+    {
     }
 
     /************************
