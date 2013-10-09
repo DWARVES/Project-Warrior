@@ -4,6 +4,7 @@
 
 #include <SDL.h>
 #include <string>
+#include <exception>
 
 namespace events
 {
@@ -26,10 +27,24 @@ namespace events
         DownLeft  = SDL_HAT_LEFTDOWN,
     };
 
+    class JoystickException : public std::exception
+    {
+        public:
+            JoystickException() = delete;
+            JoystickException(JoystickID id) throw();
+            virtual ~JoystickException() throw();
+            virtual const char* what() const throw();
+            JoystickID which() const throw();
+
+        private:
+            JoystickID m_id;
+    };
+
     class Joystick
     {
         /* FIXME : ball system is not supported */
         public:
+            /* Launch an JoystickException if ID couldn't be loaded */
             Joystick(JoystickID ID);
             Joystick() = delete;
             Joystick(const Joystick&) = delete;

@@ -5,6 +5,23 @@
 
 namespace events
 {
+    JoystickException::JoystickException(JoystickID id) throw()
+        : m_id(id)
+    {}
+
+    JoystickException::~JoystickException() throw()
+    {}
+
+    const char* JoystickException::what() const throw()
+    {
+        return "Joystick couldn't be loaded.";
+    }
+
+    JoystickID JoystickException::which() const throw()
+    {
+        return m_id;
+    }
+
     Joystick::Joystick(JoystickID ID)
         : m_joy(NULL)
     {
@@ -13,7 +30,7 @@ namespace events
             std::ostringstream oss;
             oss << "Couldn't open joystick #" << ID << " : \"" << SDL_GetError() << "\".";
             core::logger::logm(oss.str(), core::logger::WARNING);
-            return; /* FIXME should launch an exception */
+            throw JoystickException(ID);
         }
         else {
             std::ostringstream oss;
