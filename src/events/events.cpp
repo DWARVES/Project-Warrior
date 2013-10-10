@@ -122,6 +122,10 @@ namespace events
 
     void Events::process(SDL_KeyboardEvent* ev)
     {
+        /* Repeat events mustn't be processed */
+        if(ev->repeat)
+            return;
+
         SDL_Scancode id = ev->keysym.scancode;
         if(ev->type == SDL_KEYDOWN) {
             m_lastPressedK.push_back(ev->keysym.sym);
