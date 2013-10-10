@@ -51,7 +51,11 @@ namespace events
     }
 
     Events::~Events()
-    {}
+    {
+        /* Freeing the joysticks */
+        for(auto& it : m_joys)
+            delete it.first;
+    }
 
     void Events::update()
     {
@@ -66,6 +70,7 @@ namespace events
             m_wins[s].earned = false;
             m_wins[s].lost = false;
         }
+        clearJoysticks();
         m_wheel = geometry::Point(0.0f, 0.0f);
         m_dropped.clear();
 
@@ -98,6 +103,16 @@ namespace events
                     break;
                 case SDL_TEXTINPUT:
                     process(&ev.text);
+                    break;
+                case SDL_JOYAXISMOTION:
+                    process(&ev.jaxis);
+                    break;
+                case SDL_JOYHATMOTION:
+                    process(&ev.jhat);
+                    break;
+                case SDL_JOYBUTTONDOWN:
+                case SDL_JOYBUTTONUP:
+                    process(&ev.jbutton);
                     break;
                 default:
                     break;
@@ -232,6 +247,50 @@ namespace events
     {
         m_lastInput += ev->text;
         m_fullInput += ev->text;
+    }
+
+    void Events::clearJoysticks()
+    {
+        for(auto& j : m_joys) {
+            j.second.lpressed.clear();
+            j.second.lreleased.clear();
+            j.second.laxis.clear();
+            j.second.lhats.clear();
+        }
+    }
+
+    void Events::process(SDL_JoyAxisEvent* ev)
+    {
+        Joystick* j = getJoyFromID(ev->which);
+        if(j == NULL) /* Means joystick non loaded */
+            return;
+        m_joys[j].laxis.push_back(ev->axis);
+    }
+
+    void Events::process(SDL_JoyHatEvent* ev)
+    {
+        Joystick* j = getJoyFromID(ev->which);
+        if(j == NULL) /* Means joystick non loaded */
+            return;
+        m_joys[j].lhats.push_back(ev->hat);
+    }
+
+    void Events::process(SDL_JoyButtonEvent* ev)
+    {
+        Joystick* j = getJoyFromID(ev->which);
+        if(j == NULL) /* Means joystick non loaded */
+            return;
+
+        if(ev->type == SDL_JOYBUTTONDOWN) {
+            m_joys[j].buttons[ev->button].pressT = SDL_GetTicks();
+            m_joys[j].buttons[ev->button].pressP = mousePos();
+            m_joys[j].lpressed.push_back(ev->button);
+        }
+        else {
+            m_joys[j].buttons[ev->button].releaseT = SDL_GetTicks();
+            m_joys[j].buttons[ev->button].releaseP = mousePos();
+            m_joys[j].lreleased.push_back(ev->button);
+        }
     }
 
     /************************
@@ -460,50 +519,205 @@ namespace events
      ************************/
     int Events::numJoysticks() const
     {
+        return SDL_NumJoysticks();
     }
 
     Joystick* Events::openJoystick(JoystickID id)
     {
+        /* Was it already loaded ? */
+        bool found = false;
+        for(size_t i = 0; i < m_joyLoaded.size(); ++i) {
+            if(m_joyLoaded[i] == id) {
+                found = true;
+                break;
+            }
+        }
+        if(found) {
+            std::ostringstream oss;
+            oss << "Tryed to open joystick #" << id << ", which was already loaded.";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            return NULL;
+        }
+
+        /* Loading the joystick */
+        Joystick* j = NULL;
+        try {
+            j = new Joystick(id);
+        }
+        catch(const JoystickException& e) {
+            /* Logging already done in Joystick() */
+            return NULL;
+        }
+
+        /* Adding the joystick to the structure */
+        JoystickEvent ev = initEvent(j);
+        m_joys[j] = ev;
+        return j;
+    }
+
+    Events::JoystickEvent Events::initEvent(Joystick* j)
+    {
+        JoystickEvent ev;
+        ev.buttons.resize(j->numButtons());
+        for(size_t i = 0; i < ev.buttons.size(); ++i) {
+            ev.buttons[i].pressT   = 0;
+            ev.buttons[i].releaseT = 0;
+            ev.buttons[i].pressP   = geometry::Point(0.0f,0.0f);
+            ev.buttons[i].releaseP = geometry::Point(0.0f,0.0f);
+        }
+
+        return ev;
     }
 
     void Events::closeJoystick(Joystick* j)
     {
+        if(!isJoystickLoaded(j)) {
+            core::logger::logm("Tryed to close an unopened joystick.", core::logger::WARNING);
+            return;
+        }
+
+        m_joys.erase(j);
+        delete j;
+    }
+
+    bool Events::isJoystickLoaded(Joystick* j) const
+    {
+        return m_joys.find(j) != m_joys.end();
     }
 
     std::vector<int> Events::lastJoyButtonsPressed(Joystick* j) const
     {
+        std::vector<int> defRet;
+        if(!isJoystickLoaded(j)) {
+            core::logger::logm("Tryed to access an unopened joystick.", core::logger::WARNING);
+            return defRet;
+        }
+        else
+            return m_joys.at(j).lpressed;
     }
 
     std::vector<int> Events::lastJoyButtonsReleased(Joystick* j) const
     {
+        std::vector<int> defRet;
+        if(!isJoystickLoaded(j)) {
+            core::logger::logm("Tryed to access an unopened joystick.", core::logger::WARNING);
+            return defRet;
+        }
+        else
+            return m_joys.at(j).lreleased;
     }
 
     unsigned int Events::lastJoyButtonPress(Joystick* j, int b) const
     {
+        if(!isJoystickLoaded(j)) {
+            core::logger::logm("Tryed to access an unopened joystick.", core::logger::WARNING);
+            return 0;
+        }
+        else if(b >= j->numButtons()) {
+            std::ostringstream oss;
+            oss << "Tryed to access to unexisting button '" << b << "' in joystick #" << j->id() << ".";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            return 0;
+        }
+        else
+            return m_joys.at(j).buttons[b].pressT;
     }
 
     unsigned int Events::lastJoyButtonRelease(Joystick* j, int b) const
     {
+        if(!isJoystickLoaded(j)) {
+            core::logger::logm("Tryed to access an unopened joystick.", core::logger::WARNING);
+            return 0;
+        }
+        else if(b >= j->numButtons()) {
+            std::ostringstream oss;
+            oss << "Tryed to access to unexisting button '" << b << "' in joystick #" << j->id() << ".";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            return 0;
+        }
+        else
+            return m_joys.at(j).buttons[b].releaseT;
     }
 
     unsigned int Events::timeJoyButtonPressed(Joystick* j, int b) const
     {
+        if(!isJoystickLoaded(j)) {
+            core::logger::logm("Tryed to access an unopened joystick.", core::logger::WARNING);
+            return 0;
+        }
+        else if(b >= j->numButtons()) {
+            std::ostringstream oss;
+            oss << "Tryed to access to unexisting button '" << b << "' in joystick #" << j->id() << ".";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            return 0;
+        }
+        else if(!j->button(b)) /* If the button is not pressed */
+            return 0;
+        else
+            return SDL_GetTicks() - m_joys.at(j).buttons[b].pressT;
     }
 
     geometry::Point Events::posJoyButtonPress(Joystick* j, int b) const
     {
+        if(!isJoystickLoaded(j)) {
+            core::logger::logm("Tryed to access an unopened joystick.", core::logger::WARNING);
+            return geometry::Point(0.0f,0.0f);
+        }
+        else if(b >= j->numButtons()) {
+            std::ostringstream oss;
+            oss << "Tryed to access to unexisting button '" << b << "' in joystick #" << j->id() << ".";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            return geometry::Point(0.0f,0.0f);
+        }
+        else
+            return m_joys.at(j).buttons[b].pressP;
     }
 
     geometry::Point Events::posJoyButtonRelease(Joystick* j, int b) const
     {
+        if(!isJoystickLoaded(j)) {
+            core::logger::logm("Tryed to access an unopened joystick.", core::logger::WARNING);
+            return geometry::Point(0.0f,0.0f);
+        }
+        else if(b >= j->numButtons()) {
+            std::ostringstream oss;
+            oss << "Tryed to access to unexisting button '" << b << "' in joystick #" << j->id() << ".";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            return geometry::Point(0.0f,0.0f);
+        }
+        else
+            return m_joys.at(j).buttons[b].releaseP;
     }
 
     std::vector<int> Events::lastAxesMoved(Joystick* j) const
     {
+        std::vector<int> defRet;
+        if(!isJoystickLoaded(j)) {
+            core::logger::logm("Tryed to access an unopened joystick.", core::logger::WARNING);
+            return defRet;
+        }
+        else
+            return m_joys.at(j).laxis;
     }
 
     std::vector<int> Events::lastHatsMoved(Joystick* j) const
     {
+        std::vector<int> defRet;
+        if(!isJoystickLoaded(j)) {
+            core::logger::logm("Tryed to access an unopened joystick.", core::logger::WARNING);
+            return defRet;
+        }
+        else
+            return m_joys.at(j).lhats;
+    }
+            
+    Joystick* Events::getJoyFromID(JoystickID id)
+    {
+        for(auto& it : m_joys) {
+            if(it.first->id() == id)
+                return it.first;
+        }
+        return NULL;
     }
 
     /************************

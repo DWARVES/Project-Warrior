@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include <unordered_map>
 #include "key.hpp"
 #include "button.hpp"
 #include "joystick.hpp"
@@ -124,8 +125,11 @@ namespace events
              * It mustn't be free'd by the user
              */
             Joystick* openJoystick(JoystickID id);
-            /* The pointer won't be valid anymore */
+            /* The pointer won't be valid anymore 
+             * The joysticks which weren't closed by the user are closed when the Events class is destroyed
+             */
             void closeJoystick(Joystick* j);
+            bool isJoystickLoaded(Joystick* j) const;
             /* The last pressed and released buttons for a joystick */
             std::vector<int> lastJoyButtonsPressed(Joystick* j) const;
             std::vector<int> lastJoyButtonsReleased(Joystick* j) const;
@@ -201,20 +205,22 @@ namespace events
             bool m_closed;
 
             /* Joystick */
+            std::vector<JoystickID> m_joyLoaded;
             struct JoystickButtonEvent {
                 unsigned int pressT;
                 geometry::Point pressP;
                 unsigned int releaseT;
                 geometry::Point releaseP;
             };
-            typedef std::unordered_map<int,JoystickButtonEvent> JoyButtonMap;
 
             struct JoystickEvent {
-                JoyButtonMap buttons;
+                std::vector<JoystickButtonEvent> buttons;
+                std::vector<int> lpressed;
+                std::vector<int> lreleased;
                 std::vector<int> laxis;
                 std::vector<int> lhats;
             };
-            std::map<Joystick*,JoystickEvent> m_joys;
+            std::unordered_map<Joystick*,JoystickEvent> m_joys;
 
             /* Miscellaneous */
             geometry::Point m_wheel;
@@ -225,13 +231,19 @@ namespace events
             void initKeys();
             void initButtons();
             void initStates();
-            void process(SDL_KeyboardEvent* ev);
+            JoystickEvent initEvent(Joystick* j);
+            Joystick* getJoyFromID(JoystickID id);
+            void clearJoysticks();
+            void process(SDL_KeyboardEvent*    ev);
             void process(SDL_MouseMotionEvent* ev);
-            void process(SDL_MouseWheelEvent* ev);
+            void process(SDL_MouseWheelEvent*  ev);
             void process(SDL_MouseButtonEvent* ev);
-            void process(SDL_DropEvent* ev);
-            void process(SDL_WindowEvent* ev);
-            void process(SDL_TextInputEvent* ev);
+            void process(SDL_DropEvent*        ev);
+            void process(SDL_WindowEvent*      ev);
+            void process(SDL_TextInputEvent*   ev);
+            void process(SDL_JoyAxisEvent*     ev);
+            void process(SDL_JoyHatEvent*      ev);
+            void process(SDL_JoyButtonEvent*   ev);
     };
 }
 
