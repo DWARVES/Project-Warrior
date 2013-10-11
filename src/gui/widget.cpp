@@ -32,6 +32,28 @@ namespace gui
         return m_height;
     }
 
+
+    /* Do nothing, must be overrided */
+    void Widget::focus(bool)
+    {}
+
+    void Widget::click(const geometry::Point&)
+    {}
+
+    void Widget::keyPress(events::Key)
+    {}
+
+    void Widget::keyReleased(events::Key)
+    {}
+
+    void Widget::inputText(const std::string&)
+    {}
+
+    bool Widget::next()
+    {
+        return true;
+    }
+
 }
 
 

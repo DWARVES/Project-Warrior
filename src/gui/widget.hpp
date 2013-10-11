@@ -4,6 +4,8 @@
 
 #include "graphics/graphics.hpp"
 #include "geometry/point.hpp"
+#include "events/key.hpp"
+#include <string>
 
 namespace gui
 {
@@ -22,21 +24,31 @@ namespace gui
             virtual int width() const;
             virtual int height() const;
 
+            /* Will be called at every loop
+             * Consider the origin to be the top-left of your Widget
+             */
             virtual void draw() = 0;
 
             /* Actions */
-            virtual void focus() = 0;
-            virtual void mouseIn() = 0;
-            virtual void mouseOut() = 0;
-            virtual void click(const geometry::Point& p) = 0;
-            virtual void keyPress(char k) = 0;
-            virtual void keyReleased(char k) = 0;
+            /* The following functions do nothing,
+             * If your widget uses them, override them with your own implementation
+             */
+            virtual void focus(bool);
+            virtual void click(const geometry::Point&);
+            virtual void keyPress(events::Key);
+            virtual void keyReleased(events::Key);
+            virtual void inputText(const std::string&);
+            /* Called when the next widget needs to be focused
+             * Return true if you needs to go to the next widget outside this one
+             * If this is a simple widget, not a layout, always return true (default behaviour)
+             */
+            virtual bool next();
 
         protected:
             graphics::Graphics* m_gfx;
 
         private:
-            /* PRIVATE use accesors to access */
+            /* PRIVATE use accessors to access */
             int m_width, m_height;
 
     };
