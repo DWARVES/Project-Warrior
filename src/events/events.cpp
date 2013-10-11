@@ -2,6 +2,7 @@
 #include "events.hpp"
 #include "core/logger.hpp"
 #include <sstream>
+#include <algorithm>
 
 namespace events
 {
@@ -330,6 +331,24 @@ namespace events
         return m_lastReleasedK;
     }
 
+    bool Events::keyJustPressed(Key k) const
+    {
+        std::vector<Key> lp = lastKeysPressed();
+        if(std::find(lp.begin(), lp.end(), k) != lp.end())
+            return true;
+        else
+            return false;
+    }
+
+    bool Events::keyJustReleased(Key k) const
+    {
+        std::vector<Key> lr = lastKeysReleased();
+        if(std::find(lr.begin(), lr.end(), k) != lr.end())
+            return true;
+        else
+            return false;
+    }
+
     unsigned int Events::lastKeyPress(Key k) const
     {
         return m_keys[SDL_GetScancodeFromKey(k)].pressT;
@@ -441,6 +460,24 @@ namespace events
     std::vector<Button> Events::lastButtonsReleased() const
     {
         return m_lastReleasedB;
+    }
+
+    bool Events::keyJustPressed(Button k) const
+    {
+        std::vector<Button> lp = lastButtonsPressed();
+        if(std::find(lp.begin(), lp.end(), k) != lp.end())
+            return true;
+        else
+            return false;
+    }
+
+    bool Events::keyJustReleased(Button k) const
+    {
+        std::vector<Button> lr = lastButtonsReleased();
+        if(std::find(lr.begin(), lr.end(), k) != lr.end())
+            return true;
+        else
+            return false;
     }
 
     unsigned int Events::lastButtonPress(Button k) const
@@ -661,6 +698,26 @@ namespace events
         }
         else
             return m_joys.at(j).buttons[b].releaseT;
+    }
+
+    bool Events::joyButtonJustPressed(Joystick* j, int b) const
+    {
+        /* No need to check j, lp will be empty if j is not a valid Joystick */
+        std::vector<int> lp = lastJoyButtonsPressed(j);
+        if(std::find(lp.begin(), lp.end(), b) != lp.end())
+            return true;
+        else
+            return false;
+    }
+
+    bool Events::joyButtonJustReleased(Joystick* j, int b) const
+    {
+        /* No need to check j, lp will be empty if j is not a valid Joystick */
+        std::vector<int> lr = lastJoyButtonsReleased(j);
+        if(std::find(lr.begin(), lr.end(), b) != lr.end())
+            return true;
+        else
+            return false;
     }
 
     unsigned int Events::timeJoyButtonPressed(Joystick* j, int b) const

@@ -33,6 +33,10 @@ namespace events
             std::vector<Key> lastKeysPressed() const;
             /* Keys released in last update call */
             std::vector<Key> lastKeysReleased() const;
+            /* Test if the key was pressed in last call to update */
+            bool keyJustPressed(Key k) const;
+            /* Test if the key was released in last call to update */
+            bool keyJustReleased(Key k) const;
             /* Time when this key was last pressed */
             unsigned int lastKeyPress(Key k) const;
             /* Time when this key was last released */
@@ -74,6 +78,10 @@ namespace events
             std::vector<Button> lastButtonsPressed() const;
             /* Buttons released in last update call */
             std::vector<Button> lastButtonsReleased() const;
+            /* Test if the button was pressed in last call to update */
+            bool keyJustPressed(Button k) const;
+            /* Test if the button was released in last call to update */
+            bool keyJustReleased(Button k) const;
             /* Time when this button was last pressed */
             unsigned int lastButtonPress(Button k) const;
             /* Time when this button was last released */
@@ -132,6 +140,10 @@ namespace events
             /* The last pressed and released buttons for a joystick */
             std::vector<int> lastJoyButtonsPressed(Joystick* j) const;
             std::vector<int> lastJoyButtonsReleased(Joystick* j) const;
+            /* Test if the joystick button was pressed in last call to update */
+            bool joyButtonJustPressed(Joystick* j, int b) const;
+            /* Test if the joystick button was released in last call to update */
+            bool joyButtonJustReleased(Joystick* j, int b) const;
             /* Time of last press and release of a button */
             unsigned int lastJoyButtonPress(Joystick* j, int b) const;
             unsigned int lastJoyButtonRelease(Joystick* j, int b) const;

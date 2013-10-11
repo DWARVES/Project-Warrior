@@ -90,7 +90,7 @@ int main()
             if(!unplugged.empty())
                 std::cout << unplugged.size() << " joysticks were removed." << std::endl;
         }
-        if(ev.isKeyPressed(events::KeyMap::Return)) {
+        if(ev.keyJustPressed(events::KeyMap::Return)) {
             std::cout << "There are " << ev.numJoysticks() << " joysticks." << std::endl;
         }
 
