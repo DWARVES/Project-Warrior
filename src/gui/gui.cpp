@@ -13,12 +13,13 @@ namespace gui
             delete m_main;
     }
 
-    Widget* Gui::main(Widget* m, bool tofree)
+    Widget* Gui::main(Widget* m, const geometry::Point& pos, bool tofree)
     {
         if(m_tofree && m_main != NULL)
             delete m_main;
         m_tofree = tofree;
-        m_main = m;
+        m_main   = m;
+        m_pos    = pos;
         return m_main;
     }
 
@@ -29,11 +30,19 @@ namespace gui
 
     void Gui::draw()
     {
-        /* TODO */
+        if(!m_main)
+            return;
+
+        m_gfx->push();
+        m_gfx->move(m_pos.x,m_pos.y);
+        m_main->draw();
+        m_gfx->pop();
     }
 
-    void Gui::update()
+    void Gui::update(const events::Events& ev)
     {
+        if(!m_main)
+            return;
         /* TODO */
     }
 
