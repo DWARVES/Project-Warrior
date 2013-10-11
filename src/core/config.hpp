@@ -8,10 +8,23 @@
 #include <string>
 #include <iostream>
 #include <unordered_map>
-#include <boost/lexical_cast.hpp>
+#include <exception>
 
 namespace core
 {
+    class ConfigBadKeyException : public std::exception
+    {
+        public:
+            ConfigBadKeyException(const char* name) noexcept;
+            ConfigBadKeyException() = delete;
+            virtual ~ConfigBadKeyException();
+            virtual const char* what() const noexcept;
+            const char* name() const noexcept;
+
+        private:
+            const char* m_name;
+    };
+
     class Config
     {
         public:
@@ -41,6 +54,7 @@ namespace core
 
             /* Get the value of an option, converted with istringstream
              * For non standart types, overload operator>>(std::istream&, T)
+             * If name is not the name of an option, it will throw a ConfigBadKeyException
              */
             template <typename T> T get(const std::string& name);
 
@@ -99,11 +113,10 @@ namespace core
     template <typename T> T Config::get(const std::string& name)
     {
         if(!m_fs.existsEntity(name)) {
-            /* FIXME should throw an exception */
             std::ostringstream oss;
             oss << "Tryed to get the value of unregistered \"" << name << "\" option.";
             logger::logm(oss.str(), logger::WARNING);
-            return boost::lexical_cast<T>(0);
+            throw ConfigBadKeyException(name.c_str());
         }
         
         std::istringstream iss( m_fs.getEntityValue(name) );

@@ -5,6 +5,25 @@
 
 namespace core
 {
+    ConfigBadKeyException::ConfigBadKeyException(const char* mname) noexcept
+        : m_name(mname)
+    {}
+
+    ConfigBadKeyException::~ConfigBadKeyException()
+    {
+        /* Nothing to do */
+    }
+
+    const char* ConfigBadKeyException::what() const noexcept
+    {
+        return "Tryed to acces a config option with an invalid key.";
+    }
+
+    const char* ConfigBadKeyException::name() const noexcept
+    {
+        return m_name;
+    }
+
     Config::Config()
     {}
 
