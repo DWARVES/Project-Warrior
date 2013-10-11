@@ -114,6 +114,11 @@ namespace events
                 case SDL_JOYBUTTONUP:
                     process(&ev.jbutton);
                     break;
+                /* FIXME : SDL doesn't seems to report joydevice events */
+                case SDL_JOYDEVICEADDED:
+                case SDL_JOYDEVICEREMOVED:
+                    process(&ev.jdevice);
+                    break;
                 default:
                     break;
             }
@@ -261,6 +266,8 @@ namespace events
             j.second.laxis.clear();
             j.second.lhats.clear();
         }
+        m_lastJoyAdded.clear();
+        m_lastJoyRemoved.clear();
     }
 
     void Events::process(SDL_JoyAxisEvent* ev)
@@ -294,6 +301,19 @@ namespace events
             m_joys[j].buttons[ev->button].releaseT = SDL_GetTicks();
             m_joys[j].buttons[ev->button].releaseP = mousePos();
             m_joys[j].lreleased.push_back(ev->button);
+        }
+    }
+            
+    void Events::process(SDL_JoyDeviceEvent* ev)
+    {
+        if(ev->type == SDL_JOYDEVICEADDED)
+            m_lastJoyAdded.push_back(ev->which);
+        else { /* Joystick removed */
+            Joystick* j = getJoyFromID(ev->which);
+            if(j == NULL) /* Shouldn't happen */
+                return;
+            closeJoystick(j);
+            m_lastJoyRemoved.push_back(j);
         }
     }
 
@@ -713,6 +733,21 @@ namespace events
         }
         else
             return m_joys.at(j).lhats;
+    }
+
+    bool Events::joysticksChanged() const
+    {
+        return !m_lastJoyAdded.empty() || !m_lastJoyAdded.empty();
+    }
+
+    std::vector<JoystickID> Events::lastJoysticksAdded() const
+    {
+        return m_lastJoyAdded;
+    }
+    
+    std::vector<Joystick*> Events::lastJoysticksRemoved() const
+    {
+        return m_lastJoyRemoved;
     }
             
     Joystick* Events::getJoyFromID(JoystickID id)

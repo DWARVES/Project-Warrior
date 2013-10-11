@@ -117,7 +117,6 @@ namespace events
             /************************
              *      Joystick        *
              ************************/
-            /* TODO report hotplug and unplug of joysticks */
             int numJoysticks() const;
             /* Direct access to state can be done through the Joystick structure */
             /* Returns NULL if couldn't load the joystick
@@ -143,6 +142,18 @@ namespace events
             /* What changed, return indexes */
             std::vector<int> lastAxesMoved(Joystick* j) const;
             std::vector<int> lastHatsMoved(Joystick* j) const;
+            /* Indicate the joysticks added (their id) during last call to update */
+            /* Indicate if the number of joysticks changed
+             * Use lastJoystick{Added,Removed} for more prrecise info
+             */
+            bool joysticksChanged() const;
+            std::vector<JoystickID> lastJoysticksAdded() const;
+            /* Indicate the loaded joysticks which were removed in last call to update
+             * The pointers returned are NOT valid
+             * Their corresponding Joystick* structure are free'd when the joystick is unpluged,
+             *   so you mustn't close them nor use them anymore
+             */
+            std::vector<Joystick*> lastJoysticksRemoved() const;
 
             /************************
              *    Miscellaneous     *
@@ -205,6 +216,8 @@ namespace events
             bool m_closed;
 
             /* Joystick */
+            std::vector<JoystickID> m_lastJoyAdded;
+            std::vector<Joystick*> m_lastJoyRemoved;
             std::vector<JoystickID> m_joyLoaded;
             struct JoystickButtonEvent {
                 unsigned int pressT;
@@ -244,6 +257,7 @@ namespace events
             void process(SDL_JoyAxisEvent*     ev);
             void process(SDL_JoyHatEvent*      ev);
             void process(SDL_JoyButtonEvent*   ev);
+            void process(SDL_JoyDeviceEvent*   ev);
     };
 }
 

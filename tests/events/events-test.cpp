@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <algorithm>
 #include "core/logger.hpp"
 #include "graphics/graphics.hpp"
 #include "events/events.hpp"
@@ -13,6 +14,7 @@ void dumpInput(const std::string& l, const std::string& f);
 void dumpAxis(std::vector<int> axis, events::Joystick* j);
 void dumpHats(std::vector<int> hats, events::Joystick* j);
 void dumpJoyButtons(std::vector<int> buttons, events::Joystick* j, std::string action);
+void dumpAddedJoysticks(std::vector<events::JoystickID> devices);
 
 int main()
 {
@@ -38,6 +40,8 @@ int main()
     if(ev.numJoysticks() > 0) {
         std::cout << "Could open the first joystick ? "
             << ((joy = ev.openJoystick(0)) ? "yes" : "no") << std::endl;
+        if(joy)
+            std::cout << "Joystick name : " << joy->name() << std::endl;
     }
 
     /* Background */
@@ -63,6 +67,31 @@ int main()
             dumpHats(ev.lastHatsMoved(joy), joy);
             dumpJoyButtons(ev.lastJoyButtonsPressed(joy), joy, "pressed");
             dumpJoyButtons(ev.lastJoyButtonsReleased(joy), joy, "released");
+        }
+        if(ev.joysticksChanged()) {
+            std::cout << "Joysticks changed !" << std::endl;
+            std::vector<events::JoystickID> plugged  = ev.lastJoysticksAdded();
+            std::vector<events::Joystick*> unplugged = ev.lastJoysticksRemoved();
+            if(joy) {
+                if(std::find(unplugged.begin(), unplugged.end(), joy) != unplugged.end()) {
+                    std::cout << "The joystick used was removed." << std::endl;
+                    joy = NULL;
+                }
+            }
+            else {
+                if(plugged.size() > 0) {
+                    std::cout << "Could open the new plugged joystick #" << plugged[0] << " ? "
+                        << ((joy = ev.openJoystick(plugged[0])) ? "yes" : "no") << std::endl;
+                    if(joy)
+                        std::cout << "Joystick name : " << joy->name() << std::endl;
+                }
+            }
+            dumpAddedJoysticks(plugged);
+            if(!unplugged.empty())
+                std::cout << unplugged.size() << " joysticks were removed." << std::endl;
+        }
+        if(ev.isKeyPressed(events::KeyMap::Return)) {
+            std::cout << "There are " << ev.numJoysticks() << " joysticks." << std::endl;
         }
 
         gfx->beginDraw();
@@ -139,4 +168,12 @@ void dumpJoyButtons(std::vector<int> buttons, events::Joystick* j, std::string a
         std::cout << "Button #" << b << " " << action << " in joystick #" << j->id() << std::endl;
     }
 }
+
+void dumpAddedJoysticks(std::vector<events::JoystickID> devices)
+{
+    for(events::JoystickID d : devices) {
+        std::cout << "Joystick #" << d << " was added !" << std::endl;
+    }
+}
+
 
