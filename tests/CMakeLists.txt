@@ -13,4 +13,5 @@ add_subdirectory(physics)
 add_subdirectory(graphics)
 add_subdirectory(audio)
 add_subdirectory(events)
+add_subdirectory(gui)
 
