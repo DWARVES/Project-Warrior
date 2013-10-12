@@ -22,7 +22,7 @@ class BlueWidget : public gui::Widget
 
         virtual void draw()
         {
-            geometry::AABB aabb((float)width(), (float)height());
+            geometry::AABB aabb(width(), height());
             graphics::Color c;
             if(m_focus)
                 c = graphics::Color(0, 0, 255);
@@ -80,7 +80,7 @@ int main()
 
     gui::Gui g(gfx);
     BlueWidget w(gfx);
-    g.main(&w, geometry::Point(50.0f, 50.0f), 700, 500);
+    g.main(&w, geometry::Point(50.0f, 50.0f), 700.0f, 500.0f);
 
     while(cont)
     {

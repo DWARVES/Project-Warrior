@@ -18,11 +18,11 @@ namespace gui
             virtual ~Widget();
 
             /* Set size of the widget */
-            virtual int width(int w);
-            virtual int height(int h);
+            virtual int width(float w);
+            virtual int height(float h);
             /* Get size of the widget */
-            virtual int width() const;
-            virtual int height() const;
+            virtual float width() const;
+            virtual float height() const;
 
             /* Will be called at every loop
              * Consider the origin to be the top-left of your Widget
@@ -49,7 +49,7 @@ namespace gui
 
         private:
             /* PRIVATE use accessors to access */
-            int m_width, m_height;
+            float m_width, m_height;
 
     };
 }

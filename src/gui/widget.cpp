@@ -10,24 +10,24 @@ namespace gui
     Widget::~Widget()
     {}
 
-    int Widget::width(int w)
+    int Widget::width(float w)
     {
         m_width = w;
         return m_width;
     }
 
-    int Widget::height(int h)
+    int Widget::height(float h)
     {
         m_height = h;
         return m_height;
     }
 
-    int Widget::width() const
+    float Widget::width() const
     {
         return m_width;
     }
 
-    int Widget::height() const
+    float Widget::height() const
     {
         return m_height;
     }

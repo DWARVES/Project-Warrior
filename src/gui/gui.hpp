@@ -18,9 +18,9 @@ namespace gui
             ~Gui();
 
             /* Decide the rect of the gui */
-            Widget* main(Widget* m, const geometry::Point& pos, int width, int height, bool tofree = false);
+            Widget* main(Widget* m, const geometry::Point& pos, float width, float height, bool tofree = false);
             Widget* main() const;
-            void setRect(const geometry::Point& p, int width, int height);
+            void setRect(const geometry::Point& p, float width, float height);
 
             /* Will draw everything, must be between Graphics::beginDraw and endDraw */
             void draw();
@@ -36,7 +36,7 @@ namespace gui
             graphics::Graphics* m_gfx; /* The graphics instance used */
 
             /* Internal functions */
-            bool isInRect(const geometry::Point& p, const geometry::Point& o, int width, int height);
+            bool isInRect(const geometry::Point& p, const geometry::Point& o, float width, float height);
     };
 }
 

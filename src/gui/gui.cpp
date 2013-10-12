@@ -13,7 +13,7 @@ namespace gui
             delete m_main;
     }
 
-    Widget* Gui::main(Widget* m, const geometry::Point& pos, int width, int height, bool tofree)
+    Widget* Gui::main(Widget* m, const geometry::Point& pos, float width, float height, bool tofree)
     {
         if(m_tofree && m_main != NULL)
             delete m_main;
@@ -30,7 +30,7 @@ namespace gui
         return m_main;
     }
             
-    void Gui::setRect(const geometry::Point& p, int width, int height)
+    void Gui::setRect(const geometry::Point& p, float width, float height)
     {
         m_pos = p;
         m_main->width(width);
@@ -87,12 +87,12 @@ namespace gui
             m_main->inputText(input);
     }
 
-    bool Gui::isInRect(const geometry::Point& p, const geometry::Point& o, int width, int height)
+    bool Gui::isInRect(const geometry::Point& p, const geometry::Point& o, float width, float height)
     {
         if(p.x < o.x
                 || p.y < o.y
-                || p.x > o.x + (float)width
-                || p.y > o.y + (float)height)
+                || p.x > o.x + width
+                || p.y > o.y + height)
             return false;
         else
             return true;
