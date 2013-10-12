@@ -79,9 +79,9 @@ namespace events
             /* Buttons released in last update call */
             std::vector<Button> lastButtonsReleased() const;
             /* Test if the button was pressed in last call to update */
-            bool keyJustPressed(Button k) const;
+            bool buttonJustPressed(Button k) const;
             /* Test if the button was released in last call to update */
-            bool keyJustReleased(Button k) const;
+            bool buttonJustReleased(Button k) const;
             /* Time when this button was last pressed */
             unsigned int lastButtonPress(Button k) const;
             /* Time when this button was last released */

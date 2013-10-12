@@ -462,7 +462,7 @@ namespace events
         return m_lastReleasedB;
     }
 
-    bool Events::keyJustPressed(Button k) const
+    bool Events::buttonJustPressed(Button k) const
     {
         std::vector<Button> lp = lastButtonsPressed();
         if(std::find(lp.begin(), lp.end(), k) != lp.end())
@@ -471,7 +471,7 @@ namespace events
             return false;
     }
 
-    bool Events::keyJustReleased(Button k) const
+    bool Events::buttonJustReleased(Button k) const
     {
         std::vector<Button> lr = lastButtonsReleased();
         if(std::find(lr.begin(), lr.end(), k) != lr.end())
