@@ -43,7 +43,7 @@ namespace gui
     void Widget::keyPress(events::Key)
     {}
 
-    void Widget::keyReleased(events::Key)
+    void Widget::keyRelease(events::Key)
     {}
 
     void Widget::inputText(const std::string&)

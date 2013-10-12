@@ -36,7 +36,7 @@ namespace gui
             virtual void focus(bool);
             virtual void click(const geometry::Point&);
             virtual void keyPress(events::Key);
-            virtual void keyReleased(events::Key);
+            virtual void keyRelease(events::Key);
             virtual void inputText(const std::string&);
             /* Called when the next widget needs to be focused
              * Return true if you needs to go to the next widget outside this one
