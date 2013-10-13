@@ -10,13 +10,13 @@ namespace gui
     Widget::~Widget()
     {}
 
-    int Widget::width(float w)
+    float Widget::width(float w)
     {
         m_width = w;
         return m_width;
     }
 
-    int Widget::height(float h)
+    float Widget::height(float h)
     {
         m_height = h;
         return m_height;
@@ -38,6 +38,9 @@ namespace gui
     {}
 
     void Widget::click(const geometry::Point&)
+    {}
+            
+    void Widget::mouse(const geometry::Point&)
     {}
 
     void Widget::keyPress(events::Key)

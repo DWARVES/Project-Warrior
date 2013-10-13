@@ -18,8 +18,8 @@ namespace gui
             virtual ~Widget();
 
             /* Set size of the widget */
-            virtual int width(float w);
-            virtual int height(float h);
+            virtual float width(float w);
+            virtual float height(float h);
             /* Get size of the widget */
             virtual float width() const;
             virtual float height() const;
@@ -35,6 +35,7 @@ namespace gui
              */
             virtual void focus(bool);
             virtual void click(const geometry::Point&);
+            virtual void mouse(const geometry::Point&);
             virtual void keyPress(events::Key);
             virtual void keyRelease(events::Key);
             virtual void inputText(const std::string&);
