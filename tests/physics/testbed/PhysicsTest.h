@@ -45,8 +45,8 @@ class PhysicsTest : public Test
             circle = world->createAttack("Spectre attack", Point(-100, 500), b2_dynamicBody, Attack::CollideType::Spectre);
             circle->createFixture("body", Circle(50));
 
-            polygon = world->createAttack("Ghost attack", Point(100, 50), b2_dynamicBody, Attack::CollideType::Ghost);
-            //polygon = world->getEntity("Ghost Attack").get();
+            world->createAttack("Ghost attack", Point(100, 50), b2_dynamicBody, Attack::CollideType::Ghost);
+            polygon = static_cast<Attack*>(world->getEntity("Ghost attack"));
             std::vector<Point> vertices;
             vertices.push_back(Point(-25, 0));
             vertices.push_back(Point(0, -50));
