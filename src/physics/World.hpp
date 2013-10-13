@@ -22,7 +22,7 @@ namespace physics
             World(b2World* world); // Initializes m_world from world. Not so useful, except for testing purposes with Testbed
             ~World();
 
-            std::shared_ptr<Entity> getEntity(const std::string& name) const; // Returns a shared_ptr to the entity named "name" in the world entities map
+            Entity* getEntity(const std::string& name) const; // Returns a unique_ptr to the entity named "name" in the world entities map
 
             bool existsEntity(const std::string& name) const; // Check if the entity named "name" already exists
 
@@ -38,7 +38,7 @@ namespace physics
         protected:
             b2World* m_world; // The world used in Box2D for simulation, containing all the bodies and fixtures (that we grouped in the Entity class)
             CollisionManager* m_colManager; // The collision manager, used for advanced collisions management not possible with masks
-            std::map<std::string, std::shared_ptr<Entity>> m_entities; // A map containing all the entities of the world, allowing to access them with a specific name given by the user when created (shared_ptr allows polymorphism behavior)
+            std::map<std::string, std::unique_ptr<Entity>> m_entities; // A map containing all the entities of the world, allowing to access them with a specific name given by the user when created (unique_ptr allows polymorphism behavior)
     };
 }
 

@@ -26,14 +26,14 @@ namespace physics
         core::logger::free();
     }
 
-    std::shared_ptr<Entity> World::getEntity(const std::string& name) const
+    Entity* World::getEntity(const std::string& name) const
     {
         if(!existsEntity(name)) {
             core::logger::logm("Tried to get unexisting entity \"" + name + "\" : returned NULL.", core::logger::WARNING);
             return NULL;
         }
         
-        return m_entities.at(name);
+        return m_entities.at(name).get();
     }
 
     bool World::existsEntity(const std::string& name) const
@@ -48,7 +48,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Entity *entity = new Entity(name, m_world, position, bodyType, type, collideWith, gravityScale, fixedRotation);
-            m_entities[name] = std::shared_ptr<Entity>(entity);
+            m_entities[name] = std::unique_ptr<Entity>(entity);
             core::logger::logm("The entity \"" + name + "\" has been created.", core::logger::MSG);
             return entity;
         }
@@ -62,7 +62,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Character *character = new Character(name, m_world, position, rect, weight);
-            m_entities[name] = std::shared_ptr<Character>(character);
+            m_entities[name] = std::unique_ptr<Character>(character);
             core::logger::logm("The character \"" + name + "\" has been created.", core::logger::MSG);
             return character;
         }
@@ -76,7 +76,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Attack *attack = new Attack(name, m_world, position, bodyType, collideWith, gravityScale, fixedRotation);
-            m_entities[name] = std::shared_ptr<Attack>(attack);
+            m_entities[name] = std::unique_ptr<Attack>(attack);
             core::logger::logm("The attack \"" + name + "\" has been created.", core::logger::MSG);
             return attack;
         }
@@ -90,7 +90,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Platform *platform = new Platform(name, m_world, position);
-            m_entities[name] = std::shared_ptr<Platform>(platform);
+            m_entities[name] = std::unique_ptr<Platform>(platform);
             core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::MSG);
             return platform;
         }
@@ -103,7 +103,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Platform *platform = new Platform(name, m_world, position, rect, friction);
-            m_entities[name] = std::shared_ptr<Platform>(platform);
+            m_entities[name] = std::unique_ptr<Platform>(platform);
             core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::MSG);
             return platform;
         }       
@@ -117,7 +117,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Obstacle *obstacle = new Obstacle(name, m_world, position);
-            m_entities[name] = std::shared_ptr<Obstacle>(obstacle);
+            m_entities[name] = std::unique_ptr<Obstacle>(obstacle);
             core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::MSG);
             return obstacle;
         }
@@ -130,7 +130,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Obstacle *obstacle = new Obstacle(name, m_world, position, rect, friction);
-            m_entities[name] = std::shared_ptr<Obstacle>(obstacle);
+            m_entities[name] = std::unique_ptr<Obstacle>(obstacle);
             core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::MSG);
             return obstacle;
         }
