@@ -6,7 +6,7 @@
 namespace gui
 {
     GridLayout::GridLayout(graphics::Graphics* gfx)
-        : Widget(gfx), m_rows(0), m_columns(0)
+        : Widget(gfx), m_rows(0), m_columns(0), m_gaps(1.0f)
     {
         clear();
     }
@@ -40,8 +40,55 @@ namespace gui
         return m_columns;
     }
 
+    float GridLayout::gaps(float g)
+    {
+        m_gaps = g;
+        updateSizes();
+        return m_gaps;
+    }
+
+    float GridLayout::gaps() const
+    {
+        return m_gaps;
+    }
+
+    float GridLayout::width(float w)
+    {
+        Widget::width(w);
+        updateSizes();
+        return width();
+    }
+
+    float GridLayout::height(float h)
+    {
+        Widget::height(h);
+        updateSizes();
+        return height();
+    }
+
+    float GridLayout::width() const
+    {
+        return Widget::width();
+    }
+
+    float GridLayout::height() const
+    {
+        return Widget::height();
+    }
+
     bool GridLayout::addWidget(Widget* widget, unsigned int x, unsigned int y, unsigned int w, unsigned int h)
     {
+        StoredWidget st;
+        st.widget = widget;
+        st.rx     = x;
+        st.ry     = y;
+        st.w      = w;
+        st.h      = h;
+
+        /* Test if the widget can be added */
+        /* TODO */
+
+        /* Add the widget */
         /* TODO */
     }
 
@@ -75,8 +122,8 @@ namespace gui
             return false;
 
         StoredWidget sw = m_map[x][y];
-        size_t x = sw.rx;
-        size_t y = sw.ry;
+        x = sw.rx;
+        y = sw.ry;
         size_t mx = x + sw.w;
         size_t my = y + sw.h;
 
@@ -98,32 +145,69 @@ namespace gui
 
     void GridLayout::focus(bool f)
     {
-        /* TODO */
+        /* Unfocus all */
+        for(size_t x = 0; x < m_rows; ++x) {
+            for(size_t y = 0; y < m_columns; ++y) {
+                if(m_map[x][y].widget)
+                    m_map[x][y].widget->focus(false);
+            }
+        }
+        m_focused.widget = NULL;
+
+        /* Focus the first one found */
+        if(f) {
+            Widget* first;
+            for(size_t x = 0; x < m_rows; ++x) {
+                for(size_t y = 0; y < m_columns; ++y) {
+                    if(m_map[x][y].widget) {
+                        first = m_map[x][y].widget;
+                        m_focused = m_map[x][y];
+                        break;
+                    }
+                }
+            }
+            if(first != NULL)
+                first->focus(true);
+        }
     }
 
     void GridLayout::click(const geometry::Point& p)
     {
-        /* TODO */
+        if(!m_focused.widget)
+            return;
+
+        geometry::Point pos;
+        getPos(m_focused.rx, m_focused.ry, pos);
+        pos.x = p.x - pos.x;
+        pos.y = p.y - pos.y;
+        m_focused.widget->click(pos);
     }
 
     void GridLayout::mouse(const geometry::Point& p)
     {
-        /* TODO */
+        m_focused = widUnderPoint(p);
     }
 
     void GridLayout::keyPress(events::Key k)
     {
-        /* TODO */
+        if(!m_focused.widget)
+            return;
+        /* TODO handle keys for the layout */
+        m_focused.widget->keyPress(k);
     }
 
     void GridLayout::keyRelease(events::Key k)
     {
-        /* TODO */
+        if(!m_focused.widget)
+            return;
+        m_focused.widget->keyRelease(k);
     }
 
     void GridLayout::inputText(const std::string& str)
     {
-        /* TODO */
+        if(!m_focused.widget)
+            return;
+        m_focused.widget->inputText(str);
     }
 
     bool GridLayout::next()
@@ -131,4 +215,46 @@ namespace gui
         /* TODO */
     }
 
+    void GridLayout::getPos(unsigned int x, unsigned int y, geometry::Point& pos)
+    {
+        if(!isWidget(x,y)) {
+            pos.x = pos.y = 0.0f;
+            return;
+        }
+
+        /* All widgets have same width and height, just uses one of them to get this values */
+        pos.x = float(x+1) * m_gaps + (float)x * m_map[x][y].widget->width();
+        pos.y = float(y+1) * m_gaps + (float)y * m_map[x][y].widget->height();
+    }
+
+    void GridLayout::updateSizes()
+    {
+        float w = (width()  - m_gaps) / (float)m_rows;
+        w -= m_gaps;
+        float h = (height() - m_gaps) / (float)m_columns;
+        h -= m_gaps;
+
+        for(size_t x = 0; x < m_rows; ++x) {
+            for(size_t y = 0; y < m_columns; ++y) {
+                Widget* widget = m_map[x][y].widget;
+                if(!widget)
+                    continue;
+                /* Avoid setting twice the size to a widget */
+                if(m_map[x][y].rx != x || m_map[x][y].ry != y)
+                    continue;
+                widget->width(w);
+                widget->height(h);
+            }
+        }
+    }
+
+    GridLayout::StoredWidget GridLayout::widUnderPoint(const geometry::Point& p)
+    {
+        /* FIXME handle better gaps */
+        float mx = (width() - m_gaps) / (float)m_rows;
+        float my = (height() - m_gaps) / (float)m_columns;
+        size_t px = size_t(p.x / mx);
+        size_t py = size_t(p.y / my);
+        return m_map[px][py];
+    }
 }

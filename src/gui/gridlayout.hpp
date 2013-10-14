@@ -21,6 +21,12 @@ namespace gui
             void setSize(unsigned int mrows, unsigned int mcolumns);
             unsigned int rows() const;
             unsigned int columns() const;
+            float gaps(float g);
+            float gaps() const;
+            virtual float width(float w);
+            virtual float height(float h);
+            virtual float width() const;
+            virtual float height() const;
 
             /* You can't add a widget if the place is already taken nor outside the range */
             bool addWidget(Widget* widget, unsigned int x, unsigned int y, unsigned int w = 0, unsigned int h = 0);
@@ -40,6 +46,7 @@ namespace gui
 
         private:
             unsigned int m_rows, m_columns;
+            float m_gaps;
             struct StoredWidget {
                 Widget* widget;
                 unsigned int rx;
@@ -48,7 +55,12 @@ namespace gui
                 unsigned int h;
             };
             std::vector<std::vector<StoredWidget>> m_map;
-            Widget* m_focused;
+            StoredWidget m_focused;
+
+            /* Internal functions */
+            void getPos(unsigned int x, unsigned int y, geometry::Point& pos);
+            void updateSizes();
+            StoredWidget widUnderPoint(const geometry::Point& p);
     };
 }
 
