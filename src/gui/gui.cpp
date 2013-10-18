@@ -81,6 +81,15 @@ namespace gui
         for(events::Key k : keys)
             m_main->keyRelease(k);
 
+        /* Mouse */
+        geometry::Point mouse = ev.mouseRel();
+        /* Report mouse only if moved */
+        if(std::abs(mouse.x) > 0.0f || std::abs(mouse.y) > 0.0f) {
+            mouse.x = pointer.x - m_pos.x;
+            mouse.y = pointer.y - m_pos.y;
+            m_main->mouse(mouse);
+        }
+
         /* Input */
         std::string input = ev.lastInput();
         if(!input.empty())
