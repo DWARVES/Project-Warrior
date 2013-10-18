@@ -190,7 +190,7 @@ namespace gui
 
         /* Focus the first one found */
         if(f) {
-            Widget* first;
+            Widget* first = NULL;
             for(size_t x = 0; x < m_columns; ++x) {
                 for(size_t y = 0; y < m_rows; ++y) {
                     if(m_map[x][y].widget) {
@@ -199,8 +199,10 @@ namespace gui
                         break;
                     }
                 }
+                if(first)
+                    break;
             }
-            if(first != NULL)
+            if(first)
                 first->focus(true);
         }
     }
@@ -229,8 +231,16 @@ namespace gui
     {
         if(!m_focused.widget)
             return;
-        /* TODO handle keys for the layout */
-        m_focused.widget->keyPress(k);
+        
+        switch(k.getSym()) {
+            case (events::KeyType)events::KeyMap::Tab:
+            case (events::KeyType)events::KeyMap::Right:
+                next();
+                break;
+            default:
+                m_focused.widget->keyPress(k);
+                break;
+        }
     }
 
     void GridLayout::keyRelease(events::Key k)
@@ -275,12 +285,13 @@ namespace gui
                         break;
                     }
                 }
+                if(n.widget)
+                    break;
             }
 
-            if(!n.widget) {
-                focus(false);
+            focus(false);
+            if(!n.widget)
                 return true;
-            }
             else {
                 m_focused = n;
                 m_focused.widget->focus(true);
@@ -296,10 +307,8 @@ namespace gui
             return;
         }
 
-        /* All widgets have same width and height, just uses one of them to get this values */
-        /* FIXME good way to get widget width and size */
-        pos.x = float(x+1) * m_gaps + (float)x * caseWidth(false);
-        pos.y = float(y+1) * m_gaps + (float)y * caseHeight(false);;
+        pos.x = float(x+1) * m_gaps + (float)x * caseWidth(true);
+        pos.y = float(y+1) * m_gaps + (float)y * caseHeight(true);
     }
 
     void GridLayout::updateSizes()
@@ -354,7 +363,7 @@ namespace gui
     float GridLayout::caseWidth(bool wg)
     {
         float w = (width() - m_gaps) / (float)m_columns;
-        if(!wg)
+        if(wg)
             w -= m_gaps;
         return w;
     }
@@ -362,7 +371,7 @@ namespace gui
     float GridLayout::caseHeight(bool wg)
     {
         float h = (height() - m_gaps) / (float)m_rows;
-        if(!wg)
+        if(wg)
             h -= m_gaps;
         return h;
     }
