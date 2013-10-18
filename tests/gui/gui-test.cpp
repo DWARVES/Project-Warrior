@@ -56,6 +56,11 @@ class BlueWidget : public gui::Widget
             std::cout << "\"" << str << "\" text just entered on the widget !" << std::endl;
         }
 
+        virtual void mouse(const geometry::Point& m)
+        {
+            std::cout << "Mouse moved to " << m.x << "x" << m.y << std::endl;
+        }
+
     private:
         bool m_focus;
 };
