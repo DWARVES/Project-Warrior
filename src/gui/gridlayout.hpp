@@ -14,11 +14,11 @@ namespace gui
             GridLayout() = delete;
             GridLayout(const GridLayout&) = delete;
             GridLayout(graphics::Graphics* gfx);
-            GridLayout(graphics::Graphics* gfx, unsigned int mrows, unsigned int mcolumns);
+            GridLayout(graphics::Graphics* gfx, unsigned int mcolumns, unsigned int mrows);
             virtual ~GridLayout();
 
             /* Resizing will clear the layout */
-            void setSize(unsigned int mrows, unsigned int mcolumns);
+            void setSize(unsigned int mcolumns, unsigned int mrows);
             unsigned int rows() const;
             unsigned int columns() const;
             float gaps(float g);
@@ -61,6 +61,8 @@ namespace gui
             void getPos(unsigned int x, unsigned int y, geometry::Point& pos);
             void updateSizes();
             StoredWidget widUnderPoint(const geometry::Point& p);
+            float caseWidth(bool wg);
+            float caseHeight(bool wg);
     };
 }
 
