@@ -9,5 +9,7 @@ add_executable(gui-test gui-test.cpp)
 target_link_libraries(gui-test libgui libevents libgraphics libcore libgeometry ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
 add_executable(gridlayout-test gridlayout-test.cpp)
 target_link_libraries(gridlayout-test libgui libevents libgraphics libcore libgeometry ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
+add_executable(frame-test frame-test.cpp)
+target_link_libraries(frame-test libgui libevents libgraphics libcore libgeometry ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
 
 
