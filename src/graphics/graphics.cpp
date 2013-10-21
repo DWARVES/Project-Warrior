@@ -617,7 +617,6 @@ namespace graphics
      *************************/
     void Graphics::blitTexture(const std::string& name, const geometry::Point& pos)
     {
-        /* FIXME texture orientation with Y axis inverted */
         if(rctype(name) != TEXT) {
             core::logger::logm(std::string("Tried to blit an unexistant texture : ") + name, core::logger::WARNING);
             return;
@@ -633,10 +632,18 @@ namespace graphics
 
         glColor4ub(255, 255, 255, 255);
         glBegin(GL_QUADS);
-        glTexCoord2f(0.0f,0.0f); glVertex2f(ori.x,                        ori.y);
-        glTexCoord2f(1.0f,0.0f); glVertex2f(ori.x + (float)text->width(), ori.y);
-        glTexCoord2f(1.0f,1.0f); glVertex2f(ori.x + (float)text->width(), ori.y + (float)text->height());
-        glTexCoord2f(0.0f,1.0f); glVertex2d(ori.x,                        ori.y + (float)text->height());
+        if(m_yinvert) {
+            glTexCoord2f(0.0f,1.0f); glVertex2f(ori.x,                        ori.y);
+            glTexCoord2f(1.0f,1.0f); glVertex2f(ori.x + (float)text->width(), ori.y);
+            glTexCoord2f(1.0f,0.0f); glVertex2f(ori.x + (float)text->width(), ori.y + (float)text->height());
+            glTexCoord2f(0.0f,0.0f); glVertex2d(ori.x,                        ori.y + (float)text->height());
+        }
+        else {
+            glTexCoord2f(0.0f,0.0f); glVertex2f(ori.x,                        ori.y);
+            glTexCoord2f(1.0f,0.0f); glVertex2f(ori.x + (float)text->width(), ori.y);
+            glTexCoord2f(1.0f,1.0f); glVertex2f(ori.x + (float)text->width(), ori.y + (float)text->height());
+            glTexCoord2f(0.0f,1.0f); glVertex2d(ori.x,                        ori.y + (float)text->height());
+        }
         glEnd();
     }
 
@@ -682,10 +689,18 @@ namespace graphics
         glColor4ub(255, 255, 255, 255);
 
         glBegin(GL_QUADS);
-        glTexCoord2f(0.0f,   0.0f);    glVertex2f(0.0f,       0.0f);
-        glTexCoord2f(repeatX,0.0f);    glVertex2f(aabb.width, 0.0f);
-        glTexCoord2f(repeatX,repeatY); glVertex2f(aabb.width, aabb.height);
-        glTexCoord2f(0.0f,   repeatY); glVertex2f(0.0f,       aabb.height);
+        if(m_yinvert) {
+            glTexCoord2f(0.0f,   repeatY); glVertex2f(0.0f,       0.0f);
+            glTexCoord2f(repeatX,repeatY); glVertex2f(aabb.width, 0.0f);
+            glTexCoord2f(repeatX,0.0f);    glVertex2f(aabb.width, aabb.height);
+            glTexCoord2f(0.0f,   0.0f);    glVertex2f(0.0f,       aabb.height);
+        }
+        else {
+            glTexCoord2f(0.0f,   0.0f);    glVertex2f(0.0f,       0.0f);
+            glTexCoord2f(repeatX,0.0f);    glVertex2f(aabb.width, 0.0f);
+            glTexCoord2f(repeatX,repeatY); glVertex2f(aabb.width, aabb.height);
+            glTexCoord2f(0.0f,   repeatY); glVertex2f(0.0f,       aabb.height);
+        }
         glEnd();
     }
 
@@ -703,6 +718,7 @@ namespace graphics
 
     void Graphics::draw(const geometry::Circle& circle, const std::string& text, float repeatX, float repeatY)
     {
+        /* FIXME texture orientation with Y-axis inverted */
         if(rctype(text) != TEXT) {
             core::logger::logm(std::string("Tried to use an unexistant texture (circle blitting) : ") + text, core::logger::WARNING);
             return;
@@ -724,7 +740,7 @@ namespace graphics
             float ca = std::cos(angle);
             float sa = std::sin(angle);
             float nx = ca * circle.radius;
-            float ny = sa * circle.radius;
+            float ny = sa * circle.radius;_
             float ntx = (ca + 1) / 2 * repeatX;
             float nty = (sa + 1) / 2 * repeatY;
 
@@ -767,6 +783,7 @@ namespace graphics
     void Graphics::draw(const geometry::Polygon& poly, const std::string& text, float repeatX, float repeatY)
     {
         /* FIXME handle concaves polygons */
+        /* FIXME texture orientation with Y-axis inverted */
         if(rctype(text) != TEXT) {
             core::logger::logm(std::string("Tried to use an unexistant texture (polygon blitting) : ") + text, core::logger::WARNING);
             return;
@@ -826,11 +843,12 @@ namespace graphics
         }
 
         internal::Font* f = m_fs.getEntityValue(font)->stored.font;
-        f->draw(str, geometry::Point(0.0f, 0.0f), pts);
+        f->draw(str, geometry::Point(0.0f, 0.0f), pts, true, m_yinvert);
     }
 
     bool Graphics::play(const std::string& movie, const geometry::AABB& rect, bool ratio)
     {
+        /* FIXME texture orientation with Y-axis inverted */
         if(rctype(movie) != MOVIE) {
             core::logger::logm(std::string("Tried to play an unexistant movie : ") + movie, core::logger::WARNING);
             return false;

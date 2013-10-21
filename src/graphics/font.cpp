@@ -82,7 +82,7 @@ namespace graphics
             return ret;
         }
 
-        void Font::draw(const std::string& str, const geometry::Point& pos, float size, bool smooth)
+        void Font::draw(const std::string& str, const geometry::Point& pos, float size, bool smooth, bool invert)
         {
             m_shads->text(true);
             glBindTexture(GL_TEXTURE_2D, m_text->glID());
@@ -104,10 +104,22 @@ namespace graphics
             else
                 fact = size / m_yspacing;
 
+            if(invert) {
+                unsigned int nbret = 0;
+                for(size_t i = 0; i < str.size(); ++i) {
+                    if(str[i] == '\n')
+                        ++nbret;
+                }
+                actPos.y += (float)nbret * size;
+            }
+
             for(size_t i = 0; i < str.size(); ++i) {
                 if(str[i] == '\n') {
                     actPos.x = pos.x;
-                    actPos.y += size;
+                    if(invert)
+                        actPos.y -= size;
+                    else
+                        actPos.y += size;
                 }
                 else if(!hasLetter(str[i])) { /* If the letter is not found, draw a space */
                     actPos.x += m_xspacing * fact;
@@ -115,10 +127,18 @@ namespace graphics
                 else { /* Draw the letter */
                     Letter l = m_letters[str[i]];
                     glBegin(GL_QUADS);
-                    glTexCoord2f(l.lt.x, l.lt.y); glVertex2f(actPos.x,              actPos.y);
-                    glTexCoord2f(l.rb.x, l.lt.y); glVertex2f(actPos.x + l.w * fact, actPos.y);
-                    glTexCoord2f(l.rb.x, l.rb.y); glVertex2f(actPos.x + l.w * fact, actPos.y + l.h * fact);
-                    glTexCoord2f(l.lt.x, l.rb.y); glVertex2f(actPos.x,              actPos.y + l.h * fact);
+                    if(invert) {
+                        glTexCoord2f(l.lt.x, l.rb.y); glVertex2f(actPos.x,              actPos.y);
+                        glTexCoord2f(l.rb.x, l.rb.y); glVertex2f(actPos.x + l.w * fact, actPos.y);
+                        glTexCoord2f(l.rb.x, l.lt.y); glVertex2f(actPos.x + l.w * fact, actPos.y + l.h * fact);
+                        glTexCoord2f(l.lt.x, l.lt.y); glVertex2f(actPos.x,              actPos.y + l.h * fact);
+                    }
+                    else {
+                        glTexCoord2f(l.lt.x, l.lt.y); glVertex2f(actPos.x,              actPos.y);
+                        glTexCoord2f(l.rb.x, l.lt.y); glVertex2f(actPos.x + l.w * fact, actPos.y);
+                        glTexCoord2f(l.rb.x, l.rb.y); glVertex2f(actPos.x + l.w * fact, actPos.y + l.h * fact);
+                        glTexCoord2f(l.lt.x, l.rb.y); glVertex2f(actPos.x,              actPos.y + l.h * fact);
+                    }
                     glEnd();
                     actPos.x += (float)l.w * fact;
                 }
