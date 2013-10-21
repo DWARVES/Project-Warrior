@@ -13,7 +13,7 @@ namespace physics
             {
                 Normal = Entity::Type::All,
                 Ghost = ~(Entity::Type::Character),
-                Spectre = ~(Entity::Type::Obstacle)
+                Spectre = ~(Entity::Type::Obstacle | Entity::Type::Platform)
 
             } CollideType;
 

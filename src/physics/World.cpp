@@ -139,4 +139,18 @@ namespace physics
             return NULL;
         }
     }
+
+    b2RopeJoint* World::createRopeJoint(Entity* entityA, Entity* entityB, float maxLength, const geometry::Point& localAnchorA, const geometry::Point& localAnchorB, bool collideConnected)
+    {
+        b2RopeJointDef jointDef;
+        jointDef.bodyA = entityA->getBody();
+        jointDef.bodyB = entityB->getBody();
+        jointDef.collideConnected = collideConnected;
+        jointDef.localAnchorA.Set(localAnchorA.x, localAnchorA.y);
+        jointDef.localAnchorB.Set(localAnchorB.x, localAnchorB.y);
+        jointDef.maxLength = maxLength;
+        b2RopeJoint* joint = (b2RopeJoint*)m_world->CreateJoint(&jointDef);
+
+        return joint;
+    }
 }

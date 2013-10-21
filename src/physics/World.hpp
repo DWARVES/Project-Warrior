@@ -35,6 +35,9 @@ namespace physics
             Obstacle* createObstacle(const std::string& name, const geometry::Point& position);
             Obstacle* createObstacle(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float friction = 1);
 
+            // Functions used to create joints between entities
+            b2RopeJoint* createRopeJoint(Entity* entityA, Entity* entityB, float maxLength, const geometry::Point& localAnchorA = geometry::Point(0, 0), const geometry::Point& localAnchorB = geometry::Point(0, 0), bool collideConnected = true); // Rope joint, useful to create link CC
+
         protected:
             b2World* m_world; // The world used in Box2D for simulation, containing all the bodies and fixtures (that we grouped in the Entity class)
             CollisionManager* m_colManager; // The collision manager, used for advanced collisions management not possible with masks

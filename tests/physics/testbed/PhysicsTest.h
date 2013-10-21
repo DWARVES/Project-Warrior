@@ -8,6 +8,7 @@
 #include "physics/Attack.hpp"
 #include "physics/Platform.hpp"
 #include "physics/Obstacle.hpp"
+#include "physics/unit_conversions.hpp"
 #include "core/logger.hpp"
 #include <iostream>
 
@@ -42,8 +43,10 @@ class PhysicsTest : public Test
             square2 = world->createCharacter("Square 2", Point(-500, 50), AABB(100, 100), Character::Weight::Medium);
             square3 = world->createCharacter("Square 3", Point(-700, 50), AABB(100, 100), Character::Weight::Lightweight);
 
-            circle = world->createAttack("Spectre attack", Point(-100, 500), b2_dynamicBody, Attack::CollideType::Spectre);
+            circle = world->createAttack("Spectre attack", Point(-100, 500), b2_dynamicBody, Attack::CollideType::Spectre, 0);
             circle->createFixture("body", Circle(50));
+
+            world->createRopeJoint(square1, circle, toMeters(300));
 
             world->createAttack("Ghost attack", Point(100, 50), b2_dynamicBody, Attack::CollideType::Ghost);
             polygon = static_cast<Attack*>(world->getEntity("Ghost attack"));
