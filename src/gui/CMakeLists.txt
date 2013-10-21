@@ -9,5 +9,6 @@ add_library(${lib}
     widget.cpp     widget.hpp
     gridlayout.cpp gridlayout.hpp
     frame.cpp      frame.hpp
+    item.cpp       item.hpp
 	)
 
