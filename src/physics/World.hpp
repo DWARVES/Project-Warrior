@@ -23,6 +23,9 @@ namespace physics
             ~World();
 
             Entity* getEntity(const std::string& name) const; // Returns a unique_ptr to the entity named "name" in the world entities map
+            b2Vec2 getGravity() const;
+
+            void setGravity(float x, float y);
 
             bool existsEntity(const std::string& name) const; // Check if the entity named "name" already exists
 

@@ -36,6 +36,16 @@ namespace physics
         return m_entities.at(name).get();
     }
 
+    b2Vec2 World::getGravity() const
+    {
+        return m_world->GetGravity();
+    }
+
+    void setGravity(float x, float y)
+    {
+        m_world->SetGravity(b2Vec2(x, y));
+    }
+
     bool World::existsEntity(const std::string& name) const
     {
         if(m_entities.count(name))
