@@ -72,17 +72,56 @@ namespace gui
 
         void Item::scrollLeft()
         {
-            /* TODO */
+            if(m_lbound > 0) {
+                --m_lbound;
+                updateState(false);
+            }
         }
 
         void Item::scrollRight()
         {
-            /* TODO */
+            if(m_rbound < m_text.size()) {
+                ++m_lbound;
+                updateState(false);
+            }
         }
 
         void Item::draw()
         {
-            /* TODO */
+            m_gfx->push();
+            float w = m_width;
+            float h = m_height;
+            if(m_selected) {
+                w = widthE();
+                h = heightE();
+            }
+            m_gfx->move(-w/2.0f, -h/2.0f);
+            int sel = (m_selected ? 1 : 0);
+
+            /* Drawing sides part */
+            geometry::AABB rect;
+            rect.width = w * 0.1f;
+            rect.height = h;
+            m_gfx->draw(rect, m_texts[sel][(unsigned short)Left]);
+            m_gfx->move(w - rect.width, 0.0f);
+            m_gfx->draw(rect, m_texts[sel][(unsigned short)Right]);
+
+            /* Drawing the middle */
+            m_gfx->move(-w + 2*rect.width, 0.0f);
+            rect.width = w - 2*rect.width;
+            m_gfx->draw(rect, m_texts[sel][(unsigned short)Middle], rect.width, 1.0f);
+
+            /* Drawing the text */
+            std::string font = m_texts[sel][(unsigned short)Font];
+            float fontSize = m_height * (m_selected ? 0.9f : 0.8f);
+            std::string txt("");
+            if(m_lext) txt += "...";
+            txt += m_text.substr(m_lbound, m_rbound - m_lbound);
+            if(m_rext) txt += "...";
+            m_gfx->move(0.0f, (h - fontSize) / 2.0f);
+            m_gfx->draw(txt, font, fontSize);
+
+            m_gfx->pop();
         }
 
         void Item::setPart(Part p, bool state, const std::string& path)
@@ -101,9 +140,45 @@ namespace gui
             return m_height * 1.1f;
         }
 
-        void Item::updateState()
+        void Item::updateState(bool restart)
         {
-            /* TODO */
+            if(restart)
+                m_lbound = 0;
+
+            if(m_lbound == 0)
+                m_lext = false;
+            else
+                m_lext = true;
+
+            std::string font = m_texts[m_selected ? 1 : 0][Font];
+            std::string rtext = m_text.substr(m_lbound);
+            float fontSize = m_height * (m_selected ? 0.9f : 0.8f);
+            float size = 0.0f;
+            float extSize = m_gfx->stringWidth(font, "...", fontSize);
+            float actualWidth = m_width * 0.8f;
+            if(m_selected)
+                actualWidth = widthE() * 0.8f;
+
+            if(m_lext)
+                size += extSize;
+
+            /* The right part fit in */
+            if(m_gfx->stringWidth(font, rtext, fontSize) + size < actualWidth) {
+                m_rbound = m_text.size();
+                m_rext = false;
+                return;
+            }
+
+            /* Need extension also to the right */
+            m_rext = true;
+            size += extSize;
+            m_rbound = m_text.size();
+            do {
+                --m_rbound;
+                rtext = m_text.substr(m_lbound, m_rbound - m_lbound);
+            } while(m_gfx->stringWidth(font, rtext, fontSize) + size >= actualWidth
+                    && m_lbound < m_rbound);
+            return;
         }
 
     }

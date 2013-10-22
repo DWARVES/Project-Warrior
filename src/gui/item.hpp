@@ -60,7 +60,7 @@ namespace gui
                 /* Internal functions */
                 float widthE() const;
                 float heightE() const;
-                void updateState();
+                void updateState(bool restart = true);
         };
     }
 }
