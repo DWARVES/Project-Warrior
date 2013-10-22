@@ -99,6 +99,11 @@ namespace graphics
             int getTextureWidth(const std::string& name) const;
             int getTextureHeight(const std::string& name) const;
             bool setTextureHotpoint(const std::string& name, int x, int y);
+
+            /*************************
+             *   Fonts management    *
+             *************************/
+            float stringWidth(const std::string& font, const std::string& str, float size = -1.0f) const;
             
             /*************************
              *   Movies management   *

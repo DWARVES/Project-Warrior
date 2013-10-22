@@ -391,7 +391,7 @@ namespace graphics
             return false;
 
         internal::Font* font = new internal::Font(&m_shads);
-        if(!font->load(path, "ABCDEFGHIJKLMNOPQRSTUVWXYZ! ")) { /* FIXME choose the right letters to put there */
+        if(!font->load(path, "ABCDEFGHIJKLMNOPQRSTUVWXYZ!. ")) { /* FIXME choose the right letters to put there */
             delete font;
             return false;
         }
@@ -534,6 +534,17 @@ namespace graphics
         Entity* ent = m_fs.getEntityValue(name);
         ent->stored.text->hotpoint(geometry::Point((float)x,(float)y));
         return true;
+    }
+
+    /*************************
+     *   Fonts management    *
+     *************************/
+    float Graphics::stringWidth(const std::string& font, const std::string& str, float size) const
+    {
+        if(rctype(font) != FONT || str.empty())
+            return 0.0f;
+        internal::Font* f = m_fs.getEntityValue(font)->stored.font;
+        return f->stringSize(str, size).width;
     }
 
     /*************************
