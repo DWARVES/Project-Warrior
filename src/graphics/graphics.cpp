@@ -740,7 +740,7 @@ namespace graphics
             float ca = std::cos(angle);
             float sa = std::sin(angle);
             float nx = ca * circle.radius;
-            float ny = sa * circle.radius;_
+            float ny = sa * circle.radius;
             float ntx = (ca + 1) / 2 * repeatX;
             float nty = (sa + 1) / 2 * repeatY;
 
