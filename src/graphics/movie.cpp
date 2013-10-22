@@ -118,7 +118,7 @@ namespace graphics
             return true;
         }
 
-        void Movie::displayFrame(const geometry::AABB& rect, bool r) const
+        void Movie::displayFrame(const geometry::AABB& rect, bool r, bool invert) const
         {
             /* Compute the size */
             geometry::AABB applied;
@@ -147,10 +147,18 @@ namespace graphics
             glBindTexture(GL_TEXTURE_2D, m_text.glID());
             glTranslatef(dec.x, dec.y, 0.0f);
             glBegin(GL_QUADS);
-            glTexCoord2f(0.0f,0.0f); glVertex2f(0.0f,          0.0f);
-            glTexCoord2f(1.0f,0.0f); glVertex2f(applied.width, 0.0f);
-            glTexCoord2f(1.0f,1.0f); glVertex2f(applied.width, applied.height);
-            glTexCoord2f(0.0f,1.0f); glVertex2f(0.0f,          applied.height);
+            if(invert) {
+                glTexCoord2f(0.0f,1.0f); glVertex2f(0.0f,          0.0f);
+                glTexCoord2f(1.0f,1.0f); glVertex2f(applied.width, 0.0f);
+                glTexCoord2f(1.0f,0.0f); glVertex2f(applied.width, applied.height);
+                glTexCoord2f(0.0f,0.0f); glVertex2f(0.0f,          applied.height);
+            }
+            else {
+                glTexCoord2f(0.0f,0.0f); glVertex2f(0.0f,          0.0f);
+                glTexCoord2f(1.0f,0.0f); glVertex2f(applied.width, 0.0f);
+                glTexCoord2f(1.0f,1.0f); glVertex2f(applied.width, applied.height);
+                glTexCoord2f(0.0f,1.0f); glVertex2f(0.0f,          applied.height);
+            }
             glEnd();
             glTranslatef(-dec.x, -dec.y, 0.0f);
         }

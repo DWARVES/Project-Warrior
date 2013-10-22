@@ -63,8 +63,8 @@ int main()
     line.p2.y = 25.0f;
     geometry::Polygon poly;
     poly.points.push_back(geometry::Point(.0f,.0f));
-    poly.points.push_back(geometry::Point(30.0f,.0f));
-    poly.points.push_back(geometry::Point(.0f,30.0f));
+    poly.points.push_back(geometry::Point(40.0f,.0f));
+    poly.points.push_back(geometry::Point(.0f,40.0f));
     geometry::Circle circle;
     circle.radius = 20.0f;
 
@@ -124,7 +124,7 @@ int main()
 
         gfx->push();
         gfx->move(70.0f, 70.0f);
-        gfx->draw(poly, "default", 10.0f, 10.0f);
+        gfx->draw(poly, "default", 2.0f, 2.0f);
         gfx->pop();
         gfx->move(70.0f, -20.0f);
         gfx->draw(circle, "default");

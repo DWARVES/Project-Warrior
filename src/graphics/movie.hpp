@@ -33,7 +33,7 @@ namespace graphics
                 /* Display the actual frame 
                  * If ratio is true, the ratio will be preserved (nothing will be drawn on the bands)
                  */
-                void displayFrame(const geometry::AABB& rect, bool r = true) const;
+                void displayFrame(const geometry::AABB& rect, bool r = true, bool invert = false) const;
                 /* Go to the next frame, return false if the end is reached */
                 bool nextFrame();
                 /* Go to the next frame if enough time has been spent (respect speed video) */

@@ -729,7 +729,6 @@ namespace graphics
 
     void Graphics::draw(const geometry::Circle& circle, const std::string& text, float repeatX, float repeatY)
     {
-        /* FIXME texture orientation with Y-axis inverted */
         if(rctype(text) != TEXT) {
             core::logger::logm(std::string("Tried to use an unexistant texture (circle blitting) : ") + text, core::logger::WARNING);
             return;
@@ -757,8 +756,14 @@ namespace graphics
 
             glBegin(GL_POLYGON);
             glTexCoord2f(mx, my ); glVertex2f(0.0f, 0.0f);
-            glTexCoord2f(ntx,nty); glVertex2f(nx,   ny);
-            glTexCoord2f(ltx,lty); glVertex2f(lx,   ly);
+            if(m_yinvert) {
+                glTexCoord2f(ntx,-nty+2*mx); glVertex2f(nx,   ny);
+                glTexCoord2f(ltx,-lty+2*my); glVertex2f(lx,   ly);
+            }
+            else {
+                glTexCoord2f(ntx,nty); glVertex2f(nx,   ny);
+                glTexCoord2f(ltx,lty); glVertex2f(lx,   ly);
+            }
             glEnd();
 
             lx = nx;
@@ -794,7 +799,6 @@ namespace graphics
     void Graphics::draw(const geometry::Polygon& poly, const std::string& text, float repeatX, float repeatY)
     {
         /* FIXME handle concaves polygons */
-        /* FIXME texture orientation with Y-axis inverted */
         if(rctype(text) != TEXT) {
             core::logger::logm(std::string("Tried to use an unexistant texture (polygon blitting) : ") + text, core::logger::WARNING);
             return;
@@ -829,7 +833,10 @@ namespace graphics
         for(size_t i = 0; i < poly.points.size(); ++i) {
             float tx = (poly.points[i].x - minx) / interx * repeatX;
             float ty = (poly.points[i].y - miny) / intery * repeatY;
-            glTexCoord2f(tx, ty);
+            if(m_yinvert)
+                glTexCoord2f(tx, -ty);
+            else
+                glTexCoord2f(tx, ty);
             glVertex2f(poly.points[i].x, poly.points[i].y);
         }
         glEnd();
@@ -859,7 +866,6 @@ namespace graphics
 
     bool Graphics::play(const std::string& movie, const geometry::AABB& rect, bool ratio)
     {
-        /* FIXME texture orientation with Y-axis inverted */
         if(rctype(movie) != MOVIE) {
             core::logger::logm(std::string("Tried to play an unexistant movie : ") + movie, core::logger::WARNING);
             return false;
@@ -867,7 +873,7 @@ namespace graphics
 
         internal::Movie* m = m_fs.getEntityValue(movie)->stored.movie;
         bool ret = m->updateFrame();
-        m->displayFrame(rect, ratio);
+        m->displayFrame(rect, ratio, m_yinvert);
         return ret;
     }
 
