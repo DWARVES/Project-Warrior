@@ -1,6 +1,8 @@
 
 #include "graphics/font.hpp"
+#include "core/logger.hpp"
 #include <algorithm>
+#include <sstream>
 
 namespace graphics
 {
@@ -40,8 +42,12 @@ namespace graphics
                     ++rows;
             }
             
+            size_t lets = letters.size();
             if(columns == 0 || rows == 0
-                    || columns * rows < letters.size()) {
+                    || columns * rows < lets) {
+                std::ostringstream oss;
+                oss << "Invalid number of columns and rows (" << columns << "x" << rows << ") in font \"" << path << "\" with #" << lets << " letters.";
+                core::logger::logm(oss.str(), core::logger::WARNING);
                 SDL_FreeSurface(surf);
                 delete m_text;
                 m_text = NULL;
@@ -52,7 +58,7 @@ namespace graphics
             Uint32 bg = pixel(surf, 1, 1);
             int wd = surf->w / columns;
             int hd = surf->h / rows;
-            for(size_t i = 0; i < letters.size(); ++i) {
+            for(size_t i = 0; i < lets; ++i) {
                 Letter l;
                 l.lt.x = float( ((int)i % columns) * wd + 1 );
                 l.lt.y = float( ((int)i / columns) * hd + 1 );

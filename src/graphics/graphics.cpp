@@ -391,7 +391,8 @@ namespace graphics
             return false;
 
         internal::Font* font = new internal::Font(&m_shads);
-        if(!font->load(path, "ABCDEFGHIJKLMNOPQRSTUVWXYZ!. ")) { /* FIXME choose the right letters to put there */
+        /* FIXME UTF-8 carac's handling and better letters */
+        if(!font->load(path, "RABCDEFGHIJKLMNOPQSTUVWXYZabcdefghijklmnopqrstuvwxyz!\"#$%&'()*+,-./0123456789:;<=>?@[\\]^-`{|}~")) {
             delete font;
             return false;
         }
