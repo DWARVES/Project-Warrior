@@ -10,5 +10,6 @@ add_library(${lib}
     gridlayout.cpp gridlayout.hpp
     frame.cpp      frame.hpp
     item.cpp       item.hpp
+    list.cpp       list.hpp
 	)
 
