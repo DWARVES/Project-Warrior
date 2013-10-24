@@ -14,7 +14,6 @@ namespace gui
 {
     class List : public Widget
     {
-        /* TODO setting textures to items */
         public:
             List() = delete;
             List(const List&) = delete;
@@ -30,7 +29,7 @@ namespace gui
             /* Items */
             typedef internal::Item* ItemID;
             /* Returns the unique id of the new item */
-            ItemID addItem(size_t pos, const std::string& text, float offx);
+            ItemID addItem(size_t pos, const std::string& text, float offx = 0.0f);
             void setItem(ItemID id, const std::string& text);
             void removeItem(ItemID id);
             /* Returns 0 if the item doesn't exists */
@@ -39,6 +38,16 @@ namespace gui
             std::string selectedText() const;
             ItemID selectedID() const;
             void setItemSize(const geometry::AABB& r);
+
+            /* Textures */
+            enum Part : unsigned short {
+                Right  = internal::Item::Right,
+                Left   = internal::Item::Left,
+                Middle = internal::Item::Middle,
+                Font   = internal::Item::Font,
+                Last   = internal::Item::Last
+            };
+            void setPart(Part p, bool select, const std::string& path);
 
             /* Drawing */
             virtual void draw();
@@ -63,10 +72,15 @@ namespace gui
             size_t m_upb;
             size_t m_downb;
 
+            /* Textures */
+            std::string m_texts[2][(unsigned short)Last];
+
             /* Internal functions */
             size_t posFromID(ItemID id);
             void updateState();
             void deleteItem(size_t pos);
+            void flushTexts();
+            void prev();
     };
 }
 

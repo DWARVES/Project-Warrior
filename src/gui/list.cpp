@@ -50,6 +50,7 @@ namespace gui
         st.offx = offx;
         m_items.insert(it, st);
         updateState();
+        flushTexts();
         return st.it;
     }
 
@@ -76,12 +77,18 @@ namespace gui
 
     std::string List::selectedText() const
     {
-        return m_items[m_selected].it->text();
+        if(m_selected < m_items.size())
+            return m_items[m_selected].it->text();
+        else
+            return "";
     }
 
     List::ItemID List::selectedID() const
     {
-        return m_items[m_selected].it;
+        if(m_selected < m_items.size())
+            return m_items[m_selected].it;
+        else
+            return 0;
     }
             
     void List::setItemSize(const geometry::AABB& r)
@@ -89,34 +96,89 @@ namespace gui
         m_itemSize = r;
         updateState();
     }
+            
+    void List::setPart(Part p, bool select, const std::string& path)
+    {
+        m_texts[(select ? 1 : 0)][(unsigned short)p] = path;
+        flushTexts();
+    }
 
     void List::draw()
     {
-        /* TODO */
+        m_gfx->push();
+        m_gfx->move(width() / 2.0f, 0.0f);
+
+        for(size_t i = m_upb; i < m_downb; ++i) {
+            m_gfx->move(0.0f, m_sep);
+            m_gfx->push();
+            m_gfx->move(m_items[i].offx, 0.0f);
+            m_items[i].it->draw();
+            m_gfx->pop();
+        }
+        m_gfx->pop();
     }
 
     void List::focus(bool f)
     {
-        /* TODO */
+        if(f)
+            m_selected = 0;
+        else
+            m_selected = m_items.size();
+        updateState();
     }
 
     void List::click(const geometry::Point& p)
     {
-        /* TODO */
+        size_t pos = size_t(p.y / m_sep + .5f);
+        if(pos == 0)
+            return;
+        else
+            pos = m_upb + pos - 1;
+        m_selected = pos;
+        updateState();
     }
 
     void List::keyPress(events::Key k)
     {
-        /* TODO */
+        /* TODO more shortcuts like first, last ... */
+        switch(k.getSym()) {
+            case (events::KeyType)events::KeyMap::Up:
+                prev();
+                break;
+            case (events::KeyType)events::KeyMap::Down:
+                next();
+                break;
+            case (events::KeyType)events::KeyMap::Left:
+                if(m_selected < m_items.size())
+                    m_items[m_selected].it->scrollLeft();
+                break;
+            case (events::KeyType)events::KeyMap::Right:
+                if(m_selected < m_items.size())
+                    m_items[m_selected].it->scrollRight();
+                break;
+            default:
+                break;
+        }
     }
 
     bool List::next()
     {
         if(m_selected == m_items.size() - 1)
             return true;
-        ++m_selected;
+        else if(m_selected == m_items.size())
+            m_selected = 0;
+        else
+            ++m_selected;
         updateState();
         return false;
+    }
+            
+    void List::prev()
+    {
+        if(m_selected == 0)
+            return;
+        --m_selected;
+        updateState();
     }
 
     size_t List::posFromID(List::ItemID id)
@@ -130,24 +192,33 @@ namespace gui
     {
         if(m_items.empty())
             return;
-        size_t nb = (unsigned int)(height() / (m_itemSize.height + 1));
-        m_sep = (float)nb / (float)(m_items.size() + 1);
+        size_t nb = (unsigned int)(height() / (m_itemSize.height * 1.2f));
+        m_sep = height() / (float)(std::min(nb,m_items.size()) + 1);
 
         for(StoredItem st : m_items) {
             st.it->width(m_itemSize.width);
             st.it->height(m_itemSize.height);
             st.it->select(false);
         }
-        m_items[m_selected].it->select(true);
 
-        if(nb < m_items.size()) {
+        if(m_selected != m_items.size())
+            m_items[m_selected].it->select(true);
+
+        if(m_items.size() <= nb) {
             m_rolling = false;
             m_upb = 0;
-            m_downb = m_items.size() - 1;
+            m_downb = m_items.size();
         }
         else {
             m_rolling = true;
-            m_upb = std::max(m_selected - nb/2, (size_t)0);
+            if(m_selected == m_items.size())
+                m_upb = 0;
+            else if(nb/2 >= m_selected)
+                m_upb = 0;
+            else if(m_selected + nb/2 >= m_items.size())
+                m_upb = m_items.size() - nb;
+            else
+                m_upb = m_selected - nb/2;
             m_downb = m_upb + nb;
         }
     }
@@ -160,6 +231,16 @@ namespace gui
         auto it = m_items.begin();
         while(it->it != m_items[pos].it) ++it;
         m_items.erase(it);
+    }
+
+    void List::flushTexts()
+    {
+        for(size_t i = 0; i < m_items.size(); ++i) {
+            for(size_t p = 0; p < (unsigned short)Last; ++p) {
+                m_items[i].it->setPart((internal::Item::Part)p, true,  m_texts[1][p]);
+                m_items[i].it->setPart((internal::Item::Part)p, false, m_texts[0][p]);
+            }
+        }
     }
 
 }
