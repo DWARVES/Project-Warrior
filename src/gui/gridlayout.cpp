@@ -152,14 +152,6 @@ namespace gui
 
     void GridLayout::draw()
     {
-        /* BEGIN DEBUG draw rect */
-        geometry::AABB r;
-        r.width = width();
-        r.height = height();
-        graphics::Color c(50, 50, 50);
-        m_gfx->draw(r, c);
-        /* END DEBUG */
-
         float w = (width() - m_gaps) / (float)m_columns;
         float h = (height() - m_gaps) / (float)m_rows;
         m_gfx->push();
