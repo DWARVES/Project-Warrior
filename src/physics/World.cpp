@@ -1,6 +1,5 @@
 
 #include "World.hpp"
-#include "core/logger.hpp"
 #include <iostream>
 
 namespace physics
@@ -8,8 +7,8 @@ namespace physics
     World::World(const b2Vec2& gravity)
     {
         m_world = new b2World(gravity);
-        m_colManager = new CollisionManager();
-        m_world->SetContactListener(m_colManager);
+        m_world->SetContactListener(new CollisionManager());
+        m_world->SetDestructionListener(this);
 
         core::logger::init();
         core::logger::addOutput(&std::cout);
@@ -17,6 +16,9 @@ namespace physics
 
     World::World(b2World* world) : m_world(world)
     {
+        m_world->SetContactListener(new CollisionManager());
+        m_world->SetDestructionListener(this);
+
         core::logger::init();
         core::logger::addOutput(&std::cout);
     }
@@ -29,11 +31,21 @@ namespace physics
     Entity* World::getEntity(const std::string& name) const
     {
         if(!existsEntity(name)) {
-            core::logger::logm("Tried to get unexisting entity \"" + name + "\" : returned NULL.", core::logger::WARNING);
-            return NULL;
+            core::logger::logm("Tried to get unexisting entity \"" + name + "\" : returned nullptr.", core::logger::WARNING);
+            return nullptr;
         }
-        
+
         return m_entities.at(name).get();
+    }
+
+    b2Joint* World::getJoint(const std::string& name) const
+    {
+        if(!existsJoint(name)) {
+            core::logger::logm("Tried to get unexisting joint \"" + name + "\" : returned nullptr.", core::logger::WARNING);
+            return nullptr;
+        }
+
+        return m_joints.at(name).get();
     }
 
     b2Vec2 World::getGravity() const
@@ -41,7 +53,7 @@ namespace physics
         return m_world->GetGravity();
     }
 
-    void setGravity(float x, float y)
+    void World::setGravity(float x, float y)
     {
         m_world->SetGravity(b2Vec2(x, y));
     }
@@ -49,6 +61,14 @@ namespace physics
     bool World::existsEntity(const std::string& name) const
     {
         if(m_entities.count(name))
+            return true;
+        else
+            return false;
+    }
+
+    bool World::existsJoint(const std::string& name) const
+    {
+        if(m_joints.count(name))
             return true;
         else
             return false;
@@ -63,11 +83,11 @@ namespace physics
             return entity;
         }
         else {
-            core::logger::logm("Tried to override the existing entity \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
-            return NULL;
+            core::logger::logm("Tried to override the existing entity \"" + name + "\" : cancelled operation and returned nullptr.", core::logger::WARNING);
+            return nullptr;
         }
     }
-    
+
     Character* World::createCharacter(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float weight)
     {
         if(!existsEntity(name)) {
@@ -77,8 +97,8 @@ namespace physics
             return character;
         }
         else {
-            core::logger::logm("Tried to override the existing character \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
-            return NULL;
+            core::logger::logm("Tried to override the existing character \"" + name + "\" : cancelled operation and returned nullptr.", core::logger::WARNING);
+            return nullptr;
         }
     }
 
@@ -91,11 +111,11 @@ namespace physics
             return attack;
         }
         else {
-            core::logger::logm("Tried to override the existing attack \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
-            return NULL;
+            core::logger::logm("Tried to override the existing attack \"" + name + "\" : cancelled operation and returned nullptr.", core::logger::WARNING);
+            return nullptr;
         }
     }
-    
+
     Platform* World::createPlatform(const std::string& name, const geometry::Point& position)
     {
         if(!existsEntity(name)) {
@@ -105,8 +125,8 @@ namespace physics
             return platform;
         }
         else {
-            core::logger::logm("Tried to override the existing platform \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
-            return NULL;
+            core::logger::logm("Tried to override the existing platform \"" + name + "\" : cancelled operation and returned nullptr.", core::logger::WARNING);
+            return nullptr;
         }
     }
     Platform* World::createPlatform(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float friction)
@@ -118,8 +138,8 @@ namespace physics
             return platform;
         }       
         else {
-            core::logger::logm("Tried to override the existing platform \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
-            return NULL;
+            core::logger::logm("Tried to override the existing platform \"" + name + "\" : cancelled operation and returned nullptr.", core::logger::WARNING);
+            return nullptr;
         }
     }
 
@@ -132,8 +152,8 @@ namespace physics
             return obstacle;
         }
         else {
-            core::logger::logm("Tried to override the existing obstacle \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
-            return NULL;
+            core::logger::logm("Tried to override the existing obstacle \"" + name + "\" : cancelled operation and returned nullptr.", core::logger::WARNING);
+            return nullptr;
         }
     }
     Obstacle* World::createObstacle(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float friction)
@@ -145,22 +165,66 @@ namespace physics
             return obstacle;
         }
         else {
-            core::logger::logm("Tried to override the existing obstacle \"" + name + "\" : cancelled operation and returned NULL.", core::logger::WARNING);
-            return NULL;
+            core::logger::logm("Tried to override the existing obstacle \"" + name + "\" : cancelled operation and returned nullptr.", core::logger::WARNING);
+            return nullptr;
         }
     }
 
-    b2RopeJoint* World::createRopeJoint(Entity* entityA, Entity* entityB, float maxLength, const geometry::Point& localAnchorA, const geometry::Point& localAnchorB, bool collideConnected)
+    b2RopeJoint* World::createRopeJoint(const std::string& name, Entity* entityA, Entity* entityB, float maxLength, const geometry::Point& localAnchorA, const geometry::Point& localAnchorB, bool collideConnected)
     {
-        b2RopeJointDef jointDef;
-        jointDef.bodyA = entityA->getBody();
-        jointDef.bodyB = entityB->getBody();
-        jointDef.collideConnected = collideConnected;
-        jointDef.localAnchorA.Set(localAnchorA.x, localAnchorA.y);
-        jointDef.localAnchorB.Set(localAnchorB.x, localAnchorB.y);
-        jointDef.maxLength = maxLength;
-        b2RopeJoint* joint = (b2RopeJoint*)m_world->CreateJoint(&jointDef);
+        if(!existsJoint(name)) {
+            b2RopeJointDef jointDef;
+            jointDef.bodyA = entityA->getBody();
+            jointDef.bodyB = entityB->getBody();
+            jointDef.collideConnected = collideConnected;
+            jointDef.localAnchorA.Set(localAnchorA.x, localAnchorA.y);
+            jointDef.localAnchorB.Set(localAnchorB.x, localAnchorB.y);
+            jointDef.maxLength = maxLength;
+            b2RopeJoint* joint = (b2RopeJoint*)m_world->CreateJoint(&jointDef);
 
-        return joint;
+            m_joints[name] = std::unique_ptr<b2RopeJoint, NullDeleter>(joint, NullDeleter());
+            core::logger::logm("The rope joint \"" + name + "\" has been created.", core::logger::MSG);
+            return joint;
+        }
+        else {
+            core::logger::logm("Tried to override the existing rope joint \"" + name + "\" : cancelled operation and returned nullptr.", core::logger::WARNING);
+            return nullptr;
+        }
     }
+
+    void World::destroyEntity(const std::string& name)
+    {
+        if(existsEntity(name)) {
+            m_world->DestroyBody(m_entities.at(name).get()->getBody());
+            m_entities.erase(name);
+            core::logger::logm("The entity \"" + name + "\" has been destroyed.", core::logger::MSG);
+        }
+        else
+            core::logger::logm("Tried to destroy unexisting entity \"" + name + "\" : cancelled operation.", core::logger::WARNING);
+    }
+
+    void World::destroyJoint(const std::string& name)
+    {
+        if(existsJoint(name)) {
+            m_world->DestroyJoint(m_joints.at(name).get());
+            core::logger::logm("The joint \"" + name + "\" has been destroyed.", core::logger::MSG);
+            m_joints.erase(name);
+        }
+        else
+            core::logger::logm("Tried to destroy unexisting joint \"" + name + "\" : cancelled operation.", core::logger::WARNING);
+    }
+
+    void World::SayGoodbye(b2Joint* joint)
+    {
+        std::map<std::string, std::unique_ptr<b2Joint, NullDeleter>>::iterator it;
+        for(it = m_joints.begin() ; it != m_joints.end() ; ++it) {
+            if(it->second.get() == joint) {
+                core::logger::logm("The joint \"" + it->first + "\" has been destroyed.", core::logger::MSG);
+                m_joints.erase(it->first);
+                break;
+            }
+        }
+    }
+
+    void World::SayGoodbye(b2Fixture* fixture) {}
 }

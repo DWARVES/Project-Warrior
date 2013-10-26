@@ -22,8 +22,6 @@ class PhysicsTest : public Test
 {
     public:
 
-        CollisionManager *colManager;
-
         World *world;
 
         Attack *circle, *polygon;
@@ -31,11 +29,12 @@ class PhysicsTest : public Test
         Platform *platform;
         Obstacle *ground;
 
+        b2RopeJoint* link;
+
         PhysicsTest()
         {
             m_world->SetGravity(b2Vec2(0, -40));
-            colManager = new CollisionManager();
-            m_world->SetContactListener(colManager);
+            m_world->SetContactListener(new CollisionManager());
 
             world = new World(m_world);
 
@@ -46,7 +45,7 @@ class PhysicsTest : public Test
             circle = world->createAttack("Spectre attack", Point(-100, 500), b2_dynamicBody, Attack::CollideType::Spectre, 0);
             circle->createFixture("body", Circle(50));
 
-            world->createRopeJoint(square1, circle, toMeters(300));
+            link = world->createRopeJoint("link", square1, circle, toMeters(300));
 
             world->createAttack("Ghost attack", Point(100, 50), b2_dynamicBody, Attack::CollideType::Ghost);
             polygon = static_cast<Attack*>(world->getEntity("Ghost attack"));
@@ -100,6 +99,12 @@ class PhysicsTest : public Test
                     square1->setXLinearVelocity(-10);
                     square2->setXLinearVelocity(-10);
                     square3->setXLinearVelocity(-10);
+                    break;
+                case 'o':
+                    world->destroyEntity("Spectre attack");
+                    break;
+                case 't':
+                    world->destroyJoint("link");
                     break;
                 default:
                     //run default behaviour
