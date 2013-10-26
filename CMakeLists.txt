@@ -9,47 +9,47 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules/")
 include(FindBoost)
 find_package(Boost COMPONENTS regex REQUIRED)
 link_directories(${Boost_REGEX_LIBRARY_DIR})
-include_directories(${Boost_REGEX_INCLUDE_DIR})
+include_directories(SYSTEM ${Boost_REGEX_INCLUDE_DIR})
 
 # Including SDL2
 include(FindSDL2)
 find_package(SDL2 REQUIRED)
 link_directories(${SDL2_LIBRARY_DIR})
-include_directories(${SDL2_INCLUDE_DIR})
+include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
 
 # Including SDL2_image
 include(FindSDL2_image)
 find_package(SDL2_image REQUIRED)
 link_directories(${SDL2_IMAGE_LIBRARY_DIR})
-include_directories(${SDL2_IMAGE_INCLUDE_DIR})
+include_directories(SYSTEM ${SDL2_IMAGE_INCLUDE_DIR})
 
 # Including SDL2_mixer
 include(FindSDL2_mixer)
 find_package(SDL2_mixer REQUIRED)
-include_directories(${SDLMIXER_INCLUDE_DIR})
+include_directories(SYSTEM ${SDLMIXER_INCLUDE_DIR})
 
 # Including OpenGL
 include(FindOpenGL)
 find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIR})
+include_directories(SYSTEM ${OPENGL_INCLUDE_DIR})
 
 # Including GLEW
 include(FindGLEW)
 find_package(GLEW REQUIRED)
-include_directories(${GLEW_INCLUDE_DIR})
+include_directories(SYSTEM ${GLEW_INCLUDE_DIR})
 
 
 # Including FFMPEG
 include(FindFFMPEG)
 find_package(FFMPEG REQUIRED)
-include_directories(${FFMPEG_INCLUDE_DIR})
+include_directories(SYSTEM ${FFMPEG_INCLUDE_DIR})
 # FIXME improve swscale detection
 set(FFMPEG_LIBRARIES "${FFMPEG_LIBRARIES};/usr/lib/libswscale.so")
 
 # Including Lua
 include(FindLua)
 find_package(Lua 5.2 REQUIRED)
-include_directories(${LUA_INCLUDE_DIR})
+include_directories(SYSTEM ${LUA_INCLUDE_DIR})
 
 # Includes checks
 include(CheckIncludeFiles)
