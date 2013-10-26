@@ -47,7 +47,7 @@ namespace gui
                 Font   = internal::Item::Font,
                 Last   = internal::Item::Last
             };
-            void setPart(Part p, bool select, const std::string& path);
+            void setPart(Part p, bool sel, const std::string& path);
 
             /* Drawing */
             virtual void draw();
@@ -57,6 +57,10 @@ namespace gui
             virtual void click(const geometry::Point& p);
             virtual void keyPress(events::Key k);
             virtual bool next();
+            /* Won't do anything, it's called at every change of selected.
+             * Is usefull when derivating gui::List
+             */
+            virtual void select();
 
         private:
             struct StoredItem {
@@ -67,6 +71,7 @@ namespace gui
             geometry::AABB m_itemSize;
             float m_sep;
             size_t m_selected;
+            size_t m_lselected;
             bool m_rolling;
             /* If rolling, the bounds */
             size_t m_upb;

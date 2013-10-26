@@ -11,6 +11,21 @@
 #include "events/key.hpp"
 #include "events/keymap.hpp"
 
+class TestList : public gui::List
+{
+    public:
+        TestList(graphics::Graphics* gfx)
+            : List(gfx)
+        {}
+        virtual ~TestList() {
+        }
+
+        virtual void select()
+        {
+            std::cout << "Selection of item #" << selected() << " : \"" << selectedText() << "\"." << std::endl;
+        }
+};
+
 int main()
 {
     core::logger::init();
@@ -42,7 +57,7 @@ int main()
     gfx->loadFont   ("fs", "guirc/item/fs.png");
 
     /* Loading the list */
-    gui::List list(gfx);
+    TestList list(gfx);
     list.setPart(gui::List::Right,  false, "r");
     list.setPart(gui::List::Middle, false, "m");
     list.setPart(gui::List::Left,   false, "l");

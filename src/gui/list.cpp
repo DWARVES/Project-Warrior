@@ -5,7 +5,7 @@
 namespace gui
 {
     List::List(graphics::Graphics* gfx)
-        : Widget(gfx), m_selected(0), m_rolling(false), m_upb(0), m_downb(0)
+        : Widget(gfx), m_selected(0), m_lselected(0), m_rolling(false), m_upb(0), m_downb(0)
     {}
 
     List::~List()
@@ -97,9 +97,9 @@ namespace gui
         updateState();
     }
             
-    void List::setPart(Part p, bool select, const std::string& path)
+    void List::setPart(Part p, bool sel, const std::string& path)
     {
-        m_texts[(select ? 1 : 0)][(unsigned short)p] = path;
+        m_texts[(sel ? 1 : 0)][(unsigned short)p] = path;
         flushTexts();
     }
 
@@ -204,6 +204,11 @@ namespace gui
         if(m_selected != m_items.size())
             m_items[m_selected].it->select(true);
 
+        if(m_selected != m_lselected) {
+            select();
+            m_lselected = m_selected;
+        }
+
         if(m_items.size() <= nb) {
             m_rolling = false;
             m_upb = 0;
@@ -243,6 +248,10 @@ namespace gui
         }
     }
 
+    void List::select()
+    {
+        /* Nothing to do */
+    }
 }
 
 
