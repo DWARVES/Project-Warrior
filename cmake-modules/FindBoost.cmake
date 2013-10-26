@@ -218,7 +218,6 @@ macro(_Boost_ADJUST_LIB_VARS basename)
         # then just use the release libraries
         set(Boost_${basename}_LIBRARY ${Boost_${basename}_LIBRARY_RELEASE} )
       endif()
-      # FIXME: This probably should be set for both cases
       set(Boost_${basename}_LIBRARIES optimized ${Boost_${basename}_LIBRARY_RELEASE} debug ${Boost_${basename}_LIBRARY_DEBUG})
     endif()
 
@@ -405,7 +404,6 @@ function(_Boost_GUESS_COMPILER_PREFIX _ret)
       endif()
     endif ()
   else()
-    # TODO at least Boost_DEBUG here?
     set(_boost_COMPILER "")
   endif()
   set(${_ret} ${_boost_COMPILER} PARENT_SCOPE)

@@ -336,7 +336,6 @@ static void Pause(int)
 
 static void Exit(int code)
 {
-	// TODO: freeglut is not building on OSX
 #ifdef FREEGLUT
 	glutLeaveMainLoop();
 #endif
