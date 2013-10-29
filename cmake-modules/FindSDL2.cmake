@@ -18,7 +18,6 @@
 # Also defined, but not for general use are:
 #   SDL2_INCLUDE_DIR - The directory that contains SDL.h.
 #   SDL2_LIBRARY - The location of the SDL2 library.
-#   SDL2MAIN_LIBRARY - The location of the SDL2main library.
 #
 
 #=============================================================================
@@ -33,6 +32,9 @@
 #=============================================================================
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
+#
+# Some modification by Luc Chabassier (removed linking of SDL_main)
+#
 
 find_package(PkgConfig QUIET)
 pkg_check_modules(PC_SDL2 QUIET sdl2)
@@ -53,16 +55,6 @@ find_library(SDL2_LIBRARY
   PATH_SUFFIXES x64 x86
 )
 
-if(NOT SDL2_BUILDING_LIBRARY)
-  find_library(SDL2MAIN_LIBRARY
-    NAMES SDL2main
-    HINTS
-      ${PC_SDL2_LIBDIR}
-      ${PC_SDL2_LIBRARY_DIRS}
-    PATH_SUFFIXES x64 x86
-  )
-endif()
-
 if(SDL2_INCLUDE_DIR AND EXISTS "${SDL2_INCLUDE_DIR}/SDL_version.h")
   file(STRINGS "${SDL2_INCLUDE_DIR}/SDL_version.h" SDL2_VERSION_MAJOR_LINE REGEX "^#define[ \t]+SDL_MAJOR_VERSION[ \t]+[0-9]+$")
   file(STRINGS "${SDL2_INCLUDE_DIR}/SDL_version.h" SDL2_VERSION_MINOR_LINE REGEX "^#define[ \t]+SDL_MINOR_VERSION[ \t]+[0-9]+$")
@@ -80,7 +72,7 @@ if(SDL2_INCLUDE_DIR AND EXISTS "${SDL2_INCLUDE_DIR}/SDL_version.h")
 endif()
 
 set(SDL2_INCLUDE_DIRS ${SDL2_INCLUDE_DIR})
-set(SDL2_LIBRARIES ${SDL2MAIN_LIBRARY} ${SDL2_LIBRARY})
+set(SDL2_LIBRARIES ${SDL2_LIBRARY})
 
 include(FindPackageHandleStandardArgs)
 
