@@ -46,11 +46,6 @@ include_directories(SYSTEM ${FFMPEG_INCLUDE_DIR})
 # FIXME improve swscale detection
 set(FFMPEG_LIBRARIES "${FFMPEG_LIBRARIES};/usr/lib/libswscale.so")
 
-# Including Lua
-include(FindLua)
-find_package(Lua 5.2 REQUIRED)
-include_directories(SYSTEM ${LUA_INCLUDE_DIR})
-
 # Includes checks
 include(CheckIncludeFiles)
 check_include_files("sys/types.h;sys/stat.h" HAVE_SYSSTAT_H)

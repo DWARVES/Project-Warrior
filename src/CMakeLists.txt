@@ -10,7 +10,6 @@ add_executable(${exe}
 target_link_libraries(
     ${exe}
     ${Boost_REGEX_LIBRARY}
-    ${LUA_LIBRARIES}
     ${SDL2_LIBRARIES}
     ${SDL2_IMAGE_LIBRARIES}
     ${SDLMIXER_LIBRARY}
@@ -39,4 +38,6 @@ add_subdirectory(gui)
 target_link_libraries(${exe} libgui)
 add_subdirectory(events)
 target_link_libraries(${exe} libevents)
+add_subdirectory(liblua)
+target_link_libraries(${exe} liblua5.2)
 
