@@ -5,9 +5,10 @@ set(lib liblua)
 
 # List file here
 add_library(${lib}
-    saveExposure.cpp    saveExposure.hpp
-    script.cpp          script.hpp       luna.hpp
-    helper.cpp          helper.hpp
-    exception.cpp       exception.hpp
+    saveExposure.cpp     saveExposure.hpp
+    graphicsExposure.cpp graphicsExposure.hpp
+    script.cpp           script.hpp           luna.hpp
+    helper.cpp           helper.hpp
+    exception.cpp        exception.hpp
 	)
 
