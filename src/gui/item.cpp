@@ -70,20 +70,26 @@ namespace gui
             return m_selected;
         }
 
-        void Item::scrollLeft()
+        bool Item::scrollLeft()
         {
             if(m_lbound > 0) {
                 --m_lbound;
                 updateState(false);
+                return true;
             }
+            else
+                return false;
         }
 
-        void Item::scrollRight()
+        bool Item::scrollRight()
         {
             if(m_rbound < m_text.size()) {
                 ++m_lbound;
                 updateState(false);
+                return true;
             }
+            else
+                return false;
         }
 
         void Item::draw()

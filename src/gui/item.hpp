@@ -31,8 +31,8 @@ namespace gui
                 /* Selection */
                 bool select(bool s);
                 bool selected() const;
-                void scrollLeft();
-                void scrollRight();
+                bool scrollLeft();
+                bool scrollRight();
 
                 /* Will draw the item around the actual origin */
                 void draw();

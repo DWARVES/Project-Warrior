@@ -54,9 +54,7 @@ namespace gui
 
             /* Events */
             virtual void focus(bool f);
-            virtual void click(const geometry::Point& p);
-            virtual void keyPress(events::Key k);
-            virtual bool next();
+            virtual bool action(Widget::Action a);
             /* Won't do anything, it's called at every change of selected.
              * Is usefull when derivating gui::List
              */
@@ -85,7 +83,8 @@ namespace gui
             void updateState();
             void deleteItem(size_t pos);
             void flushTexts();
-            void prev();
+            bool prev();
+            bool next();
     };
 }
 

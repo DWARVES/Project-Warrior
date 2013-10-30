@@ -127,58 +127,60 @@ namespace gui
         updateState();
     }
 
-    void List::click(const geometry::Point& p)
+    bool List::action(Widget::Action a)
     {
-        size_t pos = size_t(p.y / m_sep + .5f);
-        if(pos == 0)
-            return;
-        else
-            pos = m_upb + pos - 1;
-        m_selected = pos;
-        updateState();
-    }
-
-    void List::keyPress(events::Key k)
-    {
-        /* TODO more shortcuts like first, last ... */
-        switch(k.getSym()) {
-            case (events::KeyType)events::KeyMap::Up:
-                prev();
-                break;
-            case (events::KeyType)events::KeyMap::Down:
-                next();
-                break;
-            case (events::KeyType)events::KeyMap::Left:
+        switch(a) {
+            case Widget::ScrollUp:
+                return prev();
+            case Widget::ScrollDown:
+                return next();
+            case Widget::ScrollLeft:
                 if(m_selected < m_items.size())
-                    m_items[m_selected].it->scrollLeft();
-                break;
-            case (events::KeyType)events::KeyMap::Right:
+                    return m_items[m_selected].it->scrollLeft();
+                else
+                    return false;
+            case Widget::ScrollRight:
                 if(m_selected < m_items.size())
-                    m_items[m_selected].it->scrollRight();
-                break;
+                    return m_items[m_selected].it->scrollRight();
+                else
+                    return false;
+            case Widget::First:
+                if(m_selected == 0)
+                    return false;
+                m_selected = 0;
+                updateState();
+                return true;
+            case Widget::Last:
+                if(m_selected == m_items.size() - 1)
+                    return false;
+                m_selected = m_items.size() - 1;
+                updateState();
+                return true;
+            case Widget::Select:
             default:
-                break;
+                return false;
         }
     }
 
     bool List::next()
     {
         if(m_selected == m_items.size() - 1)
-            return true;
+            return false;
         else if(m_selected == m_items.size())
             m_selected = 0;
         else
             ++m_selected;
         updateState();
-        return false;
+        return true;
     }
             
-    void List::prev()
+    bool List::prev()
     {
         if(m_selected == 0)
-            return;
+            return false;
         --m_selected;
         updateState();
+        return true;
     }
 
     size_t List::posFromID(List::ItemID id)
