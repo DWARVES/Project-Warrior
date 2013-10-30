@@ -37,12 +37,9 @@ namespace gui
             virtual void draw();
 
             virtual void focus(bool f);
-            virtual void click(const geometry::Point& p);
-            virtual void mouse(const geometry::Point& p);
-            virtual void keyPress(events::Key k);
-            virtual void keyRelease(events::Key k);
+            virtual void pointer(const geometry::Point& p);
             virtual void inputText(const std::string& str);
-            virtual bool next();
+            virtual bool action(Widget::Action a);
 
         private:
             unsigned int m_rows, m_columns;
@@ -63,6 +60,10 @@ namespace gui
             StoredWidget widUnderPoint(const geometry::Point& p);
             float caseWidth(bool wg);
             float caseHeight(bool wg);
+            bool left();
+            bool right();
+            bool up();
+            bool down();
     };
 }
 

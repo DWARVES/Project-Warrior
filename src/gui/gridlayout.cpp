@@ -199,47 +199,12 @@ namespace gui
         }
     }
 
-    void GridLayout::click(const geometry::Point& p)
-    {
-        if(!m_focused.widget)
-            return;
-
-        geometry::Point pos;
-        getPos(m_focused.rx, m_focused.ry, pos);
-        pos.x = p.x - pos.x;
-        pos.y = p.y - pos.y;
-        m_focused.widget->click(pos);
-    }
-
-    void GridLayout::mouse(const geometry::Point& p)
+    void GridLayout::pointer(const geometry::Point& p)
     {
         focus(false);
         m_focused = widUnderPoint(p);
         if(m_focused.widget)
             m_focused.widget->focus(true);
-    }
-
-    void GridLayout::keyPress(events::Key k)
-    {
-        if(!m_focused.widget)
-            return;
-        
-        switch(k.getSym()) {
-            case (events::KeyType)events::KeyMap::Tab:
-            case (events::KeyType)events::KeyMap::Right:
-                next();
-                break;
-            default:
-                m_focused.widget->keyPress(k);
-                break;
-        }
-    }
-
-    void GridLayout::keyRelease(events::Key k)
-    {
-        if(!m_focused.widget)
-            return;
-        m_focused.widget->keyRelease(k);
     }
 
     void GridLayout::inputText(const std::string& str)
@@ -249,23 +214,75 @@ namespace gui
         m_focused.widget->inputText(str);
     }
 
-    bool GridLayout::next()
+    /* FIXME lot of code duplication between left, right up and down */
+    bool GridLayout::left()
     {
-        /* Get first */
+        /* Get first (top-right) */
         if(!m_focused.widget) {
-            focus(true);
-            return false;
+            focus(false);
+            StoredWidget f;
+            f.widget = NULL;
+            for(ssize_t x = m_columns - 1; x >= 0; --x) {
+                for(size_t y = 0; y < m_rows; ++y) {
+                    if(m_map[x][y].widget) {
+                        f = m_map[x][y];
+                        break;
+                    }
+                }
+                if(f.widget)
+                    break;
+            }
+            if(f.widget)
+                f.widget->focus(true);
+            m_focused = f;
+            return true;
         }
-        /* If the focused widget has inside focusing */
-        else if(!m_focused.widget->next()) {
-            return false;
-        }
-        /* Get the next widget */
+
+        /* Get the next widget on the left */
         else {
             StoredWidget n;
             n.widget = NULL;
-            for(size_t x = 0; x < m_columns; ++x) {
-                for(size_t y = 0; y < m_rows; ++y) {
+            for(size_t y = 0; y < m_rows; ++y) {
+                for(ssize_t x = m_columns - 1; x >= 0; --x) {
+                    /* Before the focused one, continue */
+                    if(y < m_focused.ry
+                            || (y == m_focused.ry && x >= m_focused.rx))
+                        continue;
+                    if(m_map[x][y].widget
+                            && m_map[x][y].rx == x
+                            && m_map[x][y].ry == y) {
+                        n = m_map[x][y];
+                        break;
+                    }
+                }
+                if(n.widget)
+                    break;
+            }
+
+            focus(false);
+            if(!n.widget)
+                return false;
+            else {
+                m_focused = n;
+                m_focused.widget->focus(true);
+                return true;
+            }
+        }
+    }
+
+    bool GridLayout::right()
+    {
+        /* Get first (top-left) */
+        if(!m_focused.widget) {
+            focus(true);
+            return true;
+        }
+        /* Get the next widget on the left */
+        else {
+            StoredWidget n;
+            n.widget = NULL;
+            for(size_t y = 0; y < m_rows; ++y) {
+                for(size_t x = 0; x < m_columns; ++x) {
                     /* Before the focused one, continue */
                     if(y < m_focused.ry
                             || (y == m_focused.ry && x <= m_focused.rx))
@@ -283,12 +300,156 @@ namespace gui
 
             focus(false);
             if(!n.widget)
-                return true;
+                return false;
             else {
                 m_focused = n;
                 m_focused.widget->focus(true);
-                return false;
+                return true;
             }
+        }
+    }
+
+    bool GridLayout::up()
+    {
+        /* Get first (bottom-left) */
+        if(!m_focused.widget) {
+            focus(false);
+            StoredWidget f;
+            f.widget = NULL;
+            for(size_t x = 0; x < m_columns; ++x) {
+                for(ssize_t y = m_rows - 1; y >= 0; --y) {
+                    if(m_map[x][y].widget) {
+                        f = m_map[x][y];
+                        break;
+                    }
+                }
+                if(f.widget)
+                    break;
+            }
+            if(f.widget)
+                f.widget->focus(true);
+            m_focused = f;
+            return true;
+        }
+
+        /* Get the next widget going forward */
+        else {
+            StoredWidget n;
+            n.widget = NULL;
+            for(size_t x = 0; x < m_columns; ++x) {
+                for(ssize_t y = m_rows - 1; y >= 0; --y) {
+                    /* Before the focused one, continue */
+                    if(x < m_focused.rx
+                            || (x == m_focused.rx && y >= m_focused.ry))
+                        continue;
+                    if(m_map[x][y].widget
+                            && m_map[x][y].rx == x
+                            && m_map[x][y].ry == y) {
+                        n = m_map[x][y];
+                        break;
+                    }
+                }
+                if(n.widget)
+                    break;
+            }
+
+            focus(false);
+            if(!n.widget)
+                return false;
+            else {
+                m_focused = n;
+                m_focused.widget->focus(true);
+                return true;
+            }
+        }
+    }
+
+    bool GridLayout::down()
+    {
+        /* Get first (bottom-left) */
+        if(!m_focused.widget) {
+            focus(true);
+            return true;
+        }
+
+        /* Get the next widget goind downward */
+        else {
+            StoredWidget n;
+            n.widget = NULL;
+            for(size_t x = 0; x < m_columns; ++x) {
+                for(size_t y = 0; y < m_rows; ++y) {
+                    /* Before the focused one, continue */
+                    if(x < m_focused.rx
+                            || (x == m_focused.rx && y <= m_focused.ry))
+                        continue;
+                    if(m_map[x][y].widget
+                            && m_map[x][y].rx == x
+                            && m_map[x][y].ry == y) {
+                        n = m_map[x][y];
+                        break;
+                    }
+                }
+                if(n.widget)
+                    break;
+            }
+
+            focus(false);
+            if(!n.widget)
+                return false;
+            else {
+                m_focused = n;
+                m_focused.widget->focus(true);
+                return true;
+            }
+        }
+    }
+
+    bool GridLayout::action(Widget::Action a)
+    {
+        if(m_focused.widget && m_focused.widget->action(a))
+            return true;
+
+        switch(a) {
+            case Widget::First:
+                {
+                    Widget* w = m_focused.widget;
+                    focus(true);
+                    return (w != m_focused.widget);
+                }
+
+            case Widget::Last:
+                {
+                    Widget* w = m_focused.widget;
+                    focus(false);
+                    StoredWidget f;
+                    f.widget = NULL;
+                    for(size_t x = 0; x < m_columns; ++x) {
+                        for(ssize_t y = m_rows - 1; y >= 0; --y) {
+                            if(m_map[x][y].widget) {
+                                f = m_map[x][y];
+                                break;
+                            }
+                        }
+                        if(f.widget)
+                            break;
+                    }
+                    if(f.widget)
+                        f.widget->focus(true);
+                    m_focused = f;
+                    return (w != m_focused.widget);
+                }
+
+            case Widget::ScrollLeft:
+                return left();
+            case Widget::ScrollRight:
+                return right();
+            case Widget::ScrollUp:
+                return up();
+            case Widget::ScrollDown:
+                return down();
+            case Widget::Select: /* Avoid warnings */
+            default:
+                return false;
         }
     }
 
@@ -351,7 +512,7 @@ namespace gui
             return m_map[px][py];
         }
     }
-            
+
     float GridLayout::caseWidth(bool wg)
     {
         float w = (width() - m_gaps) / (float)m_columns;
