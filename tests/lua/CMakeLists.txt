@@ -9,5 +9,7 @@ add_executable(script-test script-test.cpp)
 target_link_libraries(script-test libcore liblua liblua5.2)
 add_executable(saveexposure-test saveexposure-test.cpp)
 target_link_libraries(saveexposure-test libgameplay libcore liblua liblua5.2 ${Boost_REGEX_LIBRARY})
+add_executable(graphicsexposure-test graphicsexposure-test.cpp)
+target_link_libraries(graphicsexposure-test libevents libgraphics libgeometry libcore liblua liblua5.2 ${Boost_REGEX_LIBRARY} ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
 
 
