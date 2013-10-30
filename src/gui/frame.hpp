@@ -51,12 +51,9 @@ namespace gui
 
             /* Events */
             virtual void focus(bool f);
-            virtual void click(const geometry::Point& p);
-            virtual void mouse(const geometry::Point& m);
-            virtual void keyPress(events::Key k);
-            virtual void keyRelease(events::Key k);
+            virtual void pointer(const geometry::Point& m);
             virtual void inputText(const std::string& in);
-            virtual bool next();
+            virtual bool action(Widget::Action a);
 
         private:
             /* The names of the pictures in the Graphics instance */

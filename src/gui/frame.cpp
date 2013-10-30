@@ -149,50 +149,27 @@ namespace gui
             m_in->focus(f);
     }
 
-    void Frame::click(const geometry::Point& p)
-    {
-        if(!m_in)
-            return;
-        geometry::Point np = p;
-        np.x -= m_border;
-        np.y -= m_border;
-        m_in->click(np);
-    }
-
-    void Frame::mouse(const geometry::Point& m)
+    void Frame::pointer(const geometry::Point& m)
     {
         if(!m_in)
             return;
         geometry::Point nm = m;
         nm.x -= m_border;
         nm.y -= m_border;
-        m_in->mouse(nm);
+        m_in->pointer(nm);
     }
 
-    void Frame::keyPress(events::Key k)
+    bool Frame::action(Widget::Action a)
     {
-        if(m_in)
-            m_in->keyPress(k);
-    }
-
-    void Frame::keyRelease(events::Key k)
-    {
-        if(m_in)
-            m_in->keyRelease(k);
+        if(!m_in)
+            return false;
+        return m_in->action(a);
     }
 
     void Frame::inputText(const std::string& in)
     {
         if(m_in)
             m_in->inputText(in);
-    }
-
-    bool Frame::next()
-    {
-        if(m_in)
-            return m_in->next();
-        else
-            return true;
     }
 
     void Frame::updateSize()

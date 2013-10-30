@@ -45,24 +45,29 @@ class BlueWidget : public gui::Widget
             m_focus = f;
         }
 
-        virtual void click(const geometry::Point& p)
-        {
-            std::cout << "Widget clicked at (" << p.x << ";" << p.y << ") [relative coordinates]" << std::endl;
-        }
-
-        virtual void keyPress(events::Key k)
-        {
-            std::cout << "Key " << k.name() << " just pressed on the widget !" << std::endl;
-        }
-
-        virtual void keyRelease(events::Key k)
-        {
-            std::cout << "Key " << k.name() << " just released on the widget !" << std::endl;
-        }
-
         virtual void inputText(const std::string& str)
         {
             std::cout << "\"" << str << "\" text just entered on the widget !" << std::endl;
+        }
+
+        virtual void pointer(const geometry::Point& m)
+        {
+            std::cout << "Mouse moved to " << m.x << "x" << m.y << std::endl;
+        }
+
+        virtual bool action(gui::Widget::Action a)
+        {
+            switch(a) {
+                case gui::Widget::First:       std::cout << "Action : First !"       << std::endl; break;
+                case gui::Widget::Last:        std::cout << "Action : Last !"        << std::endl; break;
+                case gui::Widget::ScrollLeft:  std::cout << "Action : ScrollLeft !"  << std::endl; break;
+                case gui::Widget::ScrollRight: std::cout << "Action : ScrollRight !" << std::endl; break;
+                case gui::Widget::ScrollUp:    std::cout << "Action : ScrollUp !"    << std::endl; break;
+                case gui::Widget::ScrollDown:  std::cout << "Action : ScrollDown !"  << std::endl; break;
+                case gui::Widget::Select:      std::cout << "Action : Select !"      << std::endl; break;
+                default:                       std::cout << "Action : unknown !"     << std::endl; break;
+            }
+            return true;
         }
 
     private:
