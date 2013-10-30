@@ -1,5 +1,6 @@
 
 #include "gui.hpp"
+#include "widget.hpp"
 
 namespace gui
 {
@@ -65,35 +66,36 @@ namespace gui
         if(!m_focus)
             return;
 
-        /* Click */
-        if(ev.buttonJustPressed(events::Button::Left)) {
-            geometry::Point click = pointer;
-            click.x -= m_pos.x;
-            click.y -= m_pos.y;
-            m_main->click(click);
-        }
-
-        /* Keyboard */
-        std::vector<events::Key> keys = ev.lastKeysPressed();
-        for(events::Key k : keys)
-            m_main->keyPress(k);
-        keys = ev.lastKeysReleased();
-        for(events::Key k : keys)
-            m_main->keyRelease(k);
-
         /* Mouse */
         geometry::Point mouse = ev.mouseRel();
         /* Report mouse only if moved */
         if(std::abs(mouse.x) > 0.0f || std::abs(mouse.y) > 0.0f) {
             mouse.x = pointer.x - m_pos.x;
             mouse.y = pointer.y - m_pos.y;
-            m_main->mouse(mouse);
+            m_main->pointer(mouse);
         }
 
         /* Input */
         std::string input = ev.lastInput();
         if(!input.empty())
             m_main->inputText(input);
+
+        /* Actions */
+        /* TODO handle joysticks and allow personnalization of controls */
+        if(ev.keyJustPressed(events::KeyMap::Left))
+            m_main->action(Widget::ScrollLeft);
+        if(ev.keyJustPressed(events::KeyMap::Right))
+            m_main->action(Widget::ScrollRight);
+        if(ev.keyJustPressed(events::KeyMap::Up))
+            m_main->action(Widget::ScrollUp);
+        if(ev.keyJustPressed(events::KeyMap::Down))
+            m_main->action(Widget::ScrollDown);
+        if(ev.keyJustPressed(events::KeyMap::Return))
+            m_main->action(Widget::Select);
+        if(ev.keyJustPressed(events::KeyMap::Begin))
+            m_main->action(Widget::First);
+        if(ev.keyJustPressed(events::KeyMap::End))
+            m_main->action(Widget::Last);
     }
 
     bool Gui::isInRect(const geometry::Point& p, const geometry::Point& o, float width, float height)

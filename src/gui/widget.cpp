@@ -37,24 +37,15 @@ namespace gui
     void Widget::focus(bool)
     {}
 
-    void Widget::click(const geometry::Point&)
+    void Widget::pointer(const geometry::Point&)
     {}
             
-    void Widget::mouse(const geometry::Point&)
-    {}
-
-    void Widget::keyPress(events::Key)
-    {}
-
-    void Widget::keyRelease(events::Key)
-    {}
-
     void Widget::inputText(const std::string&)
     {}
-
-    bool Widget::next()
+            
+    bool Widget::action(Action)
     {
-        return true;
+        return false;
     }
 
 }

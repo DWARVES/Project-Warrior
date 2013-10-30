@@ -4,7 +4,6 @@
 
 #include "graphics/graphics.hpp"
 #include "geometry/point.hpp"
-#include "events/key.hpp"
 #include <string>
 
 namespace gui
@@ -30,20 +29,23 @@ namespace gui
             virtual void draw() = 0;
 
             /* Actions */
+            enum Action {
+                First,
+                Last,
+                ScrollLeft,
+                ScrollRight,
+                ScrollUp,
+                ScrollDown,
+                Select,
+            };
             /* The following functions do nothing,
              * If your widget uses them, override them with your own implementation
              */
             virtual void focus(bool);
-            virtual void click(const geometry::Point&);
-            virtual void mouse(const geometry::Point&);
-            virtual void keyPress(events::Key);
-            virtual void keyRelease(events::Key);
+            virtual void pointer(const geometry::Point&);
             virtual void inputText(const std::string&);
-            /* Called when the next widget needs to be focused
-             * Return true if you needs to go to the next widget outside this one
-             * If this is a simple widget, not a layout, always return true (default behaviour)
-             */
-            virtual bool next();
+            /* Return true if the action was handled */
+            virtual bool action(Action);
 
         protected:
             graphics::Graphics* m_gfx;
