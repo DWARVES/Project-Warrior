@@ -44,6 +44,10 @@ namespace events
         F10 = SDLK_F10,
         F11 = SDLK_F11,
         F12 = SDLK_F12,
+        Begin = SDLK_HOME,
+        End = SDLK_END,
+        PageUp = SDLK_PAGEUP,
+        PageDown = SDLK_PAGEDOWN,
     };
 }
 
