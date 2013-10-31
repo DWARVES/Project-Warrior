@@ -62,12 +62,7 @@ int main()
         dumpInput(ev.lastInput(), ev.fullInput());
         if(ev.isKeyPressed(events::KeyMap::Escape))
             ev.clearInput();
-        if(joy) {
-            dumpAxis(ev.lastAxesMoved(joy), joy);
-            dumpHats(ev.lastHatsMoved(joy), joy);
-            dumpJoyButtons(ev.lastJoyButtonsPressed(joy), joy, "pressed");
-            dumpJoyButtons(ev.lastJoyButtonsReleased(joy), joy, "released");
-        }
+
         if(ev.joysticksChanged()) {
             std::cout << "Joysticks changed !" << std::endl;
             std::vector<events::JoystickID> plugged  = ev.lastJoysticksAdded();
@@ -89,6 +84,13 @@ int main()
             dumpAddedJoysticks(plugged);
             if(!unplugged.empty())
                 std::cout << unplugged.size() << " joysticks were removed." << std::endl;
+        }
+
+        if(joy) {
+            dumpAxis(ev.lastAxesMoved(joy), joy);
+            dumpHats(ev.lastHatsMoved(joy), joy);
+            dumpJoyButtons(ev.lastJoyButtonsPressed(joy), joy, "pressed");
+            dumpJoyButtons(ev.lastJoyButtonsReleased(joy), joy, "released");
         }
         if(ev.keyJustPressed(events::KeyMap::Return)) {
             std::cout << "There are " << ev.numJoysticks() << " joysticks." << std::endl;

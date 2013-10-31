@@ -115,7 +115,6 @@ namespace events
                 case SDL_JOYBUTTONUP:
                     process(&ev.jbutton);
                     break;
-                /* FIXME : SDL doesn't seems to report joydevice events */
                 case SDL_JOYDEVICEADDED:
                 case SDL_JOYDEVICEREMOVED:
                     process(&ev.jdevice);
@@ -794,7 +793,7 @@ namespace events
 
     bool Events::joysticksChanged() const
     {
-        return !m_lastJoyAdded.empty() || !m_lastJoyAdded.empty();
+        return !m_lastJoyAdded.empty() || !m_lastJoyRemoved.empty();
     }
 
     std::vector<JoystickID> Events::lastJoysticksAdded() const
