@@ -115,7 +115,7 @@ namespace gui
             /* Drawing the middle */
             m_gfx->move(-w + 2*rect.width, 0.0f);
             rect.width = w - 2*rect.width;
-            m_gfx->draw(rect, m_texts[sel][(unsigned short)Middle], rect.width, 1.0f);
+            m_gfx->draw(rect, m_texts[sel][(unsigned short)Middle]);
 
             /* Drawing the text */
             std::string font = m_texts[sel][(unsigned short)Font];

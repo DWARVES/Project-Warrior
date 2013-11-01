@@ -117,10 +117,10 @@ namespace gui
         m_gfx->push();
         m_gfx->move(0.0f, m_border);
         if(!m_borders[(unsigned short)Left].empty())
-            m_gfx->draw(rect, m_borders[(unsigned short)Left], 1.0f, rect.height);
+            m_gfx->draw(rect, m_borders[(unsigned short)Left]);
         m_gfx->move(width() - m_border, 0.0f);
         if(!m_borders[(unsigned short)Right].empty())
-            m_gfx->draw(rect, m_borders[(unsigned short)Right], 1.0f, rect.height);
+            m_gfx->draw(rect, m_borders[(unsigned short)Right]);
         m_gfx->pop();
 
         /* Draw top and bottom sides */
@@ -129,10 +129,10 @@ namespace gui
         m_gfx->push();
         m_gfx->move(m_border, 0.0f);
         if(!m_borders[(unsigned short)Top].empty())
-            m_gfx->draw(rect, m_borders[(unsigned short)Top], rect.width, 1.0f);
+            m_gfx->draw(rect, m_borders[(unsigned short)Top]);
         m_gfx->move(0.0f, height() - m_border);
         if(!m_borders[(unsigned short)Bottom].empty())
-            m_gfx->draw(rect, m_borders[(unsigned short)Bottom], rect.width, 1.0f);
+            m_gfx->draw(rect, m_borders[(unsigned short)Bottom]);
         m_gfx->pop();
 
         /* Draw the widget */
