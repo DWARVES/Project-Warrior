@@ -17,5 +17,7 @@ add_executable(misc1-test misc1-test.cpp)
 target_link_libraries(misc1-test libgui libevents libgraphics libcore libgeometry ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
 add_executable(scrollbar-test scrollbar-test.cpp)
 target_link_libraries(scrollbar-test libgui libevents libgraphics libcore libgeometry ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
+add_executable(fillbar-test fillbar-test.cpp)
+target_link_libraries(fillbar-test libgui libevents libgraphics libcore libgeometry ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
 
 
