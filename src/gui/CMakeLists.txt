@@ -13,5 +13,6 @@ add_library(${lib}
     list.cpp       list.hpp
     scrollbar.cpp  scrollbar.hpp
     fillbar.cpp    fillbar.hpp
+    checkbox.cpp   checkbox.hpp
 	)
 
