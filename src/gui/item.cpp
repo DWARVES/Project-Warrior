@@ -6,7 +6,7 @@ namespace gui
     namespace internal
     {
         Item::Item(graphics::Graphics* gfx)
-            : m_gfx(gfx), m_width(0.0f), m_height(0.0f), m_selected(false)
+            : m_gfx(gfx), m_width(0.0f), m_height(0.0f), m_selected(false), m_lastSel(0)
         {}
 
         Item::~Item()
@@ -61,6 +61,7 @@ namespace gui
             if(m_selected == s)
                 return m_selected;
             m_selected = s;
+            m_lastSel = SDL_GetTicks();
             updateState();
             return m_selected;
         }
@@ -75,6 +76,7 @@ namespace gui
             if(m_lbound > 0) {
                 --m_lbound;
                 updateState(false);
+                m_lastSel = SDL_GetTicks();
                 return true;
             }
             else
@@ -85,6 +87,7 @@ namespace gui
         {
             if(m_rbound < m_text.size()) {
                 ++m_lbound;
+                m_lastSel = SDL_GetTicks();
                 updateState(false);
                 return true;
             }
@@ -94,6 +97,26 @@ namespace gui
 
         void Item::draw()
         {
+            /* Automatic scrolling after 2 seconds */
+            static bool re = false;
+            Uint32 t = SDL_GetTicks();
+            if(m_selected && (m_rext || re)
+                    && t - m_lastSel > 2000) {
+                re = false;
+                t -= m_lastSel;
+                t -= 2000;
+                size_t b = t / 250;
+                b %= std::max(m_text.size(), (size_t)1);
+                if(b != m_lbound) {
+                    m_lbound = b;
+                    updateState(false);
+                }
+            }
+            else if(!m_rext && m_lbound != 0 && !re) {
+                m_lastSel = t - 1000;
+                re = true;
+            }
+
             m_gfx->push();
             float w = m_width;
             float h = m_height;

@@ -4,6 +4,7 @@
 
 #include "graphics/graphics.hpp"
 #include <string>
+#include <SDL.h>
 
 namespace gui
 {
@@ -56,6 +57,9 @@ namespace gui
                 size_t m_lbound, m_rbound; /* Indexes of right/left part of the text */
                 bool m_lext, m_rext; /* Can be extended to right/left */
                 std::string m_texts[2][(unsigned short)Last];
+
+                /* Time when it got selected the last time, for automatic scrolling */
+                Uint32 m_lastSel;
 
                 /* Internal functions */
                 float widthE() const;
