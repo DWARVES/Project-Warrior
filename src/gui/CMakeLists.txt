@@ -12,5 +12,6 @@ add_library(${lib}
     item.cpp       item.hpp
     list.cpp       list.hpp
     scrollbar.cpp  scrollbar.hpp
+    fillbar.cpp    fillbar.hpp
 	)
 
