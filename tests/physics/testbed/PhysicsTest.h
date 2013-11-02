@@ -1,7 +1,6 @@
 #ifndef DEF_PHYSICSTEST_H
 #define DEF_PHYSICSTEST_H
 
-#include "physics/CollisionManager.hpp"
 #include "physics/World.hpp"
 #include "physics/Entity.hpp"
 #include "physics/Character.hpp"
@@ -34,8 +33,6 @@ class PhysicsTest : public Test
         PhysicsTest()
         {
             m_world->SetGravity(b2Vec2(0, -40));
-            m_world->SetContactListener(new CollisionManager());
-
             world = new World(m_world);
 
             square1 = world->createCharacter("Square 1", Point(-300, 50), AABB(100, 100), Character::Weight::Heavy);

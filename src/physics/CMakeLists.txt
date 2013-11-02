@@ -6,7 +6,6 @@ set(lib libphysics)
 # List file here
 add_library(${lib}
     World.cpp               World.hpp
-    CollisionManager.cpp    CollisionManager.hpp
     Entity.cpp              Entity.hpp
     Character.cpp           Character.hpp
     Attack.cpp              Attack.hpp

@@ -4,10 +4,10 @@
 
 namespace physics
 {
-    World::World(const b2Vec2& gravity)
+    World::World(float x, float y)
     {
-        m_world = new b2World(gravity);
-        m_world->SetContactListener(new CollisionManager());
+        m_world = new b2World(b2Vec2(x, y));
+        m_world->SetContactListener(this);
         m_world->SetDestructionListener(this);
 
         core::logger::init();
@@ -16,7 +16,7 @@ namespace physics
 
     World::World(b2World* world) : m_world(world)
     {
-        m_world->SetContactListener(new CollisionManager());
+        m_world->SetContactListener(this);
         m_world->SetDestructionListener(this);
 
         core::logger::init();
@@ -48,9 +48,24 @@ namespace physics
         return m_joints.at(name).get();
     }
 
-    b2Vec2 World::getGravity() const
+    float World::getXGravity() const
     {
-        return m_world->GetGravity();
+        return m_world->GetGravity().x;
+    }
+
+    float World::getYGravity() const
+    {
+        return m_world->GetGravity().y;
+    }
+
+    void World::setXGravity(float x)
+    {
+        m_world->SetGravity(b2Vec2(x, getYGravity()));
+    }
+
+    void World::setYGravity(float y)
+    {
+        m_world->SetGravity(b2Vec2(getXGravity(), y));
     }
 
     void World::setGravity(float x, float y)
@@ -227,4 +242,71 @@ namespace physics
     }
 
     void World::SayGoodbye(b2Fixture* fixture) {}
+
+
+    void World::BeginContact(b2Contact* contact)
+    {
+        b2Fixture* fixtureA = contact->GetFixtureA();
+        b2Fixture* fixtureB = contact->GetFixtureB();
+
+        Entity* entityA = getEntityFromFixture(fixtureA);
+        Entity* entityB = getEntityFromFixture(fixtureB);
+
+        if(entityA == nullptr || entityB == nullptr)
+        {
+            return;
+        }
+
+        collisionCallback(entityA, entityB);
+
+        // Platform collision management
+
+        // Check if one of the fixtures is the platform
+        b2Body* platformBody = nullptr;
+        b2Body* otherBody = nullptr;
+        if(entityA->getType() == Entity::Type::Platform) {
+            platformBody = fixtureA->GetBody();
+            otherBody = fixtureB->GetBody();
+        }
+        if(entityB->getType() == Entity::Type::Platform) {
+            platformBody = fixtureB->GetBody();
+            otherBody = fixtureA->GetBody();
+        }
+        if(!platformBody)
+            return;
+
+        int numPoints = contact->GetManifold()->pointCount;
+        b2WorldManifold worldManifold;
+        contact->GetWorldManifold(&worldManifold);
+
+        // Check if contact points are moving downward
+        for(int i = 0; i < numPoints; i++) {
+            b2Vec2 pointVel = otherBody->GetLinearVelocityFromWorldPoint(worldManifold.points[i]);
+            if(pointVel.y < 0)
+                return; // Point is moving down, leave contact solid and exit
+        }
+
+        // No points are moving downward, contact should not be solid
+        contact->SetEnabled(false);
+    }
+
+    void World::EndContact(b2Contact* contact)
+    {
+        // Platform collision management
+
+        // Reset the default state of the contact in case it comes back for more
+        contact->SetEnabled(true);
+    }
+
+    Entity* World::getEntityFromFixture(b2Fixture* fixture) const
+    {
+        void* bodyUserData = fixture->GetBody()->GetUserData();
+        if(bodyUserData) {
+            return static_cast<Entity*>(bodyUserData);
+        }
+        else
+            return nullptr;
+    }
+
+    void World::collisionCallback(Entity* entityA, Entity* entityB) {}
 }

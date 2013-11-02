@@ -36,6 +36,7 @@ namespace physics
 
             b2Body* getBody() const; // Return a pointer to the entity's b2Body ; should be used only by other physics engine classes
             b2Fixture* getFixture(const std::string& name) const; // Returns a pointer to the fixture named "name" in the entity fixtures map
+
             uint16 getType() const; // Returns the type of the Entity
             geometry::Point getPosition() const; // Returns the current position of the entity
 
