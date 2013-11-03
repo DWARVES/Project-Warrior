@@ -27,6 +27,8 @@ namespace gui
 
             /* Will update the gui with the events */
             void update(const events::Events& ev);
+            void focus(bool f);
+            bool focus() const;
 
         private:
             bool m_tofree;

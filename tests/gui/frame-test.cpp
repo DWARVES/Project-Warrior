@@ -136,6 +136,8 @@ int main()
         ev.clearInput(); /* We don't need full input save, so we clear it */
         if(ev.isKeyPressed(events::KeyMap::Escape) || ev.isKeyPressed('q'))
             cont = false;
+        if(ev.keyJustPressed(events::KeyMap::Backspace))
+            g.focus(!g.focus());
         g.update(ev);
 
         gfx->beginDraw();

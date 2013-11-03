@@ -49,22 +49,23 @@ namespace gui
         m_gfx->pop();
     }
 
+    void Gui::focus(bool f)
+    {
+        if(f && !m_focus) /* Focus earned */
+            m_main->focus(true);
+        else if(!f && m_focus) /* Focus lost */
+            m_main->focus(false);
+        m_focus = f;
+    }
+            
+    bool Gui::focus() const
+    {
+        return m_focus;
+    }
+
     void Gui::update(const events::Events& ev)
     {
-        if(!m_main)
-            return;
-
-        geometry::Point pointer = ev.mousePos();
-        bool nfocus = isInRect(pointer, m_pos, m_main->width(), m_main->height());
-
-        /* Focus */
-        /* TODO handle focus differently */
-        if(nfocus && !m_focus)      /* Focus earned */
-            m_main->focus(true);
-        else if(!nfocus && m_focus) /* Focus lost */
-            m_main->focus(false);
-        m_focus = nfocus;
-        if(!m_focus)
+        if(!m_main || !m_focus)
             return;
 
         /* Input */
