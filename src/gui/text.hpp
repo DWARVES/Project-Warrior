@@ -31,7 +31,7 @@ namespace gui
             float shownHeight() const;
 
             /* Drawing */
-            void setFont(const std::string& f);
+            void setFont(const std::string& f, float size = -1.0f);
             virtual void draw();
 
             /* Action */
@@ -40,11 +40,14 @@ namespace gui
         private:
             std::string m_txt;
             std::string m_fmt; /* Text modified */
-            size_t m_begin;
             std::string m_font;
+            size_t m_begin;
+            size_t m_end;
+            float m_size;
 
             /* Internal methods */
             void updateState(bool rewind = true);
+            void shrinkLine(std::string& line, float w);
     };
 }
 
