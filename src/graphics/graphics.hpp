@@ -104,6 +104,7 @@ namespace graphics
              *   Fonts management    *
              *************************/
             float stringWidth(const std::string& font, const std::string& str, float size = -1.0f) const;
+            geometry::AABB stringSize(const std::string& font, const std::string& str, float size = -1.0f) const;
             
             /*************************
              *   Movies management   *

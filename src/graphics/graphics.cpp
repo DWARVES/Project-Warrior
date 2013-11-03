@@ -540,12 +540,17 @@ namespace graphics
     /*************************
      *   Fonts management    *
      *************************/
-    float Graphics::stringWidth(const std::string& font, const std::string& str, float size) const
+    geometry::AABB Graphics::stringSize(const std::string& font, const std::string& str, float size) const
     {
         if(rctype(font) != FONT || str.empty())
-            return 0.0f;
+            return geometry::AABB(0.0f, 0.0f);
         internal::Font* f = m_fs.getEntityValue(font)->stored.font;
-        return f->stringSize(str, size).width;
+        return f->stringSize(str, size);
+    }
+
+    float Graphics::stringWidth(const std::string& font, const std::string& str, float size) const
+    {
+        return stringSize(font, str, size).width;
     }
 
     /*************************
