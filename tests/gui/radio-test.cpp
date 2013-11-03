@@ -41,16 +41,22 @@ int main()
     gui::Radio b1(gfx, "g2"), b2(gfx, "g2"), b3(gfx, "g2");
     a1.setTexture(false, "nsel",  "sel");
     a1.setTexture(true,  "nselS", "selS");
+    a1.square(true);
     a2.setTexture(false, "nsel",  "sel");
     a2.setTexture(true,  "nselS", "selS");
+    a2.square(true);
     a3.setTexture(false, "nsel",  "sel");
     a3.setTexture(true,  "nselS", "selS");
+    a3.square(true);
     b1.setTexture(false, "nsel",  "sel");
     b1.setTexture(true,  "nselS", "selS");
+    b1.square(true);
     b2.setTexture(false, "nsel",  "sel");
     b2.setTexture(true,  "nselS", "selS");
+    b2.square(true);
     b3.setTexture(false, "nsel",  "sel");
     b3.setTexture(true,  "nselS", "selS");
+    b3.square(true);
 
     /* Loading the layouts of the two groups */
     gui::GridLayout layoutA(gfx, 1, 3);

@@ -36,10 +36,11 @@ int main()
     gfx->loadTexture("nselS", "guirc/checkbox/nselS.png");
     gfx->loadTexture("selS",  "guirc/checkbox/selS.png");
 
-    /* Setting up the fillbar */
+    /* Setting up the checkbox */
     gui::CheckBox cb(gfx);
     cb.setTexture(false, "nsel",  "sel");
     cb.setTexture(true,  "nselS", "selS");
+    cb.maxSize(geometry::AABB(600.0f,600.0f));
 
     gui::Gui g(gfx);
     g.main(&cb, geometry::Point(50.0f, 50.0f), 700.0f, 500.0f);
@@ -53,6 +54,8 @@ int main()
         ev.clearInput(); /* We don't need full input save, so we clear it */
         if(ev.isKeyPressed(events::KeyMap::Escape) || ev.isKeyPressed('q'))
             cont = false;
+        if(ev.keyJustPressed(' '))
+            cb.square(!cb.square());
         g.update(ev);
 
         gfx->beginDraw();

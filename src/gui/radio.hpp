@@ -4,6 +4,7 @@
 
 #include "gui/widget.hpp"
 #include "gui/checkbox.hpp"
+#include "geometry/aabb.hpp"
 #include <string>
 #include <map>
 
@@ -39,6 +40,10 @@ namespace gui
             void setTexture(bool f, const std::string& empty, const std::string& selected);
 
             /* Drawing */
+            bool square(bool s);
+            bool square() const;
+            void maxSize(geometry::AABB m);
+            void disableMaxSize();
             virtual void draw();
 
             /* Actions */

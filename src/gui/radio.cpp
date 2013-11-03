@@ -106,6 +106,26 @@ namespace gui
         m_box.setTexture(f, empty, selected);
     }
 
+    bool Radio::square(bool s)
+    {
+        return m_box.square(s);
+    }
+
+    bool Radio::square() const
+    {
+        return m_box.square();
+    }
+
+    void Radio::maxSize(geometry::AABB m)
+    {
+        m_box.maxSize(m);
+    }
+
+    void Radio::disableMaxSize()
+    {
+        m_box.disableMaxSize();
+    }
+
     void Radio::draw()
     {
         m_box.draw();

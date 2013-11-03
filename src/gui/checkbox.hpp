@@ -3,6 +3,7 @@
 #define DEF_GUI_CHECKBOX
 
 #include "widget.hpp"
+#include "geometry/aabb.hpp"
 #include <string>
 
 namespace gui
@@ -24,6 +25,10 @@ namespace gui
             void setTexture(bool f, const std::string& empty, const std::string& selected);
 
             /* Drawing */
+            bool square(bool s);
+            bool square() const;
+            void maxSize(geometry::AABB s);
+            void disableMaxSize();
             virtual void draw();
 
             /* Actions */
@@ -33,6 +38,9 @@ namespace gui
         private:
             int m_state;
             int m_focus;
+            bool m_square;
+            geometry::AABB m_maxSize;
+            bool m_useSize;
             std::string m_texts[2][2];
     };
 }
