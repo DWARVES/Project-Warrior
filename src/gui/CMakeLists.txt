@@ -14,5 +14,6 @@ add_library(${lib}
     scrollbar.cpp  scrollbar.hpp
     fillbar.cpp    fillbar.hpp
     checkbox.cpp   checkbox.hpp
+    radio.cpp      radio.hpp
 	)
 
