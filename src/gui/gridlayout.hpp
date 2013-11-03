@@ -37,7 +37,6 @@ namespace gui
             virtual void draw();
 
             virtual void focus(bool f);
-            virtual void pointer(const geometry::Point& p);
             virtual void inputText(const std::string& str);
             virtual bool action(Widget::Action a);
 
@@ -57,7 +56,6 @@ namespace gui
             /* Internal functions */
             void getPos(unsigned int x, unsigned int y, geometry::Point& pos);
             void updateSizes();
-            StoredWidget widUnderPoint(const geometry::Point& p);
             float caseWidth(bool wg);
             float caseHeight(bool wg);
             bool left();

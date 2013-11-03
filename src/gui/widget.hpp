@@ -42,7 +42,6 @@ namespace gui
              * If your widget uses them, override them with your own implementation
              */
             virtual void focus(bool);
-            virtual void pointer(const geometry::Point&);
             virtual void inputText(const std::string&);
             /* Return true if the action was handled */
             virtual bool action(Action);

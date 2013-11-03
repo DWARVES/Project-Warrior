@@ -199,14 +199,6 @@ namespace gui
         }
     }
 
-    void GridLayout::pointer(const geometry::Point& p)
-    {
-        focus(false);
-        m_focused = widUnderPoint(p);
-        if(m_focused.widget)
-            m_focused.widget->focus(true);
-    }
-
     void GridLayout::inputText(const std::string& str)
     {
         if(!m_focused.widget)
@@ -483,33 +475,6 @@ namespace gui
                 widget->width(wth);
                 widget->height(hght);
             }
-        }
-    }
-
-    GridLayout::StoredWidget GridLayout::widUnderPoint(const geometry::Point& p)
-    {
-        float mx = caseWidth(false);
-        float my = caseHeight(false);;
-        size_t px = size_t(p.x / mx);
-        size_t py = size_t(p.y / my);
-
-        /* Outside of map dimension */
-        if(px >= m_columns || py >= m_rows) {
-            StoredWidget sw;
-            sw.widget = NULL;
-            return sw;
-        }
-        else {
-            /* On the beggining gap */
-            if(m_map[px][py].widget) {
-                if((m_map[px][py].rx == px && std::fmod(p.x, mx) < m_gaps)
-                        || (m_map[px][py].ry == py && std::fmod(p.y, my) < m_gaps)) {
-                    StoredWidget sw;
-                    sw.widget = NULL;
-                    return sw;
-                }
-            }
-            return m_map[px][py];
         }
     }
 

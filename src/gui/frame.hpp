@@ -51,7 +51,6 @@ namespace gui
 
             /* Events */
             virtual void focus(bool f);
-            virtual void pointer(const geometry::Point& m);
             virtual void inputText(const std::string& in);
             virtual bool action(Widget::Action a);
 

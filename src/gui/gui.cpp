@@ -58,6 +58,7 @@ namespace gui
         bool nfocus = isInRect(pointer, m_pos, m_main->width(), m_main->height());
 
         /* Focus */
+        /* TODO handle focus differently */
         if(nfocus && !m_focus)      /* Focus earned */
             m_main->focus(true);
         else if(!nfocus && m_focus) /* Focus lost */
@@ -65,15 +66,6 @@ namespace gui
         m_focus = nfocus;
         if(!m_focus)
             return;
-
-        /* Mouse */
-        geometry::Point mouse = ev.mouseRel();
-        /* Report mouse only if moved */
-        if(std::abs(mouse.x) > 0.0f || std::abs(mouse.y) > 0.0f) {
-            mouse.x = pointer.x - m_pos.x;
-            mouse.y = pointer.y - m_pos.y;
-            m_main->pointer(mouse);
-        }
 
         /* Input */
         std::string input = ev.lastInput();

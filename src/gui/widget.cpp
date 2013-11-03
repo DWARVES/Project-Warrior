@@ -37,9 +37,6 @@ namespace gui
     void Widget::focus(bool)
     {}
 
-    void Widget::pointer(const geometry::Point&)
-    {}
-            
     void Widget::inputText(const std::string&)
     {}
             

@@ -149,16 +149,6 @@ namespace gui
             m_in->focus(f);
     }
 
-    void Frame::pointer(const geometry::Point& m)
-    {
-        if(!m_in)
-            return;
-        geometry::Point nm = m;
-        nm.x -= m_border;
-        nm.y -= m_border;
-        m_in->pointer(nm);
-    }
-
     bool Frame::action(Widget::Action a)
     {
         if(!m_in)
