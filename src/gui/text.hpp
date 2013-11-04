@@ -39,10 +39,10 @@ namespace gui
 
         private:
             std::string m_txt;
-            std::string m_fmt; /* Text modified */
+            std::string m_lined; /* Test modified to fit in the width */
+            std::string m_fmt; /* Text shown */
             std::string m_font;
             size_t m_begin;
-            size_t m_end;
             float m_size;
 
             /* Internal methods */

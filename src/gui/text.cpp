@@ -4,6 +4,7 @@
 
 namespace gui
 {
+    /* FIXME improve performance */
     Text::Text(graphics::Graphics* gfx)
         : Widget(gfx), m_begin(0)
     {}
@@ -48,17 +49,17 @@ namespace gui
 
     float Text::totalHeight() const
     {
-        return m_gfx->stringSize(m_font, m_txt, m_size).height;
+        return m_gfx->stringSize(m_font, m_lined, m_size).height;
     }
 
     float Text::topPos() const
     {
-        return m_gfx->stringSize(m_font, m_txt.substr(0,m_begin), m_size).height;
+        return m_gfx->stringSize(m_font, m_lined.substr(0,m_begin), m_size).height;
     }
 
     float Text::shownHeight() const
     {
-        return m_gfx->stringSize(m_font, m_txt.substr(m_begin,m_end), m_size).height;
+        return m_gfx->stringSize(m_font, m_fmt, m_size).height;
     }
 
     void Text::setFont(const std::string& f, float size)
@@ -75,14 +76,14 @@ namespace gui
 
     bool Text::action(Widget::Action a)
     {
-        size_t last = m_txt.size();
-        while(m_txt[last] != '\n' && last > 0)
+        /* FIXME last to fill the area with text witheout hiding anything */
+        size_t last = m_lined.size() - 1;
+        while(m_lined[last] != '\n' && last > 0)
             --last;
         if(last != 0)
             ++last;
 
         size_t tmp;
-        /* FIXME doesn't appear to be working */
         switch(a) {
             case Widget::First:
                 if(m_begin != 0) {
@@ -102,11 +103,19 @@ namespace gui
                     return false;
                 break;
             case Widget::ScrollUp:
+                std::cout << "Got scroll up event !" << std::endl;
                 tmp = m_begin;
-                while(m_txt[m_begin] != '\n' && m_begin > 0)
+                if(m_begin > 2)
+                    m_begin -= 2;
+                else
+                    return false;
+
+                while(m_lined[m_begin] != '\n' && m_begin > 0)
                     --m_begin;
                 if(m_begin != 0)
                     ++m_begin;
+
+                std::cout << "Scrolling up to " << m_begin << std::endl;
                 if(tmp != m_begin) {
                     updateState(false);
                     return true;
@@ -116,12 +125,14 @@ namespace gui
                 break;
             case Widget::ScrollDown:
                 tmp = m_begin;
-                while(m_txt[m_begin] != '\n' && m_begin < m_txt.size())
+                while(m_lined[m_begin] != '\n' && m_begin <= last)
                     ++m_begin;
-                if(m_begin == m_txt.size())
-                    return false;
+
+                if(m_begin != last)
+                    ++m_begin;
                 if(tmp == m_begin)
                     return false;
+                std::cout << "Scrolling down to " << m_begin << std::endl;
                 updateState(false);
                 return true;
             case Widget::ScrollLeft:
@@ -135,39 +146,38 @@ namespace gui
 
     void Text::updateState(bool rewind)
     {
-        /* TODO compute m_end */
-        if(width() < 0.00001f || height() < 0.00001f)
+        if(width() < 0.00001f || height() < 0.00001f || m_txt.empty())
             return;
 
         /* Prepare the text */
-        m_fmt = m_txt;
+        m_lined = m_txt;
         /* Replace the tab by four spaces */
-        for(size_t i = 0; i < m_fmt.size(); ++i) {
-            if(m_fmt[i] == '\t') {
-                m_fmt[i] = ' ';
-                m_fmt.insert(i, "   ");
+        for(size_t i = 0; i < m_lined.size(); ++i) {
+            if(m_lined[i] == '\t') {
+                m_lined[i] = ' ';
+                m_lined.insert(i, "   ");
             }
         }
 
-        if(rewind)
-            m_begin = 0;
-        else
-            m_fmt = m_fmt.substr(m_begin);
-
-        if(m_fmt.empty())
-            return;
-
         /* Find the right width */
-        std::istringstream iss(m_fmt);
+        std::istringstream iss(m_lined);
         std::string line;
-        m_fmt.clear();
+        m_lined.clear();
         while(std::getline(iss, line)) {
             if(!line.empty()) {
                 shrinkLine(line, width());
-                m_fmt += line;
+                m_lined += line;
             }
-            m_fmt += '\n';
+            m_lined += '\n';
         }
+
+        /* Prepare left bound of m_fmt */
+        if(rewind)
+            m_begin = 0;
+        m_fmt = m_lined.substr(m_begin);
+
+        if(m_fmt.empty())
+            return;
 
         /* Find the right height */
         size_t rbound = m_fmt.size() - 1;
