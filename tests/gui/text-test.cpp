@@ -83,7 +83,6 @@ int main()
 
         sc.size(txt.totalHeight());
         sc.selected(txt.topPos(), txt.shownHeight());
-        std::cout << txt.topPos() << ", showing " << txt.shownHeight() << "/" << txt.totalHeight() << std::endl;
 
         gfx->beginDraw();
         gfx->draw(bg, bgc);
