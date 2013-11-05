@@ -17,6 +17,8 @@ namespace gui
 
             /* Text */
             void setText(const std::string& txt);
+            /* More optimised than setText when adding text */
+            void addText(const std::string& txt);
             std::string getText() const;
 
             /* Size */
@@ -39,15 +41,18 @@ namespace gui
 
         private:
             std::string m_txt;
-            std::string m_lined; /* Test modified to fit in the width */
-            std::string m_fmt; /* Text shown */
-            std::string m_font;
+            std::vector<std::string> m_lines;
             size_t m_begin;
-            float m_size;
+            size_t m_size;
+            std::string m_font;
+            float m_pts;
 
             /* Internal methods */
-            void updateState(bool rewind = true);
-            void shrinkLine(std::string& line, float w);
+            void computeSize();
+            std::string getPrinted();
+            void shrinkLines(size_t from = 0);
+            std::vector<std::string> shrinkLine(const std::string& line, float w);
+            std::vector<std::string> cutToReturn(const std::string& txt);
     };
 }
 

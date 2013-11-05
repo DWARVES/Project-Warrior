@@ -4,9 +4,8 @@
 
 namespace gui
 {
-    /* FIXME improve performance */
     Text::Text(graphics::Graphics* gfx)
-        : Widget(gfx), m_begin(0)
+        : Widget(gfx), m_begin(0), m_size(0)
     {}
 
     Text::~Text()
@@ -15,7 +14,18 @@ namespace gui
     void Text::setText(const std::string& txt)
     {
         m_txt = txt;
-        updateState();
+        m_lines = cutToReturn(m_txt);
+        shrinkLines();
+    }
+            
+    void Text::addText(const std::string& txt)
+    {
+        /* TODO to test */
+        size_t idx = m_lines.size();
+        m_txt += txt;
+        std::vector<std::string> nlines = cutToReturn(txt);
+        m_lines.insert(m_lines.end(), nlines.begin(), nlines.end());
+        shrinkLines(idx);
     }
 
     std::string Text::getText() const
@@ -26,14 +36,14 @@ namespace gui
     float Text::width(float w)
     {
         float ret = Widget::width(w);
-        updateState(true);
+        shrinkLines();
         return ret;
     }
 
     float Text::height(float h)
     {
         float ret = Widget::height(h);
-        updateState(true);
+        computeSize();
         return ret;
     }
 
@@ -49,45 +59,39 @@ namespace gui
 
     float Text::totalHeight() const
     {
-        return m_gfx->stringSize(m_font, m_lined, m_size).height;
+        return (float)m_lines.size() * m_pts;
     }
 
     float Text::topPos() const
     {
-        return m_gfx->stringSize(m_font, m_lined.substr(0,m_begin), m_size).height;
+        return (float)m_begin * m_pts;
     }
 
     float Text::shownHeight() const
     {
-        return m_gfx->stringSize(m_font, m_fmt, m_size).height;
+        return (float)m_size * m_pts;
     }
 
     void Text::setFont(const std::string& f, float size)
     {
         m_font = f;
-        m_size = size;
-        updateState();
+        m_pts = size;
+        shrinkLines();
+        computeSize();
     }
 
     void Text::draw()
     {
-        m_gfx->draw(m_fmt, m_font, m_size);
+        m_gfx->draw(getPrinted(), m_font, m_pts);
     }
 
     bool Text::action(Widget::Action a)
     {
-        /* FIXME last to fill the area with text witheout hiding anything */
-        size_t last = m_lined.size() - 1;
-        while(m_lined[last] != '\n' && last > 0)
-            --last;
-        if(last != 0)
-            ++last;
-
-        size_t tmp;
+        size_t last = std::max((ssize_t)0, (ssize_t)(m_lines.size() - m_size));
         switch(a) {
             case Widget::First:
                 if(m_begin != 0) {
-                    updateState(true);
+                    m_begin = 0;
                     return true;
                 }
                 else
@@ -96,45 +100,27 @@ namespace gui
             case Widget::Last:
                 if(m_begin != last) {
                     m_begin = last;
-                    updateState(false);
                     return true;
                 }
                 else
                     return false;
                 break;
             case Widget::ScrollUp:
-                std::cout << "Got scroll up event !" << std::endl;
-                tmp = m_begin;
-                if(m_begin > 2)
-                    m_begin -= 2;
-                else
-                    return false;
-
-                while(m_lined[m_begin] != '\n' && m_begin > 0)
+                if(m_begin > 0) {
                     --m_begin;
-                if(m_begin != 0)
-                    ++m_begin;
-
-                std::cout << "Scrolling up to " << m_begin << std::endl;
-                if(tmp != m_begin) {
-                    updateState(false);
                     return true;
                 }
                 else
                     return false;
                 break;
             case Widget::ScrollDown:
-                tmp = m_begin;
-                while(m_lined[m_begin] != '\n' && m_begin <= last)
+                if(m_begin < last) {
                     ++m_begin;
-
-                if(m_begin != last)
-                    ++m_begin;
-                if(tmp == m_begin)
+                    return true;
+                }
+                else
                     return false;
-                std::cout << "Scrolling down to " << m_begin << std::endl;
-                updateState(false);
-                return true;
+                break;
             case Widget::ScrollLeft:
             case Widget::ScrollRight:
             case Widget::Select:
@@ -144,71 +130,83 @@ namespace gui
         }
     }
 
-    void Text::updateState(bool rewind)
-    {
-        if(width() < 0.00001f || height() < 0.00001f || m_txt.empty())
-            return;
-
-        /* Prepare the text */
-        m_lined = m_txt;
-        /* Replace the tab by four spaces */
-        for(size_t i = 0; i < m_lined.size(); ++i) {
-            if(m_lined[i] == '\t') {
-                m_lined[i] = ' ';
-                m_lined.insert(i, "   ");
-            }
-        }
-
-        /* Find the right width */
-        std::istringstream iss(m_lined);
-        std::string line;
-        m_lined.clear();
-        while(std::getline(iss, line)) {
-            if(!line.empty()) {
-                shrinkLine(line, width());
-                m_lined += line;
-            }
-            m_lined += '\n';
-        }
-
-        /* Prepare left bound of m_fmt */
-        if(rewind)
-            m_begin = 0;
-        m_fmt = m_lined.substr(m_begin);
-
-        if(m_fmt.empty())
-            return;
-
-        /* Find the right height */
-        size_t rbound = m_fmt.size() - 1;
-        float h = height();
-        float hgt = 0.0f;
-        do {
-            while(m_fmt[rbound] != '\n' && rbound > 0)
-                --rbound;
-            --rbound;
-            hgt = m_gfx->stringSize(m_font, m_fmt.substr(0, rbound), m_size).height;
-        } while(hgt >= h);
-
-        m_fmt = m_fmt.substr(0, rbound);
-    }
-
-    void Text::shrinkLine(std::string& line, float w)
+    std::vector<std::string> Text::shrinkLine(const std::string& line, float w)
     {
         /* TODO new lines on words, not letters */
+        /* FIXME improve performances */
         size_t rbound = line.size();
         float wid = 0.0f;
-        do {
+        std::vector<std::string> ret;
+        ret.reserve(10);
+
+        wid = m_gfx->stringWidth(m_font, line.substr(0, rbound), m_pts);
+        while(wid >= w) {
             --rbound;
-            wid = m_gfx->stringWidth(m_font, line.substr(0, rbound), m_size);
-        } while(wid >= w);
-        line.insert(rbound, "\n");
+            wid = m_gfx->stringWidth(m_font, line.substr(0, rbound), m_pts);
+        }
+        ret.push_back(line.substr(0, rbound));
 
-        std::string sub = line.substr(rbound+1);
-        if(m_gfx->stringWidth(m_font, sub, m_size) >= w)
-            shrinkLine(sub, w);
+        if(rbound < line.size()) {
+            std::string sub = line.substr(rbound);
+            if(m_gfx->stringWidth(m_font, sub, m_pts) >= w) {
+                std::vector<std::string> others = shrinkLine(sub, w);
+                ret.insert(ret.end(), others.begin(), others.end());
+            }
+            else
+                ret.push_back(sub);
+        }
 
-        line = line.substr(0.0f, rbound+1) + sub;
+        return ret;
+    }
+
+    void Text::computeSize()
+    {
+        if(m_pts < 0.00001f)
+            return;
+        m_size = static_cast<size_t>(height() / m_pts);
+    }
+
+    std::string Text::getPrinted()
+    {
+        std::string str;
+        /* We may reserve a little too mush,
+         * but that doesn't matter on an actual computer
+         */
+        str.reserve(m_size * 20);
+
+        for(size_t i = 0; i < m_size && m_begin + i < m_lines.size(); ++i) {
+            str += m_lines[m_begin + i];
+            str += '\n';
+        }
+        return str;
+    }
+
+    void Text::shrinkLines(size_t from)
+    {
+        if(width() < 0.00001f || m_lines.empty())
+            return;
+
+        std::vector<std::string> nlines;
+        nlines.reserve(m_lines.size() * 3);
+        if(from > 0)
+            nlines.insert(nlines.begin(), m_lines.begin(), m_lines.begin() + from);
+
+        for(size_t i = from; i < m_lines.size(); ++i) {
+            std::vector<std::string> ret = shrinkLine(m_lines[i], width());
+            nlines.insert(nlines.end(), ret.begin(), ret.end());
+        }
+
+        m_lines = nlines;
+    }
+
+    std::vector<std::string> Text::cutToReturn(const std::string& txt)
+    {
+        std::vector<std::string> ret;
+        std::istringstream iss(txt);
+        std::string line;
+        while(std::getline(iss, line))
+            ret.push_back(line);
+        return ret;
     }
 
 }
