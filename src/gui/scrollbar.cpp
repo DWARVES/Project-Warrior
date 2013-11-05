@@ -24,7 +24,7 @@ namespace gui
 
     void ScrollBar::selected(float p, float s)
     {
-        if(p <= 0.0f || s <= 0.0f)
+        if(p < 0.0f || s <= 0.0f)
             return;
         m_selSize = s;
         m_selPos  = p;
