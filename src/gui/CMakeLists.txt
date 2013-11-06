@@ -16,5 +16,6 @@ add_library(${lib}
     checkbox.cpp   checkbox.hpp
     radio.cpp      radio.hpp
     text.cpp       text.hpp
+    input.cpp      input.hpp
 	)
 
