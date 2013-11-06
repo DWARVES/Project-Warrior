@@ -25,4 +25,6 @@ add_executable(radio-test radio-test.cpp)
 target_link_libraries(radio-test libgui libevents libgraphics libcore libgeometry ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
 add_executable(text-test text-test.cpp)
 target_link_libraries(text-test libgui libevents libgraphics libcore libgeometry ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
+add_executable(input-test input-test.cpp)
+target_link_libraries(input-test libgui libevents libgraphics libcore libgeometry ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
 
