@@ -84,6 +84,7 @@ namespace gui
             std::string str = getText();
             str.pop_back();
             m_txt.setText(str);
+            m_txt.action(Widget::Last);
             return true;
         }
         else

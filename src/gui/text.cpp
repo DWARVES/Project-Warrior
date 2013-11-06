@@ -94,7 +94,7 @@ namespace gui
 
     bool Text::action(Widget::Action a)
     {
-        size_t last = std::max((ssize_t)0, (ssize_t)(m_lines.size() - m_size));
+        size_t last = std::max((ssize_t)0, (ssize_t)m_lines.size() - (ssize_t)m_size);
         switch(a) {
             case Widget::First:
                 if(m_begin != 0) {
