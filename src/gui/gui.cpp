@@ -72,6 +72,8 @@ namespace gui
         std::string input = ev.lastInput();
         if(!input.empty())
             m_main->inputText(input);
+        if(ev.keyJustPressed(events::KeyMap::Enter))
+            m_main->inputText("\n");
 
         /* Actions */
         /* TODO handle joysticks and allow personnalization of controls */
@@ -89,6 +91,8 @@ namespace gui
             m_main->action(Widget::First);
         if(ev.keyJustPressed(events::KeyMap::End))
             m_main->action(Widget::Last);
+        if(ev.keyJustPressed(events::KeyMap::Backspace))
+            m_main->action(Widget::Remove);
     }
 
     bool Gui::isInRect(const geometry::Point& p, const geometry::Point& o, float width, float height)
