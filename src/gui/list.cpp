@@ -157,6 +157,7 @@ namespace gui
                 updateState();
                 return true;
             case Widget::Select:
+            case Widget::Remove:
             default:
                 return false;
         }

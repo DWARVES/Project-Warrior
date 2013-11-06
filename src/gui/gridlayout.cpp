@@ -440,6 +440,7 @@ namespace gui
             case Widget::ScrollDown:
                 return down();
             case Widget::Select: /* Avoid warnings */
+            case Widget::Remove:
             default:
                 return false;
         }

@@ -37,6 +37,7 @@ namespace gui
                 ScrollUp,
                 ScrollDown,
                 Select,
+                Remove,
             };
             /* The following functions do nothing,
              * If your widget uses them, override them with your own implementation

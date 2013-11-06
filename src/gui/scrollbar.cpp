@@ -188,6 +188,7 @@ namespace gui
                     return false;
                 break;
             case Widget::Select:
+            case Widget::Remove:
             default:
                 return false;
         }

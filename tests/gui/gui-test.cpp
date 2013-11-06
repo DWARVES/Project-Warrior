@@ -56,6 +56,7 @@ class BlueWidget : public gui::Widget
                 case gui::Widget::ScrollUp:    std::cout << "Action : ScrollUp !"    << std::endl; break;
                 case gui::Widget::ScrollDown:  std::cout << "Action : ScrollDown !"  << std::endl; break;
                 case gui::Widget::Select:      std::cout << "Action : Select !"      << std::endl; break;
+                case gui::Widget::Remove:      std::cout << "Action : Remove !"      << std::endl; break;
                 default:                       std::cout << "Action : unknown !"     << std::endl; break;
             }
             return true;
