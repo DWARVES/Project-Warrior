@@ -20,12 +20,19 @@ namespace gui
             
     void Text::addText(const std::string& txt)
     {
-        /* TODO to test */
         size_t idx = m_lines.size();
         m_txt += txt;
         std::vector<std::string> nlines = cutToReturn(txt);
-        m_lines.insert(m_lines.end(), nlines.begin(), nlines.end());
-        shrinkLines(idx);
+        if(!nlines.empty()) {
+            if(!m_lines.empty()) {
+                m_lines[m_lines.size() - 1] += nlines[0];
+                m_lines.insert(m_lines.end(), nlines.begin() + 1, nlines.end());
+                --idx;
+            }
+            else
+                m_lines.insert(m_lines.end(), nlines.begin(), nlines.end());
+            shrinkLines(idx);
+        }
     }
 
     std::string Text::getText() const
@@ -124,6 +131,7 @@ namespace gui
             case Widget::ScrollLeft:
             case Widget::ScrollRight:
             case Widget::Select:
+            case Widget::Remove:
             default:
                 return false;
                 break;
@@ -206,6 +214,8 @@ namespace gui
         std::string line;
         while(std::getline(iss, line))
             ret.push_back(line);
+        if(txt.back() == '\n')
+            ret.push_back("");
         return ret;
     }
 
