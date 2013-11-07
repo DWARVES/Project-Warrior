@@ -17,5 +17,6 @@ add_library(${lib}
     radio.cpp      radio.hpp
     text.cpp       text.hpp
     input.cpp      input.hpp
+    button.cpp     button.hpp
 	)
 
