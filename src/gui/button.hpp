@@ -3,6 +3,8 @@
 #define DEF_GUI_BUTTON
 
 #include "widget.hpp"
+#include "item.hpp"
+#include "geometry/aabb.hpp"
 #include <string>
 #include <SDL.h>
 
@@ -16,8 +18,26 @@ namespace gui
             Button(graphics::Graphics* gfx);
             virtual ~Button();
 
+            void text(const std::string& t);
+            std::string text() const;
+            void maxSize(const geometry::AABB& msize);
+
+            /* Size */
+            float width(float w);
+            float height(float h);
+            float width() const;
+            float height() const;
+
             /* Drawing */
-            void setTextures(const std::string& un, const std::string& foc, const std::string& sel);
+            enum Texture : unsigned short {
+                Left   = internal::Item::Left,
+                Right  = internal::Item::Right,
+                Middle = internal::Item::Middle,
+                Font   = internal::Item::Font,
+                Last   = internal::Item::Last
+            };
+            void setTexture(Texture p, bool f, const std::string& name);
+            void setSel(Texture p, const std::string& name);
             virtual void draw();
 
             /* Action */
@@ -27,9 +47,16 @@ namespace gui
             virtual void select(); /* Actually do othing, must be overriden */
 
         private:
-            int m_focus;
-            std::string m_un, m_sel, m_foc;
+            internal::Item m_it;
             Uint32 m_last;
+            bool m_focus;
+            bool m_changed;
+            geometry::AABB m_msize;
+            std::string m_texts[2][(unsigned short)Last];
+
+            /* Internal functions */
+            void setSel();
+            void setFoc();
     };
 }
 
