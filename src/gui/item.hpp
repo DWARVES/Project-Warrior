@@ -24,6 +24,7 @@ namespace gui
 
                 /* Size */
                 /* The returned isze is the effective one, which can be bigger than the one setted is selected */
+                void resize(bool r);
                 float width(float w);
                 float height(float h);
                 float width() const;
@@ -57,6 +58,7 @@ namespace gui
                 size_t m_lbound, m_rbound; /* Indexes of right/left part of the text */
                 bool m_lext, m_rext; /* Can be extended to right/left */
                 std::string m_texts[2][(unsigned short)Last];
+                bool m_resize;
 
                 /* Time when it got selected the last time, for automatic scrolling */
                 Uint32 m_lastSel;

@@ -6,7 +6,7 @@ namespace gui
     namespace internal
     {
         Item::Item(graphics::Graphics* gfx)
-            : m_gfx(gfx), m_width(0.0f), m_height(0.0f), m_selected(false), m_lastSel(0)
+            : m_gfx(gfx), m_width(0.0f), m_height(0.0f), m_selected(false), m_lastSel(0), m_resize(true)
         {}
 
         Item::~Item()
@@ -24,6 +24,11 @@ namespace gui
         std::string Item::text() const
         {
             return m_text;
+        }
+                
+        void Item::resize(bool r)
+        {
+            m_resize = r;
         }
 
         float Item::width(float w)
@@ -161,12 +166,18 @@ namespace gui
 
         float Item::widthE() const
         {
-            return m_width * 1.1f;
+            if(m_resize)
+                return m_width * 1.1f;
+            else
+                return m_width;
         }
 
         float Item::heightE() const
         {
-            return m_height * 1.1f;
+            if(m_resize)
+                return m_height * 1.1f;
+            else
+                return m_height;
         }
 
         void Item::updateState(bool restart)
