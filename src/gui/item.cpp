@@ -6,7 +6,7 @@ namespace gui
     namespace internal
     {
         Item::Item(graphics::Graphics* gfx)
-            : m_gfx(gfx), m_width(0.0f), m_height(0.0f), m_selected(false), m_lastSel(0), m_resize(true)
+            : m_gfx(gfx), m_width(0.0f), m_height(0.0f), m_selected(false), m_resize(true), m_lastSel(0)
         {}
 
         Item::~Item()
