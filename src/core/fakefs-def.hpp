@@ -4,7 +4,6 @@
 #include <boost/regex.hpp>
 #include <sstream>
 
-
 namespace core
 {
     template <typename T, typename L> FakeFS<T,L>::FakeFS(const L* lb, bool todel)
@@ -41,33 +40,25 @@ namespace core
         if(existsNamespace(name))
             return false;
 
-        _abr* act; /* Local actual used */
+        _abr* act = NULL; /* Local actual used */
         std::vector<std::string> parts = path::parts(name);
-        size_t from; /* First idx in parts to use */
 
-        if(path::absolute(name)) {
-            std::string path("/");
-            for(size_t i = 0; i < parts.size(); ++i) {
-                path += parts[i];
-                path += '/';
-                if(!existsNamespace(path)) {
-                    from = i;
-                    break;
-                }
-            }
-        }
-        else {
-            from = 0;
+        if(path::absolute(name))
+            act = m_root;
+        else
             act = m_actual;
-        }
 
-        size_t depth = parts.size() - from; /* Number of directories to create */
-        for(size_t i = 0; i < depth; ++i) {
-            _abr* node = new _abr;
-            node->name = parts[from + i];
-            node->parent = act;
-            act->subs.push_back(node);
-            act = node;
+        for(size_t i = 0; i < parts.size(); ++i) {
+            auto it = std::find_if(act->subs.begin(), act->subs.end(), [&] (_abr* a) { return a->name == parts[i]; } );
+            if(it != act->subs.end())
+                act = *it;
+            else {
+                _abr* node = new _abr;
+                node->name = parts[i];
+                node->parent = act;
+                act->subs.push_back(node);
+                act = node;
+            }
         }
 
         return true;
