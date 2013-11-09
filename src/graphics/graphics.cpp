@@ -366,6 +366,9 @@ namespace graphics
         internal::Movie* mov = new internal::Movie(&m_shads);
         if(!mov->load(path)) {
             delete mov;
+            std::ostringstream oss;
+            oss << "Couldn't load movie file : \"" << path << "\"";
+            core::logger::logm(oss.str(), core::logger::ERROR);
             return false;
         }
 
@@ -394,6 +397,9 @@ namespace graphics
         /* FIXME UTF-8 carac's handling and better letters */
         if(!font->load(path, "RABCDEFGHIJKLMNOPQSTUVWXYZabcdefghijklmnopqrstuvwxyz!\"#$%&'()*+,-./0123456789:;<=>?@[\\]^-`{|}~")) {
             delete font;
+            std::ostringstream oss;
+            oss << "Couldn't load font file : \"" << path << "\"";
+            core::logger::logm(oss.str(), core::logger::ERROR);
             return false;
         }
 
