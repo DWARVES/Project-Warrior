@@ -2,7 +2,7 @@
 #include "music.hpp"
 #include "core/logger.hpp"
 #include "core/fakefs.hpp"
-#include "core/pathParser.cpp"
+#include "core/pathParser.hpp"
 #include <sstream>
 #include <fstream>
 
