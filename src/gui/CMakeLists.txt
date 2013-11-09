@@ -18,5 +18,6 @@ add_library(${lib}
     text.cpp       text.hpp
     input.cpp      input.hpp
     button.cpp     button.hpp
+    theme.cpp      theme.hpp
 	)
 
