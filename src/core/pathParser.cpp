@@ -2,6 +2,8 @@
 #include "core/pathParser.hpp"
 #include "config.h"
 #include <cstring>
+#include <algorithm>
+#include <sstream>
 
 #ifdef HAVE_SYSSTAT_H
 #  include <sys/types.h>
@@ -22,44 +24,21 @@ namespace core
     {
         std::string cleanSep(const std::string& p)
         {
-            std::string np; /* New path */
-            bool sep = false; /* Is the previous letter a '/' */
-
-            for(size_t i = 0; i < p.size(); ++i) {
-                if(p[i] == '/') {
-                    if(!sep) {
-                        sep = true;
-                        np.push_back(p[i]);
-                    }
-                }
-                else {
-                    sep = false;
-                    np.push_back(p[i]);
-                }
-            }
-
+            std::string np = p; /* New path */
+            auto it = std::unique_copy(p.begin(), p.end(), np.begin(),
+                    [] (char l, char n) { return (l == n) && (l == '/'); } );
+            np.resize( std::distance(np.begin(), it) );
             return np;
         }
 
         std::vector<std::string> parts(const std::string& p)
         {
             std::vector<std::string> vparts;
-            std::string apart; /* A part of the path */
-
-            for(size_t i = 0; i < p.size(); ++i) {
-                if(p[i] == '/') {
-                    if(!apart.empty()) {
-                        vparts.push_back(apart);
-                        apart.clear();
-                    }
-                }
-                else {
-                    apart.push_back(p[i]);
-                }
-            }
-
-            if(p.back() != '/' && !apart.empty()) {
-                vparts.push_back(apart);
+            std::istringstream iss(p);
+            std::string part;
+            while(std::getline(iss,part,'/')) {
+                if(!part.empty())
+                    vparts.push_back(part);
             }
 
             return vparts;
@@ -72,10 +51,9 @@ namespace core
             std::string::const_reverse_iterator it = p.crbegin();
 
             /* We skips the finals '/' */
-            while(it != p.crend() && *it == '/') {
-                ++it;
-            }
+            it = std::find_if_not(it, p.crend(), [] (char c) { return c == '/'; });
 
+            /* We find the extension */
             for(; it != p.crend(); ++it) {
                 if(*it == '.') {
                     ended = true;
@@ -102,10 +80,9 @@ namespace core
             std::string::const_reverse_iterator it = p.crbegin();
 
             /* We skips the finals '/' */
-            while(it != p.crend() && *it == '/') {
-                ++it;
-            }
+            it = std::find_if_not(it, p.crend(), [] (char c) { return c == '/'; });
 
+            /* We get the head */
             for(; it != p.crend(); ++it) {
                 if(*it == '/') {
                     break;
@@ -132,10 +109,9 @@ namespace core
             std::string::const_reverse_iterator it = p.crbegin();
 
             /* We skips the finals '/' */
-            while(it != p.crend() && *it == '/') {
-                ++it;
-            }
+            it = std::find_if_not(it, p.crend(), [] (char c) { return c == '/'; });
 
+            /* We get the body */
             for(; it != p.crend(); ++it) {
                 /* The body is before the last '/' */
                 if(!inbody && *it == '/')
@@ -152,16 +128,13 @@ namespace core
         {
             size_t idx = 0;
 
-            while(idx < p.size() && p[idx] == ' ') {
+            while(idx < p.size() && p[idx] == ' ')
                 ++idx;
-            }
 
-            if(idx == p.size() || p[idx] != '/') {
+            if(idx == p.size() || p[idx] != '/')
                 return false;
-            }
-            else {
+            else
                 return true;
-            }
         }
 
         Type type(const std::string& p)
