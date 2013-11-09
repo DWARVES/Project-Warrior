@@ -4,6 +4,7 @@
 #include "gui/gui.hpp"
 #include "gui/widget.hpp"
 #include "gui/fillbar.hpp"
+#include "gui/theme.hpp"
 #include "graphics/graphics.hpp"
 #include "graphics/color.hpp"
 #include "geometry/aabb.hpp"
@@ -31,16 +32,16 @@ int main()
         return 1;
 
     /* Loading the ressources */
-    gfx->loadTexture("empty",  "guirc/fillbar/empty.png");
-    gfx->loadTexture("fill",   "guirc/fillbar/fill.png");
-    gfx->loadTexture("emptyS", "guirc/fillbar/emptyS.png");
-    gfx->loadTexture("fillS",  "guirc/fillbar/fillS.png");
+    gui::Theme theme(gfx, "guirc");
+    if(!theme.load()) {
+        std::cout << "Couldn't load theme." << std::endl;
+        return 1;
+    }
     gfx->loadFont   ("font",   "guirc/font.png");
 
     /* Setting up the fillbar */
     gui::FillBar fb(gfx);
-    fb.setTexture(false, "empty",  "fill");
-    fb.setTexture(true,  "emptyS", "fillS");
+    theme.apply(&fb);
     fb.size(200);
     fb.set(100);
     fb.step(5.0f);

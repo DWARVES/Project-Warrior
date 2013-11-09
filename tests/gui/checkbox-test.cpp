@@ -4,6 +4,7 @@
 #include "gui/gui.hpp"
 #include "gui/widget.hpp"
 #include "gui/checkbox.hpp"
+#include "gui/theme.hpp"
 #include "graphics/graphics.hpp"
 #include "graphics/color.hpp"
 #include "geometry/aabb.hpp"
@@ -30,16 +31,16 @@ int main()
     if(!cont)
         return 1;
 
-    /* Loading the ressources */
-    gfx->loadTexture("nsel",  "guirc/checkbox/nsel.png");
-    gfx->loadTexture("sel",   "guirc/checkbox/sel.png");
-    gfx->loadTexture("nselS", "guirc/checkbox/nselS.png");
-    gfx->loadTexture("selS",  "guirc/checkbox/selS.png");
+    /* Loading the theme */
+    gui::Theme theme(gfx, "guirc");
+    if(!theme.load()) {
+        std::cout << "Couldn't load theme." << std::endl;
+        return 1;
+    }
 
     /* Setting up the checkbox */
     gui::CheckBox cb(gfx);
-    cb.setTexture(false, "nsel",  "sel");
-    cb.setTexture(true,  "nselS", "selS");
+    theme.apply(&cb);
     cb.maxSize(geometry::AABB(600.0f,600.0f));
 
     gui::Gui g(gfx);

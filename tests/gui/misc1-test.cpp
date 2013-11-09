@@ -5,6 +5,7 @@
 #include "gui/frame.hpp"
 #include "gui/list.hpp"
 #include "gui/gridlayout.hpp"
+#include "gui/theme.hpp"
 #include "graphics/graphics.hpp"
 #include "graphics/color.hpp"
 #include "geometry/aabb.hpp"
@@ -64,26 +65,14 @@ int main()
     if(!cont)
         return 1;
 
+    gui::Theme theme(gfx, "guirc");
+    if(!theme.load()) {
+        std::cout << "Couldn't load theme." << std::endl;
+        return 1;
+    }
     /* Loading the list */
-    gfx->createNamespace("gui");
-    gfx->enterNamespace("gui");
-    gfx->loadTexture("r",  "guirc/item/r.png");
-    gfx->loadTexture("m",  "guirc/item/m.png");
-    gfx->loadTexture("l",  "guirc/item/l.png");
-    gfx->loadFont   ("f",  "guirc/item/f.png");
-    gfx->loadTexture("rs", "guirc/item/rs.png");
-    gfx->loadTexture("ms", "guirc/item/ms.png");
-    gfx->loadTexture("ls", "guirc/item/ls.png");
-    gfx->loadFont   ("fs", "guirc/item/fs.png");
     gui::List list(gfx);
-    list.setPart(gui::List::Right,  false, "r");
-    list.setPart(gui::List::Middle, false, "m");
-    list.setPart(gui::List::Left,   false, "l");
-    list.setPart(gui::List::Font,   false, "f");
-    list.setPart(gui::List::Right,  true,  "rs");
-    list.setPart(gui::List::Middle, true,  "ms");
-    list.setPart(gui::List::Left,   true,  "ls");
-    list.setPart(gui::List::Font,   true,  "fs");
+    theme.apply(&list);
     list.setItemSize(geometry::AABB(200.0f,50.0f));
     list.addItem(0, "red", 15.0f);
     list.addItem(0, "green", -25.0f);
@@ -98,30 +87,15 @@ int main()
     list.addItem(0, "pink");
 
     /* Loading the frame */
-    gfx->loadTexture("top",    "guirc/top.png");
-    gfx->loadTexture("bottom", "guirc/bottom.png");
-    gfx->loadTexture("left",   "guirc/left.png");
-    gfx->loadTexture("right",  "guirc/right.png");
-    gfx->loadTexture("tl",     "guirc/tl.png");
-    gfx->loadTexture("tr",     "guirc/tr.png");
-    gfx->loadTexture("bl",     "guirc/bl.png");
-    gfx->loadTexture("br",     "guirc/br.png");
-    gfx->loadTexture("bg",     "guirc/bg.png");
     ColorWidget c(gfx);
     gui::Frame fr(gfx, &c);
+    theme.apply(&fr);
     fr.border(15.0f);
-    fr.set(gui::Frame::Top,         "top");
-    fr.set(gui::Frame::Bottom,      "bottom");
-    fr.set(gui::Frame::Left,        "left");
-    fr.set(gui::Frame::Right,       "right");
-    fr.set(gui::Frame::TopLeft,     "tl");
-    fr.set(gui::Frame::TopRight,    "tr");
-    fr.set(gui::Frame::BottomLeft,  "bl");
-    fr.set(gui::Frame::BottomRight, "br");
     fr.setBg("bg", false);
 
     /* Setting up the grid */
     gui::GridLayout layout(gfx);
+    theme.apply(&layout);
     layout.gaps(10.0f);
     layout.setSize(2, 1);
     layout.addWidget(&list, 0, 0);

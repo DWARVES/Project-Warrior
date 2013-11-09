@@ -4,6 +4,7 @@
 #include "gui/gui.hpp"
 #include "gui/widget.hpp"
 #include "gui/scrollbar.hpp"
+#include "gui/theme.hpp"
 #include "graphics/graphics.hpp"
 #include "graphics/color.hpp"
 #include "geometry/aabb.hpp"
@@ -30,26 +31,17 @@ int main()
     if(!cont)
         return 1;
 
-    /* Loading the ressources */
-    gfx->loadTexture("up",    "guirc/scrollbar/up.png");
-    gfx->loadTexture("down",  "guirc/scrollbar/down.png");
-    gfx->loadTexture("norm",  "guirc/scrollbar/norm.png");
-    gfx->loadTexture("sel",   "guirc/scrollbar/sel.png");
-    gfx->loadTexture("upS",   "guirc/scrollbar/upS.png");
-    gfx->loadTexture("downS", "guirc/scrollbar/downS.png");
-    gfx->loadTexture("selS",  "guirc/scrollbar/selS.png");
-    gfx->loadFont   ("font",  "guirc/font.png");
+    /* Loading the theme */
+    gui::Theme theme(gfx, "guirc");
+    if(!theme.load()) {
+        std::cout << "Couldn't load theme." << std::endl;
+        return 1;
+    }
+    gfx->loadFont("font", "guirc/font.png");
 
     /* Setting up the scrollbar */
     gui::ScrollBar sc(gfx);
-    sc.setTexture(gui::ScrollBar::Up,       false, "up");
-    sc.setTexture(gui::ScrollBar::Down,     false, "down");
-    sc.setTexture(gui::ScrollBar::Norm,     false, "norm");
-    sc.setTexture(gui::ScrollBar::Selected, false, "sel");
-    sc.setTexture(gui::ScrollBar::Up,       true,  "upS");
-    sc.setTexture(gui::ScrollBar::Down,     true,  "downS");
-    sc.setTexture(gui::ScrollBar::Norm,     true,  "norm");
-    sc.setTexture(gui::ScrollBar::Selected, true,  "selS");
+    theme.apply(&sc);
     sc.size(100);
     sc.selected(40, 20);
     sc.step(5.0f);

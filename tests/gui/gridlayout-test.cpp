@@ -3,6 +3,7 @@
 #include "gui/gui.hpp"
 #include "gui/widget.hpp"
 #include "gui/gridlayout.hpp"
+#include "gui/theme.hpp"
 #include "graphics/graphics.hpp"
 #include "graphics/color.hpp"
 #include "geometry/aabb.hpp"
@@ -71,6 +72,11 @@ int main()
         return 1;
 
     /* Setting up the gui */
+    gui::Theme theme(gfx, "guirc");
+    if(!theme.load()) {
+        std::cout << "Couldn't load theme." << std::endl;
+        return 1;
+    }
     gui::Gui g(gfx);
     ColorWidget blue (gfx, graphics::Color(127,127,255), graphics::Color(0,0,255));
     ColorWidget green(gfx, graphics::Color(127,255,127), graphics::Color(0,255,0));
@@ -83,6 +89,7 @@ int main()
     ColorWidget w    (gfx, graphics::Color(200,200,200), graphics::Color(255,255,255));
 
     gui::GridLayout layout(gfx);
+    theme.apply(&layout);
     layout.gaps(10.0f);
     layout.setSize(5, 3);
     /* First row */

@@ -3,6 +3,7 @@
 #include "gui/gui.hpp"
 #include "gui/widget.hpp"
 #include "gui/list.hpp"
+#include "gui/theme.hpp"
 #include "graphics/graphics.hpp"
 #include "graphics/color.hpp"
 #include "geometry/aabb.hpp"
@@ -44,28 +45,14 @@ int main()
     if(!cont)
         return 1;
 
-    /* Loading the textures */
-    gfx->createNamespace("gui");
-    gfx->enterNamespace("gui");
-    gfx->loadTexture("r",  "guirc/item/r.png");
-    gfx->loadTexture("m",  "guirc/item/m.png");
-    gfx->loadTexture("l",  "guirc/item/l.png");
-    gfx->loadFont   ("f",  "guirc/item/f.png");
-    gfx->loadTexture("rs", "guirc/item/rs.png");
-    gfx->loadTexture("ms", "guirc/item/ms.png");
-    gfx->loadTexture("ls", "guirc/item/ls.png");
-    gfx->loadFont   ("fs", "guirc/item/fs.png");
-
     /* Loading the list */
+    gui::Theme theme(gfx, "guirc");
+    if(!theme.load()) {
+        std::cout << "Couldn't load theme." << std::endl;
+        return 1;
+    }
     TestList list(gfx);
-    list.setPart(gui::List::Right,  false, "r");
-    list.setPart(gui::List::Middle, false, "m");
-    list.setPart(gui::List::Left,   false, "l");
-    list.setPart(gui::List::Font,   false, "f");
-    list.setPart(gui::List::Right,  true,  "rs");
-    list.setPart(gui::List::Middle, true,  "ms");
-    list.setPart(gui::List::Left,   true,  "ls");
-    list.setPart(gui::List::Font,   true,  "fs");
+    theme.apply((gui::List*)&list);
     list.setItemSize(geometry::AABB(500.0f,50.0f));
 
     /* Loading the items */
