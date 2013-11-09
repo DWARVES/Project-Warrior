@@ -12,23 +12,13 @@
 
 std::vector<std::string> toTokens(const std::string& str)
 {
-    std::string cpy(str);
-    std::size_t last = 0;
-    std::size_t found = cpy.find(' ');
+    std::istringstream iss(str);
+    std::string line;
     std::vector<std::string> ret;
+    ret.reserve(5);
 
-    while(found != std::string::npos) {
-        std::string tmp = cpy.substr(last, found - last);
-        if(!tmp.empty())
-            ret.push_back(tmp);
-        last = found + 1;
-        cpy[found] = '_'; /* To be sure it won't be found again */
-        found = cpy.find(' ');
-    }
-
-    std::string tmp = cpy.substr(last, cpy.size() - last);
-    if(!tmp.empty())
-        ret.push_back(tmp);
+    while(std::getline(iss, line, ' '))
+        ret.push_back(line);
 
     return ret;
 }
@@ -173,6 +163,26 @@ bool parseCommand(std::string str, core::FakeFS<int*, core::PointerLiberator<int
         std::ifstream ifs(tokens[1]);
         if(!ifs) return false;
         fs->load(ifs, ld);
+        return true;
+    }
+    else if(tokens[0] == "exec") {
+        /* Load a script and execute it */
+        if(tokens.size() < 2)
+            return false;
+        std::ifstream ifs(tokens[1]);
+        if(!ifs)
+            return false;
+        std::cout << ">>>>>>>> Executing " << tokens[1] << " <<<<<<<<<<" << std::endl;
+        std::string line;
+        while(std::getline(ifs, line)) {
+            if(line.empty() || line[0] == '#')
+                continue;
+            if(!parseCommand(line, fs)) {
+                std::cout << ">>>>>>>> Error, stopped execution of " << tokens[1] << std::endl;
+                return false;
+            }
+        }
+        std::cout << ">>>>>>>> End of " << tokens[1] << " <<<<<<<<<<" << std::endl;
         return true;
     }
     else
