@@ -140,29 +140,39 @@ namespace gui
 
     std::vector<std::string> Text::shrinkLine(const std::string& line, float w)
     {
-        /* TODO new lines on words, not letters */
         /* FIXME improve performances */
-        size_t rbound = line.size();
-        float wid = 0.0f;
+        /* FIXME words larger than width (prevent infinite loop) */
         std::vector<std::string> ret;
         ret.reserve(10);
 
-        wid = m_gfx->stringWidth(m_font, line.substr(0, rbound), m_pts);
-        while(wid >= w) {
-            --rbound;
-            wid = m_gfx->stringWidth(m_font, line.substr(0, rbound), m_pts);
-        }
-        ret.push_back(line.substr(0, rbound));
+        std::vector<std::string> words;
+        std::stringstream iss(line);
+        std::string word;
+        while(std::getline(iss, word, ' '))
+            words.push_back(word);
+        if(words.empty())
+            return ret;
 
-        if(rbound < line.size()) {
-            std::string sub = line.substr(rbound);
-            if(m_gfx->stringWidth(m_font, sub, m_pts) >= w) {
-                std::vector<std::string> others = shrinkLine(sub, w);
-                ret.insert(ret.end(), others.begin(), others.end());
-            }
-            else
-                ret.push_back(sub);
+        std::string lp = words[0];
+        std::string prev = lp;
+        float wid = m_gfx->stringWidth(m_font, lp, m_pts);
+        size_t i;
+        for(i = 1; i < words.size() && wid < width(); ++i) {
+            prev = lp;
+            lp += ' ';
+            lp += words[i];
+            wid = m_gfx->stringWidth(m_font, lp, m_pts);
         }
+
+        if(i == words.size()) {
+            ret.push_back(lp);
+            return ret;
+        }
+
+        ret.push_back(prev);
+        std::string sub = line.substr(prev.size() + 1);
+        std::vector<std::string> others = shrinkLine(sub, w);
+        ret.insert(ret.end(), others.begin(), others.end());
 
         return ret;
     }
