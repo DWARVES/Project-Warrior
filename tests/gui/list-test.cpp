@@ -25,6 +25,11 @@ class TestList : public gui::List
         {
             std::cout << "Selection of item #" << selected() << " : \"" << selectedText() << "\"." << std::endl;
         }
+
+        virtual void enter()
+        {
+            std::cout << "Entered item #" << selected() << " : \"" << selectedText() << "\"." << std::endl;
+        }
 };
 
 int main()

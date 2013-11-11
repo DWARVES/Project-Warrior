@@ -53,12 +53,13 @@ namespace gui
             virtual void draw();
 
             /* Events */
-            virtual void focus(bool f);
             virtual bool action(Widget::Action a);
             /* Won't do anything, it's called at every change of selected.
              * Is usefull when derivating gui::List
              */
             virtual void select();
+            /* The same as select, but it's called when the selected item is entered */
+            virtual void enter();
 
         private:
             struct StoredItem {

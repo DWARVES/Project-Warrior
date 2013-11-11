@@ -118,15 +118,6 @@ namespace gui
         m_gfx->pop();
     }
 
-    void List::focus(bool f)
-    {
-        if(f)
-            m_selected = 0;
-        else
-            m_selected = m_items.size();
-        updateState();
-    }
-
     bool List::action(Widget::Action a)
     {
         switch(a) {
@@ -157,6 +148,8 @@ namespace gui
                 updateState();
                 return true;
             case Widget::Select:
+                enter();
+                return true;
             case Widget::Remove:
             default:
                 return false;
@@ -252,6 +245,11 @@ namespace gui
     }
 
     void List::select()
+    {
+        /* Nothing to do */
+    }
+            
+    void List::enter()
     {
         /* Nothing to do */
     }
