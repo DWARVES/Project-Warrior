@@ -54,20 +54,16 @@ int main()
     ButtonTest b00(gfx);
     theme.apply((gui::Button*)&b00);
     b00.text("0x0");
-    b00.maxSize(geometry::AABB(-1.0f, 100.0f));
     ButtonTest b01(gfx);
     theme.apply((gui::Button*)&b01);
     b01.text("0x1");
-    b01.maxSize(geometry::AABB(-1.0f, 100.0f));
     ButtonTest b1(gfx);
     theme.apply((gui::Button*)&b1);
     b1.text("1x*");
-    b1.maxSize(geometry::AABB(-1.0f, 100.0f));
 
     /* Setting up the gridlayout */
     gui::GridLayout layout(gfx);
     theme.apply(&layout);
-    layout.gaps(10.0f);
     layout.setSize(2, 2);
     layout.addWidget(&b00, 0, 0, 0, 0);
     layout.addWidget(&b01, 0, 1, 0, 0);

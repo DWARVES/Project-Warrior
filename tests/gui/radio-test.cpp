@@ -41,40 +41,30 @@ int main()
     /* Loading the radio buttons*/
     gui::Radio a1(gfx, "g1"), a2(gfx, "g1"), a3(gfx, "g1");
     gui::Radio b1(gfx, "g2"), b2(gfx, "g2"), b3(gfx, "g2");
-    a1.square(true);
     theme.apply(&a1);
-    a2.square(true);
     theme.apply(&a2);
-    a3.square(true);
     theme.apply(&a3);
-    b1.square(true);
     theme.apply(&b1);
-    b2.square(true);
     theme.apply(&b2);
-    b3.square(true);
     theme.apply(&b3);
 
     /* Loading the layouts of the two groups */
     gui::GridLayout layoutA(gfx, 1, 3);
     theme.apply(&layoutA);
-    layoutA.gaps(20.0f);
     layoutA.addWidget(&a1, 0, 0);
     layoutA.addWidget(&a2, 0, 1);
     layoutA.addWidget(&a3, 0, 2);
     gui::GridLayout layoutB(gfx, 1, 3);
     theme.apply(&layoutB);
-    layoutB.gaps(20.0f);
     layoutB.addWidget(&b1, 0, 0);
     layoutB.addWidget(&b2, 0, 1);
     layoutB.addWidget(&b3, 0, 2);
 
     /* Loading the frames */
     gui::Frame frA(gfx, &layoutA);
-    theme.apply(&frA, true, false);
-    frA.border(15.0f);
+    theme.apply(&frA);
     gui::Frame frB(gfx, &layoutB);
-    frB.border(15.0f);
-    theme.apply(&frB, true, false);
+    theme.apply(&frB);
 
     /* Setting up the gui */
     gui::GridLayout global(gfx, 2, 1);

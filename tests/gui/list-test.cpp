@@ -53,7 +53,6 @@ int main()
     }
     TestList list(gfx);
     theme.apply((gui::List*)&list);
-    list.setItemSize(geometry::AABB(500.0f,50.0f));
 
     /* Loading the items */
     list.addItem(0, "Last", 30.0f);

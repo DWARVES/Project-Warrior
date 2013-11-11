@@ -90,7 +90,6 @@ int main()
 
     gui::GridLayout layout(gfx);
     theme.apply(&layout);
-    layout.gaps(10.0f);
     layout.setSize(5, 3);
     /* First row */
     layout.addWidget(&blue,  0, 0, 2, 0);

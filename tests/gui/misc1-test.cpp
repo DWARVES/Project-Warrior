@@ -73,7 +73,6 @@ int main()
     /* Loading the list */
     gui::List list(gfx);
     theme.apply(&list);
-    list.setItemSize(geometry::AABB(200.0f,50.0f));
     list.addItem(0, "red", 15.0f);
     list.addItem(0, "green", -25.0f);
     list.addItem(0, "blue");
@@ -90,8 +89,6 @@ int main()
     ColorWidget c(gfx);
     gui::Frame fr(gfx, &c);
     theme.apply(&fr);
-    fr.border(15.0f);
-    fr.setBg("bg", false);
 
     /* Setting up the grid */
     gui::GridLayout layout(gfx);

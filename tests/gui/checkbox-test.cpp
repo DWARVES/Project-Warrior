@@ -41,7 +41,6 @@ int main()
     /* Setting up the checkbox */
     gui::CheckBox cb(gfx);
     theme.apply(&cb);
-    cb.maxSize(geometry::AABB(600.0f,600.0f));
 
     gui::Gui g(gfx);
     g.main(&cb, geometry::Point(50.0f, 50.0f), 700.0f, 500.0f);

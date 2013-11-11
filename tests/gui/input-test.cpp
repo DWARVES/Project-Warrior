@@ -43,7 +43,6 @@ int main()
 
     /* Setting up the frame */
     gui::Frame fr(gfx, &input);
-    fr.border(15.0f);
     theme.apply(&fr);
 
     gui::Gui g(gfx);

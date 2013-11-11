@@ -106,8 +106,7 @@ int main()
     BlueWidget w(gfx);
 
     gui::Frame fr(gfx, &w);
-    theme.apply(&fr, true, false);
-    fr.border(15.0f);
+    theme.apply(&fr);
 
     g.main(&fr, geometry::Point(50.0f, 50.0f), 700.0f, 500.0f);
 
