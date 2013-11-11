@@ -14,6 +14,7 @@
 #include "button.hpp"
 #include "radio.hpp"
 #include "graphics/graphics.hpp"
+#include "core/fakefs.hpp"
 
 namespace gui
 {
@@ -33,14 +34,21 @@ namespace gui
             void apply(ScrollBar* sb);
             void apply(Text* t);
             void apply(Input* in);
-            void apply(Frame* fr, bool bg = false, bool fill = true);
+            void apply(Frame* fr);
             void apply(Button* b);
             void apply(Radio* r);
             void guiNamespace();
 
         private:
             graphics::Graphics* m_gfx;
+            core::FakeFS<float> m_data;
             std::string m_path;
+
+            bool m_cbMs;
+            bool m_rdMs;
+
+            /* Internal functions */
+            bool checkData();
     };
 }
 

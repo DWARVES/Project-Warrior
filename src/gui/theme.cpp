@@ -1,7 +1,6 @@
 
 #include "theme.hpp"
-
-/* TODO config file for non-pictures */
+#include <fstream>
 
 namespace gui
 {
@@ -88,7 +87,104 @@ namespace gui
         ret = ret && m_gfx->loadTexture("radio_nselS", m_path + "/radio/nselS.png");
         ret = ret && m_gfx->loadTexture("radio_selS",  m_path + "/radio/selS.png");
 
+        /* Loading the data */
+        m_data.clear();
+        std::ifstream ifs(m_path + "/data.fakefs");
+        if(!ifs)
+            ret = false;
+        else {
+            if(!m_data.load(ifs, [] (const std::string& str) {
+                        std::istringstream iss(str);
+                        float v;
+                        iss >> v;
+                        return v;
+                        }))
+                ret = false;
+            else if(!checkData())
+                ret = false;
+        }
+
+        if(!ret) {
+            m_gfx->enterNamespace("/");
+            m_gfx->deleteNamespace("gui");
+            m_data.clear();
+        }
         return ret;
+    }
+            
+    /* Check if m_data have all the necessary entries */
+    bool Theme::checkData()
+    {
+        if(!m_data.existsNamespace("/fillbar"))
+            return false;
+        m_data.enterNamespace("/fillbar");
+        if(!m_data.existsEntity("ratio"))
+            return false;
+
+        if(!m_data.existsNamespace("/checkbox"))
+            return false;
+        m_data.enterNamespace("/checkbox");
+        if(!m_data.existsEntity("width") || !m_data.existsEntity("height"))
+            m_cbMs = false;
+        else
+            m_cbMs = true;
+        if(!m_data.existsEntity("square"))
+            return false;
+
+        if(!m_data.existsNamespace("/gridlayout"))
+            return false;
+        m_data.enterNamespace("/gridlayout");
+        if(!m_data.existsEntity("gaps"))
+            return false;
+
+        if(!m_data.existsNamespace("/list"))
+            return false;
+        m_data.enterNamespace("/list");
+        if(!m_data.existsEntity("itemw") || !m_data.existsEntity("itemh"))
+            return false;
+
+        if(!m_data.existsNamespace("/scrollbar"))
+            return false;
+        m_data.enterNamespace("/scrollbar");
+        if(!m_data.existsEntity("ratio"))
+            return false;
+
+        if(!m_data.existsNamespace("/text"))
+            return false;
+        m_data.enterNamespace("/text");
+        if(!m_data.existsEntity("font_size"))
+            return false;
+
+        if(!m_data.existsNamespace("/input"))
+            return false;
+        m_data.enterNamespace("/input");
+        if(!m_data.existsEntity("font_size"))
+            return false;
+
+        if(!m_data.existsNamespace("/frame"))
+            return false;
+        m_data.enterNamespace("/frame");
+        if(!m_data.existsEntity("use_bg")
+                || !m_data.existsEntity("bg_fill")
+                || !m_data.existsEntity("borders"))
+            return false;
+
+        if(!m_data.existsNamespace("/button"))
+            return false;
+        m_data.enterNamespace("/button");
+        if(!m_data.existsEntity("width") || !m_data.existsEntity("height"))
+            return false;
+
+        if(!m_data.existsNamespace("/radio"))
+            return false;
+        m_data.enterNamespace("/radio");
+        if(!m_data.existsEntity("width") || !m_data.existsEntity("height"))
+            m_rdMs = false;
+        else
+            m_rdMs = true;
+        if(!m_data.existsEntity("square"))
+            return false;
+        return true;
     }
 
     Theme::~Theme()
@@ -99,19 +195,26 @@ namespace gui
     {
         fb->setTexture(false, "fillbar_empty",  "fillbar_full");
         fb->setTexture(true,  "fillbar_emptyS", "fillbar_fullS");
+        m_data.enterNamespace("/fillbar");
+        fb->ratio(m_data.getEntityValue("ratio"));
     }
 
     void Theme::apply(CheckBox* cb)
     {
         cb->setTexture(false, "checkbox_nsel",  "checkbox_sel");
         cb->setTexture(true,  "checkbox_nselS", "checkbox_selS");
-        /* TODO maxSize */
+        m_data.enterNamespace("/checkbox");
+        if(m_cbMs) {
+            cb->maxSize(geometry::AABB(m_data.getEntityValue("width"),
+                        m_data.getEntityValue("height")));
+        }
+        cb->square(m_data.getEntityValue("square") > 0.0f);
     }
 
     void Theme::apply(GridLayout* gl)
     {
-        /* TODO gaps */
-        if(gl) {} /* Avoid warnings */
+        m_data.enterNamespace("/gridlayout");
+        gl->gaps(m_data.getEntityValue("gaps"));
     }
 
     void Theme::apply(List* l)
@@ -124,7 +227,9 @@ namespace gui
         l->setPart(List::Middle, true,  "list_ms");
         l->setPart(List::Left,   true,  "list_ls");
         l->setPart(List::Font,   true,  "list_fs");
-        /* TODO Item size */
+        m_data.enterNamespace("/list");
+        l->setItemSize(geometry::AABB(m_data.getEntityValue("itemw"),
+                    m_data.getEntityValue("itemh")));
     }
 
     void Theme::apply(ScrollBar* sb)
@@ -137,21 +242,23 @@ namespace gui
         sb->setTexture(ScrollBar::Down,     true,  "scrollbar_downS");
         sb->setTexture(ScrollBar::Norm,     true,  "scrollbar_normS");
         sb->setTexture(ScrollBar::Selected, true,  "scrollbar_selS");
+        m_data.enterNamespace("/scrollbar");
+        sb->ratio(m_data.getEntityValue("ratio"));
     }
 
     void Theme::apply(Text* t)
     {
-        /* TODO font size */
-        t->setFont("text_font", 30.0f);
+        m_data.enterNamespace("/text");
+        t->setFont("text_font", m_data.getEntityValue("font_size"));
     }
 
     void Theme::apply(Input* in)
     {
-        /* TODO font size */
-        in->setFont("input_font", 30.0f);
+        m_data.enterNamespace("/input");
+        in->setFont("input_font", m_data.getEntityValue("font_size"));
     }
 
-    void Theme::apply(Frame* fr, bool bg, bool fill)
+    void Theme::apply(Frame* fr)
     {
         fr->set(Frame::Top,         "frame_t");
         fr->set(Frame::Bottom,      "frame_b");
@@ -161,13 +268,14 @@ namespace gui
         fr->set(Frame::TopLeft,     "frame_tl");
         fr->set(Frame::BottomRight, "frame_br");
         fr->set(Frame::BottomLeft,  "frame_bl");
-        if(bg)
-            fr->setBg("frame_bg", fill);
+        m_data.enterNamespace("/frame");
+        fr->border(m_data.getEntityValue("borders"));
+        if(m_data.getEntityValue("use_bg") > 0.0f)
+            fr->setBg("frame_bg", (m_data.getEntityValue("bg_fill") <= 0.0f));
     }
 
     void Theme::apply(Button* b)
     {
-        /* TODO max size */
         b->setTexture(Button::Right,  false, "button_r");
         b->setTexture(Button::Middle, false, "button_m");
         b->setTexture(Button::Left,   false, "button_l");
@@ -180,12 +288,21 @@ namespace gui
         b->setSel    (Button::Middle,        "button_mf");
         b->setSel    (Button::Left,          "button_lf");
         b->setSel    (Button::Font,          "button_ff");
+        m_data.enterNamespace("/button");
+        b->maxSize(geometry::AABB(m_data.getEntityValue("width"),
+                    m_data.getEntityValue("height")));
     }
             
     void Theme::apply(Radio* r)
     {
         r->setTexture(false, "radio_nsel",  "radio_sel");
         r->setTexture(true,  "radio_nselS", "radio_selS");
+        m_data.enterNamespace("/radio");
+        if(m_rdMs) {
+            r->maxSize(geometry::AABB(m_data.getEntityValue("width"),
+                        m_data.getEntityValue("height")));
+        }
+        r->square(m_data.getEntityValue("square") > 0.0f);
     }
             
     void Theme::guiNamespace()
