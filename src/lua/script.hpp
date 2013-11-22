@@ -128,6 +128,12 @@ namespace lua
              * Throw a lua::nonloaded_exception if the script is not loaded
              */
             void gettop(const std::string& name);
+
+            /* Internal functions */
+            /* Return the name of the lua type */
+            const char* nameType(VarType t) const;
+            /* Return the type of the variable in the top of the stack */
+            VarType typeTop();
     };
 
     /******************************************
@@ -196,12 +202,15 @@ namespace lua
         gettop(name);
         if(lua_isnumber(m_state, 1)) {
             val = static_cast<T>( lua_tonumber(m_state, 1) );
+            lua_pop(m_state, 1);
         }
         else {
             std::ostringstream oss;
             oss << "Tryed to get " << name << " lua variable as a " << typeid(T).name() << ", which is not its type.";
             core::logger::logm(oss.str(), core::logger::WARNING);
-            throw lua::vartype_exception(typeid(T).name(), "unknown", name.c_str());
+            const char* type = nameType(typeTop());
+            lua_pop(m_state, 1);
+            throw lua::vartype_exception(typeid(T).name(), type, name.c_str());
         }
     }
     
