@@ -53,6 +53,19 @@ check_include_files("dirent.h" HAVE_DIRENT_H)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+# Documentation generation
+include(FindDoxygen)
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        working_directory ${CMAKE_CURRENT_BINARY_DIR}
+        comment "Generating source code documentation with Doxygen (for devs only)." VERBATIM
+        )
+elseif(DOXYGEN_FOUND)
+    message("Couldn't find Doxygen : won't be able to generate doc.")
+endif(DOXYGEN_FOUND)
+
 include_directories(src/)
 add_subdirectory(src/)
 
