@@ -7,43 +7,51 @@
 
 namespace core
 {
-    /* All the functions works only for unix-like path */
+    /** @brief Contains path manipulation functions.
+     * /!\\ : All the functions only works for unix-like path.
+     */
     namespace path
     {
-        /* Remove doubles '/' */
+        /** @brief Removes doubles slashs in a path. */
         std::string cleanSep(const std::string& p);
 
-        /* Lists parts : '/home/fred/file' -> ('home' 'fred' 'file') */
+        /** @brief Cut a path into parts. 
+         * Example : '/home/fred/file' -> ('home' 'fred' 'file').
+         * Double slashs must have been removed for a better output.
+         */
         std::vector<std::string> parts(const std::string& p);
 
-        /* Return extensions : 'file.txt' -> 'txt' */
+        /** @brief Returns the extension of a path : 'file.txt' -> 'txt'. */
         std::string extension(const std::string& p);
 
-        /* Return head : '/home/fred/file.txt' -> 'file.txt'
-         * If ext = false, remove the extension (if any)
+        /** @brief Returns the head of a path : '/home/fred/file.txt' -> 'file.txt'.
+         * @param ext If false, remove the extension (if any).
          */
         std::string head(const std::string& p, bool ext = true);
 
-        /* Return body : '/home/fred/file.txt' -> '/home/fred'
-         * If tdir, will remove the head only if it's not a directory
+        /** @brief Returns the body of a path : '/home/fred/file.txt' -> '/home/fred'.
+         * @param tdir If true, will remove the head only if it's not a directory.
          */
         std::string body(const std::string& p, bool tdir = false);
 
-        /* Is the path absolute, could have been named 'hasRoot' */
+        /** @brief Check if the path is absolute. */
         bool absolute(const std::string& p);
 
-        /* Type of the path */
+        /** @brief Type of the path. */
         enum class Type {
-            Reg,        /* Normal file */
-            Dir,        /* Directory */
-            Socket,     /* Socket */
-            Unknown,    /* Other */
-            Unexistant  /* The file does not exists */
+            Reg,        /**< @brief Normal file */
+            Dir,        /**< @brief Directory */
+            Socket,     /**< @brief Socket */
+            Unknown,    /**< @brief Other */
+            Unexistant  /**< @brief The path does not exists */
         };
+        /** @brief Indicate the type of the path.
+         * @todo Only works under Linux for now, find a more portable implementation.
+         */
         Type type(const std::string& p);
 
-        /* List a directory contents
-         * It does NOT include '.' and '..'
+        /** @brief List a directory contents.
+         * It does NOT include '.' and '..'.
          */
         std::vector<std::string> dirContents(const std::string& dir);
     }
