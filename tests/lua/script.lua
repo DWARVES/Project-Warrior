@@ -21,3 +21,5 @@ print("Added value : ", obj.get())
 obj.value = 255;
 print("Value : ", obj.value)
 
+str = "This is a string"
+

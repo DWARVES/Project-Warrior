@@ -3,6 +3,7 @@
 #include "lua/helper.hpp"
 #include "core/logger.hpp"
 #include <iostream>
+#include <ctime>
 
 class Adder
 {
@@ -78,13 +79,13 @@ int function(lua_State* st)
     for(size_t i = 0; i < args.size(); ++i)
     {
         switch(args[i]) {
-            case lua::Script::NUMBER: std::cout << i+1 << "eme arg is a number : " << lua_tonumber(st, (int)i+1) << std::endl;   break;
-            case lua::Script::STRING: std::cout << i+1 << "eme arg is a string : " << lua_tostring(st, (int)i+1) << std::endl;   break;
+            case lua::Script::NUMBER: std::cout << i+1 << "eme arg is a number : "  << lua_tonumber(st, (int)i+1) << std::endl;  break;
+            case lua::Script::STRING: std::cout << i+1 << "eme arg is a string : "  << lua_tostring(st, (int)i+1) << std::endl;  break;
             case lua::Script::BOOL:   std::cout << i+1 << "eme arg is a boolean : " << lua_toboolean(st, (int)i+1) << std::endl; break;
-            case lua::Script::TABLE:  std::cout << i+1 << "eme arg is a table.";                                               break;
-            case lua::Script::USER:   std::cout << i+1 << "eme arg is a userdata.";                                            break;
-            case lua::Script::NIL:    std::cout << i+1 << "eme arg is a nil value.";                                           break;
-            default:                  std::cout << i+1 << "eme arg is of unknown type." << std::endl;                          break;
+            case lua::Script::TABLE:  std::cout << i+1 << "eme arg is a table.";                                                 break;
+            case lua::Script::USER:   std::cout << i+1 << "eme arg is a userdata.";                                              break;
+            case lua::Script::NIL:    std::cout << i+1 << "eme arg is a nil value.";                                             break;
+            default:                  std::cout << i+1 << "eme arg is of unknown type." << std::endl;                            break;
         }
     }
 
@@ -93,6 +94,7 @@ int function(lua_State* st)
 
 int main()
 {
+    srand((unsigned int)time(NULL));
     core::logger::init();
     core::logger::addOutput(&std::cout);
     core::logger::logm("Begin of the program", core::logger::MSG);
@@ -147,9 +149,22 @@ int main()
             scr.callFunction("add", &r, 1.f, 2.5f, 50.f);
             std::cout << "Ret value for add : " << r << std::endl;
         }
-        scr.callFunction<void>("unexists", NULL); /* Try call of unexistent function */
+
+        int rd = rand();
+        if(rd % 2 == 1)
+            scr.callFunction<void>("unexists", NULL); /* Try call of unexistent function */
+        else {
+            /* Try accessing a variable with the wrong type */
+            int number = 0;
+            scr.getVariable("echo", number);
+        }
     }
-    catch(const lua::exception& e) { /* Will catch all lua exceptions, shouldn't happen */
+    catch(const lua::vartype_exception& e) {
+        core::logger::logm(std::string("Lua vartyep exception catched : ") + e.what(), core::logger::FATAL);
+        core::logger::logm(std::string("Lua variable type : ") + e.typeLua(), core::logger::MSG);
+        return 1;
+    }
+    catch(const lua::exception& e) {
         core::logger::logm(std::string("Lua exception catched : ") + e.what(), core::logger::FATAL);
         return 1;
     }
