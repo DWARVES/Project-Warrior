@@ -79,13 +79,14 @@ int function(lua_State* st)
     for(size_t i = 0; i < args.size(); ++i)
     {
         switch(args[i]) {
-            case lua::Script::NUMBER: std::cout << i+1 << "eme arg is a number : "  << lua_tonumber(st, (int)i+1) << std::endl;  break;
-            case lua::Script::STRING: std::cout << i+1 << "eme arg is a string : "  << lua_tostring(st, (int)i+1) << std::endl;  break;
-            case lua::Script::BOOL:   std::cout << i+1 << "eme arg is a boolean : " << lua_toboolean(st, (int)i+1) << std::endl; break;
-            case lua::Script::TABLE:  std::cout << i+1 << "eme arg is a table.";                                                 break;
-            case lua::Script::USER:   std::cout << i+1 << "eme arg is a userdata.";                                              break;
-            case lua::Script::NIL:    std::cout << i+1 << "eme arg is a nil value.";                                             break;
-            default:                  std::cout << i+1 << "eme arg is of unknown type." << std::endl;                            break;
+            case lua::Script::NUMBER:   std::cout << i+1 << "eme arg is a number : "  << lua_tonumber(st, (int)i+1) << std::endl;  break;
+            case lua::Script::STRING:   std::cout << i+1 << "eme arg is a string : "  << lua_tostring(st, (int)i+1) << std::endl;  break;
+            case lua::Script::BOOL:     std::cout << i+1 << "eme arg is a boolean : " << lua_toboolean(st, (int)i+1) << std::endl; break;
+            case lua::Script::TABLE:    std::cout << i+1 << "eme arg is a table.";                                                 break;
+            case lua::Script::USER:     std::cout << i+1 << "eme arg is a userdata.";                                              break;
+            case lua::Script::FUNCTION: std::cout << i+1 << "eme is a function.";                                                  break;
+            case lua::Script::NIL:      std::cout << i+1 << "eme arg is a nil value.";                                             break;
+            default:                    std::cout << i+1 << "eme arg is of unknown type." << std::endl;                            break;
         }
     }
 
