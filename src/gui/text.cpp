@@ -140,8 +140,7 @@ namespace gui
 
     std::vector<std::string> Text::shrinkLine(const std::string& line, float w)
     {
-        /* FIXME improve performances */
-        /* FIXME words larger than width (prevent infinite loop) */
+        /* WONTFIX words larger than width will exceed width, shouldn't happen often */
         std::vector<std::string> ret;
         ret.reserve(10);
 
