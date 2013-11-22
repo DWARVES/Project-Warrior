@@ -104,6 +104,8 @@ namespace lua
             ret = TABLE;
         else if(lua_isuserdata(m_state, 1))
             ret = USER;
+        else if(lua_isfunction(m_state, 1))
+            ret = FUNCTION;
         return ret;
     }
             
@@ -120,6 +122,8 @@ namespace lua
                 return "table";
             case USER:
                 return "userdata";
+            case FUNCTION:
+                return "function";
             case NIL:
                 return "nil/unexistant";
             default: /* Shouldn't happen */

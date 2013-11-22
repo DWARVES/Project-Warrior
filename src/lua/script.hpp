@@ -56,12 +56,13 @@ namespace lua
              * It will throw a lua::nonloaded_exception if the script is not loaded
              */
             enum VarType {
-                NUMBER, /* Any type of number : there is no distinction between int, double, float ... in lua */
-                STRING, /* A simple string */
-                BOOL,   /* Boolean value */
-                TABLE,  /* A lua table */
-                USER,   /* An userdata variable */
-                NIL,    /* Nil value : the variable doesn't exist or it has been declared as nil */
+                NUMBER,   /* Any type of number : there is no distinction between int, double, float ... in lua */
+                STRING,   /* A simple string */
+                BOOL,     /* Boolean value */
+                TABLE,    /* A lua table */
+                USER,     /* An userdata variable */
+                FUNCTION, /* A function, which is also a variable in lua */
+                NIL,      /* Nil value : the variable doesn't exist, it has been declared as nil or it's a type not declared above */
             };
             VarType typeVariable(const std::string& name);
             /* Store the value of a lua variable in a C variable.
