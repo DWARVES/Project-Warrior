@@ -53,11 +53,13 @@ namespace physics
             // Functions used to create joints between entities
             b2RopeJoint* createRopeJoint(const std::string& name, Entity* entityA, Entity* entityB, float maxLength, const geometry::Point& localAnchorA = geometry::Point(0, 0), const geometry::Point& localAnchorB = geometry::Point(0, 0), bool collideConnected = true); // Rope joint, useful to create link CC
 
-        protected:
             // Remove an entity or a joint from the world
             void destroyEntity(const std::string& name);
             void destroyJoint(const std::string& name);
             
+            void collisionCallback(Entity* entityA, Entity* entityB); // Calls the user implemented callback corresponding to the entities colliding's types
+
+        protected:
             // Callbacks from b2DestructionListener called when a joint or fixture is destroyed
             virtual void SayGoodbye(b2Joint* joint);
             virtual void SayGoodbye(b2Fixture* fixture);
@@ -67,8 +69,6 @@ namespace physics
             void EndContact(b2Contact* contact);
 
             Entity* getEntityFromFixture(b2Fixture* fixture) const; // Returns a pointer to the Entity owning the fixture passed in parameter
-
-            void collisionCallback(Entity* entityA, Entity* entityB); // Calls the user implemented callback corresponding to the entities colliding's types
 
         protected:
             b2World* m_world; // The world used in Box2D for simulation, containing all the bodies and fixtures (that we grouped in the Entity class)

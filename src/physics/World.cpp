@@ -229,6 +229,8 @@ namespace physics
             core::logger::logm("Tried to destroy unexisting joint \"" + name + "\" : cancelled operation.", core::logger::WARNING);
     }
 
+    void World::collisionCallback(Entity* entityA, Entity* entityB) {}
+
     void World::SayGoodbye(b2Joint* joint)
     {
         std::map<std::string, std::unique_ptr<b2Joint, NullDeleter>>::iterator it;
@@ -308,5 +310,4 @@ namespace physics
             return nullptr;
     }
 
-    void World::collisionCallback(Entity* entityA, Entity* entityB) {}
 }
