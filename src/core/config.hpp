@@ -12,12 +12,20 @@
 
 namespace core
 {
+    /** @brief Exception used in core::Config.
+     *
+     * Represent an error when trying accessing an option inexistant.
+     */
     class ConfigBadKeyException : public std::exception
     {
         public:
+            /** @brief Only constructor.
+             * @param name The name of the unexitant option the user tryed to access.
+             */
             ConfigBadKeyException(const char* name) noexcept;
             ConfigBadKeyException() = delete;
             virtual ~ConfigBadKeyException();
+            /** @brief Return a generic error message. */
             virtual const char* what() const noexcept;
             const char* name() const noexcept;
 
@@ -25,6 +33,7 @@ namespace core
             const char* m_name;
     };
 
+    /** @brief Class storing and loading program-scale options. */
     class Config
     {
         public:
@@ -32,44 +41,51 @@ namespace core
             Config(const Config&) = delete;
             ~Config();
 
-            /* Parses the arguments, returns false if error
-             * Returns false if an unhandled option is found
+            /** @brief Parses the command-lines arguments.
+             * @return False if an unhandled option is found.
              */
             bool args(int argc, char *argv[]);
-            /* Parses a file, returns false if error
-             * Returns false if an unhandled option is found
+            /** @brief Parses a file with a fakefs syntax.
+             * @return False if an unhandled option is found.
              */
             bool cfg(const std::string& path);
 
-            /* Returns false if either lname or sname is already used
-             * If you don't want a sname, put it to 0
-             * value is the default value, converted to string with ostringstream
-             * For non-standart types, overload operator<<(std::ostream&, Y)
+            /** @brief Define a new option for the program. 
+             * @tparam The type of this option. There must be an overload of the function operator<<(std::ostream&, T).
+             * @param lname The long name of the option.
+             * @param sname The one-letter name of the option. If you don't want one, set it to 0.
+             * @param description The description of the option, used when printing the help message.
+             * @param value The default value of the option.
+             * @return False if couldn't add the option, generally because either lname or sname is already used.
              */
             template <typename T> bool define(const std::string& lname, char sname, const std::string& description, T value);
-            /* Prints help to the ostream */
+            /** @brief Prints an help message to an ostream.
+             * It uses the description of each value, and does not show the default values.
+             */
             void help(std::ostream& os);
-            /* Prints the loaded options to the ostream */
+            /** @brief Prints the loaded options to an ostream.
+             * It is only aimed for debug purpose.
+             */
             void dump(std::ostream& os);
 
-            /* Get the value of an option, converted with istringstream
-             * For non standart types, overload operator>>(std::istream&, T)
-             * If name is not the name of an option, it will throw a ConfigBadKeyException
+            /** @brief Get the value of an option.
+             * @tparam The type of the option. The must be an overload of operator>>(std::istream&, T).
+             * @param name The name of the option. If the option doesn't exists, a core::ConfigBadKeyException will be thrown.
              */
             template <typename T> T get(const std::string& name);
 
         private:
-            std::unordered_map<char,std::string> m_shorts;
-            FakeFS<std::string> m_fs;
-            /* For descriptions */
+            std::unordered_map<char,std::string> m_shorts; /**< @brief A map associating the shorts name to the long ones. */
+            FakeFS<std::string> m_fs; /**< @brief The structure storing the options. */
+            /** @brief Store data about an option. */
             struct Info {
-                char s;
-                std::string d;
+                char s;        /**< @brief The short name of the option. */
+                std::string d; /**< @brief The description of the option. */
             };
-            std::unordered_map<std::string,Info> m_descs;
+            std::unordered_map<std::string,Info> m_descs; /**< @brief A map associating the long names to data about the option. */
     };
 
-    /* Defining template mathods */
+    /* Defining template methods */
     template <typename T> bool Config::define(const std::string& lname, char sname, const std::string& description, T value)
     {
         /* sname already used */
