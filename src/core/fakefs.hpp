@@ -8,6 +8,10 @@
 #include <istream>
 #include <ostream>
 
+/** @brief The namespace for core methods.
+ *
+ * Include system related methods, containers and some I/O methods.
+ */
 namespace core
 {
     /** @brief Default liberator for FakeFS : do nothing (for non pointer values). */
