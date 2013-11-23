@@ -9,13 +9,20 @@ namespace core
     namespace logger
     {
         /* Global variables definitions */
+        /** @brief Describe an output for logging. */
         struct _output {
-            std::ostream* os;
-            bool todel;
+            std::ostream* os; /**< @brief The pointer to the output. */
+            bool todel;       /**< @brief Indicate if the output must be free'd. **/
         };
+        /** @brief Vector storing all the outputs. */
         static std::vector<_output> outputs;
+        /** @brief The actual block. */
         static unsigned int blocks;
+        /** @brief The minimum level under which nothing must be logged. */
         static Level lvlmin;
+        /** @brief Indicate if the logging has been initialized.
+         * If false, nothing will be logged.
+         */
         static bool initializated = false;
 
         void init()

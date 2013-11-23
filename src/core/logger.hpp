@@ -7,43 +7,48 @@
 
 namespace core
 {
+    /** @brief Contain all methods related to logging. */
     namespace logger
     {
-        /* Init logging, must be called only once */
+        /** @brief Init logging, must be called only once, before all other calls. */
         void init();
-        /* Free everything */
+        /** @brief Free everything that was used by logging. */
         void free();
 
-        /* Add output
-         * If todel, the ostream will be delete'd*/
+        /** @brief Add an output.
+         * @param os A pointer to the output, which must inheritate from std::ostream.
+         * @param todel If true, the ostream will be delete'd.
+         */
         void addOutput(std::ostream* os, bool todel = false);
 
-        /* Blocks manipulation : one more block will add a '>' at the beggining of the line */
+        /** @brief Enter a new block : add a '>' at the beggining of the line */
         void pushBlock();
+        /** @brief Get out of the actual block. */
         void popBlock();
 
-        /* Print a message */
+        /** @brief Differents levels of importance of messages. */
         enum Level {
-            MSG,     /* Simple info */
-            WARNING, /* Warning */
-            ERROR,   /* Error not fatal, will not really matter the execution*/
-            SERIOUS, /* Error not fatal, but will disturb the execution */
-            FATAL    /* Fatal error */
+            MSG,     /**< @brief Simple info */
+            WARNING, /**< @brief Warning */
+            ERROR,   /**< @brief Error not fatal, will not really matter the execution*/
+            SERIOUS, /**< @brief Error not fatal, but will disturb the execution */
+            FATAL    /**< @brief Fatal error */
         };
-        /* Level from where to print 
-         * ex : if min == ERROR, will print ERROR and FATAL
+        /** @brief Set a minimum level of importance.
+         * From now on, only messages with at least this level will be printed.
          */
         void minLevel(Level min);
 
-        /* msg will be displayed to all the outputs given,
-         * If lvl < min, msg will not be displayed
-         * msg must be only one line
-         * if date = false, the date won't be showed
-         * file and line indicate the line of the code from where the message is written
+        /** @brief Log a message to all the outputs setted.
+         * @param file The source code file from which this function is called.
+         * @param line The line in file of the call to this function.
+         * @param msg The message to log. Must be only one line.
+         * @param lvl The level of the message. If inferior to the minimum level, nothing will be logged.
+         * @param date If true, the date in iso format will be printed.
          */
         void logmsg(const std::string& file, unsigned int line, const std::string& msg, Level lvl, bool date = true);
 
-        /* Log helping macros */
+        /* Macros helping logmsg use. */
 #define logd(msg, lvl, date) logmsg(__FILE__, __LINE__, msg, lvl, date)
 #define logm(msg, lvl)        logmsg(__FILE__, __LINE__, msg, lvl)
     }
