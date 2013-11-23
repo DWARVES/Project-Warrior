@@ -5,65 +5,77 @@
 #include <string>
 #include "core/fakefs.hpp"
 
+/** @brief Contains all elements directly used in game, as personnages or stages. */
 namespace gameplay
 {
-    /* Save is a singlebone : all the methods modifies an only global instance */
+    /** @brief A class used to save variables events, which are numbers.
+     *
+     * Save is a singlebone : all the instances modifies an only one global instance
+     * It must be inited before using any instance.
+     */
     class Save
     {
         public:
+            /** @brief The type of variables stored. */
             typedef long int number_t;
 
             Save();
             Save(const Save&) = delete;
             ~Save();
 
-            /* Init the ressources */
+            /** @brief Init the global instance, must be called only once. */
             static bool init();
-            /* free all the ressource */
+            /** @brief Free the global instance. */
             static void quit();
 
-            /* Manage namespaces (see core::FakeFS for more details)
-             * Always return false if not initialized
-             */
+            /** @brief Create a namespace, works as core::FakeFS::createNamespace. */
             bool createNamespace(const std::string& name);
+            /** @brief Delete an existing namespace, works as core::FakeFS::deleteNamespace. */
             bool deleteNamespace(const std::string& name);
+            /** @brief Set a new actual namespace, works as core::FakeFS::enterNamespace. */
             bool enterNamespace(const std::string& name);
+            /** @brief Check the existence of a namespace. */
             bool existsNamespace(const std::string& name);
-            /* Indicate the actual namespace */
+            /** @brief Get the absolute path of the actual namespace. */
             std::string actualNamespace();
 
-            /* Create a variable and set it to value
-             * Does not works if name is already used
-             */
+            /** @brief Create a new variable, works as core::FakeFS<number_t>::createEntity. */
             bool createVariable(const std::string& name, number_t value = 0);
-            /* Delete a variable */
+            /** @brief Delete a variable, works as core::FakeFS::deleteEntity. */
             void deleteVariable(const std::string& name);
-            /* Set the name variable to nvalue
-             * Return false if name does not exists
+            /** @brief Change the value of the variable.
+             * @param name The plain name of the variable, path aren't accepted (as in core::FakeFS::setEntityValue).
              */
             bool setVariable(const std::string& name, number_t nvalue);
-            /* Indicate if a variable exists
-             * Only accepts simples names, not paths
+            /** @brief Check the existence of a variable.
+             * @param name The plain name of the variable, path aren't allowed (as in core::FakeFS::existsEntity).
              */
             bool existsVariable(const std::string& name);
-            /* Return the value of the variable named name
-             * Return 0 if name does not exists
+            /** @brief Get the value of the variable.
+             * @param name The plain name of the variable, path aren't allowed.
+             * @return Follow the same policy as core::FakeFS<number_t>::getEntityValue, will return 0 when the variable doesn't exists, but also when it's its real value.
              */
             number_t getVariable(const std::string& name);
 
-            /* Save the variables to the at the name path
-             * If the file already exists, it's erased
-             * Return false if an error happened
-             * Do not modifies the state
+            /** @brief Save the variables to a file.
+             * @param path The path to the file to save to. Will erase the file if it already exists.
+             * @return False if couldn't save. If path existed, it ay have already been erased.
              */
             bool save(const std::string& path) const;
-            /* Load the variables from a file
-             * If the file can't be read, return false and the actual state is not modified
-             * It first clears the complete state, deleting all the variables and namespaces before charging
+            /** @brief Load the variables from a file.
+             *
+             * It will first open the file, then discard all the content in memory, and then load from the opened file.
+             * So if the file can't be opened, the actual content won't be lost.
+             * But if there is an error while reading, you may ends up with an empty Save class.
+             * This function never changes the file content.
+             * @param path The path to the file to load.
+             * @return False if couldn't load the file. If that's the case, you may either have an empty Save class or an unchanged class, depending on where the error happened.
+             * @todo Improve error report, enventually use exceptions.
              */
             bool load(const std::string& path);
 
         private:
+            /** @brief The global structure storing the variable and their values. */
             static core::FakeFS<Save::number_t>* m_fs;
     };
 }
