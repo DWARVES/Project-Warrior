@@ -18,15 +18,26 @@
 
 namespace gui
 {
+    /** @brief Load and apply a theme to widgets. */
     class Theme
     {
         public:
             Theme() = delete;
             Theme(const Theme&) = delete;
+            /** @brief Only one constructor. Prepare the class, but doesn't load anything.
+             * @param gfx The graphics::Graphics instance used to load things. Everything will be set in the Theme::guiNamespace namespace.
+             * @param path The path to the theme directory.
+             */
             Theme(graphics::Graphics* gfx, const std::string& path);
-            bool load(); /* Must be called only once */
+            /** @brief Will load everything necessary. Returns false if an error happen. */
+            bool load();
             ~Theme();
 
+            /**
+             * @name Applying theme to widgets.
+             * @brief Apply the theme to the widget passed in parameter.
+             * @{
+             */
             void apply(FillBar* fb);
             void apply(CheckBox* cb);
             void apply(GridLayout* gl);
@@ -37,17 +48,25 @@ namespace gui
             void apply(Frame* fr);
             void apply(Button* b);
             void apply(Radio* r);
+            /**
+             * @}
+             */
+
+            /** @brief Indicates which namespace in the graphics instance is used by the theme to store textures. Should be /gui. */
             void guiNamespace();
 
         private:
-            graphics::Graphics* m_gfx;
-            core::FakeFS<float> m_data;
-            std::string m_path;
+            graphics::Graphics* m_gfx;  /**< @brief The graphics::Graphics instance used to load and store textures and fonts. */
+            core::FakeFS<float> m_data; /**< @brief Structure used to store and manage data which isn't neither texture nor font. */
+            std::string m_path;         /**< @brief The path to the gui theme directory. */
 
-            bool m_cbMs;
-            bool m_rdMs;
+            bool m_cbMs; /**< @brief Uses maxSize for checkbox.
+                           * @todo Should be stored into m_data. */
+            bool m_rdMs; /**< @brief Uses maxSize for radio button.
+                           * @todo Should be stored into m_data. */
 
             /* Internal functions */
+            /** @brief Checks if what is loaded into m_data is correct and complete. */
             bool checkData();
     };
 }
