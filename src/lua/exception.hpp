@@ -6,65 +6,87 @@
 
 namespace lua
 {
-    /* Virtual pure class : global class for all lua exceptions */
+    /** @brief Pure virtual class, can be used to catch all the exceptions related to lua. */
     class exception : public std::exception
     {
         public:
             virtual const char* what() const noexcept = 0;
     };
 
-    /* Class for exceptions directly in the lua::Script class */
+    /** @brief Class for exceptions directly in the lua::Script class. */
     class program_exception : public exception
     {
         public:
             program_exception() = delete;
+            /** @brief Only constructor allowed.
+             * @param e The message of the exception.
+             */
             explicit program_exception(const char* e) noexcept;
             virtual const char* what() const noexcept;
         private:
             const char* m_msg;
     };
 
-    /* Class for when the user try to use a non-loaded lua::Script class */
+    /** @brief Class for when the user try to use a non-loaded lua::Script class. */
     class nonloaded_exception : public program_exception
     {
         public:
+            /** @brief The constructor set the generic error message, which  can't be changed. */
             nonloaded_exception() noexcept;
     };
 
-    /* Virtual pure class for errors in the lua script (invalid variable types...) */
+    /** @brief Virtual pure class for errors in the lua script. */
     class script_exception : public exception
     {
         public:
             virtual const char* what() const noexcept = 0;
     };
 
-    /* Class for exceptions for invalid variable access to lua type */
+    /** @brief Class for mismatching types when accessing a lua variable. */
     class vartype_exception : public script_exception
     {
         public:
             vartype_exception() = delete;
+            /** @brief Only one constructor.
+             * @param tC The c++ variable type's name.
+             * @param tlua The lua variable type's name.
+             * @param name The name of the lua variable.
+             */
             vartype_exception(const char* tC, const char* tLua, const char* name) noexcept;
+            /** @brief Returns a generic error message. */
             virtual const char* what() const noexcept;
-            const char* typeC() const noexcept;   /* The name of the C/C++ type */
-            const char* typeLua() const noexcept; /* The name of the lua type */
-            const char* nameVar() const noexcept; /* The name of the lua variable */
+            /** @brief Returns the c++ variable type's name. */
+            const char* typeC() const noexcept;
+            /** @brief Returns the lua variable type's name. */
+            const char* typeLua() const noexcept;
+            /** @brief Returns the lua variable name. */
+            const char* nameVar() const noexcept;
 
         private:
+            /** @brief The c++ variable type's name. */
             const char* m_c;
+            /** @brief The lua variable type's name. */
             const char* m_lua;
+            /** @brief The lua variable name. */
             const char* m_var;
     };
 
-    /* Class for exceptions for invalid function access */
+    /** @brief Class for exceptions for invalid lua function access. */
     class functionaccess_exception : public script_exception
     {
         public:
             functionaccess_exception() = delete;
+            /** @brief Only one constructor.
+             * @param fname The name of the lua function.
+             */
             functionaccess_exception(const char* fname) noexcept;
+            /** @brief Returns a generic error message. */
             virtual const char* what() const noexcept;
-            const char* function() const noexcept; /* Return the name of the function */
+            /** @brief Returns the name of the lua function. */
+            const char* function() const noexcept;
 
         private:
+            /** @brief The name of the lua function. */
             const char* m_function;
     };
 }
