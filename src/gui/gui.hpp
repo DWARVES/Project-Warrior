@@ -54,9 +54,6 @@ namespace gui
             Widget* m_main;            /**< @brief The main widget. */
             geometry::Point m_pos;     /**< @brief The ppos of the gui part. */
             graphics::Graphics* m_gfx; /**< @brief The graphics instance used. */
-
-            /* Internal functions */
-            bool isInRect(const geometry::Point& p, const geometry::Point& o, float width, float height);
     };
 }
 

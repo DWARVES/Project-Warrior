@@ -76,7 +76,7 @@ namespace gui
             m_main->inputText("\n");
 
         /* Actions */
-        /* TODO handle joysticks and allow personnalization of controls */
+        /** @todo Handle joysticks and allow personnalization of controls. */
         if(ev.keyJustPressed(events::KeyMap::Left))
             m_main->action(Widget::ScrollLeft);
         if(ev.keyJustPressed(events::KeyMap::Right))
@@ -93,17 +93,6 @@ namespace gui
             m_main->action(Widget::Last);
         if(ev.keyJustPressed(events::KeyMap::Backspace))
             m_main->action(Widget::Remove);
-    }
-
-    bool Gui::isInRect(const geometry::Point& p, const geometry::Point& o, float width, float height)
-    {
-        if(p.x < o.x
-                || p.y < o.y
-                || p.x > o.x + width
-                || p.y > o.y + height)
-            return false;
-        else
-            return true;
     }
 
 }
