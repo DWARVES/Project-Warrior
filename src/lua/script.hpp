@@ -10,41 +10,55 @@
 #include <sstream>
 #include <typeinfo>
 
+/** @brief Contains all class and methods used to interface with Lua. */
 namespace lua
 {
+    /** @brief A class representing a lua script, allow interaction with it. */
     class Script
     {
         public:
-            /* Will throw an exception of type lua::exception if can't load lua context */
+            /** @brief Initialise the class and load a lua context.
+             *
+             * It will throw an exception of type lua::program_exception if it couldn't load the lua context.
+             */
             Script();
-            /* If path can't be loaded, it will just set loaded to false */
+            /** @brief Init and directly load a script. See lua::Script::load for more details.
+             *
+             * It will throw a lua::program_exception if couldn't init, but simply set loaded to false if couldn't load the script.
+             */
             explicit Script(const std::string& path);
             Script(const Script&) = delete;
             ~Script();
 
-            /* Load a script from it's path.
+            /** @brief Load a script from it's path.
+             *
              * Only one script can be loaded at once.
-             * Returns false if a script has already been loaded or if the script couldn't be loaded
+             * @return False if a script has already been loaded or if the script couldn't be loaded.
              */
             bool load(const std::string& path);
-            /* Check if the script has been correctly loaded */
+            /** @brief Indicates if a script has already been succesfully loaded. */
             bool loaded() const;
 
             /*************************************************
              *         Functions check and call              *
              *************************************************/
 
-            /* Check if the function exists in the script
-             * If the script wasn't loaded, it will throw an lua::nonloaded_exception
+            /** @brief Check if the function exists in the script.
+             *
+             * If the script wasn't loaded, it will throw a lua::nonloaded_exception.
              */
             bool existsFunction(const std::string& name);
-            /* The first template is the return type of the function
-             * It only handle lua function with one or zero return value
-             * If you don't want to get any result, just set ret to NULL
-             * Implicit templates types won't works if you use const char* for strings as arguments
-             * Args are the types of the arguments
-             * It only handle some types for the functions : std::string (and const char*), bool and any number type (but only number, undetermined behaviour if not).
+            /** @brief Call a lua function.
+             *
              * It will throw an lua::functionaccess_exception if the lua function does not exists and a lua::nonloaded_exception if the script is not loaded
+             * @tparam Ret The return type of the lua function (if ret = NULL, this value is unimportant).
+             * @tparam Args The types of the arguments for the lua function.
+             * It only handle some types for the functions : std::string (and const char*), bool and any number type. If you use another type, it will lead to an undefined behaviour.
+             *
+             * @param name The name of the lua function.
+             * @param ret A pointer to where store the lua function return value. If NULL, the return of the lua function will be ignored.
+             * It won't handle a lua function with more than one return value.
+             * @param args The parameters of the lua function.
              */
             template <typename Ret, typename... Args> void callFunction(const std::string& name, Ret* ret, Args... args);
 
@@ -52,88 +66,119 @@ namespace lua
              *             Variables access                  *
              *************************************************/
 
-            /* Return the type of the variable
-             * It will throw a lua::nonloaded_exception if the script is not loaded
-             */
+            /** @brief Represents the type of a lua variable. */
             enum VarType {
-                NUMBER,   /* Any type of number : there is no distinction between int, double, float ... in lua */
-                STRING,   /* A simple string */
-                BOOL,     /* Boolean value */
-                TABLE,    /* A lua table */
-                USER,     /* An userdata variable */
-                FUNCTION, /* A function, which is also a variable in lua */
-                NIL,      /* Nil value : the variable doesn't exist, it has been declared as nil or it's a type not declared above */
+                NUMBER,   /**< @brief Any type of number : there is no distinction between int, double, float ... in lua. */
+                STRING,   /**< @brief A simple string. */
+                BOOL,     /**< @brief Boolean value. */
+                TABLE,    /**< @brief A lua table. */
+                USER,     /**< @brief An userdata variable. */
+                FUNCTION, /**< @brief A function, which is also a variable in lua. */
+                NIL,      /**< @brief Nil value : the variable doesn't exist, it has been declared as nil or it's a type not declared above. */
             };
+            /** @brief Return the type of a lua variable.
+             *
+             * It will throw a lua::nonloaded_exception if the script has not been loaded.
+             * @param name The name of the lua variable.
+             */
             VarType typeVariable(const std::string& name);
-            /* Store the value of a lua variable in a C variable.
-             * It can store either std::string, bool or a number type (undefined behaviour if it is not, double is conseilled : native lua number type)
-             * Can't return neither a table, an userdata nor a nil variale
-             * It will throw an exception of type lua::vartype_exception if name refers to a variable like the one mentionned the line above
-             * It will also throw an exception if the type of the dest variable in C is not the same as the lua variable
-             * Finally, it will throw a lua::nonloaded_exception if the script is not loaded
+            /** @brief Get the value of a lua number variable.
+             *
+             * It will throw a lua::nonloaded_exception if the script is not loaded
+             * It will throw a lua::vartype_exception if name refers to a variable which is not a number.
+             * @tparam T The type of the lua variable.
+             * It must be a number type (double is conseilled because the lua native number type).
+             * If T is another type, it may leads to an undefined behaviour.
+             * @param name The name of the lua variable.
+             * @param val The c++ variable where the value is stored.
              */
             template <typename T> void getVariable(const std::string& name, T& val);
+            /** @brief Get the value of a lua string variable. It works as lua::Script::getVariable<T>, excepts the lua variable must be a string and not a number. */
             void getVariable(const std::string& name, std::string& val);
+            /** @brief Get the value of a lua boolean variable. It works as lua::Script::getVariable<T>, excepts the lua variable must be a boolean and not a number. */
             void getVariable(const std::string& name, bool& val);
-            /* If the script is not loaded, it will throw an exception of type lua::exception
+            /** @brief Change the value of a lua variable to a string.
              * If the variable didn't existed before, it will create it.
+             * 
+             * If the script isn't loaded, it will throw a lua::nonloaded_exception.
              */
             void setVariable(const std::string& name, const std::string& str);
+            /** @brief Change the value of a lua variable to a string.
+             * If the variable didn't existed before, it will create it.
+             * 
+             * If the script isn't loaded, it will throw a lua::nonloaded_exception.
+             */
             void setVariable(const std::string& name, const char* str);
+            /** @brief Change the value of a lua variable to a number.
+             * If the variable didn't existed before, it will create it.
+             * 
+             * If the script isn't loaded, it will throw a lua::nonloaded_exception.
+             */
             void setVariable(const std::string& name, double number);
 
             /*************************************************
              *      Functions and classes registering        *
              *************************************************/
 
-            /* The function must return how many returns it has in lua
-             * The arguments must be taken from the lua stack
-             * name is the name the function will have in the lua script
-             * It can be called even if the script is not loaded, but if the initialization failed, it will throw an lua::nonloaded_exception
-             */
+            /** @brief Defines the pointer to a c++ function which can be exposed to lua. */
             typedef int (*luaFnPtr)(lua_State* st);
-            void registerFunction(luaFnPtr fn, const std::string& name);
-            /* Will register a class (passed as template parameter)
-             * This class must contain some static members :
-             *      const char* className -> the name of the class in lua
-             *      const Script::Methods<T> methods[] -> the members, which must have the same signature as a function (see registerFunction), must end by {NULL, NULL} : example {"MyCoolFunctionName", &Foo::function}
-             *      const Script::Properties<T> properties[] -> the variables, must be defined by a setter and a getter, must end by {NULL, NULL, NULL} : example {"MemberName", &Foo::getter, &Foo::Setter}
-             * The class must also contains the following two members
-             *      bool isExisting -> for internal use, do not modify nor set it
-             *      bool isPrecious -> tell lua not to garbage collect the object, must be set on the constructor
-             * It will work even if the script is not loaded, but it will throw a lua::nonloaded_exception if the script is not initialized.
+            /** @brief Expose a c++ function to lua.
+             * It can be called even if the script is not loaded, but if the initialization failed, it will throw an lua::nonloaded_exception
+             * @param fn A pointer to the c++ function.
+             * It must takes its argument from the lua stack and put its returns onto the lua stack.
+             * It must returns the number of returns it has.
+             * @param name The name of function in lua.
              */
+            void registerFunction(luaFnPtr fn, const std::string& name);
+            /** @brief Hide luna usage to the user (see internal::Luna::FunctionType for details on functionnement). */
             template<typename T> using Methods = typename internal::Luna<T>::FunctionType;
+            /** @brief Hide luna usage to the user (see internal::Luna::PropertyType for details on functionnement). */
             template<typename T> using Properties = typename internal::Luna<T>::PropertyType;
+            /** @brief Expose a class to lua.
+             * It will work even if the script is not loaded, but it will throw a lua::nonloaded_exception if the script is not initialized.
+             *
+             * @tparam T The class to expose.
+             * This class must contain some members :
+             *  - static const char* className -> the name of the class in lua.
+             *  - static const Script::Methods<T> methods[] -> the members, which must have the same signature as a function (see lua::Script::registerFunction), must end by {NULL, NULL} : example {"MyCoolFunctionName", &Foo::function}.
+             *  - static const Script::Properties<T> properties[] -> the variables, must be defined by a setter and a getter, must end by {NULL, NULL, NULL} : example {"MemberName", &Foo::getter, &Foo::Setter}.
+             *  - bool isExisting -> for internal use, do not modify nor set it
+             *  - bool isPrecious -> tell lua not to garbage collect the object, must be set on the constructor
+             */
             template<typename T> void registerClass();
 
 
         private:
-            lua_State* m_state;
-            bool m_loaded;
+            lua_State* m_state; /**< @brief The lua state, representing and controlling the script and its execution. */
+            bool m_loaded;      /**< @brief Indicates if the script has successfully been loaded. */
 
-            /* Used to recursively parse variadic template */
+            /** @brief Used to recursively parse variadic template of lua::Script::callFunction : add a number to the lua stack. */
             template<typename T, typename... Args> void addArgs(T type, Args... args);
+            /** @brief Used to recursively parse variadic template of lua::Script::callFunction : add a string to the lua stack. */
             template<typename... Args> void addArgs(const std::string& str, Args... args);
+            /** @brief Used to recursively parse variadic template of lua::Script::callFunction : add a string (as const char*) to the lua stack. */
             template<typename... Args> void addArgs(const char* str, Args... args);
+            /** @brief Used to recursively parse variadic template of lua::Script::callFunction : add a boolean to the lua stack. */
             template<typename... Args> void addArgs(bool b, Args... args);
-            /* Get the return of a function */
-            template<typename T> void getRet(T* r);
-            void getRet(std::string* r);
-            void getRet(bool* r);
-            void getRet(void* v);
-            /* Do nothing, just the end of the args */
+            /** @brief Do nothing, it ends the recursion over the variadic tempaltes of lua::Script::callFunction. */
             void addArgs();
+            /** @brief Get the number return of a lua function in lua::Script::callFunction. */
+            template<typename T> void getRet(T* r);
+            /** @brief Get the string return of a lua function in lua::Script::callFunction. */
+            void getRet(std::string* r);
+            /** @brief Get the boolean return of a lua function in lua::Script::callFunction. */
+            void getRet(bool* r);
+            /** @brief Do nothing, prevents error when using void for the return type of a function in lua::Script::callFunction. */
+            void getRet(void* v);
 
-            /* Put a lua variable to the top of the stack
-             * Throw a lua::nonloaded_exception if the script is not loaded
+            /** @brief Put a lua variable/function to the top of the stack.
+             * Throw a lua::nonloaded_exception if the script is not loaded.
              */
             void gettop(const std::string& name);
 
-            /* Internal functions */
-            /* Return the name of the lua type */
+            /** @brief Return the name of a lua type. */
             const char* nameType(VarType t) const;
-            /* Return the type of the variable in the top of the stack */
+            /** @brief Return the type of the variable on the top of the stack. */
             VarType typeTop();
     };
 
