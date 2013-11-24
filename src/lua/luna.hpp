@@ -8,20 +8,28 @@
 
 namespace lua
 {
+    /** @brief Contains class methods internally used by lua::Script. */
     namespace internal
     {
+        /** @brief Class used to expose other classes to lua.
+         *
+         * Original code taken from http://lua-users.org/wiki/LunaFive and modified to fit more the needs of this program.
+         * @tparam The class to expose. It must have certains members : see lua::Script::registerClass for detailed requirments..
+         */
         template < class T > class Luna {
             public:
 
+                /** @brief Describes a member of a class. */
                 struct PropertyType {
-                    const char     *name;
-                    int             (T::*getter) (lua_State *);
-                    int             (T::*setter) (lua_State *);
+                    const char     *name;                       /**< @brief The name of the member in lua. */
+                    int             (T::*getter) (lua_State *); /**< @brief The function called to get the value of the member. */
+                    int             (T::*setter) (lua_State *); /**< @brief The function called to set the value of the member. */
                 };
 
+                /** @brief Describes a method of a class. */
                 struct FunctionType {
-                    const char     *name;
-                    int             (T::*func) (lua_State *);
+                    const char     *name;                     /**< @brief The name of the method in lua. */
+                    int             (T::*func) (lua_State *); /**< @brief The c++ method. */
                 };
 
                 /*
