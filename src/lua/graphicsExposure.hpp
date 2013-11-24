@@ -9,7 +9,7 @@ namespace lua
 {
     namespace exposure
     {
-        /* See graphics::Graphics for the meaning of the following functions */
+        /** @brief Exposition of the graphics::Graphics class to lua. See it for the meaning of the methods. */
         class Graphics
         {
             public:

@@ -7,9 +7,10 @@
 
 namespace lua
 {
+    /** @brief Contains the exposition of the different classes to lua. */
     namespace exposure
     {
-        /* See events::Save for the meaning of the following functions */
+        /** @brief Exposition of the gameplay::Save class, see it for the meaning of the following functions. */
         class Save
         {
             public:
