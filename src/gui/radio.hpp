@@ -10,11 +10,13 @@
 
 namespace gui
 {
+    /** @brief Represent a radio button, can be grouped. */
     class Radio : public Widget
     {
         public:
             Radio() = delete;
             Radio(const Radio&) = delete;
+            /** @brief gr is the group of the radio button. */
             Radio(graphics::Graphics* gfx, const std::string& gr);
             virtual ~Radio();
 
@@ -25,24 +27,38 @@ namespace gui
             virtual float height() const;
 
             /* Groups */
+            /** @brief Checks the existence of a group. */
             static bool existsGroup(const std::string& name);
+            /** @brief Returns the radio buttons in a group. */
             static std::vector<Radio*> groupContent(const std::string& name);
+            /** @brief Get the radio button selected in a group. May return NULL. */
             static Radio* getSelected(const std::string& name);
-            /* To remove a group, remove all the radio in it */
+            /** @brief Change the group of a radio button. An empty group will automaticly be removed. */
             void setGroup(const std::string& name);
+            /** @brief Returns the group of the radio button. */
             std::string group() const;
             
-            /* State : you can't deselect only by selecting another one in the same group */
+            /** @brief Select the radio button : will deselect all the others radio in the same group. */
             bool select();
+            /** @brief Is the radio button selected. */
             bool get() const;
 
             /* Textures */
+            /** @brief Set the textures used.
+             * @param f Textures for focus or not.
+             * @param empty The texture used when not selected.
+             * @param selected The texture used when selected.
+             */
             void setTexture(bool f, const std::string& empty, const std::string& selected);
 
             /* Drawing */
+            /** @brief If setted to true, the size will be the biggest square possible in the size. */
             bool square(bool s);
+            /** @brief Is the checkbox drawn as a square. */
             bool square() const;
+            /** @brief Set a maximum size for the checkbox. */
             void maxSize(geometry::AABB m);
+            /** @brief Disable the use of a max size. */
             void disableMaxSize();
             virtual void draw();
 
@@ -51,14 +67,19 @@ namespace gui
             virtual bool action(Widget::Action a);
 
         private:
+            /** @brief A checkbox used for drawing. */
             CheckBox m_box;
+            /** @brief The group of the radio button. */
             std::string m_group;
+            /** @brief The groups and there content. */
             static std::map<std::string, std::vector<Radio*>> m_groups;
 
             /* Internal functions */
+            /** @brief Deselect all radio buttons in the group of this. */
             void deselectGroup();
-            /* Return true if the group has been created, false if it already existed */
+            /** @brief If the current group doesn't exists, create it and return true. Return false elsewhere. */
             bool createGroupIfNotExistant();
+            /** @brief Remove this from its actual group and delete the group if empty. */
             void removeFromGroup();
     };
 }
