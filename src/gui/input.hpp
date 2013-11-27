@@ -8,6 +8,7 @@
 
 namespace gui
 {
+    /** @brief A widget allowing the user to enter text. */
     class Input : public Widget
     {
         public:
@@ -21,7 +22,9 @@ namespace gui
             virtual float width() const;
             virtual float height() const;
 
+            /** @brief Set a maximum number of characters. */
             void setMaxLen(size_t len);
+            /** @brief Get the actual entered text. */
             std::string getText() const;
 
             void setFont(const std::string& font, float size = -1.0f);
@@ -32,7 +35,9 @@ namespace gui
             virtual bool action(Action a);
 
         private:
+            /** @brief The maximal length of the entered text. */
             size_t m_maxLen;
+            /** @brief The gui::Text used for drawing the widget. */
             Text m_txt;
     };
 }
