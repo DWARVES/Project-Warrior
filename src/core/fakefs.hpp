@@ -172,6 +172,10 @@ namespace core
              * Will recursively free all namespaces and entities in a.
              */
             void freeAbr(_node* n);
+            /** @brief Parse a path and return the node corresponding.
+             * @param left Store which part of the path couldn't be parsed in a vector.
+             */
+            _node* parsePath(const std::string& path, std::vector<std::string>* left = NULL) const;
 
             /* I/O */
             /** \brief Recursively writes a namespace to an ostream.
