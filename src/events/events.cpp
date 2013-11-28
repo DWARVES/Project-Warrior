@@ -806,7 +806,7 @@ namespace events
         return m_lastJoyRemoved;
     }
 
-    std::vector<std::pair<int,Joystick*>> Events::lastJoyButtonPressed() const
+    std::vector<std::pair<int,Joystick*>> Events::lastJoyButtonsPressed() const
     {
         std::vector<std::pair<int,Joystick*>> ret;
         for(auto it : m_joys) {
@@ -817,7 +817,7 @@ namespace events
         return ret;
     }
 
-    std::vector<std::pair<int,Joystick*>> Events::lastJoyButtonReleased() const
+    std::vector<std::pair<int,Joystick*>> Events::lastJoyButtonsReleased() const
     {
         std::vector<std::pair<int,Joystick*>> ret;
         for(auto it : m_joys) {

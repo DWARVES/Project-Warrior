@@ -167,8 +167,8 @@ namespace events
              */
             std::vector<Joystick*> lastJoysticksRemoved() const;
             /** Joystick independant access. */
-            std::vector<std::pair<int,Joystick*>> lastJoyButtonPressed() const;
-            std::vector<std::pair<int,Joystick*>> lastJoyButtonReleased() const;
+            std::vector<std::pair<int,Joystick*>> lastJoyButtonsPressed() const;
+            std::vector<std::pair<int,Joystick*>> lastJoyButtonsReleased() const;
             std::vector<std::pair<int,Joystick*>> lastAxesMoved() const;
             std::vector<std::pair<int,Joystick*>> lastHatsMoved() const;
 
