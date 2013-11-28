@@ -56,6 +56,10 @@ namespace core
                 _abr* node = new _abr;
                 node->name = parts[i];
                 node->parent = act;
+                _abr* parent = new _abr;
+                *parent = *act;
+                parent->name = "..";
+                node->subs.push_back(parent);
                 act->subs.push_back(node);
                 act = node;
             }
@@ -111,17 +115,6 @@ namespace core
 
     template <typename T, typename L> bool FakeFS<T,L>::enterNamespace(const std::string& name)
     {
-        if(name == "..") {
-            if(m_actual->parent) {
-                m_actual = m_actual->parent;
-                return true;
-            }
-            else {
-                logger::logm("Tried to enter root's parent namespace.", logger::WARNING);
-                return false;
-            }
-        }
-
         _abr* abr;
         if(path::absolute(name))
             abr = m_root;
@@ -264,6 +257,11 @@ namespace core
 
     template <typename T, typename L> void FakeFS<T,L>::freeAbr(_abr* a)
     {
+        /* Do not free parents links. */
+        if(a->name == "..") {
+            delete a;
+            return;
+        }
         for(_abr* e : a->subs) {
             freeAbr(e);
         }
