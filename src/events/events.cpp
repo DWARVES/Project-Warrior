@@ -805,6 +805,50 @@ namespace events
     {
         return m_lastJoyRemoved;
     }
+
+    std::vector<std::pair<int,Joystick*>> Events::lastJoyButtonPressed() const
+    {
+        std::vector<std::pair<int,Joystick*>> ret;
+        for(auto it : m_joys) {
+            ret.reserve(it.second.lpressed.size());
+            for(auto but : it.second.lpressed)
+                ret.push_back(std::pair<int,Joystick*>(but, it.first));
+        }
+        return ret;
+    }
+
+    std::vector<std::pair<int,Joystick*>> Events::lastJoyButtonReleased() const
+    {
+        std::vector<std::pair<int,Joystick*>> ret;
+        for(auto it : m_joys) {
+            ret.reserve(it.second.lreleased.size());
+            for(auto but : it.second.lreleased)
+                ret.push_back(std::pair<int,Joystick*>(but, it.first));
+        }
+        return ret;
+    }
+
+    std::vector<std::pair<int,Joystick*>> Events::lastAxesMoved() const
+    {
+        std::vector<std::pair<int,Joystick*>> ret;
+        for(auto it : m_joys) {
+            ret.reserve(it.second.laxis.size());
+            for(auto but : it.second.laxis)
+                ret.push_back(std::pair<int,Joystick*>(but, it.first));
+        }
+        return ret;
+    }
+
+    std::vector<std::pair<int,Joystick*>> Events::lastHatsMoved() const
+    {
+        std::vector<std::pair<int,Joystick*>> ret;
+        for(auto it : m_joys) {
+            ret.reserve(it.second.lhats.size());
+            for(auto but : it.second.lhats)
+                ret.push_back(std::pair<int,Joystick*>(but, it.first));
+        }
+        return ret;
+    }
             
     Joystick* Events::getJoyFromID(JoystickID id)
     {
