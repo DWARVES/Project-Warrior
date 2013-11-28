@@ -7,7 +7,7 @@
 namespace core
 {
     template <typename T, typename L> FakeFS<T,L>::FakeFS(const L* lb, bool todel)
-        : m_lb(lb), m_todel(todel), m_first(NULL), m_root(NULL), m_actual(NULL)
+        : m_lb(lb), m_todel(todel), m_root(NULL), m_actual(NULL)
     {
         if(!m_lb)
             m_lb = new L;
@@ -157,11 +157,8 @@ namespace core
 
         /* Add an entity to the list */
         _entity* ent = new _entity;
-        ent->prev = NULL;
-        ent->next = m_first;
         ent->count = 1;
         ent->value = value;
-        m_first = ent;
 
         /* Put it in the abr */
         m_actual->entities[name] = ent;
@@ -245,12 +242,6 @@ namespace core
         if(e->count != 0)
             return;
 
-        if(e == m_first)
-            m_first = e->next;
-        if(e->prev)
-            e->prev->next = e->next;
-        if(e->next)
-            e->next->prev = e->prev;
         (*m_lb)(e->value);
         delete e;
     }

@@ -148,12 +148,9 @@ namespace core
             /* Entities */
             /** @brief The internal structure used to represent an entity. */
             struct _entity {
-                _entity *prev,      /**< @brief Previous entity in the double linked list of all entities. */
-                        *next;      /**< @brief Next entity in the double linked list of all entities. */
                 unsigned int count; /**< @brief Count of references to this entity (agment with links). */
                 T value;            /**< @brief The value stored. */
             };
-            _entity* m_first; /**< @brief The first entity of the double linked list of all entities. */
             /** @brief Will free the data of the entity if necessary, and update e->count. */
             void freeEntity(_entity* e);
 
