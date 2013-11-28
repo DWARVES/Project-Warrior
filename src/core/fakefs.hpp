@@ -155,19 +155,23 @@ namespace core
             void freeEntity(_entity* e);
 
             /* Abr */
-            /** @brief The internal structure used to represent a namespace. */
-            struct _abr {
-                std::string name;                                   /**< @brief The name of the namespace. */
-                _abr* parent;                                       /**< @brief The parent namespace, NULL if this is the root. */
-                std::vector<_abr*> subs;                            /**< @brief A vector of all namespaces in this namespace. */
+            /** @brief The internal structure used to represent a node (namespace of link to a namespace). */
+            struct _node {
+                std::string name;                                   /**< @brief The name of the namespace/link. */
+                bool dir;                                           /**< @brief Is this a namespace. */
+                _node* parent;                                      /**< @brief The parent namespace, NULL if this is the root. */
+                std::vector<_node*> subs;                           /**< @brief A vector of all namespaces in this namespace. */
                 std::unordered_map<std::string, _entity*> entities; /**< @brief A map of all entities associated to their names in this namespace. */
+                std::string link;                                   /**< @brief The absolute path of the link, only used when this is a link. */
             };
-            _abr* m_root;   /**< @brief A pointer to the root namespace, in which all nemaspace are contained. */
-            _abr* m_actual; /**< @brief A pointer to the actual namespace. */
+            _node* m_root;   /**< @brief A pointer to the root namespace, in which all nemaspace are contained. */
+            _node* m_actual; /**< @brief A pointer to the actual namespace. */
+            /** @brief Allocate a node, initialize its members and add it to its parent. Returns NULL if name was already used. */
+            _node* createNode(const std::string& name, _node* parent);
             /** @brief Free a namespace.
              * Will recursively free all namespaces and entities in a.
              */
-            void freeAbr(_abr* a);
+            void freeAbr(_node* n);
 
             /* I/O */
             /** \brief Recursively writes a namespace to an ostream.
@@ -176,13 +180,13 @@ namespace core
              * @param abr The namespace to save.
              * @param sav It is a class with an operator() converting T to std::string.
              */
-            template <typename Saver> void save(std::ostream& os, unsigned int tabs, const _abr* const abr, const Saver& sav) const;
+            template <typename Saver> void save(std::ostream& os, unsigned int tabs, const _node* const n, const Saver& sav) const;
             /** @brief Load a namespace struct from an istream.
              * @param is The std::istream to load from. Must be ready for reading.
              * @param l It is a class with an operator() converting std::string to T.
              * @param to The namespace to load the data to. If it already has data, it may cause an undefined behaviour.
              */
-            template <typename Loader> void load(std::istream& is, const Loader& l, _abr* to);
+            template <typename Loader> void load(std::istream& is, const Loader& l, _node* to);
     };
 }
 

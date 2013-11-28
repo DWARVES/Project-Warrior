@@ -13,9 +13,7 @@ namespace core
             m_lb = new L;
         m_todel = true;
 
-        m_root = new _abr;
-        m_root->parent = NULL;
-        m_root->name.clear();
+        m_root = createNode("", NULL);
         m_actual = m_root;
     }
 
@@ -29,9 +27,7 @@ namespace core
     template <typename T, typename L> void FakeFS<T,L>::clear()
     {
         freeAbr(m_root);
-        m_root = new _abr;
-        m_root->parent = NULL;
-        m_root->name.clear();
+        m_root = createNode("", NULL);
         m_actual = m_root;
     }
 
@@ -40,7 +36,7 @@ namespace core
         if(existsNamespace(name))
             return false;
 
-        _abr* act = NULL; /* Local actual used */
+        _node* act = NULL;
         std::vector<std::string> parts = path::parts(name);
 
         if(path::absolute(name))
@@ -49,20 +45,11 @@ namespace core
             act = m_actual;
 
         for(size_t i = 0; i < parts.size(); ++i) {
-            auto it = std::find_if(act->subs.begin(), act->subs.end(), [&] (_abr* a) { return a->name == parts[i]; } );
+            auto it = std::find_if(act->subs.begin(), act->subs.end(), [&] (_node* a) { return a->name == parts[i]; } );
             if(it != act->subs.end())
                 act = *it;
-            else {
-                _abr* node = new _abr;
-                node->name = parts[i];
-                node->parent = act;
-                _abr* parent = new _abr;
-                *parent = *act;
-                parent->name = "..";
-                node->subs.push_back(parent);
-                act->subs.push_back(node);
-                act = node;
-            }
+            else
+                act = createNode(parts[i], act);
         }
 
         return true;
@@ -70,8 +57,8 @@ namespace core
 
     template <typename T, typename L> void FakeFS<T,L>::deleteNamespace(const std::string& name)
     {
-        _abr* abr;
-        _abr* labr;
+        _node* abr;
+        _node* labr;
         if(path::absolute(name))
             abr = m_root;
         else
@@ -81,7 +68,7 @@ namespace core
         std::vector<std::string> parts = path::parts(name);
         for(size_t i = 0; i < parts.size(); ++i) {
             labr = abr;
-            auto it = std::find_if(abr->subs.begin(), abr->subs.end(), [&] (_abr* a) { return a->name == parts[i]; } );
+            auto it = std::find_if(abr->subs.begin(), abr->subs.end(), [&] (_node* a) { return a->name == parts[i]; } );
             /* Do not delete if not existant */
             if(it == abr->subs.end())
                 return;
@@ -90,13 +77,13 @@ namespace core
 
         /* Deleting the namespace */
         freeAbr(abr);
-        auto it = std::find_if(labr->subs.begin(), labr->subs.end(), [&] (_abr* a) { return a == abr; } );
+        auto it = std::find_if(labr->subs.begin(), labr->subs.end(), [&] (_node* a) { return a == abr; } );
         labr->subs.erase(it);
     }
 
     template <typename T, typename L> bool FakeFS<T,L>::existsNamespace(const std::string& name) const
     {
-        _abr* abr;
+        _node* abr;
         if(path::absolute(name))
             abr = m_root;
         else
@@ -104,7 +91,7 @@ namespace core
 
         std::vector<std::string> parts = path::parts(name);
         for(size_t i = 0; i < parts.size(); ++i) {
-            auto it = std::find_if(abr->subs.begin(), abr->subs.end(), [&] (_abr* a) {return a->name == parts[i]; } );
+            auto it = std::find_if(abr->subs.begin(), abr->subs.end(), [&] (_node* a) {return a->name == parts[i]; } );
             if(it == abr->subs.end())
                 return false;
             abr = *it;
@@ -115,7 +102,7 @@ namespace core
 
     template <typename T, typename L> bool FakeFS<T,L>::enterNamespace(const std::string& name)
     {
-        _abr* abr;
+        _node* abr;
         if(path::absolute(name))
             abr = m_root;
         else
@@ -123,7 +110,7 @@ namespace core
 
         std::vector<std::string> parts = path::parts(name);
         for(size_t i = 0; i < parts.size(); ++i) {
-            auto it = std::find_if(abr->subs.begin(), abr->subs.end(), [&] (_abr* a) {return a->name == parts[i]; } );
+            auto it = std::find_if(abr->subs.begin(), abr->subs.end(), [&] (_node* a) {return a->name == parts[i]; } );
             if(it == abr->subs.end()) {
                 logger::logm(std::string("Tried to enter an unexistant namespace : ") + name, logger::WARNING);
                 return false;
@@ -138,7 +125,7 @@ namespace core
     template <typename T, typename L> std::string FakeFS<T,L>::actualNamespace() const
     {
         std::string actualName = "/";
-        _abr* actual = m_actual;
+        _node* actual = m_actual;
 
         while(actual->parent) {
             actualName.insert(0, actual->name);
@@ -188,7 +175,7 @@ namespace core
             return false;
 
         /* Parse target path */
-        _abr* abr;
+        _node* abr;
         if(path::absolute(target))
             abr = m_root;
         else
@@ -196,7 +183,7 @@ namespace core
 
         std::vector<std::string> parts = path::parts(target);
         for(size_t i = 0; i < (parts.size() - 1); ++i) {
-            auto it = std::find_if(abr->subs.begin(), abr->subs.end(), [&] (_abr* a) {return a->name == parts[i]; } );
+            auto it = std::find_if(abr->subs.begin(), abr->subs.end(), [&] (_node* a) {return a->name == parts[i]; } );
             if(it == abr->subs.end()) {
                 logger::logm(std::string("Tried to link an entity to an unexistant entity : ") + target, logger::WARNING);
                 return false;
@@ -246,20 +233,20 @@ namespace core
         delete e;
     }
 
-    template <typename T, typename L> void FakeFS<T,L>::freeAbr(_abr* a)
+    template <typename T, typename L> void FakeFS<T,L>::freeAbr(_node* n)
     {
-        /* Do not free parents links. */
-        if(a->name == "..") {
-            delete a;
+        if(!n->dir) {
+            delete n;
             return;
         }
-        for(_abr* e : a->subs) {
+
+        for(_node* e : n->subs) {
             freeAbr(e);
         }
-        for(auto pair : a->entities) {
+        for(auto pair : n->entities) {
             freeEntity(pair.second);
         }
-        delete a;
+        delete n;
     }
 
     template <typename T, typename L> std::vector<std::string> FakeFS<T,L>::listNamespaces() const
@@ -287,7 +274,7 @@ namespace core
         return true;
     }
 
-    template <typename T, typename L> template <typename Saver> void FakeFS<T,L>::save(std::ostream& os, unsigned int tabs, const _abr* const abr, const Saver& sav) const
+    template <typename T, typename L> template <typename Saver> void FakeFS<T,L>::save(std::ostream& os, unsigned int tabs, const _node* const abr, const Saver& sav) const
     {
         std::string tbs(tabs, '\t');
 
@@ -296,7 +283,7 @@ namespace core
             os << tbs << "\"" << pair.first << "\" : \"" << sav(pair.second->value) << "\"" << std::endl;
 
         /* Store sub-namespaces */
-        for(_abr* a : abr->subs) {
+        for(_node* a : abr->subs) {
             os << tbs << "\"" << a->name << "\" : {" << std::endl;
             save(os, tabs + 1, a, sav);
             os << tbs << "}" << std::endl;
@@ -311,7 +298,7 @@ namespace core
         return true;
     }
 
-    template <typename T, typename L> template <typename Loader> void FakeFS<T,L>::load(std::istream& is, const Loader& l, _abr* to)
+    template <typename T, typename L> template <typename Loader> void FakeFS<T,L>::load(std::istream& is, const Loader& l, _node* to)
     {
         std::string line;
         boost::regex ent ("^\\s*\"(.+?)\"\\s*:\\s*\"(.+?)\".*$"); /* Regex for an entity : ^[spaces]"(key)"[spaces]:[spaces]"(value)" */
@@ -322,7 +309,7 @@ namespace core
         boost::smatch results;
 
         /* Save actual pos */
-        _abr* lact = m_actual;
+        _node* lact = m_actual;
         /* Allow use of other functions like addEntity */
         m_actual = to;
         size_t lineCount = 0;
@@ -335,10 +322,7 @@ namespace core
             }
             /* Is the line a new namespace */
             else if(boost::regex_match(line, results, nsp)) {
-                _abr* n = new _abr;
-                n->parent = to;
-                n->name = results[1];
-                to->subs.push_back(n);
+                _node* n = createNode(results[1], to);
                 load(is, l, n);
             }
             /* Is the line the en of a namespace */
@@ -357,6 +341,23 @@ namespace core
 
         /* Restore m_actual to its last value */
         m_actual = lact;
+    }
+
+    template <typename T, typename L> typename FakeFS<T,L>::_node* FakeFS<T,L>::createNode(const std::string& name, _node* parent)
+    {
+        if(parent) {
+            auto it = std::find_if(parent->subs.begin(), parent->subs.end(), [&] (_node* a) { return a->name == name; } );
+            if(it != parent->subs.end())
+                return NULL;
+        }
+
+        _node* ret  = new _node;
+        ret->name   = name;
+        ret->dir    = true;
+        ret->parent = parent;
+        if(parent)
+            parent->subs.push_back(ret);
+        return ret;
     }
 }
 
