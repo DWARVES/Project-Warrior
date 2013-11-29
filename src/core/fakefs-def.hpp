@@ -240,31 +240,35 @@ namespace core
 
         /* Store sub-namespaces */
         for(_node* a : abr->subs) {
-            if(!a->dir)
-                continue;
-            os << tbs << "\"" << a->name << "\" : {" << std::endl;
-            save(os, tabs + 1, a, sav, saved);
-            os << tbs << "}" << std::endl;
+            if(a->dir) {
+                os << tbs << "\"" << a->name << "\" : {" << std::endl;
+                save(os, tabs + 1, a, sav, saved);
+                os << tbs << "}" << std::endl;
+            }
+            else
+                os << tbs << "\"" << a->name << "\" : @" << a->link << "@" << std::endl;
         }
     }
 
     template <typename T, typename L> template <typename Loader> bool FakeFS<T,L>::load(std::istream& is, const Loader& l)
     {
         clear();
-        load(is, l, m_root);
+        LnksType links;
+        load(is, l, m_root, links);
+        applyLinks(links);
         m_actual = m_root;
         return true;
     }
 
-    template <typename T, typename L> template <typename Loader> void FakeFS<T,L>::load(std::istream& is, const Loader& l, _node* to)
+    template <typename T, typename L> template <typename Loader> void FakeFS<T,L>::load(std::istream& is, const Loader& l, _node* to, LnksType& links)
     {
         std::string line;
-        boost::regex ent ("^\\s*\"(.+?)\"\\s*:\\s*\"(.+?)\".*$"); /* Regex for an entity : ^[spaces]"(key)"[spaces]:[spaces]"(value)" */
-        boost::regex lnk ("^\\s*\"(.+?)\"\\s*:\\s*@(.+?)@.*$");   /* Regex for a link to an entity : ^[spaces]"(key)"[spaces]:[spaces]@(target)@ */
-        boost::regex nsp ("^\\s*\"(.+?)\"\\s*:\\s*{.*$");         /* Regex for namespace : ^[spaces]"(key)"[spaces]:[spaces]{ */
-        boost::regex cmt ("^\\s*//.*$");                          /* Regex for commentary : ^[spaces]// */
+        boost::regex ent ("^\\s*\"(.+?)\"\\s*:\\s*\"(.+?)\".*$"); /* Regex for an entity :              ^[spaces]"(key)"[spaces]:[spaces]"(value)" */
+        boost::regex lnk ("^\\s*\"(.+?)\"\\s*:\\s*@(.+?)@.*$");   /* Regex for a link :                 ^[spaces]"(key)"[spaces]:[spaces]@(target)@ */
+        boost::regex nsp ("^\\s*\"(.+?)\"\\s*:\\s*{.*$");         /* Regex for namespace :              ^[spaces]"(key)"[spaces]:[spaces]{ */
+        boost::regex cmt ("^\\s*//.*$");                          /* Regex for commentary :             ^[spaces]// */
         boost::regex end ("^\\s*\\}.*$");                         /* Regex for the end of a namespace : ^[spaces]} */
-        boost::regex empty ("^\\s*$");                            /* Regex for an empty line : ^[spaces]$ */
+        boost::regex empty ("^\\s*$");                            /* Regex for an empty line :          ^[spaces]$ */
         boost::smatch results;
 
         /* Save actual pos */
@@ -279,14 +283,14 @@ namespace core
             if(boost::regex_match(line, results, ent)) {
                 createEntity(results[1], l(results[2]));
             }
-            /* Is the line a link to an entity */
+            /* Is the line a link */
             else if(boost::regex_match(line, results, lnk)) {
-                link(results[1], results[2]);
+                links[m_actual].push_back(std::pair<std::string,std::string>(results[1], results[2]));
             }
             /* Is the line a new namespace */
             else if(boost::regex_match(line, results, nsp)) {
                 _node* n = createNode(results[1], to);
-                load(is, l, n);
+                load(is, l, n, links);
             }
             /* Is the line the en of a namespace */
             else if(boost::regex_match(line, end)) {
@@ -304,6 +308,16 @@ namespace core
 
         /* Restore m_actual to its last value */
         m_actual = lact;
+    }
+            
+    template <typename T, typename L> void FakeFS<T,L>::applyLinks(const LnksType& links)
+    {
+        for(auto n : links) {
+            for(std::pair<std::string,std::string> lnk : n.second) {
+                m_actual = n.first;
+                link(lnk.first, lnk.second);
+            }
+        }
     }
 
     template <typename T, typename L> typename FakeFS<T,L>::_node* FakeFS<T,L>::createNode(const std::string& name, _node* parent)

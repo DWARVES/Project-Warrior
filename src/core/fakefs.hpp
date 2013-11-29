@@ -191,12 +191,17 @@ namespace core
              * @param saved Vector of entities already saved which have links to.
              */
             template <typename Saver> void save(std::ostream& os, unsigned int tabs, const _node* const n, const Saver& sav, std::map<_entity*,std::string>& saved) const;
+            /** @brief The type of the list of links used in FakeFS::load. */
+            typedef std::map<_node*, std::vector<std::pair<std::string,std::string>>> LnksType;
             /** @brief Load a namespace struct from an istream.
              * @param is The std::istream to load from. Must be ready for reading.
              * @param l It is a class with an operator() converting std::string to T.
              * @param to The namespace to load the data to. If it already has data, it may cause an undefined behaviour.
+             * @param links A list of all links, to apply at the end of the loading.
              */
-            template <typename Loader> void load(std::istream& is, const Loader& l, _node* to);
+            template <typename Loader> void load(std::istream& is, const Loader& l, _node* to, LnksType& links);
+            /** @brief At the end of a loading, apply all the links found during parsing. May change the value of m_actual. */
+            void applyLinks(const LnksType& links);
             /** @brief Return the absolute path of a node. */
             std::string absolutePath(const _node* n) const;
     };
