@@ -245,6 +245,7 @@ namespace core
     {
         std::string line;
         boost::regex ent ("^\\s*\"(.+?)\"\\s*:\\s*\"(.+?)\".*$"); /* Regex for an entity : ^[spaces]"(key)"[spaces]:[spaces]"(value)" */
+        boost::regex lnk ("^\\s*\"(.+?)\"\\s*:\\s*@(.+?)@.*$");   /* Regex for a link to an entity : ^[spaces]"(key)"[spaces]:[spaces]@(target)@ */
         boost::regex nsp ("^\\s*\"(.+?)\"\\s*:\\s*{.*$");         /* Regex for namespace : ^[spaces]"(key)"[spaces]:[spaces]{ */
         boost::regex cmt ("^\\s*//.*$");                          /* Regex for commentary : ^[spaces]// */
         boost::regex end ("^\\s*\\}.*$");                         /* Regex for the end of a namespace : ^[spaces]} */
@@ -262,6 +263,10 @@ namespace core
             /* Is the line an entity */
             if(boost::regex_match(line, results, ent)) {
                 createEntity(results[1], l(results[2]));
+            }
+            /* Is the line a link to an entity */
+            else if(boost::regex_match(line, results, lnk)) {
+                link(results[1], results[2]);
             }
             /* Is the line a new namespace */
             else if(boost::regex_match(line, results, nsp)) {
