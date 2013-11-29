@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <map>
 #include <istream>
 #include <ostream>
 
@@ -148,8 +149,8 @@ namespace core
             /* Entities */
             /** @brief The internal structure used to represent an entity. */
             struct _entity {
-                unsigned int count; /**< @brief Count of references to this entity (agment with links). */
-                T value;            /**< @brief The value stored. */
+                unsigned int count;  /**< @brief Count of references to this entity (augment with links). */
+                T value;             /**< @brief The value stored. */
             };
             /** @brief Will free the data of the entity if necessary, and update e->count. */
             void freeEntity(_entity* e);
@@ -183,8 +184,9 @@ namespace core
              * @param tabs It is the number of tabulations added at the beggining of each lines.
              * @param abr The namespace to save.
              * @param sav It is a class with an operator() converting T to std::string.
+             * @param saved Vector of entities already saved which have links to.
              */
-            template <typename Saver> void save(std::ostream& os, unsigned int tabs, const _node* const n, const Saver& sav) const;
+            template <typename Saver> void save(std::ostream& os, unsigned int tabs, const _node* const n, const Saver& sav, std::map<_entity*,std::string>& saved) const;
             /** @brief Load a namespace struct from an istream.
              * @param is The std::istream to load from. Must be ready for reading.
              * @param l It is a class with an operator() converting std::string to T.
@@ -192,7 +194,7 @@ namespace core
              */
             template <typename Loader> void load(std::istream& is, const Loader& l, _node* to);
             /** @brief Return the absolute path of a node. */
-            std::string absolutePath(_node* n) const;
+            std::string absolutePath(const _node* n) const;
     };
 }
 

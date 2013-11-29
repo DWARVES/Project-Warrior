@@ -196,22 +196,39 @@ namespace core
 
     template <typename T, typename L> template <typename Saver> bool FakeFS<T,L>::save(std::ostream& os, const Saver& sav, unsigned int tabs) const
     {
-        save(os, tabs, m_root, sav);
+        std::map<_entity*, std::string> saved;
+        save(os, tabs, m_root, sav, saved);
         return true;
     }
 
-    template <typename T, typename L> template <typename Saver> void FakeFS<T,L>::save(std::ostream& os, unsigned int tabs, const _node* const abr, const Saver& sav) const
+    template <typename T, typename L> template <typename Saver> void FakeFS<T,L>::save(std::ostream& os, unsigned int tabs, const _node* const abr, const Saver& sav, std::map<_entity*,std::string>& saved) const
     {
         std::string tbs(tabs, '\t');
 
         /* Store entities */
-        for(auto pair : abr->entities)
-            os << tbs << "\"" << pair.first << "\" : \"" << sav(pair.second->value) << "\"" << std::endl;
+        for(auto pair : abr->entities) {
+            bool lnk = false;
+            if(pair.second->count > 1) {
+                auto it = std::find_if(saved.begin(), saved.end(), [&] (std::pair<_entity*,std::string> p) { return p.first == pair.second; } );
+                if(it == saved.end()) {
+                    std::string abs = absolutePath(abr);
+                    abs += pair.first;
+                    saved[pair.second] = abs;
+                }
+                else
+                    lnk = true;
+            }
+
+            if(!lnk)
+                os << tbs << "\"" << pair.first << "\" : \"" << sav(pair.second->value) << "\"" << std::endl;
+            else
+                os << tbs << "\"" << pair.first << "\" : @" << saved[pair.second] << "@" << std::endl;
+        }
 
         /* Store sub-namespaces */
         for(_node* a : abr->subs) {
             os << tbs << "\"" << a->name << "\" : {" << std::endl;
-            save(os, tabs + 1, a, sav);
+            save(os, tabs + 1, a, sav, saved);
             os << tbs << "}" << std::endl;
         }
     }
@@ -311,10 +328,10 @@ namespace core
         return act;
     }
             
-    template <typename T, typename L> std::string FakeFS<T,L>::absolutePath(_node* n) const
+    template <typename T, typename L> std::string FakeFS<T,L>::absolutePath(const _node* n) const
     {
         std::string absPath = "/";
-        _node* actual = n;
+        const _node* actual = n;
 
         while(actual->parent) {
             absPath.insert(0, actual->name);
