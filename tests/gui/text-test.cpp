@@ -62,6 +62,7 @@ int main()
     geometry::AABB bg(800,600);
     graphics::Color bgc(127,255,127);
 
+    ev.openJoysticks();
     while(cont)
     {
         ev.update();

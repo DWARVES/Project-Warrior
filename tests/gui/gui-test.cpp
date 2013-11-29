@@ -88,6 +88,7 @@ int main()
     BlueWidget w(gfx);
     g.main(&w, geometry::Point(50.0f, 50.0f), 700.0f, 500.0f);
 
+    ev.openJoysticks();
     while(cont)
     {
         ev.update();

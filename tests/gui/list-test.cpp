@@ -83,6 +83,7 @@ int main()
     bg.width = 800.0f;
     bg.height = 600.0f;
     graphics::Color bgc(127, 127, 255);
+    ev.openJoysticks();
     while(cont)
     {
         ev.update();

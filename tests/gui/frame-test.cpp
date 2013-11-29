@@ -116,6 +116,7 @@ int main()
     bg.height = 600;
     graphics::Color bgc(255, 127, 127);
 
+    ev.openJoysticks();
     while(cont)
     {
         ev.update();
