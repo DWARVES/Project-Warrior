@@ -132,6 +132,10 @@ namespace events
              * It mustn't be free'd by the user
              */
             Joystick* openJoystick(JoystickID id);
+            /* Will open all the joysticks available. */
+            bool openJoysticks();
+            /* Will close all the opened joysticks. */
+            void closeJoysticks();
             /* The pointer won't be valid anymore 
              * The joysticks which weren't closed by the user are closed when the Events class is destroyed
              */

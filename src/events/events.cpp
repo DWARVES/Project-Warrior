@@ -53,9 +53,7 @@ namespace events
 
     Events::~Events()
     {
-        /* Freeing the joysticks */
-        for(auto& it : m_joys)
-            delete it.first;
+        closeJoysticks();
     }
 
     void Events::update()
@@ -582,6 +580,26 @@ namespace events
         return SDL_NumJoysticks();
     }
 
+    bool Events::openJoysticks()
+    {
+        bool ret = true;
+        for(int i = 0; i < numJoysticks(); ++i) {
+            if(std::find(m_joyLoaded.begin(), m_joyLoaded.end(), i) != m_joyLoaded.end())
+                continue;
+            if(openJoystick(i) == NULL)
+                ret = false;
+        }
+        return ret;
+    }
+
+    void Events::closeJoysticks()
+    {
+        m_joyLoaded.clear();
+        for(auto& it : m_joys)
+            delete it.first;
+        m_joys.clear();
+    }
+
     Joystick* Events::openJoystick(JoystickID id)
     {
         /* Was it already loaded ? */
@@ -636,6 +654,8 @@ namespace events
             return;
         }
 
+        auto it = std::find(m_joyLoaded.begin(), m_joyLoaded.end(), j->id());
+        m_joyLoaded.erase(it);
         m_joys.erase(j);
         delete j;
     }
