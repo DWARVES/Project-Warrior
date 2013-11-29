@@ -98,10 +98,14 @@ namespace core
              * @param name The name of the entity. Can't be a path, must only be the plain name.
              */
             bool existsEntity(const std::string& name) const;
-            /** @brief Create a link to an entity.
-             * The link will appear as a mere entity, but changing its value will also change the value of the entity linked, and there won't be duplication of data.
+            /** @brief Create a link to an entity or a namespace.
+             *
+             * The type of the link is determined by the type of the target.
+             * In the case of an entity link, the link will appear as a mere entity,
+             * but changing its value will also change the value of the entity linked, and there won't be duplication of data.
+             * It's the same for namespace link : there won't be any difference between the link and a mere namespace.
              * @param name The name of the link, which can only be a plain name.
-             * @param target The path to the entity to link to.
+             * @param target The path to the entity/namespace to link to.
              * @return False if name already exists or of target dosn't exists
              */
             bool link(const std::string& name, const std::string& target);

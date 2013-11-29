@@ -113,22 +113,35 @@ namespace core
 
     template <typename T, typename L> bool FakeFS<T,L>::link(const std::string& name, const std::string& target)
     {
-        if(existsEntity(name))
-            return false;
-
         /* Find the target entity */
         std::vector<std::string> left;
         _node* abr = parsePath(target, &left);
-        if(left.size() != 1
-                || abr->entities.find(left[0]) == abr->entities.end()) {
-            logger::logm(std::string("Tried to link an entity to an unexistant entity : ") + target, logger::WARNING);
+        if(abr == NULL
+                || left.size() > 1
+                || (left.size() == 1 && abr->entities.find(left[0]) == abr->entities.end())) {
+            logger::logm(std::string("Tried to link an entity to an unexistant entity/namespace : ") + target, logger::WARNING);
             return false;
         }
-        _entity* t = abr->entities[left[0]];
 
-        /* Link */
-        ++t->count;
-        m_actual->entities[name] = t;
+        /* Link to an entity */
+        if(left.size() == 1) {
+            if(existsEntity(name))
+                return false;
+            _entity* t = abr->entities[left[0]];
+            ++t->count;
+            m_actual->entities[name] = t;
+        }
+        /* Link to a node */
+        else {
+            if(existsNamespace(name))
+                return false;
+            _node* lnk = new _node;
+            lnk->dir = false;
+            lnk->name = name;
+            lnk->link = target;
+            m_actual->subs.push_back(lnk);
+        }
+
         return true;
     }
 
@@ -227,6 +240,8 @@ namespace core
 
         /* Store sub-namespaces */
         for(_node* a : abr->subs) {
+            if(!a->dir)
+                continue;
             os << tbs << "\"" << a->name << "\" : {" << std::endl;
             save(os, tabs + 1, a, sav, saved);
             os << tbs << "}" << std::endl;
