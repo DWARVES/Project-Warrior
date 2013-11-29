@@ -76,21 +76,67 @@ namespace gui
             m_main->inputText("\n");
 
         /* Actions */
-        /** @todo Handle joysticks and allow personnalization of controls. */
-        if(ev.keyJustPressed(events::KeyMap::Left))
+        /* Directions */
+        std::vector<std::pair<int,events::Joystick*>> axes = ev.lastAxesMoved();
+        std::vector<std::pair<int,events::Joystick*>> hats = ev.lastHatsMoved();
+        bool left = false;
+        bool right = false;
+        bool up = false;
+        bool down = false;
+        /** @todo Make axes usage more precise. */
+        for(auto p : axes) {
+            if(p.first % 2 == 0) {
+                if(p.second->axis(p.first) > 16384)
+                    right = true;
+                else if(p.second->axis(p.first) < -16384)
+                    left = true;
+            }
+            else {
+                if(p.second->axis(p.first) > 16384)
+                    down = true;
+                else if(p.second->axis(p.first) < -16384)
+                    up = true;
+            }
+        }
+        for(auto p : hats) {
+            switch(p.second->hat(p.first)) {
+                case events::JoyHatState::Up:    up = true;    break;
+                case events::JoyHatState::Down:  down = true;  break;
+                case events::JoyHatState::Left:  left = true;  break;
+                case events::JoyHatState::Right: right = true; break;
+                case events::JoyHatState::RightUp:
+                case events::JoyHatState::RightDown:
+                case events::JoyHatState::LeftUp:
+                case events::JoyHatState::LeftDown:
+                case events::JoyHatState::Center:
+                default:                                       break;
+            }
+        }
+
+        /* LEFT */
+        if(left || ev.keyJustPressed(events::KeyMap::Left))
             m_main->action(Widget::ScrollLeft);
-        if(ev.keyJustPressed(events::KeyMap::Right))
+        /* RIGHT */
+        if(right || ev.keyJustPressed(events::KeyMap::Right))
             m_main->action(Widget::ScrollRight);
-        if(ev.keyJustPressed(events::KeyMap::Up))
+        /* UP */
+        if(up || ev.keyJustPressed(events::KeyMap::Up))
             m_main->action(Widget::ScrollUp);
-        if(ev.keyJustPressed(events::KeyMap::Down))
+        /* DOWN */
+        if(down || ev.keyJustPressed(events::KeyMap::Down))
             m_main->action(Widget::ScrollDown);
-        if(ev.keyJustPressed(events::KeyMap::Return))
+
+        /* SELECT */
+        if(ev.keyJustPressed(events::KeyMap::Return)
+                || !ev.lastJoyButtonsPressed().empty())
             m_main->action(Widget::Select);
+        /* FIRST */
         if(ev.keyJustPressed(events::KeyMap::Begin))
             m_main->action(Widget::First);
+        /* END */
         if(ev.keyJustPressed(events::KeyMap::End))
             m_main->action(Widget::Last);
+        /* REMOVE */
         if(ev.keyJustPressed(events::KeyMap::Backspace))
             m_main->action(Widget::Remove);
     }
