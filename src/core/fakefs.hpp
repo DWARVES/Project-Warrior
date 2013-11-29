@@ -167,7 +167,7 @@ namespace core
                 _node* parent;                                      /**< @brief The parent namespace, NULL if this is the root. */
                 std::vector<_node*> subs;                           /**< @brief A vector of all namespaces in this namespace. */
                 std::unordered_map<std::string, _entity*> entities; /**< @brief A map of all entities associated to their names in this namespace. */
-                std::string link;                                   /**< @brief The absolute path of the link, only used when this is a link. */
+                _node* link;                                        /**< @brief The absolute path of the link, only used when this is a link. */
             };
             _node* m_root;   /**< @brief A pointer to the root namespace, in which all nemaspace are contained. */
             _node* m_actual; /**< @brief A pointer to the actual namespace. */

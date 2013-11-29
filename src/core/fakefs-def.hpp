@@ -138,7 +138,7 @@ namespace core
             _node* lnk = new _node;
             lnk->dir = false;
             lnk->name = name;
-            lnk->link = target;
+            lnk->link = abr;
             m_actual->subs.push_back(lnk);
         }
 
@@ -190,10 +190,13 @@ namespace core
 
     template <typename T, typename L> std::vector<std::string> FakeFS<T,L>::listNamespaces() const
     {
-        std::vector<std::string> ret(m_actual->subs.size());
+        std::vector<std::string> ret;
+        ret.reserve(m_actual->subs.size());
 
-        for(size_t i = 0; i < ret.size(); ++i)
-            ret[i] = m_actual->subs[i]->name;
+        for(size_t i = 0; i < m_actual->subs.size(); ++i) {
+            if(m_actual->subs[i]->name != "." && m_actual->subs[i]->name != "..")
+                ret.push_back(m_actual->subs[i]->name);
+        }
         return ret;
     }
 
@@ -240,13 +243,15 @@ namespace core
 
         /* Store sub-namespaces */
         for(_node* a : abr->subs) {
+            if(a->name == "." || a->name == "..")
+                continue;
             if(a->dir) {
                 os << tbs << "\"" << a->name << "\" : {" << std::endl;
                 save(os, tabs + 1, a, sav, saved);
                 os << tbs << "}" << std::endl;
             }
             else
-                os << tbs << "\"" << a->name << "\" : @" << a->link << "@" << std::endl;
+                os << tbs << "\"" << a->name << "\" : @" << absolutePath(a->link) << "@" << std::endl;
         }
     }
 
@@ -332,8 +337,22 @@ namespace core
         ret->name   = name;
         ret->dir    = true;
         ret->parent = parent;
-        if(parent)
+        ret->subs.reserve(10);
+
+        _node* self = new _node;
+        self->name = ".";
+        self->dir  = false;
+        self->link = ret;
+        ret->subs.push_back(self);
+
+        if(parent) {
             parent->subs.push_back(ret);
+            _node* up = new _node;
+            up->name = "..";
+            up->dir  = false;
+            up->link = parent;
+            ret->subs.push_back(up);
+        }
         return ret;
     }
 
@@ -349,7 +368,10 @@ namespace core
             auto it = std::find_if(act->subs.begin(), act->subs.end(), [&] (_node* a) { return a->name == parts[i]; } );
             if(it == act->subs.end())
                 break;
-            act = *it;
+            if((*it)->dir)
+                act = *it;
+            else
+                act = (*it)->link;
         }
 
         if(left) {
