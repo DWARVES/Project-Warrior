@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <map>
 #include <istream>
 #include <ostream>
 
@@ -97,10 +98,14 @@ namespace core
              * @param name The name of the entity. Can't be a path, must only be the plain name.
              */
             bool existsEntity(const std::string& name) const;
-            /** @brief Create a link to an entity.
-             * The link will appear as a mere entity, but changing its value will also change the value of the entity linked, and there won't be duplication of data.
+            /** @brief Create a link to an entity or a namespace.
+             *
+             * The type of the link is determined by the type of the target.
+             * In the case of an entity link, the link will appear as a mere entity,
+             * but changing its value will also change the value of the entity linked, and there won't be duplication of data.
+             * It's the same for namespace link : there won't be any difference between the link and a mere namespace.
              * @param name The name of the link, which can only be a plain name.
-             * @param target The path to the entity to link to.
+             * @param target The path to the entity/namespace to link to.
              * @return False if name already exists or of target dosn't exists
              */
             bool link(const std::string& name, const std::string& target);
@@ -148,29 +153,34 @@ namespace core
             /* Entities */
             /** @brief The internal structure used to represent an entity. */
             struct _entity {
-                _entity *prev,      /**< @brief Previous entity in the double linked list of all entities. */
-                        *next;      /**< @brief Next entity in the double linked list of all entities. */
-                unsigned int count; /**< @brief Count of references to this entity (agment with links). */
-                T value;            /**< @brief The value stored. */
+                unsigned int count;  /**< @brief Count of references to this entity (augment with links). */
+                T value;             /**< @brief The value stored. */
             };
-            _entity* m_first; /**< @brief The first entity of the double linked list of all entities. */
             /** @brief Will free the data of the entity if necessary, and update e->count. */
             void freeEntity(_entity* e);
 
             /* Abr */
-            /** @brief The internal structure used to represent a namespace. */
-            struct _abr {
-                std::string name;                                   /**< @brief The name of the namespace. */
-                _abr* parent;                                       /**< @brief The parent namespace, NULL if this is the root. */
-                std::vector<_abr*> subs;                            /**< @brief A vector of all namespaces in this namespace. */
+            /** @brief The internal structure used to represent a node (namespace of link to a namespace). */
+            struct _node {
+                std::string name;                                   /**< @brief The name of the namespace/link. */
+                bool dir;                                           /**< @brief Is this a namespace. */
+                _node* parent;                                      /**< @brief The parent namespace, NULL if this is the root. */
+                std::vector<_node*> subs;                           /**< @brief A vector of all namespaces in this namespace. */
                 std::unordered_map<std::string, _entity*> entities; /**< @brief A map of all entities associated to their names in this namespace. */
+                _node* link;                                        /**< @brief The absolute path of the link, only used when this is a link. */
             };
-            _abr* m_root;   /**< @brief A pointer to the root namespace, in which all nemaspace are contained. */
-            _abr* m_actual; /**< @brief A pointer to the actual namespace. */
+            _node* m_root;   /**< @brief A pointer to the root namespace, in which all nemaspace are contained. */
+            _node* m_actual; /**< @brief A pointer to the actual namespace. */
+            /** @brief Allocate a node, initialize its members and add it to its parent. Returns NULL if name was already used. */
+            _node* createNode(const std::string& name, _node* parent);
             /** @brief Free a namespace.
              * Will recursively free all namespaces and entities in a.
              */
-            void freeAbr(_abr* a);
+            void freeAbr(_node* n);
+            /** @brief Parse a path and return the node corresponding.
+             * @param left Store which part of the path couldn't be parsed in a vector.
+             */
+            _node* parsePath(const std::string& path, std::vector<std::string>* left = NULL) const;
 
             /* I/O */
             /** \brief Recursively writes a namespace to an ostream.
@@ -178,14 +188,22 @@ namespace core
              * @param tabs It is the number of tabulations added at the beggining of each lines.
              * @param abr The namespace to save.
              * @param sav It is a class with an operator() converting T to std::string.
+             * @param saved Vector of entities already saved which have links to.
              */
-            template <typename Saver> void save(std::ostream& os, unsigned int tabs, const _abr* const abr, const Saver& sav) const;
+            template <typename Saver> void save(std::ostream& os, unsigned int tabs, const _node* const n, const Saver& sav, std::map<_entity*,std::string>& saved) const;
+            /** @brief The type of the list of links used in FakeFS::load. */
+            typedef std::map<_node*, std::vector<std::pair<std::string,std::string>>> LnksType;
             /** @brief Load a namespace struct from an istream.
              * @param is The std::istream to load from. Must be ready for reading.
              * @param l It is a class with an operator() converting std::string to T.
              * @param to The namespace to load the data to. If it already has data, it may cause an undefined behaviour.
+             * @param links A list of all links, to apply at the end of the loading.
              */
-            template <typename Loader> void load(std::istream& is, const Loader& l, _abr* to);
+            template <typename Loader> void load(std::istream& is, const Loader& l, _node* to, LnksType& links);
+            /** @brief At the end of a loading, apply all the links found during parsing. May change the value of m_actual. */
+            void applyLinks(const LnksType& links);
+            /** @brief Return the absolute path of a node. */
+            std::string absolutePath(const _node* n) const;
     };
 }
 
