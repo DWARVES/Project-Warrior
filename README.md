@@ -21,15 +21,15 @@ To build this game you need cmake and the following libraries :
 </ul>
 
 You should type the following commands on Linux (Window and Mac versions are not available yet) to build the program :
-<ul>
-<li> git clone https://github.com/DWARVES/Project-Warrior.git warrior
-<li> mkdir warrior/build
-<li> cd warrior/build
-<li> cmake -DTESTS=0 ..
-<li> make
-</ul>
+<pre>
+git clone https://github.com/DWARVES/Project-Warrior.git warrior
+mkdir warrior/build
+cd warrior/build
+cmake -DTESTS=0 ..
+make
+</pre>
 
 Replace -DTESTS=0 by -DTESTS=1 if you want to compile the tests.
 
-A documentation of the code source (only meant for developpers) can also be generated with the <pre>make doc</pre> command (you will need Doxygen). You'll find the generated documentation in warrior/build/doc in html and pdf versions.
+A documentation of the code source (only meant for developpers) can also be generated with the following command (you will need Doxygen) : <pre>make doc</pre> You'll find the generated documentation in warrior/build/doc in html and pdf versions.
 
