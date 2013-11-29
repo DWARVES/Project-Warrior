@@ -191,6 +191,8 @@ namespace core
              * @param to The namespace to load the data to. If it already has data, it may cause an undefined behaviour.
              */
             template <typename Loader> void load(std::istream& is, const Loader& l, _node* to);
+            /** @brief Return the absolute path of a node. */
+            std::string absolutePath(_node* n) const;
     };
 }
 

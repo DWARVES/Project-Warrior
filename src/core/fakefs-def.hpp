@@ -75,16 +75,7 @@ namespace core
 
     template <typename T, typename L> std::string FakeFS<T,L>::actualNamespace() const
     {
-        std::string actualName = "/";
-        _node* actual = m_actual;
-
-        while(actual->parent) {
-            actualName.insert(0, actual->name);
-            actualName.insert(0, 1, '/');
-            actual = actual->parent;
-        }
-
-        return actualName;
+        return absolutePath(m_actual);
     }
 
     template <typename T, typename L> bool FakeFS<T,L>::createEntity(const std::string& name, T value)
@@ -318,6 +309,20 @@ namespace core
             }
         }
         return act;
+    }
+            
+    template <typename T, typename L> std::string FakeFS<T,L>::absolutePath(_node* n) const
+    {
+        std::string absPath = "/";
+        _node* actual = n;
+
+        while(actual->parent) {
+            absPath.insert(0, actual->name);
+            absPath.insert(0, 1, '/');
+            actual = actual->parent;
+        }
+
+        return absPath;
     }
 }
 
