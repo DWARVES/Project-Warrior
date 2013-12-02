@@ -60,10 +60,8 @@ namespace gui
             core::FakeFS<float> m_data; /**< @brief Structure used to store and manage data which isn't neither texture nor font. */
             std::string m_path;         /**< @brief The path to the gui theme directory. */
 
-            bool m_cbMs; /**< @brief Uses maxSize for checkbox.
-                           * @todo Should be stored into m_data. */
-            bool m_rdMs; /**< @brief Uses maxSize for radio button.
-                           * @todo Should be stored into m_data. */
+            bool m_cbMs; /**< @brief Uses maxSize for checkbox. */
+            bool m_rdMs; /**< @brief Uses maxSize for radio button. */
 
             /* Internal functions */
             /** @brief Checks if what is loaded into m_data is correct and complete. */
