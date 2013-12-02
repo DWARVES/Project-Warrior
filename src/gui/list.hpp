@@ -50,7 +50,7 @@ namespace gui
             /** @brief Returns the id of the selected item. */
             ItemID selectedID() const;
             /** @brief Set the size of the items.
-             * @todo make it relative to list size.
+             * Its width is relative to list width, will the height is used as it is.
              */
             void setItemSize(const geometry::AABB& r);
 

@@ -192,7 +192,7 @@ namespace gui
         m_sep = height() / (float)(std::min(nb,m_items.size()) + 1);
 
         for(StoredItem st : m_items) {
-            st.it->width(m_itemSize.width);
+            st.it->width(m_itemSize.width * width());
             st.it->height(m_itemSize.height);
             st.it->select(false);
         }
