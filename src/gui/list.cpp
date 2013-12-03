@@ -64,6 +64,13 @@ namespace gui
         deleteItem( posFromID(id) );
         updateState();
     }
+            
+    void List::clear()
+    {
+        for(size_t i = 0; i < m_items.size(); ++i)
+            deleteItem(i);
+        updateState();
+    }
 
     List::ItemID List::item(size_t pos)
     {

@@ -14,6 +14,7 @@ namespace gui
 {
     /** @brief A list of elements.
      * @todo Make a difference between selected and focused.
+     * @todo Handle personnal data for each item.
      */
     class List : public Widget
     {
@@ -43,6 +44,8 @@ namespace gui
             void setItem(ItemID id, const std::string& text);
             /** @brief Remove an item form the list, id will no longer be valid. */
             void removeItem(ItemID id);
+            /** @brief Removes all the items. */
+            void clear();
             /** @brief Returns the id of the item at a given pos, 0 if pos is outside the range. */
             ItemID item(size_t pos);
             /** @brief Returns the position of the selected item. */
@@ -103,7 +106,7 @@ namespace gui
             size_t posFromID(ItemID id);
             /** @brief Compute everything needed and update internal members. */
             void updateState();
-            /** @brief Remove an tem at a given pos. */
+            /** @brief Remove an item at a given pos. */
             void deleteItem(size_t pos);
             /** @brief Send the texture to the items. */
             void flushTexts();
