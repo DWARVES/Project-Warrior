@@ -41,4 +41,7 @@ target_link_libraries(input-test libgui libevents libgraphics libcore libgeometr
 add_executable(button-test button-test.cpp)
 target_link_libraries(button-test libgui libevents libgraphics libcore libgeometry
     ${Boost_REGEX_LIBRARY} ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
+add_executable(misc2-test misc2-test.cpp)
+target_link_libraries(misc2-test libgui libevents libgraphics libcore libgeometry
+    ${Boost_REGEX_LIBRARY} ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
 
