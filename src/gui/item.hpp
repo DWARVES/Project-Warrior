@@ -8,7 +8,9 @@
 
 namespace gui
 {
-    /** @brief Contains class and functions internally used by gui namespace classes. */
+    /** @brief Contains class and functions internally used by gui namespace classes.
+     * @todo Handle three states.
+     */
     namespace internal
     {
         /** @brief It represents an item, which mean a single framed text (with text scrolling). */

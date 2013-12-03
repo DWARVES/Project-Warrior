@@ -12,7 +12,9 @@
 
 namespace gui
 {
-    /** @brief A list of elements. */
+    /** @brief A list of elements.
+     * @todo Make a difference between selected and focused.
+     */
     class List : public Widget
     {
         public:
