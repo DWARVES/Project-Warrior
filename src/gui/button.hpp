@@ -41,12 +41,14 @@ namespace gui
                 Font   = internal::Item::Font,   /**< @brief The font for the text. */
                 Last   = internal::Item::Last    /**< @brief Number of parts, used internally. */
             };
-            /** @brief Set a texture to use when not clicked.
-             * @param f Is this texture to be used when focused.
-             */
-            void setTexture(Texture p, bool f, const std::string& name);
-            /** @brief Set a texture to be used when clicked. */
-            void setSel(Texture p, const std::string& name);
+            /** @brief The state in which the textures have to be used. */
+            enum State : unsigned short {
+                Focused = internal::Item::Focused,  /**< @brief The textures are to be used when the button is focused. */
+                Clicked = internal::Item::Selected, /**< @brief The textures are to be used when the button is clicked. */
+                Norm    = internal::Item::Norm,     /**< @brief The textures are to be used when the button is neither focused nor clicked. */
+            };
+            /** @brief Set a texture to use when not clicked. */
+            void setTexture(Texture p, State st, const std::string& name);
             virtual void draw();
 
             /* Action */
@@ -60,13 +62,7 @@ namespace gui
             internal::Item m_it;                          /**< @brief Used to draw the button. */
             Uint32 m_last;                                /**< @brief The last time it was clicked. */
             bool m_focus;                                 /**< @brief Is the button focused. */
-            bool m_changed;                               /**< @brief Must the focus texture be sent to m_it. */
             geometry::AABB m_msize;                       /**< @brief The maximum size to use. */
-            std::string m_texts[2][(unsigned short)Last]; /**< @brief The textures [clicked][part]. */
-
-            /* Internal functions */
-            void setSel(); /**< @brief Mark it as clicked and send the clicked texture to m_it. */
-            void setFoc(); /**< @brief Mark it as focused and send the focused textures to m_it if necessary. */
     };
 }
 

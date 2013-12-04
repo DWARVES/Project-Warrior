@@ -4,7 +4,7 @@
 namespace gui
 {
     Button::Button(graphics::Graphics* gfx)
-        : Widget(gfx), m_it(gfx), m_last(0), m_focus(false), m_changed(false), m_msize(-1.0f, -1.0f)
+        : Widget(gfx), m_it(gfx), m_last(0), m_focus(false), m_msize(-1.0f, -1.0f)
     {
         m_it.resize(false);
     }
@@ -55,30 +55,19 @@ namespace gui
         return m_it.height();
     }
 
-    void Button::setTexture(Texture p, bool f, const std::string& name)
+    void Button::setTexture(Texture p, State st, const std::string& name)
     {
-        if(f)
-            m_texts[1][(unsigned short)p] = name;
-        m_it.setPart((internal::Item::Part)p, f, name);
-    }
-
-    void Button::setSel(Texture p, const std::string& name)
-    {
-        m_texts[0][(unsigned short)p] = name;
+        m_it.setPart((internal::Item::Part)p, (internal::Item::State)st, name);
     }
 
     void Button::draw()
     {
-        if(SDL_GetTicks() - m_last < 1000) {
-            setSel();
-            m_it.select(true);
-        }
-        else if(m_focus) {
-            setFoc();
-            m_it.select(true);
-        }
+        if(SDL_GetTicks() - m_last < 1000)
+            m_it.select();
+        else if(m_focus)
+            m_it.focus();
         else
-            m_it.select(false);
+            m_it.norm();
 
         m_gfx->push();
         m_gfx->move(Widget::width()/2.0f, Widget::height()/2.0f);
@@ -88,8 +77,6 @@ namespace gui
 
     void Button::focus(bool f)
     {
-        if(m_focus != f)
-            m_changed = true;
         m_focus = f;
     }
 
@@ -107,24 +94,6 @@ namespace gui
     void Button::select()
     {
     }
-
-    void Button::setSel()
-    {
-        m_changed = true;
-        for(unsigned short i = 0; i < (unsigned short)Last; ++i)
-            m_it.setPart((internal::Item::Part)i, true, m_texts[0][i]);
-    }
-
-    void Button::setFoc()
-    {
-        if(!m_changed)
-            return;
-        m_changed = false;
-
-        for(unsigned short i = 0; i < (unsigned short)Last; ++i)
-            m_it.setPart((internal::Item::Part)i, true, m_texts[1][i]);
-    }
-
 }
 
 
