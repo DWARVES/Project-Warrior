@@ -12,9 +12,7 @@
 
 namespace gui
 {
-    /** @brief A list of elements.
-     * @todo Make a difference between selected and focused.
-     */
+    /** @brief A list of elements. */
     class List : public Widget
     {
         public:
@@ -73,16 +71,24 @@ namespace gui
                 Font   = internal::Item::Font,   /**< @brief The font of the items. */
                 Last   = internal::Item::Last    /**< @brief Number of parts, only for internal use. */
             };
+            /** @brief State in which the textures have to be used. */
+            enum State : unsigned short {
+                Selected = internal::Item::Selected, /**< @brief Textures have to be used when selected. */
+                Focused  = internal::Item::Focused,  /**< @brief Textures have to be used when focused. */
+                Norm     = internal::Item::Norm,     /**< @brief Textures have to be used when neither selected nor focused. */
+                NB       = internal::Item::NB,       /**< @brief The number of states, for internal use. */
+            };
             /** @brief Set the textures to use.
              * @param sel Is the texture for the selected item.
              */
-            void setPart(Part p, bool sel, const std::string& path);
+            void setPart(Part p, State st, const std::string& path);
 
             /* Drawing */
             virtual void draw();
 
             /* Events */
             virtual bool action(Widget::Action a);
+            virtual void focus(bool f);
             /** @brief Don't do anything, it's called at every change of selected.
              * It is usefull when derivating gui::List
              */
@@ -105,8 +111,9 @@ namespace gui
             bool m_rolling;                  /**< @brief Is it in rolling mode : can be scrolled because all items don't fit in the list height. */
             size_t m_upb;                    /**< @brief The index of the first shown item. */
             size_t m_downb;                  /**< @brief The index of the last shown item. */
+            bool m_focused;                  /**< @brief The list is focused. */
 
-            std::string m_texts[2][(unsigned short)Last]; /**< @brief The textures [selected][part]. */
+            std::string m_texts[(unsigned short)NB][(unsigned short)Last]; /**< @brief The textures [state][part]. */
 
             /* Internal functions */
             /** @brief Get the pos of an item. */

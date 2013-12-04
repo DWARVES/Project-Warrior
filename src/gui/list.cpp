@@ -5,7 +5,7 @@
 namespace gui
 {
     List::List(graphics::Graphics* gfx)
-        : Widget(gfx), m_selected(0), m_lselected(0), m_rolling(false), m_upb(0), m_downb(0)
+        : Widget(gfx), m_selected(0), m_lselected(0), m_rolling(false), m_upb(0), m_downb(0), m_focused(false)
     {}
 
     List::~List()
@@ -123,9 +123,9 @@ namespace gui
         updateState();
     }
 
-    void List::setPart(Part p, bool sel, const std::string& path)
+    void List::setPart(Part p, State st, const std::string& path)
     {
-        m_texts[(sel ? 1 : 0)][(unsigned short)p] = path;
+        m_texts[(unsigned short)st][(unsigned short)p] = path;
         flushTexts();
     }
 
@@ -181,6 +181,12 @@ namespace gui
                 return false;
         }
     }
+            
+    void List::focus(bool f)
+    {
+        m_focused = f;
+        updateState();
+    }
 
     bool List::next()
     {
@@ -220,11 +226,15 @@ namespace gui
         for(StoredItem st : m_items) {
             st.it->width(m_itemSize.width * width());
             st.it->height(m_itemSize.height);
-            st.it->select(false);
+            st.it->norm();
         }
 
-        if(m_selected != m_items.size())
-            m_items[m_selected].it->select(true);
+        if(m_selected != m_items.size()) {
+            if(m_focused)
+                m_items[m_selected].it->focus();
+            else
+                m_items[m_selected].it->select();
+        }
 
         if(m_selected != m_lselected) {
             select();
@@ -264,8 +274,8 @@ namespace gui
     {
         for(size_t i = 0; i < m_items.size(); ++i) {
             for(size_t p = 0; p < (unsigned short)Last; ++p) {
-                m_items[i].it->setPart((internal::Item::Part)p, true,  m_texts[1][p]);
-                m_items[i].it->setPart((internal::Item::Part)p, false, m_texts[0][p]);
+                for(size_t s = 0; s < (unsigned short)NB; ++s)
+                    m_items[i].it->setPart((internal::Item::Part)p, (internal::Item::State)s, m_texts[s][p]);
             }
         }
     }
