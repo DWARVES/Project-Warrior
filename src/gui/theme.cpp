@@ -39,6 +39,10 @@ namespace gui
         ret = ret && m_gfx->loadTexture("list_ms", m_path + "/list/ms.png");
         ret = ret && m_gfx->loadTexture("list_ls", m_path + "/list/ls.png");
         ret = ret && m_gfx->loadFont   ("list_fs", m_path + "/list/fs.png");
+        ret = ret && m_gfx->loadTexture("list_rf", m_path + "/list/rf.png");
+        ret = ret && m_gfx->loadTexture("list_mf", m_path + "/list/mf.png");
+        ret = ret && m_gfx->loadTexture("list_lf", m_path + "/list/lf.png");
+        ret = ret && m_gfx->loadFont   ("list_ff", m_path + "/list/ff.png");
 
         /* Scrollbar */
         ret = ret && m_gfx->loadTexture("scrollbar_up",    m_path + "/scrollbar/up.png");
@@ -219,14 +223,18 @@ namespace gui
 
     void Theme::apply(List* l)
     {
-        l->setPart(List::Right,  false, "list_r");
-        l->setPart(List::Middle, false, "list_m");
-        l->setPart(List::Left,   false, "list_l");
-        l->setPart(List::Font,   false, "list_f");
-        l->setPart(List::Right,  true,  "list_rs");
-        l->setPart(List::Middle, true,  "list_ms");
-        l->setPart(List::Left,   true,  "list_ls");
-        l->setPart(List::Font,   true,  "list_fs");
+        l->setPart(List::Right,  List::Norm,     "list_r");
+        l->setPart(List::Middle, List::Norm,     "list_m");
+        l->setPart(List::Left,   List::Norm,     "list_l");
+        l->setPart(List::Font,   List::Norm,     "list_f");
+        l->setPart(List::Right,  List::Selected, "list_rs");
+        l->setPart(List::Middle, List::Selected, "list_ms");
+        l->setPart(List::Left,   List::Selected, "list_ls");
+        l->setPart(List::Font,   List::Selected, "list_fs");
+        l->setPart(List::Right,  List::Focused,  "list_rf");
+        l->setPart(List::Middle, List::Focused,  "list_mf");
+        l->setPart(List::Left,   List::Focused,  "list_lf");
+        l->setPart(List::Font,   List::Focused,  "list_ff");
         m_data.enterNamespace("/list");
         l->setItemSize(geometry::AABB(m_data.getEntityValue("itemw"),
                     m_data.getEntityValue("itemh")));
@@ -276,18 +284,18 @@ namespace gui
 
     void Theme::apply(Button* b)
     {
-        b->setTexture(Button::Right,  false, "button_r");
-        b->setTexture(Button::Middle, false, "button_m");
-        b->setTexture(Button::Left,   false, "button_l");
-        b->setTexture(Button::Font,   false, "button_f");
-        b->setTexture(Button::Right,  true,  "button_rs");
-        b->setTexture(Button::Middle, true,  "button_ms");
-        b->setTexture(Button::Left,   true,  "button_ls");
-        b->setTexture(Button::Font,   true,  "button_fs");
-        b->setSel    (Button::Right,         "button_rf");
-        b->setSel    (Button::Middle,        "button_mf");
-        b->setSel    (Button::Left,          "button_lf");
-        b->setSel    (Button::Font,          "button_ff");
+        b->setTexture(Button::Right,  Button::Norm,    "button_r");
+        b->setTexture(Button::Middle, Button::Norm,    "button_m");
+        b->setTexture(Button::Left,   Button::Norm,    "button_l");
+        b->setTexture(Button::Font,   Button::Norm,    "button_f");
+        b->setTexture(Button::Right,  Button::Focused, "button_rs");
+        b->setTexture(Button::Middle, Button::Focused, "button_ms");
+        b->setTexture(Button::Left,   Button::Focused, "button_ls");
+        b->setTexture(Button::Font,   Button::Focused, "button_fs");
+        b->setTexture(Button::Right,  Button::Clicked, "button_rf");
+        b->setTexture(Button::Middle, Button::Clicked, "button_mf");
+        b->setTexture(Button::Left,   Button::Clicked, "button_lf");
+        b->setTexture(Button::Font,   Button::Clicked, "button_ff");
         m_data.enterNamespace("/button");
         b->maxSize(geometry::AABB(m_data.getEntityValue("width"),
                     m_data.getEntityValue("height")));
