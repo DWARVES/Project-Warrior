@@ -6,7 +6,7 @@ namespace gui
     namespace internal
     {
         Item::Item(graphics::Graphics* gfx)
-            : m_gfx(gfx), m_width(0.0f), m_height(0.0f), m_selected(false), m_resize(true), m_lastSel(0)
+            : m_gfx(gfx), m_width(0.0f), m_height(0.0f), m_state(Norm), m_resize(true), m_lastSel(0)
         {}
 
         Item::~Item()
@@ -47,7 +47,7 @@ namespace gui
 
         float Item::width() const
         {
-            if(m_selected)
+            if(m_state != Norm)
                 return widthE();
             else
                 return m_width;
@@ -55,25 +55,39 @@ namespace gui
 
         float Item::height() const
         {
-            if(m_selected)
+            if(m_state != Norm)
                 return heightE();
             else
                 return m_height;
         }
 
-        bool Item::select(bool s)
+        void Item::select()
         {
-            if(m_selected == s)
-                return m_selected;
-            m_selected = s;
+            m_state = Selected;
             m_lastSel = SDL_GetTicks();
             updateState();
-            return m_selected;
+        }
+                
+        void Item::focus()
+        {
+            m_state = Focused;
+            updateState();
+        }
+
+        void Item::norm()
+        {
+            m_state = Norm;
+            updateState();
         }
 
         bool Item::selected() const
         {
-            return m_selected;
+            return m_state == Selected;
+        }
+                
+        bool Item::focused() const
+        {
+            return m_state == Focused;
         }
 
         bool Item::scrollLeft()
@@ -105,7 +119,8 @@ namespace gui
             /* Automatic scrolling after 2 seconds */
             static bool re = false;
             Uint32 t = SDL_GetTicks();
-            if(m_selected && (m_rext || re)
+            if(m_state == Selected
+                    && (m_rext || re)
                     && t - m_lastSel > 2000) {
                 re = false;
                 t -= m_lastSel;
@@ -125,12 +140,12 @@ namespace gui
             m_gfx->push();
             float w = m_width;
             float h = m_height;
-            if(m_selected) {
+            if(m_state != Norm) {
                 w = widthE();
                 h = heightE();
             }
             m_gfx->move(-w/2.0f, -h/2.0f);
-            int sel = (m_selected ? 1 : 0);
+            int sel = (int)m_state;
 
             /* Drawing sides part */
             geometry::AABB rect;
@@ -147,7 +162,7 @@ namespace gui
 
             /* Drawing the text */
             std::string font = m_texts[sel][(unsigned short)Font];
-            float fontSize = m_height * (m_selected ? 0.9f : 0.8f);
+            float fontSize = m_height * (m_state != Norm ? 0.9f : 0.8f);
             std::string txt("");
             if(m_lext) txt += "...";
             txt += m_text.substr(m_lbound, m_rbound - m_lbound);
@@ -158,10 +173,9 @@ namespace gui
             m_gfx->pop();
         }
 
-        void Item::setPart(Part p, bool state, const std::string& path)
+        void Item::setPart(Part p, State state, const std::string& path)
         {
-            int st = (state ? 1 : 0);
-            m_texts[st][(unsigned short)p] = path;
+            m_texts[(unsigned short)state][(unsigned short)p] = path;
         }
 
         float Item::widthE() const
@@ -190,13 +204,13 @@ namespace gui
             else
                 m_lext = true;
 
-            std::string font = m_texts[m_selected ? 1 : 0][Font];
+            std::string font = m_texts[(unsigned short)m_state][Font];
             std::string rtext = m_text.substr(m_lbound);
-            float fontSize = m_height * (m_selected ? 0.9f : 0.8f);
+            float fontSize = m_height * (m_state != Norm ? 0.9f : 0.8f);
             float size = 0.0f;
             float extSize = m_gfx->stringWidth(font, "...", fontSize);
             float actualWidth = m_width * 0.8f;
-            if(m_selected)
+            if(m_state != Norm)
                 actualWidth = widthE() * 0.8f;
 
             if(m_lext)

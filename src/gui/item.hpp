@@ -8,9 +8,7 @@
 
 namespace gui
 {
-    /** @brief Contains class and functions internally used by gui namespace classes.
-     * @todo Handle three states.
-     */
+    /** @brief Contains class and functions internally used by gui namespace classes. */
     namespace internal
     {
         /** @brief It represents an item, which mean a single framed text (with text scrolling). */
@@ -29,14 +27,14 @@ namespace gui
                 std::string text() const;
 
                 /* Size */
-                /** @brief Enable resizing when selected : if true, the size will be aumented by 10% when selected. */
+                /** @brief Enable resizing : if true, the size will be aumented by 10% when selected/focused. */
                 void resize(bool r);
                 /** @brief Set the width.
-                 * @return The effective width, which may be 10% bigger than the one setted if the item is selected and resizing is enabled.
+                 * @return The effective width, which may be 10% bigger than the one setted if the item is selected/focused and resizing is enabled.
                  */
                 float width(float w);
                 /** @brief Set the height.
-                 * @return The effective height, which may be 10% bigger than the one setted if the item is selected and resizing is enabled.
+                 * @return The effective height, which may be 10% bigger than the one setted if the item is selected/focused and resizing is enabled.
                  */
                 float height(float h);
                 /** @brief Get the effective width. */
@@ -46,9 +44,15 @@ namespace gui
 
                 /* Selection */
                 /** @brief Select the item. */
-                bool select(bool s);
+                void select();
+                /** @brief Focus the item. */
+                void focus();
+                /** @brief Put the item back in its normal state. */
+                void norm();
                 /** @brief Is the item selected. */
                 bool selected() const;
+                /** @brief Is the item focused. */
+                bool focused() const;
                 /** @brief Scroll the text to the left. */
                 bool scrollLeft();
                 /** @brief Scroll the text to the right. */
@@ -65,22 +69,27 @@ namespace gui
                     Font,   /**< @brief The font used. */
                     Last    /**< @brief The number of textures, for internal use. */
                 };
-                /** @brief Define a texture to be used.
-                 * @param state Is this texture a selected one.
-                 */
-                void setPart(Part p, bool state, const std::string& path);
+                /** @brief The state in which the texture must be used. */
+                enum State : unsigned short {
+                    Selected, /**< @brief The texture is used when the widget is selected. */
+                    Focused,  /**< @brief The texture is used when the widget is focused. */
+                    Norm,     /**< @brief The texture is used when the widget is neither selected nor focused. */
+                    NB,       /**< @brief The number of states, for internal used. */
+                };
+                /** @brief Define a texture to be used. */
+                void setPart(Part p, State state, const std::string& path);
 
             private:
                 graphics::Graphics* m_gfx; /**< @brief The graphics::Graphics instance used. */
                 float m_width,             /**< @brief The setted width of the item. */
                       m_height;            /**< @brief The setted height of the item. */
-                bool m_selected;           /**< @brief Is the item selected. */
+                State m_state;             /**< @brief Is the item selected. */
                 std::string m_text;        /**< @brief The text of the item. */
                 size_t m_lbound,           /**< @brief The index of the left letter of the shown text in m_text. */
                        m_rbound;           /**< @brief The index of the right letter of the shown text in m_text. */
                 bool m_lext,               /**< @brief Is the text scrollable to the left. */
                      m_rext;               /**< @brief Is the text scrollable to the right. */
-                std::string m_texts[2][(unsigned short)Last]; /**< @brief The textures [selected][part]. */
+                std::string m_texts[(unsigned short)NB][(unsigned short)Last]; /**< @brief The textures [state][part]. */
                 bool m_resize;             /**< @brief Is the resizing mode enabled. */
 
                 /** @brief Time when it got selected the last time, for automatic scrolling. */
