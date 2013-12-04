@@ -39,7 +39,7 @@ namespace gui
         return Widget::height();
     }
 
-    List::ItemID List::addItem(size_t pos, const std::string& text, float offx)
+    List::ItemID List::addItem(size_t pos, const std::string& text, float offx, void* data)
     {
         auto it = m_items.begin();
         for(size_t i = 0; i < pos; ++i, ++it);
@@ -48,6 +48,7 @@ namespace gui
         st.it = new internal::Item(m_gfx);
         st.it->text(text);
         st.offx = offx;
+        st.data = data;
         m_items.insert(it, st);
         updateState();
         flushTexts();
@@ -59,12 +60,22 @@ namespace gui
         m_items[posFromID(id)].it->text(text);
     }
 
+    void List::setData(ItemID id, void* data)
+    {
+        m_items[posFromID(id)].data = data;
+    }
+
+    void* List::getData(ItemID id) const
+    {
+        return m_items[posFromID(id)].data;
+    }
+
     void List::removeItem(List::ItemID id)
     {
         deleteItem( posFromID(id) );
         updateState();
     }
-            
+
     void List::clear()
     {
         for(size_t i = 0; i < m_items.size(); ++i)
@@ -98,12 +109,20 @@ namespace gui
             return 0;
     }
             
+    void* List::selectedData() const
+    {
+        if(m_selected < m_items.size())
+            return m_items[m_selected].data;
+        else
+            return NULL;
+    }
+
     void List::setItemSize(const geometry::AABB& r)
     {
         m_itemSize = r;
         updateState();
     }
-            
+
     void List::setPart(Part p, bool sel, const std::string& path)
     {
         m_texts[(sel ? 1 : 0)][(unsigned short)p] = path;
@@ -174,7 +193,7 @@ namespace gui
         updateState();
         return true;
     }
-            
+
     bool List::prev()
     {
         if(m_selected == 0)
@@ -184,7 +203,7 @@ namespace gui
         return true;
     }
 
-    size_t List::posFromID(List::ItemID id)
+    size_t List::posFromID(List::ItemID id) const
     {
         size_t pos = 0;
         while(m_items[pos].it != id && m_items.size()) ++pos;
@@ -255,7 +274,7 @@ namespace gui
     {
         /* Nothing to do */
     }
-            
+
     void List::enter()
     {
         /* Nothing to do */

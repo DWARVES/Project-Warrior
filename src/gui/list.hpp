@@ -14,7 +14,6 @@ namespace gui
 {
     /** @brief A list of elements.
      * @todo Make a difference between selected and focused.
-     * @todo Handle personnal data for each item.
      */
     class List : public Widget
     {
@@ -37,11 +36,16 @@ namespace gui
              * @param pos The position at which the item will be included.
              * @param text The text of the new item.
              * @param offs An offset along the x axis.
+             * @param data The user data for this item.
              * @return The unique id of the new item.
              */
-            ItemID addItem(size_t pos, const std::string& text, float offx = 0.0f);
+            ItemID addItem(size_t pos, const std::string& text, float offx = 0.0f, void* data = NULL);
             /** @brief Change the text of an item. */
             void setItem(ItemID id, const std::string& text);
+            /** @brief Change the data associated to an item. */
+            void setData(ItemID id, void* data);
+            /** @brief Get the data associated with an item. */
+            void* getData(ItemID id) const;
             /** @brief Remove an item form the list, id will no longer be valid. */
             void removeItem(ItemID id);
             /** @brief Removes all the items. */
@@ -54,6 +58,8 @@ namespace gui
             std::string selectedText() const;
             /** @brief Returns the id of the selected item. */
             ItemID selectedID() const;
+            /** @brief Returns the data of the selected item. */
+            void* selectedData() const;
             /** @brief Set the size of the items.
              * Its width is relative to list width, will the height is used as it is.
              */
@@ -89,6 +95,7 @@ namespace gui
             struct StoredItem {
                 internal::Item* it; /**< @brief The draw item. */
                 float offx;         /**< @brief The offset along the x axis of the item. */
+                void* data;         /**< @brief User data of the item. */
             };
             std::vector<StoredItem> m_items; /**< @brief The items. */
             geometry::AABB m_itemSize;       /**< @brief The size of items. */
@@ -103,7 +110,7 @@ namespace gui
 
             /* Internal functions */
             /** @brief Get the pos of an item. */
-            size_t posFromID(ItemID id);
+            size_t posFromID(ItemID id) const;
             /** @brief Compute everything needed and update internal members. */
             void updateState();
             /** @brief Remove an item at a given pos. */

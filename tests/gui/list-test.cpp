@@ -23,12 +23,12 @@ class TestList : public gui::List
 
         virtual void select()
         {
-            std::cout << "Selection of item #" << selected() << " : \"" << selectedText() << "\"." << std::endl;
+            std::cout << "Selection of item #" << selected() << " : \"" << selectedText() << "\" (" << *(int*)selectedData() << ")." << std::endl;
         }
 
         virtual void enter()
         {
-            std::cout << "Entered item #" << selected() << " : \"" << selectedText() << "\"." << std::endl;
+            std::cout << "Entered item #" << selected() << " : \"" << selectedText() << "\" (" << *(int*)selectedData() << ")." << std::endl;
         }
 };
 
@@ -59,21 +59,26 @@ int main()
     TestList list(gfx);
     theme.apply((gui::List*)&list);
 
+    int n1 = 1, n2 = 2, n3 = 3, n4 = 4,
+        n5 = 5, n6 = 6, n7 = 7, n8 = 8,
+        n9 = 9, n10 = 10, n11 = 11,
+        n12 = 12, n13 = 13, n14 = 14;
+
     /* Loading the items */
-    list.addItem(0, "Last", 30.0f);
-    list.addItem(0, "Unte", -5.0f);
-    list.addItem(0, "Hy everybody out of here");
-    list.addItem(0, "Hello world", 15.0f);
-    list.addItem(0, "Raspberry PI", 50.0f);
-    list.addItem(0, "@Centered widget !", 0.0f);
-    list.addItem(0, "Middle2", 10.0f);
-    list.addItem(0, "Middle1", -40.0f);
-    list.addItem(0, "Linux news and advices", -50.0f);
-    list.addItem(0, "Play the new DWARVES group game", 10.0f);
-    list.addItem(0, "Champitoad", -20.0f);
-    list.addItem(0, "Lucas8", 20.0f);
-    list.addItem(0, "Second", -50.0f);
-    list.addItem(0, "First");
+    list.addItem(0, "Last",                             30.0f, &n1);
+    list.addItem(0, "Unte",                            -5.0f,  &n2);
+    list.addItem(0, "Hy everybody out of here",         0.0f,  &n3);
+    list.addItem(0, "Hello world",                      15.0f, &n4);
+    list.addItem(0, "Raspberry PI",                     50.0f, &n5);
+    list.addItem(0, "@Centered widget !",               0.0f,  &n6);
+    list.addItem(0, "Middle2",                          10.0f, &n7);
+    list.addItem(0, "Middle1",                         -40.0f, &n8);
+    list.addItem(0, "Linux news and advices",          -50.0f, &n9);
+    list.addItem(0, "Play the new DWARVES group game",  10.0f, &n10);
+    list.addItem(0, "Champitoad",                      -20.0f, &n11);
+    list.addItem(0, "Lucas8",                           20.0f, &n12);
+    list.addItem(0, "Second",                          -50.0f, &n13);
+    list.addItem(0, "First",                            0.0f,  &n14);
 
     /* Loading the gui */
     gui::Gui g(gfx);
