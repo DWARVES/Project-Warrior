@@ -29,9 +29,54 @@ struct EvSt {
     int id;
 };
 
+/* If j == NULL, use keyboard. */
+std::pair<EvSt::Dev,int> getEv(events::Joystick* j, events::Events* evs);
 void updateDevices(gui::List* l, events::Events& ev);
 void initState(EvSt* sts);
 std::string dumpState(EvSt* sts, const std::string& device);
+
+class EvsList : public gui::List
+{
+    public:
+        events::Joystick* joy;
+
+        EvsList(graphics::Graphics* gfx, EvSt* sts, events::Events* evs)
+            : List(gfx), joy(NULL), m_sts(sts), m_evs(evs)
+        {}
+        ~EvsList() {}
+
+        virtual void enter() {
+            std::pair<EvSt::Dev,int> p;
+            try {
+                p = getEv(joy, m_evs);
+            } catch(...) {
+                return;
+            }
+            size_t id = (size_t)selectedData();
+            m_sts[id].dev = p.first;
+            m_sts[id].id  = p.second;
+        }
+
+    private:
+        EvSt* m_sts;
+        events::Events* m_evs;
+};
+
+class DevicesList : public gui::List
+{
+    public:
+        DevicesList(graphics::Graphics* gfx, EvSt* sts, EvsList* lst)
+            : List(gfx), m_sts(sts), m_lst(lst)
+        {}
+
+        virtual void select() {
+            m_lst->joy = (events::Joystick*)selectedData();
+        }
+
+    private:
+        EvSt* m_sts;
+        EvsList* m_lst;
+};
 
 int main()
 {
@@ -62,20 +107,20 @@ int main()
     initState(state);
 
     /* The list of events */
-    gui::List events(gfx);
+    EvsList events(gfx, state, &ev);
     theme.apply(&events);
-    events.addItem(0, "Quit");
-    events.addItem(0, "Last");
-    events.addItem(0, "First");
-    events.addItem(0, "Back");
-    events.addItem(0, "Select");
-    events.addItem(0, "Right");
-    events.addItem(0, "Left");
-    events.addItem(0, "Down");
-    events.addItem(0, "Up");
+    events.addItem(0, "Quit",   0.0f, (void*)Evs::Quit);
+    events.addItem(0, "Last",   0.0f, (void*)Evs::Last);
+    events.addItem(0, "First",  0.0f, (void*)Evs::First);
+    events.addItem(0, "Back",   0.0f, (void*)Evs::Back);
+    events.addItem(0, "Select", 0.0f, (void*)Evs::Select);
+    events.addItem(0, "Right",  0.0f, (void*)Evs::Right);
+    events.addItem(0, "Left",   0.0f, (void*)Evs::Left);
+    events.addItem(0, "Down",   0.0f, (void*)Evs::Down);
+    events.addItem(0, "Up",     0.0f, (void*)Evs::Up);
 
     /* The list of devices */
-    gui::List devices(gfx);
+    DevicesList devices(gfx, state, &events);
     theme.apply(&devices);
     updateDevices(&devices, ev);
 
@@ -107,12 +152,14 @@ int main()
     {
         ev.update();
         ev.clearInput(); /* We don't need full input save, so we clear it */
-        if(ev.isKeyPressed(events::KeyMap::Escape) || ev.closed())
+        if(ev.isKeyPressed(events::KeyMap::Escape) || ev.closed() || ev.quit())
             cont = false;
         if(ev.earnedState(events::WindowState::InputFocus))
             g.focus(true);
         else if(ev.lostState(events::WindowState::InputFocus))
             g.focus(false);
+        if(!ev.lastJoysticksAdded().empty() || !ev.lastJoysticksRemoved().empty())
+            updateDevices(&devices, ev);
         g.update(ev);
         text.setText(dumpState(state, devices.selectedText()));
 
@@ -131,15 +178,15 @@ int main()
 
 void updateDevices(gui::List* l, events::Events& ev)
 {
-    /* TODO clear the list */
+    l->clear();
     ev.closeJoysticks();
     for(int i = 0; i < ev.numJoysticks(); ++i) {
         events::Joystick* j = ev.openJoystick(i);
         if(j != NULL) {
-            l->addItem(0, j->name());
+            l->addItem(0, j->name(), 0.0f, (void*)j);
         }
     }
-    l->addItem(0, "Keyboard");
+    l->addItem(0, "Keyboard", 0.0f, NULL);
 }
 
 void initState(EvSt* sts)
@@ -176,9 +223,51 @@ std::string dumpState(EvSt* sts, const std::string& device)
     std::ostringstream oss;
     oss << "Device : \"" << device << "\"" << std::endl;
     for(size_t i = 0; i < (size_t)Evs::NB; ++i) {
-        oss << sts[i].name << " : (" << devStr(sts[i].dev) << ") " << sts[i].id << std::endl;
+        oss << sts[i].name << " : (" << devStr(sts[i].dev) << ") ";
+        if(sts[i].dev == EvSt::Key)
+            oss << events::Key((events::KeyType)sts[i].id).name() << std::endl;
+        else
+            oss << sts[i].id << std::endl;
     }
     return oss.str();
+}
+
+std::pair<EvSt::Dev,int> getEv(events::Joystick* j, events::Events* evs)
+{
+    bool cont = true;
+    std::pair<EvSt::Dev,int> ret;
+    while(cont) {
+        evs->update();
+        if(evs->isKeyPressed(events::KeyMap::Escape) || evs->quit() || evs->closed())
+            throw 42; /* Throw anything, what is thrown doesn't matter. */
+
+        std::vector<events::Key> keys = evs->lastKeysPressed();
+        if(j == NULL && !keys.empty()) {
+            ret = std::pair<EvSt::Dev,int>(EvSt::Key,keys[0].getSym());
+            break;
+        }
+
+        else if(j != NULL) {
+            std::vector<int> changed = evs->lastJoyButtonsPressed(j);
+            if(!changed.empty()) {
+                ret = std::pair<EvSt::Dev,int>(EvSt::Button,changed[0]);
+                break;
+            }
+            changed = evs->lastAxesMoved(j);
+            if(!changed.empty()) {
+                ret = std::pair<EvSt::Dev,int>(EvSt::Axis,changed[0]);
+                break;
+            }
+            changed = evs->lastHatsMoved(j);
+            if(!changed.empty()) {
+                ret = std::pair<EvSt::Dev,int>(EvSt::Hat,changed[0]);
+                break;
+            }
+        }
+    }
+
+    evs->update();
+    return ret;
 }
 
 
