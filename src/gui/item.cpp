@@ -119,7 +119,7 @@ namespace gui
             /* Automatic scrolling after 2 seconds */
             static bool re = false;
             Uint32 t = SDL_GetTicks();
-            if(m_state == Selected
+            if(m_state == Focused
                     && (m_rext || re)
                     && t - m_lastSel > 2000) {
                 re = false;
