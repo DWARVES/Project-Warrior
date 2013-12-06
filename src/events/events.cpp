@@ -655,6 +655,8 @@ namespace events
         }
 
         auto it = std::find(m_joyLoaded.begin(), m_joyLoaded.end(), j->id());
+        if(it == m_joyLoaded.end())
+            return;
         m_joyLoaded.erase(it);
         m_joys.erase(j);
         delete j;
