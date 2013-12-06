@@ -121,6 +121,7 @@ namespace gui
     {
         StoredWidget sw;
         sw.widget = NULL;
+        m_sx = m_sy = 0;
         for(size_t x = 0; x < m_columns; ++x) {
             for(size_t y = 0; y < m_rows; ++y) {
                 m_map[x][y] = sw;
@@ -179,6 +180,7 @@ namespace gui
             }
         }
         m_focused.widget = NULL;
+        m_sx = m_sy = 0;
 
         /* Focus the first one found */
         if(f) {
@@ -188,6 +190,8 @@ namespace gui
                     if(m_map[x][y].widget) {
                         first = m_map[x][y].widget;
                         m_focused = m_map[x][y];
+                        m_sx = x;
+                        m_sy = y;
                         break;
                     }
                 }
@@ -206,7 +210,6 @@ namespace gui
         m_focused.widget->inputText(str);
     }
 
-    /* FIXME lot of code duplication between left, right up and down */
     bool GridLayout::left()
     {
         /* Get first (top-right) */
@@ -218,6 +221,8 @@ namespace gui
                 for(size_t y = 0; y < m_rows; ++y) {
                     if(m_map[x][y].widget) {
                         f = m_map[x][y];
+                        m_sx = x;
+                        m_sy = y;
                         break;
                     }
                 }
@@ -232,33 +237,21 @@ namespace gui
 
         /* Get the next widget on the left */
         else {
-            StoredWidget n;
-            n.widget = NULL;
-            for(size_t y = 0; y < m_rows; ++y) {
-                for(ssize_t x = m_columns - 1; x >= 0; --x) {
-                    /* Before the focused one, continue */
-                    if(y < m_focused.ry
-                            || (y == m_focused.ry && x >= m_focused.rx))
-                        continue;
-                    if(m_map[x][y].widget
-                            && m_map[x][y].rx == x
-                            && m_map[x][y].ry == y) {
-                        n = m_map[x][y];
-                        break;
-                    }
-                }
-                if(n.widget)
+            m_focused.widget->focus(false);
+            while(true) {
+                if(m_sx == 0)
                     break;
+                --m_sx;
+                if(m_map[m_sx][m_sy].widget != m_focused.widget
+                        && m_map[m_sx][m_sy].widget != NULL) {
+                    m_focused = m_map[m_sx][m_sy];
+                    m_focused.widget->focus(true);
+                    return true;
+                }
             }
-
-            focus(false);
-            if(!n.widget)
-                return false;
-            else {
-                m_focused = n;
-                m_focused.widget->focus(true);
-                return true;
-            }
+            m_focused.widget = NULL;
+            m_sx = m_sy = 0;
+            return false;
         }
     }
 
@@ -271,33 +264,20 @@ namespace gui
         }
         /* Get the next widget on the left */
         else {
-            StoredWidget n;
-            n.widget = NULL;
-            for(size_t y = 0; y < m_rows; ++y) {
-                for(size_t x = 0; x < m_columns; ++x) {
-                    /* Before the focused one, continue */
-                    if(y < m_focused.ry
-                            || (y == m_focused.ry && x <= m_focused.rx))
-                        continue;
-                    if(m_map[x][y].widget
-                            && m_map[x][y].rx == x
-                            && m_map[x][y].ry == y) {
-                        n = m_map[x][y];
-                        break;
-                    }
+            m_focused.widget->focus(false);
+            ++m_sx;
+            while(m_sx < m_columns) {
+                if(m_map[m_sx][m_sy].widget != m_focused.widget
+                        && m_map[m_sx][m_sy].widget != NULL) {
+                    m_focused = m_map[m_sx][m_sy];
+                    m_focused.widget->focus(true);
+                    return true;
                 }
-                if(n.widget)
-                    break;
+                ++m_sx;
             }
-
-            focus(false);
-            if(!n.widget)
-                return false;
-            else {
-                m_focused = n;
-                m_focused.widget->focus(true);
-                return true;
-            }
+            m_focused.widget = NULL;
+            m_sx = m_sy = 0;
+            return false;
         }
     }
 
@@ -312,6 +292,8 @@ namespace gui
                 for(ssize_t y = m_rows - 1; y >= 0; --y) {
                     if(m_map[x][y].widget) {
                         f = m_map[x][y];
+                        m_sx = x;
+                        m_sy = y;
                         break;
                     }
                 }
@@ -326,33 +308,21 @@ namespace gui
 
         /* Get the next widget going forward */
         else {
-            StoredWidget n;
-            n.widget = NULL;
-            for(size_t x = 0; x < m_columns; ++x) {
-                for(ssize_t y = m_rows - 1; y >= 0; --y) {
-                    /* Before the focused one, continue */
-                    if(x < m_focused.rx
-                            || (x == m_focused.rx && y >= m_focused.ry))
-                        continue;
-                    if(m_map[x][y].widget
-                            && m_map[x][y].rx == x
-                            && m_map[x][y].ry == y) {
-                        n = m_map[x][y];
-                        break;
-                    }
-                }
-                if(n.widget)
+            m_focused.widget->focus(false);
+            while(true) {
+                if(m_sy == 0)
                     break;
+                --m_sy;
+                if(m_map[m_sx][m_sy].widget != m_focused.widget
+                        && m_map[m_sx][m_sy].widget != NULL) {
+                    m_focused = m_map[m_sx][m_sy];
+                    m_focused.widget->focus(true);
+                    return true;
+                }
             }
-
-            focus(false);
-            if(!n.widget)
-                return false;
-            else {
-                m_focused = n;
-                m_focused.widget->focus(true);
-                return true;
-            }
+            m_focused.widget = NULL;
+            m_sx = m_sy = 0;
+            return false;
         }
     }
 
@@ -366,33 +336,20 @@ namespace gui
 
         /* Get the next widget goind downward */
         else {
-            StoredWidget n;
-            n.widget = NULL;
-            for(size_t x = 0; x < m_columns; ++x) {
-                for(size_t y = 0; y < m_rows; ++y) {
-                    /* Before the focused one, continue */
-                    if(x < m_focused.rx
-                            || (x == m_focused.rx && y <= m_focused.ry))
-                        continue;
-                    if(m_map[x][y].widget
-                            && m_map[x][y].rx == x
-                            && m_map[x][y].ry == y) {
-                        n = m_map[x][y];
-                        break;
-                    }
+            m_focused.widget->focus(false);
+            ++m_sy;
+            while(m_sy < m_rows) {
+                if(m_map[m_sx][m_sy].widget != m_focused.widget
+                        && m_map[m_sx][m_sy].widget != NULL) {
+                    m_focused = m_map[m_sx][m_sy];
+                    m_focused.widget->focus(true);
+                    return true;
                 }
-                if(n.widget)
-                    break;
+                ++m_sy;
             }
-
-            focus(false);
-            if(!n.widget)
-                return false;
-            else {
-                m_focused = n;
-                m_focused.widget->focus(true);
-                return true;
-            }
+            m_focused.widget = NULL;
+            m_sx = m_sy = 0;
+            return false;
         }
     }
 

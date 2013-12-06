@@ -74,6 +74,8 @@ namespace gui
             };
             std::vector<std::vector<StoredWidget>> m_map; /**< @brief The map, an array of rows. */
             StoredWidget m_focused;                       /**< @brief The focused widget. */
+            size_t m_sx;                                  /**< @brief The x part of the selected position (different from the position of the selected widget). */
+            size_t m_sy;                                  /**< @brief The y part of the selected position (different from the position of the selected widget). */
 
             /* Internal functions */
             /** @brief Set pos to the position in pixels of the case of index (x;y). */
