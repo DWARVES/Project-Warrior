@@ -10,9 +10,7 @@ namespace gui
 
     List::~List()
     {
-        while(!m_items.empty()) {
-            deleteItem(0);
-        }
+        clear();
     }
 
     float List::width(float w)
@@ -78,8 +76,8 @@ namespace gui
 
     void List::clear()
     {
-        for(size_t i = 0; i < m_items.size(); ++i)
-            deleteItem(i);
+        while(!m_items.empty())
+            deleteItem(0);
         updateState();
     }
 
