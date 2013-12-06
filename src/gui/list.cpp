@@ -149,16 +149,6 @@ namespace gui
                 return prev();
             case Widget::ScrollDown:
                 return next();
-            case Widget::ScrollLeft:
-                if(m_selected < m_items.size())
-                    return m_items[m_selected].it->scrollLeft();
-                else
-                    return false;
-            case Widget::ScrollRight:
-                if(m_selected < m_items.size())
-                    return m_items[m_selected].it->scrollRight();
-                else
-                    return false;
             case Widget::First:
                 if(m_selected == 0)
                     return false;
@@ -175,6 +165,8 @@ namespace gui
                 enter();
                 return true;
             case Widget::Remove:
+            case Widget::ScrollLeft:
+            case Widget::ScrollRight:
             default:
                 return false;
         }
