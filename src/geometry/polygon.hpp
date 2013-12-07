@@ -13,6 +13,8 @@ namespace geometry
         Polygon();
         Polygon(const std::vector<Point>& pts);
         void set(const std::vector<Point>& pts);
+        /** @brief Return a list of triangles that constitue this polygon. */
+        std::vector<Polygon> convexify() const;
 
         /** @brief All the points of the polygon. Their order is important. */
         std::vector<Point> points;

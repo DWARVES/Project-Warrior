@@ -19,7 +19,7 @@ int main()
     std::cout << "5 : polygon" << std::endl;
     std::cout << "Enter the ID corresponding to the shape you want to create :" << std::endl;
 
-    shapeIDInput:
+shapeIDInput:
     std::cin >> shapeID;
 
     switch(shapeID)
@@ -62,6 +62,23 @@ int main()
         case CIRCLE:
             break;
         case POLYGON:
+            {
+                geometry::Polygon poly;
+                poly.points.resize(5);
+                poly.points[0] = geometry::Point(0,1);
+                poly.points[1] = geometry::Point(-1,2);
+                poly.points[2] = geometry::Point(-2,-1);
+                poly.points[3] = geometry::Point(1,-2);
+                poly.points[4] = geometry::Point(3,2);
+                std::vector<geometry::Polygon> cvx = poly.convexify();
+                for(geometry::Polygon p : cvx) {
+                    std::cout << "Sub polygon ";
+                    for(geometry::Point pt : p.points) {
+                        std::cout << "(" << pt.x << ";" << pt.y << ") ";
+                    }
+                    std::cout << std::endl;
+                }
+            }
             break;
         default:
             std::cout << "Incorrect value ; please try again :" << std::endl;
