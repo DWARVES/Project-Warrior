@@ -45,9 +45,7 @@ namespace core
             Unknown,    /**< @brief Other */
             Unexistant  /**< @brief The path does not exists */
         };
-        /** @brief Indicate the type of the path.
-         * @todo Only works under Linux for now, find a more portable implementation.
-         */
+        /** @brief Indicate the type of the path. */
         Type type(const std::string& p);
 
         /** @brief List a directory contents.

@@ -50,6 +50,14 @@ set(FFMPEG_LIBRARIES "${FFMPEG_LIBRARIES};/usr/lib/libswscale.so")
 include(CheckIncludeFiles)
 check_include_files("sys/types.h;sys/stat.h" HAVE_SYSSTAT_H)
 check_include_files("dirent.h" HAVE_DIRENT_H)
+
+find_package(Boost COMPONENTS filesystem)
+if(Boost_FILESYSTEM_FOUND)
+    set(HAVE_BOOST_FILESYSTEM 1)
+else()
+    set(HAVE_BOOST_FILESYSTEM 0)
+endif()
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 

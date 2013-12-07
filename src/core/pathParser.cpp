@@ -8,12 +8,19 @@
 #ifdef HAVE_SYSSTAT_H
 #  include <sys/types.h>
 #  include <sys/stat.h>
+#elif defined(HAVE_BOOST_FILESYSTEM)
+#  include <boost/filesystem/path.hpp>
+#  include <boost/filesystem/operations.hpp>
+#  include <fstream>
 #else
 #  error "sys/stat.h is needed."
 #endif
 
 #ifdef HAVE_DIRENT_H
 #  include <dirent.h>
+#elif defined(HAVE_BOOST_FILESYSTEM)
+#  include <boost/filesystem/path.hpp>
+#  include <boost/filesystem/operations.hpp>
 #else
 #  error "dirent.h is needed."
 #endif
@@ -157,14 +164,28 @@ namespace core
                 return Type::Socket;
             else
                 return Type::Unknown;
-#endif//HAVE_SYSSTAT_H
+
+#elif defined(HAVE_BOOST_FILESYSTEM)
+            /** @todo Handle sockets. */
+            boost::filesystem::path path(p);
+            if(!boost::filesystem::exists(path))
+                return Type::Unexistant;
+            else if(boost::filesystem::is_directory(path))
+                return Type::Dir;
+            else {
+                std::fstream fs(p);
+                if(fs)
+                    return Type::Reg;
+                else
+                    return Type::Unknown;
+            }
+#endif
         }
 
         std::vector<std::string> dirContents(const std::string& dir)
         {
-#ifdef HAVE_DIRENT_H
             std::vector<std::string> contents;
-
+#ifdef HAVE_DIRENT_H
             DIR* d = opendir(dir.c_str());
             if(d == NULL)
                 return contents;
@@ -177,8 +198,13 @@ namespace core
             }
 
             closedir(d);
+
+#elif defined(HAVE_BOOST_FILESYSTEM)
+            boost::filesystem::path p(dir);
+            for(boost::filesystem::path::iterator it = p.begin(); it != p.end(); ++it)
+                contents.push_back(it->string());
+#endif
             return contents;
-#endif//HAVE_DIRENT_H
         }
     }
 }

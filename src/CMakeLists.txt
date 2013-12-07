@@ -10,6 +10,7 @@ add_executable(${exe}
 target_link_libraries(
     ${exe}
     ${Boost_REGEX_LIBRARY}
+    ${Boost_FILESYSTEM_LIBRARY}
     ${SDL2_LIBRARIES}
     ${SDL2_IMAGE_LIBRARIES}
     ${SDLMIXER_LIBRARY}
