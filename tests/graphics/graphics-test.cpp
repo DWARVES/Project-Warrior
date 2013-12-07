@@ -64,6 +64,7 @@ int main()
     geometry::Polygon poly;
     poly.points.push_back(geometry::Point(.0f,.0f));
     poly.points.push_back(geometry::Point(40.0f,.0f));
+    poly.points.push_back(geometry::Point(10.0f,10.0f));
     poly.points.push_back(geometry::Point(.0f,40.0f));
     geometry::Circle circle;
     circle.radius = 20.0f;

@@ -810,7 +810,6 @@ namespace graphics
 
     void Graphics::draw(const geometry::Polygon& poly, const std::string& text, float repeatX, float repeatY)
     {
-        /** @todo Handle concaves polygons. */
         if(rctype(text) != TEXT) {
             core::logger::logm(std::string("Tried to use an unexistant texture (polygon blitting) : ") + text, core::logger::WARNING);
             return;
@@ -841,28 +840,33 @@ namespace graphics
         float interx = maxx - minx;
         float intery = maxy - miny;
 
-        glBegin(GL_POLYGON);
-        for(size_t i = 0; i < poly.points.size(); ++i) {
-            float tx = (poly.points[i].x - minx) / interx * repeatX;
-            float ty = (poly.points[i].y - miny) / intery * repeatY;
-            if(m_yinvert)
-                glTexCoord2f(tx, -ty);
-            else
-                glTexCoord2f(tx, ty);
-            glVertex2f(poly.points[i].x, poly.points[i].y);
+        std::vector<geometry::Polygon> conv = poly.convexify();
+        for(geometry::Polygon p : conv) {
+            glBegin(GL_POLYGON);
+            for(size_t i = 0; i < p.points.size(); ++i) {
+                float tx = (p.points[i].x - minx) / interx * repeatX;
+                float ty = (p.points[i].y - miny) / intery * repeatY;
+                if(m_yinvert)
+                    glTexCoord2f(tx, -ty);
+                else
+                    glTexCoord2f(tx, ty);
+                glVertex2f(p.points[i].x, p.points[i].y);
+            }
+            glEnd();
         }
-        glEnd();
     }
 
     void Graphics::draw(const geometry::Polygon& poly, const Color& col)
     {
-        /** @todo Handle concaves polygons. */
         m_shads.text(false);
-        glBegin(GL_POLYGON);
-        glColor4ub(col.r, col.g, col.b, col.a);
-        for(size_t i = 0; i < poly.points.size(); ++i)
-            glVertex2f(poly.points[i].x, poly.points[i].y);
-        glEnd();
+        std::vector<geometry::Polygon> conv = poly.convexify();
+        for(geometry::Polygon p : conv) {
+            glBegin(GL_POLYGON);
+            glColor4ub(col.r, col.g, col.b, col.a);
+            for(size_t i = 0; i < poly.points.size(); ++i)
+                glVertex2f(p.points[i].x, p.points[i].y);
+            glEnd();
+        }
     }
 
     void Graphics::draw(const std::string& str, const std::string& font, float pts)
