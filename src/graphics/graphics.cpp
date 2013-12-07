@@ -394,7 +394,7 @@ namespace graphics
             return false;
 
         internal::Font* font = new internal::Font(&m_shads);
-        /* FIXME UTF-8 carac's handling and better letters */
+        /** @todo Handle UTF-8 caracters. */
         if(!font->load(path, "RABCDEFGHIJKLMNOPQSTUVWXYZabcdefghijklmnopqrstuvwxyz!\"#$%&'()*+,-./0123456789:;<=>?@[\\]^-`{|}~")) {
             delete font;
             std::ostringstream oss;
@@ -810,7 +810,7 @@ namespace graphics
 
     void Graphics::draw(const geometry::Polygon& poly, const std::string& text, float repeatX, float repeatY)
     {
-        /* FIXME handle concaves polygons */
+        /** @todo Handle concaves polygons. */
         if(rctype(text) != TEXT) {
             core::logger::logm(std::string("Tried to use an unexistant texture (polygon blitting) : ") + text, core::logger::WARNING);
             return;
@@ -856,7 +856,7 @@ namespace graphics
 
     void Graphics::draw(const geometry::Polygon& poly, const Color& col)
     {
-        /* FIXME handle concaves polygons */
+        /** @todo Handle concaves polygons. */
         m_shads.text(false);
         glBegin(GL_POLYGON);
         glColor4ub(col.r, col.g, col.b, col.a);

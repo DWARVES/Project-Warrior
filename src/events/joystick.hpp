@@ -40,9 +40,9 @@ namespace events
             JoystickID m_id;
     };
 
+    /** @todo Support ball system. */
     class Joystick
     {
-        /* FIXME : ball system is not supported */
         public:
             /* Launch an JoystickException if ID couldn't be loaded */
             Joystick(JoystickID ID);

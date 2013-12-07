@@ -185,8 +185,8 @@ namespace events
             geometry::Point wheel() const;
             /* If some files were dropped in the window, their paths are returned
              * Put back to zero in each call to update
-             * FIXME doesn't seem to be working
              */
+            /** @todo Doesn't work. */
             std::vector<std::string> dropped() const;
             /* The program was requested to be end
              * Once it returned true, it will do so until quitAbort is called
