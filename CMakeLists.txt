@@ -83,3 +83,10 @@ else()
 	add_subdirectory(tests/ EXCLUDE_FROM_ALL)
 endif(TESTS)
 
+if(TOOLS)
+    add_subdirectory(tools/)
+else()
+    add_subdirectory(tools/ EXCLUDE_FROM_ALL)
+endif(TOOLS)
+
+
