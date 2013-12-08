@@ -34,15 +34,15 @@ namespace gui
         ret = ret && m_gfx->loadTexture("list_r",  m_path + "/list/r.png");
         ret = ret && m_gfx->loadTexture("list_m",  m_path + "/list/m.png");
         ret = ret && m_gfx->loadTexture("list_l",  m_path + "/list/l.png");
-        ret = ret && m_gfx->loadFont   ("list_f",  m_path + "/list/f.png");
+        ret = ret && m_gfx->loadFont   ("list_f",  m_path + "/list/f.wf");
         ret = ret && m_gfx->loadTexture("list_rs", m_path + "/list/rs.png");
         ret = ret && m_gfx->loadTexture("list_ms", m_path + "/list/ms.png");
         ret = ret && m_gfx->loadTexture("list_ls", m_path + "/list/ls.png");
-        ret = ret && m_gfx->loadFont   ("list_fs", m_path + "/list/fs.png");
+        ret = ret && m_gfx->loadFont   ("list_fs", m_path + "/list/fs.wf");
         ret = ret && m_gfx->loadTexture("list_rf", m_path + "/list/rf.png");
         ret = ret && m_gfx->loadTexture("list_mf", m_path + "/list/mf.png");
         ret = ret && m_gfx->loadTexture("list_lf", m_path + "/list/lf.png");
-        ret = ret && m_gfx->loadFont   ("list_ff", m_path + "/list/ff.png");
+        ret = ret && m_gfx->loadFont   ("list_ff", m_path + "/list/ff.wf");
 
         /* Scrollbar */
         ret = ret && m_gfx->loadTexture("scrollbar_up",    m_path + "/scrollbar/up.png");
@@ -55,10 +55,10 @@ namespace gui
         ret = ret && m_gfx->loadTexture("scrollbar_selS",  m_path + "/scrollbar/selS.png");
 
         /* Text */
-        ret = ret && m_gfx->loadFont("text_font", m_path + "/text/font.png");
+        ret = ret && m_gfx->loadFont("text_font", m_path + "/text/font.wf");
 
         /* Input */
-        ret = ret && m_gfx->loadFont("input_font",  m_path + "/input/font.png");
+        ret = ret && m_gfx->loadFont("input_font",  m_path + "/input/font.wf");
 
         /* Frame */
         ret = ret && m_gfx->loadTexture("frame_t",  m_path + "/frame/top.png");
@@ -75,15 +75,15 @@ namespace gui
         ret = ret && m_gfx->loadTexture("button_r",  m_path + "/button/r.png");
         ret = ret && m_gfx->loadTexture("button_m",  m_path + "/button/m.png");
         ret = ret && m_gfx->loadTexture("button_l",  m_path + "/button/l.png");
-        ret = ret && m_gfx->loadFont   ("button_f",  m_path + "/button/f.png");
+        ret = ret && m_gfx->loadFont   ("button_f",  m_path + "/button/f.wf");
         ret = ret && m_gfx->loadTexture("button_rf", m_path + "/button/rf.png");
         ret = ret && m_gfx->loadTexture("button_mf", m_path + "/button/mf.png");
         ret = ret && m_gfx->loadTexture("button_lf", m_path + "/button/lf.png");
-        ret = ret && m_gfx->loadFont   ("button_ff", m_path + "/button/ff.png");
+        ret = ret && m_gfx->loadFont   ("button_ff", m_path + "/button/ff.wf");
         ret = ret && m_gfx->loadTexture("button_rs", m_path + "/button/rs.png");
         ret = ret && m_gfx->loadTexture("button_ms", m_path + "/button/ms.png");
         ret = ret && m_gfx->loadTexture("button_ls", m_path + "/button/ls.png");
-        ret = ret && m_gfx->loadFont   ("button_fs", m_path + "/button/fs.png");
+        ret = ret && m_gfx->loadFont   ("button_fs", m_path + "/button/fs.wf");
 
         /* Radio */
         ret = ret && m_gfx->loadTexture("radio_nsel",  m_path + "/radio/nsel.png");
