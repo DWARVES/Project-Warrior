@@ -20,10 +20,21 @@ namespace graphics
                 
         SDL_Surface* Texture::preload(const std::string& path)
         {
-            /* Load the picture with SDL_image */
-            SDL_Surface* src = IMG_Load(path.c_str());
-            if(src == NULL)
+            SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
+            if(rw == NULL)
                 return NULL;
+            return preload(rw, true);
+        }
+                
+        SDL_Surface* Texture::preload(SDL_RWops* rw, bool freerw)
+        {
+            /* Load the picture with SDL_image */
+            SDL_Surface* src = IMG_Load_RW(rw, 0);
+            if(src == NULL) {
+                if(freerw)
+                    SDL_RWclose(rw);
+                return NULL;
+            }
 
             /* Convert it to the right format */
             Uint32 rmask, gmask, bmask, amask;
@@ -49,7 +60,9 @@ namespace graphics
 
             SDL_Surface* converted = SDL_ConvertSurface(src, &fmt, 0);
             SDL_FreeSurface(src);
-            if(converted == NULL )
+            if(freerw)
+                SDL_RWclose(rw);
+            if(converted == NULL)
                 return NULL;
             return converted;
         }
