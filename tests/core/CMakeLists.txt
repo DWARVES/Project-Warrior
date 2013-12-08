@@ -15,5 +15,7 @@ add_executable(logger-test logger-test.cpp)
 target_link_libraries(logger-test libcore)
 add_executable(config-test config-test.cpp)
 target_link_libraries(config-test libcore ${Boost_REGEX_LIBRARY} ${Boost_FILESYSTEM_LIBRARY})
+add_executable(utf8-test utf8-test.cpp)
+target_link_libraries(utf8-test libcore)
 
 

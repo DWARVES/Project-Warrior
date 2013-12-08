@@ -10,5 +10,6 @@ add_library(${lib}
     systemtime.cpp systemtime.hpp
     logger.cpp     logger.hpp
     config.cpp     config.hpp
+    utf8.cpp       utf8.hpp
 	)
 
