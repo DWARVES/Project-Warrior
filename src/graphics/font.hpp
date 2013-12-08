@@ -30,8 +30,8 @@ namespace graphics
 
                 /* Information access */
                 geometry::AABB stringSize(const std::string& str, float size) const;
-                float widthLetter(char l) const;
-                bool hasLetter(char l) const;
+                float widthLetter(unsigned int l) const;
+                bool hasLetter(unsigned int l) const;
                 bool isLoaded() const;
 
             private:
@@ -40,7 +40,7 @@ namespace graphics
                     geometry::Point lt; /* Left-top of the letter in the texture */
                     geometry::Point rb; /* Right-bottom of the letter in the texture */
                 };
-                std::unordered_map<char, Letter> m_letters;
+                std::unordered_map<unsigned int, Letter> m_letters;
                 float m_yspacing; /* Distance between lines */
                 float m_xspacing; /* spaces width */
                 Texture* m_text;

@@ -1,6 +1,7 @@
 
 #include "graphics/font.hpp"
 #include "core/logger.hpp"
+#include "core/utf8.hpp"
 #include <algorithm>
 #include <sstream>
 
@@ -42,7 +43,8 @@ namespace graphics
                     ++rows;
             }
             
-            size_t lets = letters.size();
+            core::UTF8String utf(letters);
+            size_t lets = utf.size();
             if(columns == 0 || rows == 0
                     || columns * rows < lets) {
                 std::ostringstream oss;
@@ -65,7 +67,7 @@ namespace graphics
                 l.rb.x = l.lt.x + (float)wd - 1.0f;
                 l.rb.y = l.lt.y + (float)hd - 2.0f;
                 fitToChar(&l, surf, bg);
-                m_letters[ letters[i] ] = l;
+                m_letters[ utf[i] ] = l;
             }
 
             /* Deleting separators */
@@ -90,6 +92,7 @@ namespace graphics
 
         void Font::draw(const std::string& str, const geometry::Point& pos, float size, bool smooth, bool invert)
         {
+            core::UTF8String utf(str);
             m_shads->text(true);
             glBindTexture(GL_TEXTURE_2D, m_text->glID());
             glColor4ub(255, 255, 255, 255);
@@ -112,26 +115,26 @@ namespace graphics
 
             if(invert) {
                 unsigned int nbret = 0;
-                for(size_t i = 0; i < str.size(); ++i) {
-                    if(str[i] == '\n')
+                for(size_t i = 0; i < utf.size(); ++i) {
+                    if(utf[i] == 10) /* 10 is new line */
                         ++nbret;
                 }
                 actPos.y += (float)nbret * size;
             }
 
-            for(size_t i = 0; i < str.size(); ++i) {
-                if(str[i] == '\n') {
+            for(size_t i = 0; i < utf.size(); ++i) {
+                if(utf[i] == 10) { /* 10 is new line */
                     actPos.x = pos.x;
                     if(invert)
                         actPos.y -= size;
                     else
                         actPos.y += size;
                 }
-                else if(!hasLetter(str[i])) { /* If the letter is not found, draw a space */
+                else if(!hasLetter(utf[i])) { /* If the letter is not found, draw a space */
                     actPos.x += m_xspacing * fact;
                 }
                 else { /* Draw the letter */
-                    Letter l = m_letters[str[i]];
+                    Letter l = m_letters[utf[i]];
                     glBegin(GL_QUADS);
                     if(invert) {
                         glTexCoord2f(l.lt.x, l.rb.y); glVertex2f(actPos.x,              actPos.y);
@@ -162,16 +165,17 @@ namespace graphics
             else
                 fact = size / m_yspacing;
             float height = size;
+            core::UTF8String utf(str);
 
-            for(size_t i = 0; i < str.size(); ++i) {
-                if(str[i] == '\n') {
+            for(size_t i = 0; i < utf.size(); ++i) {
+                if(utf[i] == '\n') {
                     width = std::max(width, widths[act]);
                     widths.push_back(0);
                     ++act;
                     height += size;
                 }
-                else if(hasLetter(str[i]))
-                    widths[act] += (m_letters.find(str[i])->second.w * fact);
+                else if(hasLetter(utf[i]))
+                    widths[act] += (m_letters.find(utf[i])->second.w * fact);
                 else
                     widths[act] += (m_xspacing * fact); /* Non existant characters are replaced by spaces */
             }
@@ -180,7 +184,7 @@ namespace graphics
             return geometry::AABB(width, height);
         }
 
-        float Font::widthLetter(char l) const
+        float Font::widthLetter(unsigned int l) const
         {
             if(!hasLetter(l))
                 return 0;
@@ -188,7 +192,7 @@ namespace graphics
                 return m_letters.find(l)->second.w;
         }
 
-        bool Font::hasLetter(char l) const
+        bool Font::hasLetter(unsigned int l) const
         {
             return m_letters.find(l) != m_letters.end();
         }
