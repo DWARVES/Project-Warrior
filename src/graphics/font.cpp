@@ -34,7 +34,7 @@ namespace graphics
             ifs.seekg(0, ifs.end);
             size_t length = ifs.tellg();
             if(length <= 10) {
-                core::logger::logm("File invalid : " + path, core::logger::WARNING);
+                core::logger::logm("Invalid file : " + path, core::logger::WARNING);
                 return false;
             }
             ifs.seekg(0, ifs.beg);
@@ -49,6 +49,12 @@ namespace graphics
             /* Get the letters */
             unsigned int lettersSize;
             std::memcpy(&lettersSize, buffer, sizeof(lettersSize));
+            if(lettersSize + 4 > length) {
+                core::logger::logm("Invalid file : " + path, core::logger::WARNING);
+                delete buffer;
+                return false;
+            }
+
             char* buffer_lets = new char [lettersSize+1];
             std::memcpy(buffer_lets, buffer + 4, sizeof(char) * lettersSize);
             buffer_lets[lettersSize] = '\0';
