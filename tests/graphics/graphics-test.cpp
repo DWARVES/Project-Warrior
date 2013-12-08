@@ -47,7 +47,7 @@ int main()
     gfx->enterNamespace("textures");
     if(!gfx->loadTexture("default", "text.png"))
         return 1;
-    if(!gfx->loadFont("font", "font.png"))
+    if(!gfx->loadFont("font", "font.wf"))
         return 1;
     graphics::Color c(255, 255, 255);
     if(!gfx->loadTextureFromText("text", "font", "HY EVERYBODY\nIT WORKS!", c, -1.0f, true))
