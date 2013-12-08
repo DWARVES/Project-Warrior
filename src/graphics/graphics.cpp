@@ -394,7 +394,7 @@ namespace graphics
             return false;
 
         internal::Font* font = new internal::Font(&m_shads);
-        if(!font->load(path, "RABCDEFGHIJKLMNOPQSTUVWXYZabcdefghijklmnopqrstuvwxyz!\"#$%&'()*+,-./0123456789:;<=>?@[\\]^-`{|}~éÉàÀùÙçÇûÛèÈ")) {
+        if(!font->load(path)) {
             delete font;
             std::ostringstream oss;
             oss << "Couldn't load font file : \"" << path << "\"";

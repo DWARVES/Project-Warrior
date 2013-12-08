@@ -20,10 +20,8 @@ namespace graphics
                 Font(const Font&) = delete;
                 Font(Shaders* shads);
                 ~Font();
-                /* letters describe what letter is each part of the texture
-                 * It's from left to right and up to bottom
-                 */
-                bool load(const std::string& path, const std::string& letters);
+                /* Will load the letters handled and the font texture directly from the same file. */
+                bool load(const std::string& path);
 
                 /* Drawing */
                 void draw(const std::string& str, const geometry::Point& pos, float size, bool smooth = true, bool invert = false);

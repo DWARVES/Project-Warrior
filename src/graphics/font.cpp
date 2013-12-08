@@ -4,6 +4,8 @@
 #include "core/utf8.hpp"
 #include <algorithm>
 #include <sstream>
+#include <fstream>
+#include <cstring>
 
 namespace graphics
 {
@@ -19,13 +21,55 @@ namespace graphics
                 delete m_text;
         }
                
-        bool Font::load(const std::string& path, const std::string& letters)
+        bool Font::load(const std::string& path)
         {
+            /* Open the file */
+            std::ifstream ifs(path);
+            if(!ifs) {
+                core::logger::logm("Couldn't open " + path, core::logger::WARNING);
+                return false;
+            }
+
+            /* Get file content */
+            ifs.seekg(0, ifs.end);
+            size_t length = ifs.tellg();
+            if(length <= 10) {
+                core::logger::logm("File invalid : " + path, core::logger::WARNING);
+                return false;
+            }
+            ifs.seekg(0, ifs.beg);
+            char* buffer = new char [length];
+            ifs.read(buffer, length);
+            if(!ifs) {
+                delete buffer;
+                core::logger::logm("Couldn't read " + path, core::logger::WARNING);
+                return false;
+            }
+
+            /* Get the letters */
+            unsigned int lettersSize;
+            std::memcpy(&lettersSize, buffer, sizeof(lettersSize));
+            char* buffer_lets = new char [lettersSize+1];
+            std::memcpy(buffer_lets, buffer + 4, sizeof(char) * lettersSize);
+            buffer_lets[lettersSize] = '\0';
+            std::string letters(buffer_lets);
+            delete buffer_lets;
+
+            /* Load the texture */
+            SDL_RWops* imgrw = SDL_RWFromMem(buffer + 4u + lettersSize, (int)(length - 4 - lettersSize));
+            if(imgrw == NULL) {
+                delete buffer;
+                core::logger::logm("Couldn't open rwops from memory.", core::logger::WARNING);
+                return false;
+            }
+
             m_text = new Texture;
-            SDL_Surface* surf = m_text->preload(path);
+            SDL_Surface* surf = m_text->preload(imgrw);
+            SDL_RWclose(imgrw);
             if(surf == NULL) {
                 delete m_text;
                 m_text = NULL;
+                delete buffer;
                 return false;
             }
 
@@ -53,6 +97,7 @@ namespace graphics
                 SDL_FreeSurface(surf);
                 delete m_text;
                 m_text = NULL;
+                delete buffer;
                 return false;
             }
 
@@ -87,6 +132,7 @@ namespace graphics
                 m_text = NULL;
             }
             SDL_FreeSurface(surf);
+            delete buffer;
             return ret;
         }
 
