@@ -70,7 +70,6 @@ namespace gameplay
              * This function never changes the file content.
              * @param path The path to the file to load.
              * @return False if couldn't load the file. If that's the case, you may either have an empty Save class or an unchanged class, depending on where the error happened.
-             * @todo Improve error report, enventually use exceptions.
              */
             bool load(const std::string& path);
 
