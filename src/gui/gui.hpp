@@ -54,6 +54,7 @@ namespace gui
             Widget* m_main;            /**< @brief The main widget. */
             geometry::Point m_pos;     /**< @brief The ppos of the gui part. */
             graphics::Graphics* m_gfx; /**< @brief The graphics instance used. */
+            std::map<std::pair<int,events::Joystick*>, std::pair<bool,bool>> m_joys; /**< @brief Is a joystick's axis inclined or not to right (first) and left (second). */
     };
 }
 

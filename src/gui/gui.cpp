@@ -83,19 +83,36 @@ namespace gui
         bool right = false;
         bool up = false;
         bool down = false;
-        /** @todo Make axes usage more precise. */
         for(auto p : axes) {
             if(p.first % 2 == 0) {
-                if(p.second->axis(p.first) > 16384)
+                if(p.second->axis(p.first) > 16384 && !m_joys[p].first) {
+                    m_joys[p].first = true;
                     right = true;
-                else if(p.second->axis(p.first) < -16384)
+                }
+                else if(p.second->axis(p.first) < 16000)
+                    m_joys[p].first = false;
+
+                if(p.second->axis(p.first) < -16384 && !m_joys[p].second) {
+                    m_joys[p].second = true;
                     left = true;
+                }
+                else if(p.second->axis(p.first) > -16000)
+                    m_joys[p].second = false;
             }
             else {
-                if(p.second->axis(p.first) > 16384)
+                if(p.second->axis(p.first) > 16384 && !m_joys[p].first) {
+                    m_joys[p].first = true;
                     down = true;
-                else if(p.second->axis(p.first) < -16384)
+                }
+                else if(p.second->axis(p.first) < 16000)
+                    m_joys[p].first = false;
+
+                if(p.second->axis(p.first) < -16384 && !m_joys[p].second) {
+                    m_joys[p].second = true;
                     up = true;
+                }
+                else if(p.second->axis(p.first) > -16000)
+                    m_joys[p].second = false;
             }
         }
         for(auto p : hats) {
