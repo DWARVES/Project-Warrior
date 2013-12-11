@@ -10,5 +10,7 @@ add_library(${lib}
     joystick.cpp joystick.hpp
     keytype.hpp  keymap.hpp
     button.hpp   windowstate.hpp
+    evsave.cpp   evsave.hpp
+    keysave.cpp  keysave.hpp
 	)
 
