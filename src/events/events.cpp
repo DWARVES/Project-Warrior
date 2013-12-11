@@ -1,5 +1,6 @@
 
 #include "events.hpp"
+#include "keysave.hpp"
 #include "core/logger.hpp"
 #include <sstream>
 #include <algorithm>
@@ -12,6 +13,7 @@ namespace events
         initKeys();
         initButtons();
         initStates();
+        initEvSaves();
     }
 
     void Events::initKeys()
@@ -50,10 +52,19 @@ namespace events
         for(Uint8 s = 0;  s < Uint8(WindowState::Last); ++s)
             m_wins[s] = ev;
     }
+            
+    void Events::initEvSaves()
+    {
+        KeySave* ks = new KeySave;
+        EvSave::regist(ks);
+        m_maxSaved = 0;
+    }
 
     Events::~Events()
     {
         closeJoysticks();
+        EvSave::freeAll();
+        removeSaveds();
     }
 
     void Events::update()
@@ -70,6 +81,8 @@ namespace events
             m_wins[s].lost = false;
         }
         clearJoysticks();
+        m_lastSavedValidated.clear();
+        m_lastSavedReleased.clear();
         m_wheel = geometry::Point(0.0f, 0.0f);
         m_dropped.clear();
 
@@ -121,6 +134,7 @@ namespace events
                     break;
             }
         }
+        processSavedEvents();
     }
 
     void Events::process(SDL_KeyboardEvent* ev)
@@ -312,6 +326,25 @@ namespace events
                 return;
             closeJoystick(j);
             m_lastJoyRemoved.push_back(j);
+        }
+    }
+            
+    void Events::processSavedEvents()
+    {
+        for(auto& p : m_saved) {
+            EvSave* ev = p.second.ev;
+            if(!ev->valid()) {
+                if(ev->valid(*this)) {
+                    p.second.lvalid = SDL_GetTicks();
+                    m_lastSavedValidated.push_back(p.first);
+                }
+            }
+            else {
+                if(!ev->still(*this)) {
+                    p.second.lrelease = SDL_GetTicks();
+                    m_lastSavedReleased.push_back(p.first);
+                }
+            }
         }
     }
 
@@ -879,6 +912,87 @@ namespace events
                 return it.first;
         }
         return NULL;
+    }
+
+    /************************
+     *     Saved events     *
+     ************************/
+    size_t Events::addSaved(EvSave* sv, bool tosave)
+    {
+        SavedEvent ev;
+        ev.ev = sv;
+        ev.lvalid = 0;
+        ev.lrelease = 0;
+        ev.tosave = tosave;
+
+        m_saved[m_maxSaved] = ev;
+        ++m_maxSaved;
+        return (m_maxSaved-1);
+    }
+
+    EvSave* Events::getSaved(size_t id) const
+    {
+        auto it = m_saved.find(id);
+        if(it == m_saved.end())
+            return NULL;
+        else
+            return it->second.ev;
+    }
+
+    void Events::removeSaved(size_t id)
+    {
+        if(m_saved.find(id) == m_saved.end())
+            return;
+        if(m_saved[id].tosave)
+            delete m_saved[id].ev;
+        m_saved.erase(id);
+    }
+
+    void Events::removeSaveds()
+    {
+        for(auto p : m_saved) {
+            if(p.second.tosave)
+                delete p.second.ev;
+        }
+        m_saved.clear();
+    }
+
+    bool Events::isSavedValid(size_t id) const
+    {
+        return m_saved.at(id).ev->valid();
+    }
+
+    bool Events::isSavedJustValid(size_t id) const
+    {
+        return std::find(m_lastSavedValidated.begin(), m_lastSavedValidated.end(), id) != m_lastSavedValidated.end();
+    }
+
+    std::vector<size_t> Events::lastSavedValidated() const
+    {
+        return m_lastSavedValidated;
+    }
+
+    std::vector<size_t> Events::lastSavedReleased() const
+    {
+        return m_lastSavedReleased;
+    }
+
+    unsigned int Events::lastSavedValid(size_t id) const
+    {
+        return m_saved.at(id).lvalid;
+    }
+
+    unsigned int Events::lastSavedRelease(size_t id) const
+    {
+        return m_saved.at(id).lrelease;
+    }
+
+    unsigned int Events::timeSavedValidated(size_t id) const
+    {
+        if(!isSavedJustValid(id))
+            return 0;
+        else
+            return SDL_GetTicks() - m_saved.at(id).lvalid;
     }
 
     /************************

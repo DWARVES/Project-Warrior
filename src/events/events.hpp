@@ -9,6 +9,7 @@
 #include "button.hpp"
 #include "joystick.hpp"
 #include "windowstate.hpp"
+#include "evsave.hpp"
 #include "geometry/point.hpp"
 #include "geometry/aabb.hpp"
 
@@ -160,7 +161,7 @@ namespace events
             std::vector<int> lastHatsMoved(Joystick* j) const;
             /* Indicate the joysticks added (their id) during last call to update */
             /* Indicate if the number of joysticks changed
-             * Use lastJoystick{Added,Removed} for more prrecise info
+             * Use lastJoystick{Added,Removed} for more precise info
              */
             bool joysticksChanged() const;
             std::vector<JoystickID> lastJoysticksAdded() const;
@@ -175,6 +176,23 @@ namespace events
             std::vector<std::pair<int,Joystick*>> lastJoyButtonsReleased() const;
             std::vector<std::pair<int,Joystick*>> lastAxesMoved() const;
             std::vector<std::pair<int,Joystick*>> lastHatsMoved() const;
+
+            /************************
+             *     Saved events     *
+             ************************/
+            /* Returns the id of the saved events. */
+            size_t addSaved(EvSave* sv, bool tosave = false);
+            EvSave* getSaved(size_t id) const;
+            /* It will delete the saved event. */
+            void removeSaved(size_t id);
+            void removeSaveds();
+            bool isSavedValid(size_t id) const;
+            bool isSavedJustValid(size_t id) const;
+            std::vector<size_t> lastSavedValidated() const;
+            std::vector<size_t> lastSavedReleased() const;
+            unsigned int lastSavedValid(size_t id) const;
+            unsigned int lastSavedRelease(size_t id) const;
+            unsigned int timeSavedValidated(size_t id) const;
 
             /************************
              *    Miscellaneous     *
@@ -217,7 +235,7 @@ namespace events
                 bool state;               /* Pressed or released */
                 unsigned int pressT;      /* Timestamp of when it was last pressed */
                 geometry::Point pressP;   /* Position of the pointer when it was last pressed */
-                unsigned int releaseT;   /* Timestamp of when it was last released */
+                unsigned int releaseT;    /* Timestamp of when it was last released */
                 geometry::Point releaseP; /* Position of the pointer when it was last released */
             };
             ButtonEvent m_buttons[Uint8(Button::Last)]; /* Array of button */
@@ -256,6 +274,18 @@ namespace events
             };
             std::unordered_map<Joystick*,JoystickEvent> m_joys;
 
+            /* Saved events */
+            struct SavedEvent {
+                EvSave* ev;
+                unsigned int lvalid;
+                unsigned int lrelease;
+                bool tosave;
+            };
+            std::map<size_t,SavedEvent> m_saved;
+            size_t m_maxSaved;
+            std::vector<size_t> m_lastSavedValidated;
+            std::vector<size_t> m_lastSavedReleased;
+
             /* Miscellaneous */
             geometry::Point m_wheel;
             std::vector<std::string> m_dropped;
@@ -265,6 +295,7 @@ namespace events
             void initKeys();
             void initButtons();
             void initStates();
+            void initEvSaves();
             JoystickEvent initEvent(Joystick* j);
             Joystick* getJoyFromID(JoystickID id);
             void clearJoysticks();
@@ -279,6 +310,7 @@ namespace events
             void process(SDL_JoyHatEvent*      ev);
             void process(SDL_JoyButtonEvent*   ev);
             void process(SDL_JoyDeviceEvent*   ev);
+            void processSavedEvents();
     };
 }
 
