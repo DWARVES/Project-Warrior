@@ -7,7 +7,7 @@ link_directories(${DEMO_BINARY_DIR}/tests/gui)
 # Each test here
 add_executable(gui-test gui-test.cpp)
 target_link_libraries(gui-test libgui libevents libgraphics libcore libgeometry
-    ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
+    ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES} ${Boost_REGEX_LIBRARY})
 add_executable(gridlayout-test gridlayout-test.cpp)
 target_link_libraries(gridlayout-test libgui libevents libgraphics libcore libgeometry
     ${Boost_REGEX_LIBRARY} ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES})
