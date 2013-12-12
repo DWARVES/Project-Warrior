@@ -14,5 +14,6 @@ add_library(${lib}
     keysave.cpp        keysave.hpp
     joybuttonsave.cpp  joybuttonsave.hpp
     joyhatsave.cpp     joyhatsave.hpp
+    joyaxissave.cpp    joyaxissave.hpp
 	)
 
