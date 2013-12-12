@@ -7,6 +7,9 @@
 #include "events/key.hpp"
 #include "events/keymap.hpp"
 #include "events/keysave.hpp"
+#include "events/joybuttonsave.hpp"
+#include "events/joyhatsave.hpp"
+#include "events/joyaxissave.hpp"
 
 int main()
 {
@@ -37,6 +40,21 @@ int main()
     events::KeySave others (events::Key(' '));
     size_t kq = ev.addSaved(&kqs);
     ev.addSaved(&others);
+
+    events::Joystick* joystick = ev.openJoystick(0);
+    if(!joystick) {
+        std::cout << "There must be a joystick." << std::endl;
+        return 1;
+    }
+    events::JoyButtonSave jbs;
+    jbs.set(joystick, 0);
+    ev.addSaved(&jbs);
+    events::JoyHatSave jhs;
+    jhs.set(joystick, 0, events::JoyHatState::Up);
+    ev.addSaved(&jhs);
+    events::JoyAxisSave jas;
+    jas.set(joystick, 0, -32768);
+    ev.addSaved(&jas);
 
     ev.enableInput(true);
     while(cont) {
