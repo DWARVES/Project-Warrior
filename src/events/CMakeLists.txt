@@ -5,12 +5,13 @@ set(lib libevents)
 
 # List file here
 add_library(${lib}
-    events.cpp   events.hpp
-    key.cpp      key.hpp
-    joystick.cpp joystick.hpp
-    keytype.hpp  keymap.hpp
-    button.hpp   windowstate.hpp
-    evsave.cpp   evsave.hpp
-    keysave.cpp  keysave.hpp
+    events.cpp         events.hpp
+    key.cpp            key.hpp
+    joystick.cpp       joystick.hpp
+    keytype.hpp        keymap.hpp
+    button.hpp         windowstate.hpp
+    evsave.cpp         evsave.hpp
+    keysave.cpp        keysave.hpp
+    joybuttonsave.cpp  joybuttonsave.hpp
 	)
 
