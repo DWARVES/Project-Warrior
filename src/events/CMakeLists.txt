@@ -13,5 +13,6 @@ add_library(${lib}
     evsave.cpp         evsave.hpp
     keysave.cpp        keysave.hpp
     joybuttonsave.cpp  joybuttonsave.hpp
+    joyhatsave.cpp     joyhatsave.hpp
 	)
 

@@ -2,6 +2,7 @@
 #include "events.hpp"
 #include "keysave.hpp"
 #include "joybuttonsave.hpp"
+#include "joyhatsave.hpp"
 #include "core/logger.hpp"
 #include <sstream>
 #include <algorithm>
@@ -58,8 +59,10 @@ namespace events
     {
         KeySave* ks = new KeySave;
         EvSave::regist(ks);
-        JoyButtonSave* js = new JoyButtonSave;
-        EvSave::regist(js);
+        JoyButtonSave* jb = new JoyButtonSave;
+        EvSave::regist(jb);
+        JoyHatSave* jh = new JoyHatSave;
+        EvSave::regist(jh);
         m_maxSaved = 0;
     }
 
