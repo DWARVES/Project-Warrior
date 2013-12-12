@@ -7,6 +7,7 @@
 
 namespace events
 {
+    /** @brief Represents a keyboard event. */
     class KeySave : public EvSave
     {
         public:
