@@ -6,17 +6,17 @@
 
 namespace events
 {
+    /** @brief This are differents states states a window can have. */
     enum class WindowState : Uint8 {
-        Visible,    /* Shown or hidden */
-        Minimized,  /* Minimized or restored */
-        MouseFocus,
-        InputFocus,
-        /* The following states can only be earned, hasState and lostState will always returns false */
-        Maximized,
-        Moved,
-        Resized,
-        Exposed,    /* The window needs to be redrawn */
-        Last,       /* Only for internal use */
+        Visible,    /**< @brief Shown or hidden. */
+        Minimized,  /**< @brief Minimized or restored. */
+        MouseFocus, /**< @brief Is the mouse on the window. */
+        InputFocus, /**< @brief Are the events sended to the window. */
+        Maximized,  /**< @brief Has the window been maximized. This states can only be earned : events::Events::hasState and events::Events::lostState will always return false. */
+        Moved,      /**< @brief The window has been moved, can only be earned. */
+        Resized,    /**< @brief The window has been resized, can only be earned. */
+        Exposed,    /**< @brief The window needs to be redrawn, can only be earned. */
+        Last,       /**< @brief Only for internal use, number of states. */
     };
 }
 

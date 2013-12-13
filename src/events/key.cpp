@@ -3,8 +3,8 @@
 
 namespace events
 {
-    /* Taken from SDL2 codesource
-     * If there is a way to access to the values stored by the SDL, replace this by it
+    /** @brief Association of scancode to keycode in a qwerty keyboard, taken from SDL2 codesource.
+     * If there is a way to access to the values stored by the SDL, replace this by it.
      */
     static const SDL_Keycode qwertyKeymap[SDL_NUM_SCANCODES] = {
         0, 0, 0, 0,

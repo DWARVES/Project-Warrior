@@ -6,7 +6,9 @@
 
 namespace events
 {
-    /* KeyType must be an integer, the user does not need to know it's real size
+    /** @brief The type representing a single key code.
+     *
+     * KeyType must be an integer, the user does not need to know it's real size
      * SDL_Keycode is already a typedef used by SDL to Sint32
      */
     typedef SDL_Keycode KeyType;
