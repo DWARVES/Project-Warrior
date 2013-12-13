@@ -13,8 +13,10 @@
 #include "geometry/point.hpp"
 #include "geometry/aabb.hpp"
 
+/** @brief Contains all classes and enums about events handling and control devices support. */
 namespace events
 {
+    /** @brief Main class, get all the events and report them. */
     class Events
     {
         public:
@@ -30,6 +32,9 @@ namespace events
             /************************
              *       Keyboard       *
              ************************/
+            /** @name Keyboard-related events access.
+             * @{
+             */
             /* Keys pressed in last update call */
             std::vector<Key> lastKeysPressed() const;
             /* Keys released in last update call */
@@ -49,20 +54,28 @@ namespace events
             /* Position of the pointer when the key was last released */
             geometry::Point posKeyRelease(Key k) const;
             bool isKeyPressed(Key k) const;
+            /** @} */
 
             /************************
              *      Modifiers       *
              ************************/
+            /** @name Modifiers state access.
+             * @{
+             */
             bool alt() const;
             bool shift() const;
             bool ctrl() const;
             bool super() const;
             bool num() const;
             bool caps() const;
+            /** @} */
 
             /************************
              *     Text input       *
              ************************/
+            /** @name Text input handling.
+             * @{
+             */
             /* Returns the input capted in the last call to update */
             std::string lastInput() const;
             /* Returns the input capted since the last call to clearInput */
@@ -71,10 +84,14 @@ namespace events
             /* Enable the input */
             void enableInput(bool e);
             bool isInputEnabled() const;
+            /** @} */
 
             /************************
              *       Buttons        *
              ************************/
+            /** @name Mouse buttons related events access.
+             * @{
+             */
             /* Buttons pressed in last update call */
             std::vector<Button> lastButtonsPressed() const;
             /* Buttons released in last update call */
@@ -94,10 +111,14 @@ namespace events
             /* Position of the pointer when the button was last released */
             geometry::Point posButtonRelease(Button k) const;
             bool isButtonPressed(Button k) const;
+            /** @} */
 
             /************************
              *       Pointer        *
              ************************/
+            /** @name Pointer position and movement access.
+             * @{
+             */
             geometry::Point mousePos() const;
             /* Returns the move of the mouse between the two previous calls to update */
             geometry::Point mouseRel() const;
@@ -107,10 +128,14 @@ namespace events
             bool mouseRelMode(bool enable);
             /* Check if mouseRelMode is enabled */
             bool mouseRelMode() const;
+            /** @} */
 
             /************************
              *       Window         *
              ************************/
+            /** @name Window states events.
+             * @{
+             */
             bool hasState(WindowState st) const;
             /* Indicates if the state has been earned in the last call to update */
             bool earnedState(WindowState st) const;
@@ -122,10 +147,14 @@ namespace events
             bool closed() const;
             /* Stop closed returning always true */
             void closeAbort();
+            /** @} */
 
             /************************
              *      Joystick        *
              ************************/
+            /** @name Joystick-related events.
+             * @{
+             */
             int numJoysticks() const;
             /* Direct access to state can be done through the Joystick structure */
             /* Returns NULL if couldn't load the joystick
@@ -176,10 +205,14 @@ namespace events
             std::vector<std::pair<int,Joystick*>> lastJoyButtonsReleased() const;
             std::vector<std::pair<int,Joystick*>> lastAxesMoved() const;
             std::vector<std::pair<int,Joystick*>> lastHatsMoved() const;
+            /** @} */
 
             /************************
              *     Saved events     *
              ************************/
+            /** @name Personnalized events handling.
+             * @{
+             */
             /* Returns the id of the saved events. */
             size_t addSaved(EvSave* sv, bool tosave = false);
             EvSave* getSaved(size_t id) const;
@@ -193,10 +226,14 @@ namespace events
             unsigned int lastSavedValid(size_t id) const;
             unsigned int lastSavedRelease(size_t id) const;
             unsigned int timeSavedValidated(size_t id) const;
+            /** @} */
 
             /************************
              *    Miscellaneous     *
              ************************/
+            /** @name Miscellaneous.
+             * @{
+             */
             /* Returns the amount of wheel action in x and y axis in last update call
              * left on x axis give negatives values and down on y give negatives too
              */
@@ -211,6 +248,7 @@ namespace events
              */
             bool quit() const;
             void quitAbort();
+            /** @} */
 
         private:
             /* Keybord events */
