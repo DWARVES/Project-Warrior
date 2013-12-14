@@ -37,18 +37,22 @@ namespace graphics
             /** @name Window managing.
              * @{
              */
-            /* Opens a window of size w*h */
+            /** @brief Opens the window of size (w*h). */
             bool openWindow(const std::string& name, int w, int h);
-            /* Opens a window with the fullscreen size and default depth
-             * The min* arguments precise the minimal value for window size : will fail if return false if can't create a window of at least these values
+            /** @brief Opens the window with the fullscreen size and default depth.
+             *
+             * The min* arguments precise the minimal value for window size : will fail if return false if can't create a window of at least these values.
              */
             bool openFullscreenWindow(const std::string& name, int minw = 0, int minh = 0);
-            /* Closes the window (necessary if you wants to open a new window) */
+            /** @brief Closes the window. */
             void closeWindow();
-            /* Get Information about the window */
+            /** @brief Returns the window height. */
             int windowWidth() const;
+            /** @brief Returns the window width. */
             int windowHeight() const;
+            /** @brief Returns the window depth. */
             int windowDepth() const;
+            /** @brief Indicates if the window is open. */
             bool isWindowOpen() const;
             /** @} */
 
@@ -59,20 +63,30 @@ namespace graphics
              * @brief The virtual size is the size which is used when drawing, and it's automaticly scalled to fit in the window.
              * @{
              */
-            /* The virtual size is a size used to place and draw elements */
+            /** @brief Set the virtual size. */
             void setVirtualSize(float w, float h);
-            /* It is the same as setVirtualSize(windowWidth(), windowHeight()) */
+            /** @brief Disable thhe virtual size.
+             *
+             * It is the same as setVirtualSize(windowWidth(), windowHeight()).
+             */
             void disableVirtualSize();
-            /* If r, it will add black bands on the side of the screen to preserve the ratio */
+            /** @brief Enables/disable the preservation of the ratio.
+             *
+             * If enabled, black bands will be added if necessary.
+             */
             void preserveRatio(bool r);
-            /* By default, the Y axs is from top to bottom. This method allows you to invert it */
+            /** @brief By default, the Y axs is from top to bottom. This method allows you to invert it. */
             void invertYAxis(bool inv);
-            /* Get information about virtual size */
+            /** @brief Indicates if the ratio is preserved. */
             bool preserveRatio() const;
+            /** @brief Returns the virtual width. */
             float getVirtualWidth() const;
+            /** @brief Returns the virtual height. */
             float getVirtualHeight() const;
+            /** @brief Indicates if the y axis is inverted. */
             bool isYAxisInverted() const;
-            bool isEnabled() const; /* Is the virtual size different from the window size */
+            /** @brief Indicates if the virtual size is different from window's. */
+            bool isEnabled() const;
             /** @} */
 
             /*************************
@@ -80,6 +94,7 @@ namespace graphics
              *************************/
             /** @name Namespace management.
              * @brief All the ressources are stored in namespaces, to prevent name conflict.
+             * Namespace use is recursive : you can create a namespace in another one, and so on.
              * @{
              */
             bool enterNamespace(const std::string& name);
@@ -100,23 +115,29 @@ namespace graphics
             };
 
             /** @name Ressources management.
+             * @brief All ressources are renferenced by a name, used to acces them.
              * @{
              */
+            /** @brief Load a texture from a file. */
             bool loadTexture(const std::string& name, const std::string& path);
+            /** @brief Load a movie from a file. */
             bool loadMovie(const std::string& name, const std::string& path);
+            /** @brief Load a font from a file. */
             bool loadFont(const std::string& name, const std::string& path);
-            /* Will create a texture in which the txt text is rendered with font
-             * bgc is the color of the background, because trasparency is not handled
-             * If alpha is set, the bgc will be transparent
-             * precision precise the deviation allowed from bgc to still have alpha appliqued
-             * pts is the heights in units of the rendered font, if it's negative, default height will be used
+            /** @brief Load a texture from a rendered text.
+             * @param font The font used to render.
+             * @param txt The txt to render.
+             * @param bgc The color of the background.
+             * @param pts The size of the font. If negative, the default size will be used.
+             * @param alpha If true, the pixel of color bgc will be transparent.
+             * @param precision Precise the deviation allowed from bgc to still have alpha appliqued. Needs alpha applied.
              */
             bool loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt, const Color& bgc, float pts = -1.0f, bool alpha = false, unsigned char precision = 5);
-            /* Will free the ressource wathever its type is */
+            /** @brief Free a ressource. */
             void free(const std::string& name);
-            /* Return the type of a ressource or NONE if name doesn't exists */
+            /** @brief Returns the type of a texture or NONE if it doesn't exists. */
             RcType rctype(const std::string& name) const;
-            /* Will create a link named name to target */
+            /** @brief Creates a link to the ressource which path is target. */
             bool link(const std::string& name, const std::string& target);
             /** @} */
 
@@ -126,8 +147,11 @@ namespace graphics
             /** @name Textures management.
              * @{
              */
+            /** @brief Returns the width in pixel of a texture. */
             int getTextureWidth(const std::string& name) const;
+            /** @brief Returns the height in pixel of a texture. */
             int getTextureHeight(const std::string& name) const;
+            /** @brief Set the hotpoint of a texture. */
             bool setTextureHotpoint(const std::string& name, int x, int y);
             /** @} */
 
@@ -137,7 +161,9 @@ namespace graphics
             /** @name Fonts management.
              * @{
              */
+            /** @brief Returns the width of a text rendered. */
             float stringWidth(const std::string& font, const std::string& str, float size = -1.0f) const;
+            /** @brief Returns the size of a text rendered. */
             geometry::AABB stringSize(const std::string& font, const std::string& str, float size = -1.0f) const;
             /** @} */
             
@@ -147,9 +173,11 @@ namespace graphics
             /** @name Movies management.
              * @{
              */
-            /* Will return 0.0f if name does not design a video */
+            /** @brief Get the speed factor of a movie (see internal::Movie::speed for more details). */
             float getMovieSpeed(const std::string& name) const;
+            /** @brief Set the speed factor of a movie (see internal::Movie::speed for more details). */
             float setMovieSpeed(const std::string& name, float nspeed) const;
+            /** @brief Allows the movie to be played again from the beggining. */
             void rewindMovie(const std::string& name);
             /** @} */
 
@@ -159,12 +187,19 @@ namespace graphics
             /** @name Repere management.
              * @brief These methods allow the user to change the repere used.
              */
-            /* The angle is in degres, along z axis */
+            /** @brief Rotate the repere, the angle is in degres. */
             void rotate(float angle);
+            /** @brief Scale the repere. */
             void scale(float x, float y);
+            /** @brief Translate the repere. */
             void move(float x, float y);
+            /** @brief Put the repere in its initial state. */
             void identity();
+            /** @brief Store the actual state of the repere. */
             void push();
+            /** @brief Restore the previous state of the repere.
+             * @return False if nothing is to be restored.
+             */
             bool pop();
             /** @} */
 
@@ -174,25 +209,37 @@ namespace graphics
             /** @name Drawing functions.
              * @{
              */
-            /* The hotpoint is only used for blitTexture */
+            /** @brief Draw a texture, taking in account its size and its hotPoint. */
             void blitTexture(const std::string& name, const geometry::Point& pos);
-            /* If width < 0, will use the default width */
+            /** @brief Draw a point with specified color and width (=radius). */
             void draw(const geometry::Point& point, const Color& col, float width = -1.0f);
+            /** @brief Draw a line with specified color and width (=radius). */
             void draw(const geometry::Line& line, const Color& col, float width = -1.0f);
+            /** @brief Draw an AABB with a texture, possibly repeated. */
             void draw(const geometry::AABB& aabb, const std::string& text, float repeatX = 1.0f, float repeatY = 1.0f);
+            /** @brief Draw an AABB with the specified color. */
             void draw(const geometry::AABB& aabb, const Color& col);
+            /** @brief Draw a circle with a texture, possibly repeated. */
             void draw(const geometry::Circle& circle, const std::string& text, float repeatX = 1.0f, float repeatY = 1.0f);
+            /** @brief Draw a circle with the specified color. */
             void draw(const geometry::Circle& circle, const Color& col);
+            /** @brief Draw a polygon with a texture, possibly repeated. */
             void draw(const geometry::Polygon& poly, const std::string& text, float repeatX = 1.0f, float repeatY = 1.0f);
+            /** @brief Draw a polygon with the specified color. */
             void draw(const geometry::Polygon& poly, const Color& col);
-            void draw(const std::string& str, const std::string& font, float pts = -1.0f); /* Write a text with the selected font */
-            /* Return false when the video ended */
+            /** @brief Draw a text width the specified font and size. */
+            void draw(const std::string& str, const std::string& font, float pts = -1.0f);
+            /** @brief Display a playing movie, or start it playing.
+             * @return False when the end of the movie was reached : to continue playing, you must call rewindMovie.
+             */
             bool play(const std::string& movie, const geometry::AABB& rect, bool ratio = true);
-            /* Set and get default width */
+            /** @brief Set the default width used when drawing points and lines. */
             float defaultWidth(float nval);
+            /** @brief Get the default width. */
             float defaultWidth() const;
-            /* Must be called at the begin and the end of each draw cycle */
+            /** @brief Initialize a drawing : must be called once before all draws call. */
             void beginDraw();
+            /** @brief Send the drawn to the screen : must be called once at the end of the drawing. */
             void endDraw();
             /** @} */
 
