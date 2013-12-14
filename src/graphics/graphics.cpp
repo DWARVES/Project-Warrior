@@ -6,7 +6,9 @@
 
 namespace graphics
 {
+    /** @brief A very small value, used when comparing floats. */
     const float epsilon = 0.000001f;
+    /** @brief Used to convert degres in radians. */
     const float deg2rad = 0.0174532925199433f;
 
     Graphics::Graphics()
