@@ -10,6 +10,7 @@ namespace graphics
         /***************************
          *      Shaders src        *
          ***************************/
+        /** @brief The fragment shader used by the program. */
         static const char* fragmentSrc =
             "uniform sampler2D tex;\n"
             "uniform float texture;\n"
@@ -20,6 +21,7 @@ namespace graphics
             "    gl_FragColor = color;\n"
             "}";
 
+        /** @brief The vertex shader used by the program. */
         static const char* vertexSrc =
             "uniform float texture;\n"
             "void main(void) {\n"

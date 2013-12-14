@@ -10,16 +10,16 @@ namespace graphics
 {
     namespace internal
     {
-        /* Manages OpenGL extensions */
+        /** @brief Manages OpenGL extensions. */
         class Extensions
         {
             public:
                 Extensions();
                 Extensions(const Extensions&) = delete;
 
-                /* Get the list of supported extensions, must be the first function called */
+                /** @brief Get the list of supported extensions, must be the first function called. */
                 bool init();
-                /* Check if the hardware supports an extension */
+                /** @brief Checks if the hardware supports an extension. */
                 bool has(const std::string& name) const;
         };
     }

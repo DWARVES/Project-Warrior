@@ -9,6 +9,7 @@ namespace graphics
 {
     namespace internal
     {
+        /** @brief Manages the shaders of the program. */
         class Shaders
         {
             public:
@@ -17,26 +18,26 @@ namespace graphics
                 Shaders(const Shaders&) = delete;
                 ~Shaders();
 
-                /* Check if the right extensions are available on the hardware and load them */
+                /** @brief Check if the right extensions are available on the hardware and load them. */
                 bool checkAndLoadExtensions();
-                /* Load the shaders, the extensions must have already been loaded */
+                /** @brief Load the shaders, checkAndLoadExtensions must have already been called. */
                 bool load();
-                /* Enable/disable the shader for the rendering */
+                /** @brief Enable/disable the shader for the rendering. */
                 void enable(bool e = true);
-                /* Use texture in rendering ? */
+                /** @brief Enable/disable texture rendering in the shaders. */
                 void text(bool t = true);
 
             private:
-                Extensions* m_exts;
-                GLuint m_vertex;
-                GLuint m_fragment;
-                GLuint m_program;
-
-                /* Uniforms */
-                GLint m_text;
+                Extensions* m_exts; /**< @brief Used to manage the extensions. */
+                GLuint m_vertex;    /**< @brief The glID of the vertex shader. */
+                GLuint m_fragment;  /**< @brief The glID of the fragment shader. */
+                GLuint m_program;   /**< @brief The glID of the program shader. */
+                GLint m_text;       /**< @brief The glID of the uniform boolean enabling/disabling texture rendering in shaders. */
 
                 /* Internal methods */
+                /** @brief Prints to the logger the compilation errors of a shader (if any). */
                 void logCompileError(GLuint shader);
+                /** @brief Load the uniform name and store it in id. Return false if an error happened. */
                 bool loadUniform(GLint* id, const char* name);
         };
     }

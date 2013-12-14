@@ -12,7 +12,9 @@ namespace graphics
 {
     namespace internal
     {
+        /** @brief The internally used width of the movie. */
         const int movieWidth = 512;
+        /** @brief The internally used height of the movie. */
         const int movieHeight = 256;
 
         Movie::Movie(Shaders* s)
