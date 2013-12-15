@@ -11,8 +11,10 @@ class Menu
 
         /** @brief Loads all the gui elements, and send them to the gui. */
         virtual bool prepare() = 0;
-        /** @brief Must be called at every frame, update the menu. */
-        virtual void update() = 0;
+        /** @brief Must be called at every frame, update the menu.
+         * @return False when the menu is exited.
+         */
+        virtual bool update() = 0;
 };
 
 #endif
