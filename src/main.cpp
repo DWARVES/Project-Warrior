@@ -4,6 +4,7 @@
 #include <sstream>
 #include "global.hpp"
 #include "core/logger.hpp"
+#include "core/i18n.hpp"
 
 /** @brief An exception used to report a fatal error while initializing the game. */
 class init_exception : public std::exception
@@ -21,6 +22,8 @@ class init_exception : public std::exception
         const char* m_msg;
 };
 
+/** @brief Load the locale. */
+void loadLocale();
 /** @brief Parses the command line argument and config file. */
 void loadConfig(int argc, char *argv[]);
 /** @brief Load the SDL and init the graphics. */
@@ -38,6 +41,7 @@ int main(int argc, char *argv[])
 
     /* Init everything. */
     try {
+        loadLocale();
         loadConfig(argc, argv);
         initGraphics();
     }
@@ -59,14 +63,14 @@ void loadConfig(int argc, char *argv[])
 
     /* Defines the options. */
     /* Global options */
-    global::cfg->define("help", 0, "Display an help message and quit.", false);
-    global::cfg->define("config", 'c', "The path to the config file.", "/etc/warrior.cfg");
+    global::cfg->define("help", 0, _i("Display an help message and quit."), false);
+    global::cfg->define("config", 'c', _i("The path to the config file."), "/etc/warrior.cfg");
     /* Graphics options */
-    global::cfg->define("fullscreen", 'F', "A boolean indicating if the game must run in fullscreen mode. You can't precise the size : the desktop size will automaticly be used.", true);
-    global::cfg->define("resw", 'W', "The width of the window in pixels.", 1024);
-    global::cfg->define("resh", 'H', "The height of the window in pixels.", 768);
-    global::cfg->define("guitheme", 'T', "The path to the gui theme.", "/usr/share/warrior/guirc");
-    global::cfg->define("name", 0, "The name of the window.", "Project Warror");
+    global::cfg->define("fullscreen", 'F', _i("A boolean indicating if the game must run in fullscreen mode. You can't precise the size : the desktop size will automaticly be used."), true);
+    global::cfg->define("resw", 'W', _i("The width of the window in pixels."), 1024);
+    global::cfg->define("resh", 'H', _i("The height of the window in pixels."), 768);
+    global::cfg->define("guitheme", 'T', _i("The path to the gui theme."), "/usr/share/warrior/guirc");
+    global::cfg->define("name", 0, _i("The name of the window."), "Project Warror");
 
     /* Parses the command line. */
     if(!global::cfg->args(argc, argv))
@@ -98,6 +102,12 @@ void initGraphics()
                     global::cfg->get<int>("resh")))
             throw init_exception("Couldn't open the window.");
     }
+}
+
+void loadLocale()
+{
+    if(!core::initLocale())
+        throw init_exception("Couldn't init the locale.");
 }
 
 void freeEverything()
