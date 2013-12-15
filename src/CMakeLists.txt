@@ -6,25 +6,12 @@ set(exe warrior)
 
 # List file here
 add_executable(${exe}
-	main.cpp)
-target_link_libraries(
-    ${exe}
-    ${Boost_REGEX_LIBRARY}
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${SDL2_LIBRARIES}
-    ${SDL2_IMAGE_LIBRARIES}
-    ${SDLMIXER_LIBRARY}
-    ${OPENGL_LIBRARIES}
-    ${FFMPEG_LIBRARIES}
-    ${GLEW_LIBRARIES}
+	main.cpp
+    global.cpp global.hpp
     )
 
-add_subdirectory(core)
-target_link_libraries(${exe} libcore)
 add_subdirectory(gameplay)
 target_link_libraries(${exe} libgameplay)
-add_subdirectory(geometry)
-target_link_libraries(${exe} libgeometry)
 add_subdirectory(lua)
 target_link_libraries(${exe} liblua)
 add_subdirectory(Box2D)
@@ -41,4 +28,20 @@ add_subdirectory(events)
 target_link_libraries(${exe} libevents)
 add_subdirectory(liblua)
 target_link_libraries(${exe} liblua5.2)
+add_subdirectory(geometry)
+target_link_libraries(${exe} libgeometry)
+add_subdirectory(core)
+target_link_libraries(${exe} libcore)
+
+target_link_libraries(
+    ${exe}
+    ${Boost_REGEX_LIBRARY}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${SDL2_LIBRARIES}
+    ${SDL2_IMAGE_LIBRARIES}
+    ${SDLMIXER_LIBRARY}
+    ${OPENGL_LIBRARIES}
+    ${FFMPEG_LIBRARIES}
+    ${GLEW_LIBRARIES}
+    )
 
