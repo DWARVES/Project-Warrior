@@ -5,6 +5,7 @@ set(lib menus)
 
 # List file here
 add_library(${lib}
-    menu.cpp     menu.hpp
+    menu.cpp       menu.hpp
+    buttonmenu.cpp buttonmenu.hpp
 	)
 
