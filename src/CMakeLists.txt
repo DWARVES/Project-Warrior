@@ -10,6 +10,8 @@ add_executable(${exe}
     global.cpp global.hpp
     )
 
+add_subdirectory(menus)
+target_link_libraries(${exe} menus)
 add_subdirectory(gameplay)
 target_link_libraries(${exe} libgameplay)
 add_subdirectory(lua)
