@@ -30,6 +30,8 @@ void loadConfig(int argc, char *argv[]);
 void initGraphics();
 /** @brief Load the gui and the gui theme. */
 void loadGui();
+/** @brief Init the audio. */
+void loadAudio();
 /** @brief Free the global variables. */
 void freeEverything();
 
@@ -43,13 +45,15 @@ int main(int argc, char *argv[])
     core::logger::logm(">>> Execution started <<<", core::logger::MSG);
 
     /* Init everything. */
+    core::logger::pushBlock();
+    core::logger::logm("Initialization.", core::logger::MSG);
     try {
         loadLocale();
         loadConfig(argc, argv);
         initGraphics();
         loadGui();
-        global::evs   = new events::Events;
-        global::audio = new audio::Audio;
+        loadAudio();
+        global::evs = new events::Events;
     }
     catch(const std::exception& e) {
         std::ostringstream oss;
@@ -57,6 +61,7 @@ int main(int argc, char *argv[])
         core::logger::logm(oss.str(), core::logger::FATAL);
         retcode = 1;
     }
+    core::logger::popBlock();
 
     /* @todo the program */
 
@@ -81,6 +86,8 @@ void loadConfig(int argc, char *argv[])
     global::cfg->define("resh", 'H', _i("The height of the window in pixels."), 768);
     global::cfg->define("guitheme", 'T', _i("The path to the gui theme."), "/usr/share/warrior/guirc");
     global::cfg->define("name", 0, _i("The name of the window."), "Project Warror");
+    /* Audio options */
+    global::cfg->define("frequence", 0, _i("The frequence of the audio output."), 44100);
 
     /* Parses the command line. */
     if(!global::cfg->args(argc, argv))
@@ -129,6 +136,13 @@ void loadGui()
     global::theme = new gui::Theme(global::gfx, global::cfg->get<std::string>("guitheme"));
     if(!global::theme->load())
         throw init_exception("Couldn't load the gui theme.");
+}
+
+void loadAudio()
+{
+    global::audio = new audio::Audio;
+    if(!global::audio->init(global::cfg->get<int>("frequence")))
+        throw init_exception("Couldn't initialize the audio.");
 }
 
 void freeEverything()
