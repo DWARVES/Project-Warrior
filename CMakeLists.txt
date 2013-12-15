@@ -48,6 +48,7 @@ set(FFMPEG_LIBRARIES "${FFMPEG_LIBRARIES};/usr/lib/libswscale.so")
 
 # Includes checks
 include(CheckIncludeFiles)
+check_include_files("libintl.h;locale.h" HAVE_LIBINTL_H)
 check_include_files("sys/types.h;sys/stat.h" HAVE_SYSSTAT_H)
 check_include_files("dirent.h" HAVE_DIRENT_H)
 
@@ -67,12 +68,20 @@ find_package(Doxygen)
 if(DOXYGEN_FOUND)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
     add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-        working_directory ${CMAKE_CURRENT_BINARY_DIR}
-        comment "Generating source code documentation with Doxygen (for devs only)." VERBATIM
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating source code documentation with Doxygen (for devs only)." VERBATIM
         )
 elseif(DOXYGEN_FOUND)
     message("Couldn't find Doxygen : won't be able to generate doc.")
 endif(DOXYGEN_FOUND)
+
+# i18n support with gnu gettext
+set(DOMAIN "warrior")
+set(SRCS src/main.cpp) # Files with text to translate.
+add_custom_target(extract_text xgettext -d ${DOMAIN} --c++ -i -F -k_i -o ${DOMAIN}.pot ${SRCS}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Extract the translatable texts from the source code with xgettext." VERBATIM
+    )
 
 include_directories(src/)
 add_subdirectory(src/)

@@ -11,5 +11,6 @@ add_library(${lib}
     logger.cpp     logger.hpp
     config.cpp     config.hpp
     utf8.cpp       utf8.hpp
+    i18n.cpp       i18n.hpp
 	)
 

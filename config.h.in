@@ -5,6 +5,7 @@
 #cmakedefine HAVE_SYSSTAT_H
 #cmakedefine HAVE_DIRENT_H
 #cmakedefine HAVE_BOOST_FILESYSTEM
+#cmakedefine HAVE_LIBINTL_H
 
 #endif//DEF_CONFIG
 
