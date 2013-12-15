@@ -5,6 +5,7 @@
 #include "global.hpp"
 #include "core/logger.hpp"
 #include "core/i18n.hpp"
+#include "menus/mainmenu.hpp"
 
 /** @brief An exception used to report a fatal error while initializing the game. */
 class init_exception : public std::exception
@@ -35,6 +36,7 @@ void loadAudio();
 /** @brief Free the global variables. */
 void freeEverything();
 
+/** @brief The entry point of the program. */
 int main(int argc, char *argv[])
 {
     int retcode = 0;
@@ -63,7 +65,29 @@ int main(int argc, char *argv[])
     }
     core::logger::popBlock();
 
-    /* @todo the program */
+    /* The main loop. */
+    try {
+        MainMenu menu;
+        if(!menu.prepare())
+            throw init_exception("Couldn't prepare the main menu.");
+        global::gui->focus(true);
+
+        while(menu.update())
+        {
+            global::evs->update();
+            /** @todo Framerate control. */
+        }
+    }
+    catch(const std::exception& e) {
+        std::ostringstream oss;
+        oss << "An exception was thrown during the execution : \"" << e.what() << "\".";
+        core::logger::logm(oss.str(), core::logger::FATAL);
+        retcode = 1;
+    }
+    catch(...) {
+        core::logger::logm("An unknown exception was thrown during the execution.", core::logger::FATAL);
+        retcode = 1;
+    }
 
     /* Free everything. */
     freeEverything();
@@ -80,6 +104,7 @@ void loadConfig(int argc, char *argv[])
     /* Global options */
     global::cfg->define("help", 0, _i("Display an help message and quit."), false);
     global::cfg->define("config", 'c', _i("The path to the config file."), "/etc/warrior.cfg");
+    global::cfg->define("rcs", 'r', _i("The path to the ressources directory."), "/usr/share/warrior/rcs");
     /* Graphics options */
     global::cfg->define("fullscreen", 'F', _i("A boolean indicating if the game must run in fullscreen mode. You can't precise the size : the desktop size will automaticly be used."), false);
     global::cfg->define("resw", 'W', _i("The width of the window in pixels."), 1024);
