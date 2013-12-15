@@ -19,6 +19,7 @@ class ButtonMenu : public gui::Button
         ButtonMenu(const ButtonMenu&) = delete;
         ~ButtonMenu();
 
+        /** @todo Add sounds. */
         virtual void select();
 
     private:
