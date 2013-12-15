@@ -82,8 +82,6 @@ namespace core
 
             std::ostringstream whole; /* Complete msg (with date, blocks and level indication */
 
-            whole << "[" << file << ":" << line << "] ";
-
             if(date) {
                 SystemTime st; /* Constructor to local time */
                 whole << "[" << st.format("%m/%d/%Y %H:%M:%S", 20) << "] ";
@@ -111,7 +109,7 @@ namespace core
 
             for(size_t i = 0; i < blocks; ++i)
                 whole << ">";
-            whole << " " << msg;
+            whole << " " << msg << "\t[" << file << ":" << line << "] ";
 
             for(size_t i = 0; i < outputs.size(); ++i) {
                 (*outputs[i].os) << whole.str() << std::endl;
