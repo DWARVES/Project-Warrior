@@ -41,15 +41,15 @@ bool MainMenu::prepare()
         /** @todo Set the right menus. */
         m_play = new ButtonMenu(global::gfx, &m_actual, new MainMenu, true);
         m_play->text(_i("Play"));
-        global::theme->apply(m_play);
+        m_play->applyTheme(global::theme);
 
         m_cfg = new ButtonMenu(global::gfx, &m_actual, new MainMenu, true);
         m_cfg->text(_i("Config"));
-        global::theme->apply(m_cfg);
+        m_cfg->applyTheme(global::theme);
 
         m_about = new ButtonMenu(global::gfx, &m_actual, new MainMenu, true);
         m_about->text(_i("About"));
-        global::theme->apply(m_about);
+        m_about->applyTheme(global::theme);
 
         m_layout = new gui::GridLayout(global::gfx, 2, 2);
         global::theme->apply(m_layout);

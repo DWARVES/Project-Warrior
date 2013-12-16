@@ -16,4 +16,10 @@ void ButtonMenu::select()
     m_menu->prepare();
     *m_feed = m_menu;
 }
+        
+void ButtonMenu::applyTheme(gui::Theme* th)
+{
+    th->apply(this);
+    maxSize(geometry::AABB(-1.0f,-1.0f));
+}
 

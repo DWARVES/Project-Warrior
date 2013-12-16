@@ -3,6 +3,7 @@
 #define DEF_BUTTONMENU
 
 #include "gui/button.hpp"
+#include "gui/theme.hpp"
 #include "menus/menu.hpp"
 
 /** @brief A button used to launch a menu. */
@@ -18,6 +19,9 @@ class ButtonMenu : public gui::Button
         ButtonMenu() = delete;
         ButtonMenu(const ButtonMenu&) = delete;
         ~ButtonMenu();
+
+        /** @brief Get the default theme of a button, and eventually change it a little. */
+        void applyTheme(gui::Theme* th);
 
         /** @todo Add sounds. */
         virtual void select();
