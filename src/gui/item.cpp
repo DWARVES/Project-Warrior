@@ -6,7 +6,7 @@ namespace gui
     namespace internal
     {
         Item::Item(graphics::Graphics* gfx)
-            : m_gfx(gfx), m_width(0.0f), m_height(0.0f), m_state(Norm), m_resize(true), m_lastSel(0)
+            : m_gfx(gfx), m_width(0.0f), m_height(0.0f), m_state(Norm), m_fontMS(-1.0f), m_resize(true), m_lastSel(0)
         {}
 
         Item::~Item()
@@ -29,6 +29,18 @@ namespace gui
         void Item::resize(bool r)
         {
             m_resize = r;
+        }
+
+        float Item::fontMaxSize(float ms)
+        {
+            m_fontMS = ms;
+            updateState();
+            return m_fontMS;
+        }
+
+        float Item::fontMaxSize() const
+        {
+            return m_fontMS;
         }
 
         float Item::width(float w)
@@ -163,6 +175,8 @@ namespace gui
             /* Drawing the text */
             std::string font = m_texts[sel][(unsigned short)Font];
             float fontSize = m_height * (m_state != Norm ? 0.9f : 0.8f);
+            if(m_fontMS > 0.0f)
+                fontSize = std::min(fontSize, m_fontMS);
             std::string txt("");
             if(m_lext) txt += "...";
             txt += m_text.substr(m_lbound, m_rbound - m_lbound);
@@ -207,6 +221,8 @@ namespace gui
             std::string font = m_texts[(unsigned short)m_state][Font];
             std::string rtext = m_text.substr(m_lbound);
             float fontSize = m_height * (m_state != Norm ? 0.9f : 0.8f);
+            if(m_fontMS > 0.0f)
+                fontSize = std::min(fontSize, m_fontMS);
             float size = 0.0f;
             float extSize = m_gfx->stringWidth(font, "...", fontSize);
             float actualWidth = m_width * 0.8f;

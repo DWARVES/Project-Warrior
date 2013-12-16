@@ -41,6 +41,10 @@ namespace gui
                 float width() const;
                 /** @brief Get the effective height. */
                 float height() const;
+                /** @brief Sets the font max size. */
+                float fontMaxSize(float ms);
+                /** @brief Get the font max size. */
+                float fontMaxSize() const;
 
                 /* Selection */
                 /** @brief Select the item. */
@@ -89,6 +93,7 @@ namespace gui
                        m_rbound;           /**< @brief The index of the right letter of the shown text in m_text. */
                 bool m_lext,               /**< @brief Is the text scrollable to the left. */
                      m_rext;               /**< @brief Is the text scrollable to the right. */
+                float m_fontMS;            /**< @brief The font max size. If < 0.0f, won't be considered. */
                 std::string m_texts[(unsigned short)NB][(unsigned short)Last]; /**< @brief The textures [state][part]. */
                 bool m_resize;             /**< @brief Is the resizing mode enabled. */
 
