@@ -22,6 +22,7 @@ class ButtonMenu : public gui::Button
 
         /** @brief Get the default theme of a button, and eventually change it a little. */
         void applyTheme(gui::Theme* th);
+        virtual void draw();
 
         /** @todo Add sounds. */
         virtual void select();
