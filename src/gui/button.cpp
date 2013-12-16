@@ -26,6 +26,11 @@ namespace gui
     {
         m_msize = msize;
     }
+            
+    void Button::maxFontSize(float fms)
+    {
+        m_it.fontMaxSize(fms);
+    }
 
     float Button::width(float w)
     {

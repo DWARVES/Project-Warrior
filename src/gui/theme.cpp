@@ -178,6 +178,8 @@ namespace gui
         m_data.enterNamespace("/button");
         if(!m_data.existsEntity("width") || !m_data.existsEntity("height"))
             return false;
+        if(!m_data.existsEntity("pts"))
+            return false;
 
         if(!m_data.existsNamespace("/radio"))
             return false;
@@ -299,6 +301,7 @@ namespace gui
         m_data.enterNamespace("/button");
         b->maxSize(geometry::AABB(m_data.getEntityValue("width"),
                     m_data.getEntityValue("height")));
+        b->maxFontSize(m_data.getEntityValue("pts"));
     }
             
     void Theme::apply(Radio* r)

@@ -25,6 +25,8 @@ namespace gui
             std::string text() const;
             /** @brief Set a maximum size for the button. */
             void maxSize(const geometry::AABB& msize);
+            /** @brief Set a maximum font size for the text. */
+            void maxFontSize(float fms);
 
             /* Size */
             float width(float w);
