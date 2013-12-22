@@ -2,6 +2,7 @@
 set(entries
     font.t2t
     fakefs.t2t
+    guitheme.t2t
     )
 
 foreach(entry ${entries})

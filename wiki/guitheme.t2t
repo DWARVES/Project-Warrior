@@ -1,0 +1,46 @@
+Creating a GUI theme.
+Pablo Donato, Luc Chabassier
+%%date(%d-%m-%Y)
+
+= Introduction =
+
+The appearance of all the elements of the gui (buttons, lists ...) can be customized by a theme. A theme is a directory will special content. You can specify to the game which directory is the gui theme with the ``--guirc`` command line option.
+
+This guide will assume you are familiar with //FakeFS// and font creating concepts. If not, read the corresponding wiki pages.
+
+= Principle =
+
+Each element of the gui have its own subdirectory containing the pictures and fonts it needs. There also is one fakefs file in the gui theme directory containing a namespace for every element of the gui. We will detail what can and/or must be setted in this directories and namespaces.
+
+= Widgets =
+== GridLayout ==
+
+A //GridLayout// is a layout that organize the widgets as a grid. It doesn't require a directory but must have a ``gridlayout`` namespace, containing the ``gaps`` entity, a number precising how big the gaps between the widgets are, in pixels.
+
+== FillBar ==
+
+A //FillBar// describe the progressing state of something with its filled part. It needs a ``fillbar`` directory, containing four pictures :
++ ``empty.png`` : the picture of the fillbar completely empty.
++ ``full.png`` : the picture of the fillbar completely filled.
++ ``emptyS.png`` : the picture of the fillbar completely empty, when it is selected.
++ ``fullS.png`` : the picture of the fillbar completely filled, when it is selected.
+
+
+It also requires a namespace ``fillbar`` with a ``ratio`` entity, the ratio of the height with the width.
+
+== CheckBox ==
+
+A //CheckBox// is a box with two states : clicked or not. It needs a ``checkbox`` directory with four pictures :
++ ``nsel.png`` : the picture of the checkbox when it is not clicked.
++ ``sel.png`` : the picture of the checkbox when it is clicked.
++ ``nselS.png`` : the picture of the checkbox when it is not clicked but it is selected.
++ ``selS.png`` : the picture of the checkbox when it is clicked and selected.
+
+
+It also needs a ``checkbox`` namespace, with some entities :
+- ``width`` : The maximum width of the checkbox, facultative.
+- ``height`` : The maximum height of the checkbox, facultative.
+- ``square`` : A boolean (0 or 1) indicating if the checkbox must be draw as a square instead of a rectangle.
+
+
+
