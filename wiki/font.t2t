@@ -1,0 +1,24 @@
+Creating a font.
+Pablo Donato, Luc Chabassier
+%%date(%d-%m-%Y)
+
+= Introduction =
+
+The fonts are used by the program to print all texts, so they are an indispensable part of any graphic package. Unfortunately, the project warrior game can't use vectorial fonts like //True Type Font//, but only bitmap fonts. Furthermore, the fonts have to respect a pretty strict set of rules. This document is here to explain how to create a font that could be used by the game.
+
+= The bitmap =
+
+The main part of the font is the bitmap picture. To create it, you firstly have to choose which layout (or set of letters) will be handled by your font. You can choose any, because utf8 is fully handled by project warrior. Once you have made your choice, you must count how many letters you have to draw.
+
+A bitmap font is a grid of letters, with a one pixel line between them. Each letter case must have the same size, so if you want to draw a grid with 25 letters (5x5), twenty pixels wide and forty by height, you'll have to create a picture of size //106x206// (//5*20+6x5*40+6//). All the separations will have the same color, and this color mustn't be used anywhere else in the font. The separations must also be drawn all around the picture, and their color will then be the color of the top-left pixel. You can leave the last case empty, if they are not included in the layout, they will be ignored.
+
+Once you have drawn the grid, you can fill it with letters. Alpha channel is handled, so you can add transparency.
+
+= The layout =
+
+Once your bitmap is finished, you have to indicate which layout it uses. To do so, you'll need the ``makefont`` utility, compiled as a tool (``-DTOOLS=1`` when calling cmake). Your layout is an array of letters, describing the ones that are in your bitmap, from left to right and top to bottom.
+
+You can next call the tool to generate the font : ``./tools/makefont [path_to_bitmap] [layout] [font]``. The third argument is the path to the font you want to create. The fonts created usually have the ``.wf`` extension.
+
+If the tool doesn't indicates any error, you can use your font in project warrior !
+

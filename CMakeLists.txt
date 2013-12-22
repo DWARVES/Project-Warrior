@@ -98,4 +98,6 @@ else()
     add_subdirectory(tools/ EXCLUDE_FROM_ALL)
 endif(TOOLS)
 
+add_subdirectory(wiki/)
+
 

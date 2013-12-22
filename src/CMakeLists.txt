@@ -1,5 +1,4 @@
 
-
 include_directories(${DEMO_SOURCE_DIR}/src)
 link_directories(${DEMO_BINARY_DIR}/src)
 set(exe warrior)

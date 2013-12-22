@@ -1,0 +1,31 @@
+FakeFS file syntax.
+Pablo Donato, Luc Chabassier
+%%date(%d-%m-%Y)
+
+= Introduction =
+
+The FakeFS is an element of the program used to manipulate abr like structures. It is used in nearly every element of the program (from the gui theme to the music loader). It is also used to save and load some sets of data. This document will explain you how to read and change a fakefs file, which will generally have the ``.fakefs`` extension.
+
+= Principles =
+
+The syntax is inspired by json, because we needed a way to save recursive data. The syntax is quite strict for the moment, and you have to follow very precisely the indications given here.
+
+Every element have a name, and a value. We can differentiate two kinds of elements : the namespaces, and the entities. A namespace is a set of value, which can contain others namespace and entities. An entity is a value associated to a name. The value of the entity is dependant of how the fakefs is internally used, so it will depends of the different cases.
+
+The entities and namespaces can be accessed with a unique name, which is like a path in an unix-like system. A path could be, for example : ``/namespace1/namespace2/entity``.
+
+= Syntax =
+
+To declare an entity, you must use the following syntax : ``"name" : "value"``. You can add as many spaces or tabs you want between the elements of this syntax.
+
+A namespace is declared as follow : ``"name" : {``. Every other namespace and entity declared between that and the corresponding closing bracket will be part of the namespace.
+
+Namespaces and entities declared outside of any namespace will be in the //root// namespace.
+
+= Links =
+
+Another important notion is the one of links : you can create an entity which value will be the same as another, and if you modify one, the other will be changed too.
+
+The syntax to declare a link is the following : ``"name" : @/path/to/linked@``. You can declare links to entities and to namespaces the same way.
+
+
