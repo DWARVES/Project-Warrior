@@ -10,7 +10,7 @@ This guide will assume you are familiar with //FakeFS// and font creating concep
 
 = Principle =
 
-Each element of the gui have its own subdirectory containing the pictures and fonts it needs. There also is one fakefs file in the gui theme directory containing a namespace for every element of the gui. We will detail what can and/or must be setted in this directories and namespaces.
+Each element of the gui have its own subdirectory containing the pictures and fonts it needs. There also is one fakefs file in the gui theme directory containing a namespace for every element of the gui. We will detail what can and/or must be setted in this directories and namespaces. When the contrary is not explicitly said, the entities and textures are required and the game will fail if they are not present.
 
 = Widgets =
 == GridLayout ==
@@ -43,4 +43,70 @@ It also needs a ``checkbox`` namespace, with some entities :
 - ``square`` : A boolean (0 or 1) indicating if the checkbox must be draw as a square instead of a rectangle.
 
 
+== List ==
+
+A //List// is a set of items, allowing to select one of them. It needs a ``list``directory, with some textures. The list itself doesn't use the textures but the item do.
+
+An item need three textures and a font :
++ A texture which is the right part of the item.
++ A texture which is the left part of the item.
++ A texture which will be expanded at the center of the item : the text will be blitted in this part.
+
+
+A list item can have three states, and every one of them needs the three textures and a font :
+- //selected// : the item has been selected : the textures are ``rs.png``, ``ms.png``, ``ls.png`` and the font is ``fs.wf``.
+- //focused// : the item is the one focused : the textures are ``rf.png``, ``mf.png``, ``lf.png`` and the font is ``ff.wf``.
+- //normal// : the item is neither focused nor selected : the textures are ``r.png``, ``m.png``, ``l.png`` and the font is ``f.wf``.
+
+
+The list also requires a ``list`` namespace, in which there will be the width ``itemw`` and the height ``itemh`` of the items.
+
+== ScrollBar ==
+
+A //ScrollBar// allows the selection of a subpart of a whole. It uses height textures in a ``scrollbar`` directory :
++ ``up.png`` and ``upS.png`` : the up arrow of the scrollbar in normal and selected mode.
++ ``down.png`` and ``downS.png`` : the down arrow of the scrollbar in normal and selected mode.
++ ``norm.png`` and ``normS.png`` : the middle of the scrollbar, will be expanded.
++ ``sel.png`` and ``selS.png`` : the selection part of the scrollbar.
+
+
+It also requires a namespace ``scrollbar`` with a ``ratio`` entity, the ratio of the height with the width.
+
+== Text ==
+
+A //Text// just displays a multi lines text. It requires a ``text`` directory with a ``font.wf`` font and a ``text`` namespace with the size of the font ``font_size``.
+
+== Input ==
+
+An //Input// allows the user to enter a multi lines text. It requires a ``text`` directory with a ``font.wf`` font and a ``text`` namespace with the size of the font ``font_size``.
+
+== Frame ==
+
+A //frame// draws a box around another widget. It requires a ``frame`` directory with nine textures :
++ ``top.png`` : the top of the box.
++ ``bottom.png`` : the bottom of the box.
++ ``left.png`` : the left of the box.
++ ``right.png`` : the right of the box.
++ ``tl.png`` : the top left corner of the box.
++ ``tr.png`` : the top right corner of the box.
++ ``bl.png`` : the bottom left corner of the box.
++ ``br.png`` : the bottom right corner of the box.
++ ``bg.png`` : the background of the box.
+
+
+It also needs a ``frame`` namespace with three entities :
++ ``use_bg`` : a boolean indicating if the background must be used.
++ ``bg_fill`` : a boolean indicating if the background must fill the whole frame or be shrunk to the inside of the corners.
++ ``borders`` : the width of the borders, in pixels.
+
+
+== Button ==
+
+A button is a selectable widget. It is drawn the same way of an item of a list, so it needs the same pictures in a ``button`` directory.
+
+It also have a max width ``width`` and a max height ``height``, along with a max font size ``pts`` in a ``button`` namespace.
+
+== Radio ==
+
+A //RadioButton// is like a checkbox, but it can be grouped with others, to make sure only one at the same time is selected. It needs the same pictures and entities as a checkbox, but in a ``radio`` directory/namespace.
 
