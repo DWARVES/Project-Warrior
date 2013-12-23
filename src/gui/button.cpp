@@ -4,7 +4,7 @@
 namespace gui
 {
     Button::Button(graphics::Graphics* gfx)
-        : Widget(gfx), m_it(gfx), m_last(0), m_focus(false), m_msize(-1.0f, -1.0f)
+        : Widget(gfx), m_it(gfx), m_last(0), m_focus(false), m_msize(-1.0f, -1.0f), m_clicked(false)
     {
         m_it.resize(false);
     }
@@ -87,8 +87,10 @@ namespace gui
 
     bool Button::action(Widget::Action a)
     {
+        m_clicked = false;
         if(a == Widget::Select) {
             select();
+            m_clicked = true;
             m_last = SDL_GetTicks();
             return true;
         }
@@ -98,6 +100,11 @@ namespace gui
 
     void Button::select()
     {
+    }
+            
+    bool Button::clicked() const
+    {
+        return m_clicked;
     }
 }
 
