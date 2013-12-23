@@ -68,6 +68,11 @@ namespace gui
         m_bg = value;
         m_strict = strict;
     }
+            
+    bool Frame::strictBg() const
+    {
+        return m_strict;
+    }
 
     Widget* Frame::getWidget() const
     {

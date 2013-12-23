@@ -49,6 +49,8 @@ namespace gui
              * @param strict If false, the background will take the whole width and height, event the borders.
              */
             void setBg(const std::string& value, bool strict = true);
+            /** @brief Indicates if the background is in strict mode. */
+            bool strictBg() const;
 
             /* Widget in */
             /** @brief The the widget to put in the frame. */
