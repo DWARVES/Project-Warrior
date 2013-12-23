@@ -25,7 +25,20 @@ MainMenu::~MainMenu()
 
 bool MainMenu::prepare()
 {
-    /* Load the texture if necessary. */
+    /* Load the music if necessary. */
+    if(!global::audio->enterNamespace("/menus")) {
+        if(!global::audio->createNamespace("/menus"))
+            return false;
+        global::audio->enterNamespace("/menus");
+
+        std::ostringstream path;
+        path << global::cfg->get<std::string>("rcs") << "/sounds/menu.music";
+        if(!global::audio->loadMusic("mus", path.str()))
+            return false;
+    }
+    global::audio->play("mus", false);
+
+    /* Load the textures if necessary. */
     if(!global::gfx->enterNamespace("/mainmenu")) {
         if(!global::gfx->createNamespace("/mainmenu"))
             return false;
