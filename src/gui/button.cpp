@@ -87,7 +87,6 @@ namespace gui
 
     bool Button::action(Widget::Action a)
     {
-        m_clicked = false;
         if(a == Widget::Select) {
             select();
             m_clicked = true;
@@ -104,7 +103,12 @@ namespace gui
             
     bool Button::clicked() const
     {
-        return m_clicked;
+        if(m_clicked) {
+            m_clicked = false;
+            return true;
+        }
+        else
+            return false;
     }
 }
 

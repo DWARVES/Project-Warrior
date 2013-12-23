@@ -59,7 +59,7 @@ namespace gui
 
             /** @brief It's called every time the button is clicked, but do nothing. It's useful when overriding it. */
             virtual void select();
-            /** @brief Indicates if the button has been clicked in last gui update. */
+            /** @brief Indicates if the button has been clicked in last gui update. Can be called only once for each gui update. */
             bool clicked() const;
 
         private:
@@ -67,7 +67,7 @@ namespace gui
             Uint32 m_last;          /**< @brief The last time it was clicked. */
             bool m_focus;           /**< @brief Is the button focused. */
             geometry::AABB m_msize; /**< @brief The maximum size to use. */
-            bool m_clicked;         /**< @brief Has the button been clicked in last gui update. */
+            mutable bool m_clicked;         /**< @brief Has the button been clicked in last gui update. */
     };
 }
 
