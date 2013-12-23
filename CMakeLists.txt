@@ -77,7 +77,11 @@ endif(DOXYGEN_FOUND)
 
 # i18n support with gnu gettext
 set(DOMAIN "warrior")
-set(SRCS src/main.cpp) # Files with text to translate.
+# Files with text to translate.
+set(SRCS src/main.cpp
+    src/menus/mainmenu.cpp
+    src/menus/aboutmenu.cpp
+    )
 add_custom_target(extract_text xgettext -d ${DOMAIN} --c++ -i -F -k_i -o ${DOMAIN}.pot ${SRCS}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Extract the translatable texts from the source code with xgettext." VERBATIM
