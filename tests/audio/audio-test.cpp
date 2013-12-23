@@ -77,11 +77,11 @@ int main()
                             break;
                         case SDLK_RETURN:
                             aud->enterNamespace("/musics");
-                            aud->play("raw", 1, &cb);
+                            aud->play("raw", true, 1, &cb);
                             break;
                         case SDLK_SPACE:
                             aud->enterNamespace("/musics");
-                            aud->play("mus", 3);
+                            aud->play("mus", true, 3);
                             break;
                         case SDLK_e:
                             aud->enterNamespace("/musics");
