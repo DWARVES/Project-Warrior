@@ -23,6 +23,7 @@ class MainMenu : public Menu
         ButtonMenu* m_play;        /**< @brief The button for the play menu. */
         ButtonMenu* m_cfg;         /**< @brief The button for the config menu. */
         ButtonMenu* m_about;       /**< @brief The button for the about menu. */
+        gui::Button* m_quit;       /**< @brief The button for quitting. */
         gui::GridLayout* m_layout; /**< @brief The layout. */
         Menu* m_actual;            /**< @brief The actual submenu is in, NULL if none. */
 };
