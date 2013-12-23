@@ -75,6 +75,8 @@ int main(int argc, char *argv[])
         while(menu.update())
         {
             global::evs->update();
+            if(global::evs->quit() || global::evs->closed())
+                break;
             /** @todo Framerate control. */
         }
     }
