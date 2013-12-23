@@ -73,8 +73,12 @@ bool AboutMenu::prepare()
 bool AboutMenu::update()
 {
     global::gui->update(*global::evs);
-    if(m_back->clicked())
+    if(m_back->clicked()) {
+        if(global::audio->enterNamespace("/menubutton")
+                && global::audio->rctype("click") == audio::Audio::SOUND)
+            global::audio->play("click");
         return false;
+    }
 
     /* Drawing, use the bg of the mainmenu */
     global::gfx->enterNamespace("/mainmenu");
