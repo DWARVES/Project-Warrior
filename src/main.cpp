@@ -66,17 +66,26 @@ int main(int argc, char *argv[])
     core::logger::popBlock();
 
     /* The main loop. */
+    /** @todo Separate main loop from main. */
     try {
         MainMenu menu;
         if(!menu.prepare())
             throw init_exception("Couldn't prepare the main menu.");
         global::gui->focus(true);
+        global::evs->openJoysticks();
+        global::evs->enableInput(false);
 
         while(menu.update())
         {
             global::evs->update();
             if(global::evs->quit() || global::evs->closed())
                 break;
+            if(global::evs->joysticksChanged()) {
+                std::vector<events::JoystickID> news = global::evs->lastJoysticksAdded();
+                for(events::JoystickID id : news)
+                    global::evs->openJoystick(id);
+            }
+
             /** @todo Framerate control. */
             global::audio->update();
         }
