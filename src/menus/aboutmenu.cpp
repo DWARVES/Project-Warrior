@@ -51,7 +51,7 @@ bool AboutMenu::prepare()
 
         m_frame = new gui::Frame(global::gfx);
         global::theme->apply(m_frame);
-        m_frame->setBg("aboutmenubg");
+        m_frame->setBg("aboutmenubg", m_frame->strictBg());
         m_frame->set(m_about);
 
         m_lay = new gui::GridLayout(global::gfx, 1, 10);
