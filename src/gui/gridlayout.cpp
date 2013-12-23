@@ -127,6 +127,7 @@ namespace gui
                 m_map[x][y] = sw;
             }
         }
+        m_focused = sw;
     }
 
     bool GridLayout::removeWidget(unsigned int x, unsigned int y)
