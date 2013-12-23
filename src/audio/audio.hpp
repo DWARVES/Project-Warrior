@@ -137,11 +137,12 @@ namespace audio
              *
              * Only one music can be played at the same time. A new call to this function will simply replace the played music.
              * @param name The name of the music to play. If it's a sound, it will be palyed to the first free chennal, witheout discarding anything. In this case, the others parameters are meaningless, and will be ignored.
+             * @param replay If true, if the playing music is the same as name, it will be played again from beggining.
              * @param loops The number of repetition (using the repetition loop borders). If <= 0, it will be played indefinitly.
              * @param cb A callback to be called at the end of the playing. Its use is only valid if loops > 0.
              * @param tofree If true, cb will be deleted after being called.
              */
-            void play(const std::string& name, int loops = 0, Callback* cb = NULL, bool tofree = false);
+            void play(const std::string& name, bool replay = true, int loops = 0, Callback* cb = NULL, bool tofree = false);
             /** @brief Plays only the end of a music (can be used for transitions for example).
              *
              * It will discard the music played to replace it.
@@ -165,6 +166,7 @@ namespace audio
             int m_beg,            /**< @brief The beggining of the repetition loop for the actual music. */
                 m_end;            /**< @brief The end of the repetition loop for the actual music. */
             bool m_playing;       /**< @brief Indicates if a music is actually being played. */
+            std::string m_played; /**< @brief The path to the playing music. */
             bool m_tofree;        /**< @brief Indicate if m_cb must be free'd after being called. */
 
             /*************************

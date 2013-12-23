@@ -209,7 +209,7 @@ namespace audio
         return m_fs.getEntityValue(name)->stored.music->eloop();
     }
 
-    void Audio::play(const std::string& name, int loops, Audio::Callback* cb, bool tofree)
+    void Audio::play(const std::string& name, bool replay, int loops, Audio::Callback* cb, bool tofree)
     {
         RcType t = rctype(name);
         if(t == NONE) {
@@ -223,6 +223,12 @@ namespace audio
         }
 
         else if(t == MUSIC) {
+            std::string toplay = actualNamespace() + "/" + name;
+            toplay = core::path::cleanSep(toplay);
+            if(toplay == m_played && !replay)
+                return;
+            m_played = toplay;
+
             if(loops <= 0) loops = -1;
             internal::Music* mus = m_fs.getEntityValue(name)->stored.music;
             Mix_PlayMusic(mus->get(), 1);
@@ -246,7 +252,7 @@ namespace audio
     {
         if(rctype(name) != MUSIC)
             return;
-        play(name, 0, cb, tofree);
+        play(name, true, 0, cb, tofree);
         Mix_RewindMusic(); /* Only necessary for mp3 musics */
         Mix_SetMusicPosition(m_end);
     }
