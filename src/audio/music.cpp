@@ -80,6 +80,14 @@ namespace audio
                 m_eloop = 10000;
             }
 
+            if(m_bloop > m_eloop) {
+                std::ostringstream oss;
+                oss << "Music file \"" << path << "\" has invalid bloop and eloop : " << m_bloop << "->" << m_eloop << ".";
+                core::logger::logm(oss.str(), core::logger::WARNING);
+                m_bloop = 0;
+                m_eloop = 10000;
+            }
+
             return true;
         }
 
