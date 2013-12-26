@@ -100,7 +100,7 @@ int main()
         gfx->beginDraw();
         gfx->draw(bg, bgc);
         gfx->move(20.0f, 250.0f);
-        gfx->draw("Press A for sound !", "font", 20);
+        gfx->draw("Press A for sound !\nPress return for music 1 !\nPress space for music 2 !", "font", 40);
         gfx->endDraw();
     }
 
