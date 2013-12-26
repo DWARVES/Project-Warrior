@@ -234,8 +234,8 @@ namespace audio
             Mix_PlayMusic(mus->get(), 1);
             m_loops = loops;
             m_cb = cb;
-            m_beg = mus->bloop();
-            m_end = mus->eloop();
+            m_beg = mus->bloop() * 1000;
+            m_end = mus->eloop() * 1000;
             m_btime = SDL_GetTicks();
             m_playing = true;
             m_tofree = tofree;
@@ -263,12 +263,10 @@ namespace audio
             return;
 
         Uint32 time = SDL_GetTicks() - m_btime;
-        int secs = time / 1000;
-
-        if(secs > m_end && m_loops > 0) { /* The music has reached the end of a loop */
+        if(time > m_end && m_loops > 0) { /* The music has reached the end of a loop */
             m_btime = SDL_GetTicks() - m_beg;
             Mix_RewindMusic(); /* Only necessary for mp3 music */
-            Mix_SetMusicPosition(m_beg);
+            Mix_SetMusicPosition(m_beg/1000);
             --m_loops;
             return;
         }

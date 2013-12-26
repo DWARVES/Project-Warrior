@@ -163,8 +163,8 @@ namespace audio
             Uint32 m_btime;       /**< @brief Time at the beggining of the previous playing loop. */
             Callback* m_cb;       /**< @brief The callback actually setted. */
             int m_loops;          /**< @brief Number of loops still needing to be played, negative if music must be playing indefinitely. */
-            int m_beg,            /**< @brief The beggining of the repetition loop for the actual music. */
-                m_end;            /**< @brief The end of the repetition loop for the actual music. */
+            unsigned int m_beg,   /**< @brief The beggining of the repetition loop for the actual music in milliseconds. */
+                         m_end;   /**< @brief The end of the repetition loop for the actual music in milliseconds. */
             bool m_playing;       /**< @brief Indicates if a music is actually being played. */
             std::string m_played; /**< @brief The path to the playing music. */
             bool m_tofree;        /**< @brief Indicate if m_cb must be free'd after being called. */
