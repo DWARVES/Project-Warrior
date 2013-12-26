@@ -263,11 +263,12 @@ namespace audio
             return;
 
         Uint32 time = SDL_GetTicks() - m_btime;
-        if(time > m_end && m_loops > 0) { /* The music has reached the end of a loop */
+        if(time > m_end && m_loops != 0) { /* The music has reached the end of a loop */
             m_btime = SDL_GetTicks() - m_beg;
             Mix_RewindMusic(); /* Only necessary for mp3 music */
             Mix_SetMusicPosition(m_beg/1000);
-            --m_loops;
+            if(m_loops > 0)
+                --m_loops;
             return;
         }
 
