@@ -7,9 +7,7 @@
 #include "gui/gridlayout.hpp"
 #include "gui/button.hpp"
 
-/** @brief Manages the main menu.
- * @todo Play music.
- */
+/** @brief Manages the main menu. */
 class MainMenu : public Menu
 {
     public:

@@ -24,7 +24,6 @@ class ButtonMenu : public gui::Button
         void applyTheme(gui::Theme* th);
         virtual void draw();
 
-        /** @todo Add sounds. */
         virtual void select();
 
     private:
