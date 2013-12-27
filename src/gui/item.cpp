@@ -233,7 +233,7 @@ namespace gui
                 size += extSize;
 
             /* The right part fit in */
-            if(m_gfx->stringWidth(font, rtext, fontSize) + size < actualWidth) {
+            if(m_gfx->stringWidth(font, rtext, fontSize) + size <= actualWidth) {
                 m_rbound = m_text.size();
                 m_rext = false;
                 return;
