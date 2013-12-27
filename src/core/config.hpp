@@ -69,10 +69,16 @@ namespace core
             void dump(std::ostream& os);
 
             /** @brief Get the value of an option.
-             * @tparam The type of the option. The must be an overload of operator>>(std::istream&, T).
+             * @tparam The type of the option. There must be an overload of operator>>(std::istream&, T).
              * @param name The name of the option. If the option doesn't exists, a core::ConfigBadKeyException will be thrown.
              */
             template <typename T> T get(const std::string& name);
+            /** @brief Set the value of an option.
+             * @tparam The type of the option. There must be an overload of operator<<(std::ostream&, T).
+             * @param name The name of the option. If the option doesn't exists, a core::ConfigBadKeyException will be thrown.
+             * @param value The value to set to the option.
+             */
+            template <typename T> void set(const std::string& name, const T& value);
 
         private:
             std::unordered_map<char,std::string> m_shorts; /**< @brief A map associating the shorts name to the long ones. */
@@ -139,6 +145,20 @@ namespace core
         T value;
         iss >> value;
         return value;
+    }
+            
+    template <typename T> void Config::set(const std::string& name, const T& value)
+    {
+        if(!m_fs.existsEntity(name)) {
+            std::ostringstream oss;
+            oss << "Tryed to set the value of unregistered \"" << name << "\" option to \"" << value << "\".";
+            logger::logm(oss.str(), logger::WARNING);
+            throw ConfigBadKeyException(name.c_str());
+        }
+
+        std::ostringstream oss;
+        oss << value;
+        m_fs.setEntityValue(name, oss.str());
     }
 }
 
