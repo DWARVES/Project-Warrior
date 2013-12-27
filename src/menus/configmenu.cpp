@@ -1,5 +1,6 @@
 
 #include "configmenu.hpp"
+#include "graphicsmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 
@@ -47,7 +48,7 @@ bool ConfigMenu::prepare()
         m_list = new MenuList(&m_actual);
         global::theme->apply(m_list);
         /** @todo add submenus. */
-        m_list->addItem(0, _i("TMP test."), 0.0f, NULL);
+        m_list->addItem(0, _i("Graphics."), 0.0f, new GraphicsMenu);
 
         m_back = new gui::Button(global::gfx);
         m_back->text(_i("Back to main menu."));
