@@ -83,6 +83,27 @@ namespace graphics
         }
         m_win = NULL;
     }
+            
+    std::vector<geometry::AABB> Graphics::windowRes(float minw, float minh) const
+    {
+        std::vector<geometry::AABB> ret;
+        ret.reserve(10);
+
+        /** @todo Handle multiple screens. */
+        /** @todo Handle format of screen. */
+        SDL_DisplayMode mode;
+        for(int i = 0; i < SDL_GetNumDisplayModes(0); ++i) {
+            if(SDL_GetDisplayMode(0, i, &mode) < 0) {
+                std::ostringstream oss;
+                oss << "Error retrieving display mode #" << i << " : \"" << SDL_GetError() << "\".";
+                core::logger::logm(oss.str(), core::logger::WARNING);
+                continue;
+            }
+            if(mode.w >= minw && mode.h >= minh)
+                ret.push_back( geometry::AABB((float)mode.w, (float)mode.h) );
+        }
+        return ret;
+    }
 
     int Graphics::windowWidth() const
     {

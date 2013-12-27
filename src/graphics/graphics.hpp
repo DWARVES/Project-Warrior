@@ -46,6 +46,8 @@ namespace graphics
             bool openFullscreenWindow(const std::string& name, int minw = 0, int minh = 0);
             /** @brief Closes the window. */
             void closeWindow();
+            /** @brief Get all the possible resolutions above the given one. */
+            std::vector<geometry::AABB> windowRes(float minw = 0.0f, float minh = 0.0f) const;
             /** @brief Returns the window height. */
             int windowWidth() const;
             /** @brief Returns the window width. */

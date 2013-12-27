@@ -37,6 +37,11 @@ int main()
         std::cout << "Poping a matrix." << std::endl;
     }
 
+    /* Print the resolutions available. */
+    std::vector<geometry::AABB> res = gfx->windowRes();
+    for(size_t i = 0; i < res.size(); ++i)
+        std::cout << "#" << i << " : " << res[i].width << "x" << res[i].height << std::endl;
+
     /* Textures */
     gfx->createNamespace("pictures");
     gfx->enterNamespace("pictures");
