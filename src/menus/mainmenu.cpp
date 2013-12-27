@@ -1,6 +1,7 @@
 
 #include "mainmenu.hpp"
 #include "aboutmenu.hpp"
+#include "configmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 #include <sstream>
@@ -59,7 +60,7 @@ bool MainMenu::prepare()
         m_play->text(_i("Play"));
         m_play->applyTheme(global::theme);
 
-        m_cfg = new ButtonMenu(global::gfx, &m_actual, new MainMenu, true);
+        m_cfg = new ButtonMenu(global::gfx, &m_actual, new ConfigMenu, true);
         m_cfg->text(_i("Config"));
         m_cfg->applyTheme(global::theme);
 

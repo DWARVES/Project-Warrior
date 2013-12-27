@@ -9,5 +9,6 @@ add_library(${lib}
     menu.cpp       menu.hpp
     mainmenu.cpp   mainmenu.hpp
     aboutmenu.cpp  aboutmenu.hpp
+    configmenu.cpp configmenu.hpp
 	)
 
