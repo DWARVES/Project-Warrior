@@ -180,6 +180,9 @@ namespace graphics
      *************************/
     void Graphics::setVirtualSize(float w, float h)
     {
+        if(std::abs(w - m_virtualW) < epsilon
+                && std::abs(h - m_virtualH) < epsilon)
+            return;
         m_virtualW = w;
         m_virtualH = h;
         computeBands();
