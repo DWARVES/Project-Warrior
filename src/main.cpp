@@ -67,38 +67,40 @@ int main(int argc, char *argv[])
 
     /* The main loop. */
     /** @todo Separate main loop from main. */
-    try {
-        MainMenu menu;
-        if(!menu.prepare())
-            throw init_exception("Couldn't prepare the main menu.");
-        global::gui->focus(true);
-        global::evs->openJoysticks();
-        global::evs->enableInput(false);
+    if(retcode == 0) {
+        try {
+            MainMenu menu;
+            if(!menu.prepare())
+                throw init_exception("Couldn't prepare the main menu.");
+            global::gui->focus(true);
+            global::evs->openJoysticks();
+            global::evs->enableInput(false);
 
-        while(menu.update())
-        {
-            global::evs->update();
-            if(global::evs->quit() || global::evs->closed())
-                break;
-            if(global::evs->joysticksChanged()) {
-                std::vector<events::JoystickID> news = global::evs->lastJoysticksAdded();
-                for(events::JoystickID id : news)
-                    global::evs->openJoystick(id);
+            while(menu.update())
+            {
+                global::evs->update();
+                if(global::evs->quit() || global::evs->closed())
+                    break;
+                if(global::evs->joysticksChanged()) {
+                    std::vector<events::JoystickID> news = global::evs->lastJoysticksAdded();
+                    for(events::JoystickID id : news)
+                        global::evs->openJoystick(id);
+                }
+
+                /** @todo Framerate control. */
+                global::audio->update();
             }
-
-            /** @todo Framerate control. */
-            global::audio->update();
         }
-    }
-    catch(const std::exception& e) {
-        std::ostringstream oss;
-        oss << "An exception was thrown during the execution : \"" << e.what() << "\".";
-        core::logger::logm(oss.str(), core::logger::FATAL);
-        retcode = 1;
-    }
-    catch(...) {
-        core::logger::logm("An unknown exception was thrown during the execution.", core::logger::FATAL);
-        retcode = 1;
+        catch(const std::exception& e) {
+            std::ostringstream oss;
+            oss << "An exception was thrown during the execution : \"" << e.what() << "\".";
+            core::logger::logm(oss.str(), core::logger::FATAL);
+            retcode = 1;
+        }
+        catch(...) {
+            core::logger::logm("An unknown exception was thrown during the execution.", core::logger::FATAL);
+            retcode = 1;
+        }
     }
 
     /* Free everything. */
