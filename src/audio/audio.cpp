@@ -286,7 +286,7 @@ namespace audio
 
     unsigned char Audio::clamp(unsigned char volume) const
     {
-        float fact = MIX_MAX_VOLUME / 255;
+        float fact = (float)MIX_MAX_VOLUME / 255.0f;
         return static_cast<unsigned char>(float(volume) * fact);
     }
     
