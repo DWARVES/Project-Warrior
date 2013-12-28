@@ -150,7 +150,18 @@ namespace gui
                     return false;
                 break;
             case Widget::ScrollUp:
+                if(!m_vert)
+                    return false;
+                if(m_filled > 0.0f) {
+                    m_filled = std::max(m_filled - m_step, 0.0f);
+                    return true;
+                }
+                else
+                    return false;
+                break;
             case Widget::ScrollLeft:
+                if(m_vert)
+                    return false;
                 if(m_filled > 0.0f) {
                     m_filled = std::max(m_filled - m_step, 0.0f);
                     return true;
@@ -159,7 +170,18 @@ namespace gui
                     return false;
                 break;
             case Widget::ScrollDown:
+                if(!m_vert)
+                    return false;
+                if(m_filled < m_size) {
+                    m_filled = std::min(m_filled + m_step, m_size);
+                    return true;
+                }
+                else
+                    return false;
+                break;
             case Widget::ScrollRight:
+                if(m_vert)
+                    return false;
                 if(m_filled < m_size) {
                     m_filled = std::min(m_filled + m_step, m_size);
                     return true;
