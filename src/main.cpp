@@ -107,6 +107,7 @@ int main(int argc, char *argv[])
     freeEverything();
     core::logger::logm(">>> End of the execution <<<", core::logger::MSG);
     core::logger::free();
+    SDL_Quit();
     return retcode;
 }
 
@@ -133,6 +134,12 @@ void loadConfig(int argc, char *argv[])
     /* Parses the command line. */
     if(!global::cfg->args(argc, argv))
         throw init_exception("Couldn't parse the command line arguments.");
+
+    /* Print the help. */
+    if(global::cfg->get<bool>("help")) {
+        global::cfg->help(std::cout);
+        throw init_exception("Ending after printing help.");
+    }
 
     /* Parses the config file. */
     std::string path = global::cfg->get<std::string>("config");
