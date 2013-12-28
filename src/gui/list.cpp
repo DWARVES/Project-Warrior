@@ -78,6 +78,7 @@ namespace gui
     {
         while(!m_items.empty())
             deleteItem(0);
+        m_selected = 0;
         updateState();
     }
 
