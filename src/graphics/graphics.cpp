@@ -83,6 +83,27 @@ namespace graphics
         }
         m_win = NULL;
     }
+
+    bool Graphics::windowSize(int width, int height)
+    {
+        SDL_SetWindowSize(m_win, width, height); 
+        return true;
+    }
+            
+    bool Graphics::setFullscreen(bool fs)
+    {
+        Uint32 flags = 0;
+        if(fs)
+            flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
+
+        if(SDL_SetWindowFullscreen(m_win, flags) < 0) {
+            std::ostringstream oss;
+            oss << "Couldn't change window fullscreen state : \"" << SDL_GetError() << "\".";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            return false;
+        }
+        return true;
+    }
             
     std::vector<geometry::AABB> Graphics::windowRes(float minw, float minh) const
     {

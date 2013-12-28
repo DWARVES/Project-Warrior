@@ -46,6 +46,10 @@ namespace graphics
             bool openFullscreenWindow(const std::string& name, int minw = 0, int minh = 0);
             /** @brief Closes the window. */
             void closeWindow();
+            /** @brief Resizes the window, only valid in windowed mode. */
+            bool windowSize(int width, int height);
+            /** @brief Set the window fullscreen/windowed. */
+            bool setFullscreen(bool fs);
             /** @brief Get all the possible resolutions above the given one. */
             std::vector<geometry::AABB> windowRes(float minw = 0.0f, float minh = 0.0f) const;
             /** @brief Returns the window height. */
