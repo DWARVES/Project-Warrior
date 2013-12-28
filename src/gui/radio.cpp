@@ -101,22 +101,27 @@ namespace gui
         return m_box.get();
     }
 
+    void Radio::label(const std::string& lab)
+    {
+        m_box.label(lab);
+    }
+
+    std::string Radio::label() const
+    {
+        return m_box.label();
+    }
+
     void Radio::setTexture(bool f, const std::string& empty, const std::string& selected)
     {
         m_box.setTexture(f, empty, selected);
     }
-
-    bool Radio::square(bool s)
+            
+    void Radio::setFont(bool f, const std::string& font)
     {
-        return m_box.square(s);
+        m_box.setFont(f, font);
     }
 
-    bool Radio::square() const
-    {
-        return m_box.square();
-    }
-
-    void Radio::maxSize(geometry::AABB m)
+    void Radio::maxSize(float m)
     {
         m_box.maxSize(m);
     }

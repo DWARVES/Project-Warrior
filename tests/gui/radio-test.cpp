@@ -41,6 +41,12 @@ int main()
     /* Loading the radio buttons*/
     gui::Radio a1(gfx, "g1"), a2(gfx, "g1"), a3(gfx, "g1");
     gui::Radio b1(gfx, "g2"), b2(gfx, "g2"), b3(gfx, "g2");
+    a1.label("First radio.");
+    a2.label("Select me !");
+    a3.label("g1 end.");
+    b1.label("g2 in force !");
+    b2.label("Click click ...");
+    b3.label("I'm the last.");
     theme.apply(&a1);
     theme.apply(&a2);
     theme.apply(&a3);

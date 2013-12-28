@@ -42,6 +42,10 @@ namespace gui
             bool select();
             /** @brief Is the radio button selected. */
             bool get() const;
+            /** @brief Set the label of the radiobutton. */
+            void label(const std::string& lab);
+            /** @brief Get the label of the radiobutton. */
+            std::string label() const;
 
             /* Textures */
             /** @brief Set the textures used.
@@ -50,14 +54,15 @@ namespace gui
              * @param selected The texture used when selected.
              */
             void setTexture(bool f, const std::string& empty, const std::string& selected);
+            /** @brief Set the font to be used.
+             * @param f Font for focus or not.
+             * @param font The font to use.
+             */
+            void setFont(bool f, const std::string& font);
 
             /* Drawing */
-            /** @brief If setted to true, the size will be the biggest square possible in the size. */
-            bool square(bool s);
-            /** @brief Is the checkbox drawn as a square. */
-            bool square() const;
             /** @brief Set a maximum size for the checkbox. */
-            void maxSize(geometry::AABB m);
+            void maxSize(float m);
             /** @brief Disable the use of a max size. */
             void disableMaxSize();
             virtual void draw();

@@ -92,6 +92,8 @@ namespace gui
         ret = ret && m_gfx->loadTexture("radio_sel",   m_path + "/radio/sel.png");
         ret = ret && m_gfx->loadTexture("radio_nselS", m_path + "/radio/nselS.png");
         ret = ret && m_gfx->loadTexture("radio_selS",  m_path + "/radio/selS.png");
+        ret = ret && m_gfx->loadFont   ("radio_font",  m_path + "/radio/font.wf");
+        ret = ret && m_gfx->loadFont   ("radio_fontS", m_path + "/radio/fontS.wf");
 
         /* Loading the data */
         m_data.clear();
@@ -184,12 +186,10 @@ namespace gui
         if(!m_data.existsNamespace("/radio"))
             return false;
         m_data.enterNamespace("/radio");
-        if(!m_data.existsEntity("width") || !m_data.existsEntity("height"))
+        if(!m_data.existsEntity("maxSize"))
             m_rdMs = false;
         else
             m_rdMs = true;
-        if(!m_data.existsEntity("square"))
-            return false;
         return true;
     }
 
@@ -306,16 +306,14 @@ namespace gui
             
     void Theme::apply(Radio* r)
     {
-    /*
         r->setTexture(false, "radio_nsel",  "radio_sel");
         r->setTexture(true,  "radio_nselS", "radio_selS");
+        r->setFont(false, "radio_font");
+        r->setFont(true,  "radio_fontS");
         m_data.enterNamespace("/radio");
         if(m_rdMs) {
-            r->maxSize(geometry::AABB(m_data.getEntityValue("width"),
-                        m_data.getEntityValue("height")));
+            r->maxSize(m_data.getEntityValue("maxSize"));
         }
-        r->square(m_data.getEntityValue("square") > 0.0f);
-        */
     }
             
     void Theme::guiNamespace()
