@@ -22,7 +22,6 @@ class GraphicsMenu : public Menu
     private:
         gui::List* m_res;          /**< @brief The resolutions available. */
         gui::CheckBox* m_fs;       /**< @brief Must the window be fullscreen. */
-        gui::Text* m_fslabel;      /**< @brief The label of the checkbox. */
         gui::Button* m_back;       /**< @brief Get back to config menu discarding the changes. */
         gui::Button* m_apply;      /**< @brief Apply the changes. */
         gui::GridLayout* m_layout; /**< @brief The layout of the menu. */

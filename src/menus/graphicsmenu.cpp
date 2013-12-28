@@ -5,7 +5,7 @@
 #include <sstream>
 
 GraphicsMenu::GraphicsMenu()
-    : Menu(), m_res(NULL), m_fs(NULL), m_fslabel(NULL), m_back(NULL), m_apply(NULL), m_layout(NULL)
+    : Menu(), m_res(NULL), m_fs(NULL), m_back(NULL), m_apply(NULL), m_layout(NULL)
 {}
 
 GraphicsMenu::~GraphicsMenu()
@@ -34,21 +34,18 @@ bool GraphicsMenu::prepare()
         global::theme->apply(m_apply);
 
         m_fs = new gui::CheckBox(global::gfx);
+        m_fs->label(_i("Fullscreen"));
         global::theme->apply(m_fs);
-        m_fslabel = new gui::Text(global::gfx);
-        m_fslabel->setText(_i("Fullscreen"));
-        global::theme->apply(m_fslabel);
 
         m_res = new gui::List(global::gfx);
         global::theme->apply(m_res);
 
-        m_layout = new gui::GridLayout(global::gfx, 4, 3);
+        m_layout = new gui::GridLayout(global::gfx, 2, 3);
         global::theme->apply(m_layout);
-        m_layout->addWidget(m_res,     0, 0, 1, 2);
-        m_layout->addWidget(m_fs,      2, 0, 0, 0);
-        m_layout->addWidget(m_fslabel, 3, 0, 0, 0);
-        m_layout->addWidget(m_apply,   2, 1, 1, 0);
-        m_layout->addWidget(m_back,    2, 2, 1, 0);
+        m_layout->addWidget(m_res,     0, 0, 0, 2);
+        m_layout->addWidget(m_fs,      1, 0, 0, 0);
+        m_layout->addWidget(m_apply,   1, 1, 0, 0);
+        m_layout->addWidget(m_back,    1, 2, 0, 0);
     }
 
     /* Populate m_res. */
