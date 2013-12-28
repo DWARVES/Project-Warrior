@@ -47,7 +47,14 @@ namespace graphics
 
     bool Graphics::openFullscreenWindow(const std::string& name, int minw, int minh)
     {
-        m_win = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_DisplayMode mode;
+        if(SDL_GetDesktopDisplayMode(0, &mode) < 0) {
+            core::logger::logm("Couldn't get display mode.", core::logger::WARNING);
+            return false;
+        }
+
+        m_win = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mode.w, mode.h, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
+        internal::Movie::init();
 
         if(!m_win) {
             logWindow(true, false, true);
@@ -86,6 +93,7 @@ namespace graphics
 
     bool Graphics::windowSize(int width, int height)
     {
+        /** @todo Resize context. */
         SDL_SetWindowSize(m_win, width, height); 
         return true;
     }
@@ -94,7 +102,16 @@ namespace graphics
     {
         Uint32 flags = 0;
         if(fs)
-            flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
+            flags = SDL_WINDOW_FULLSCREEN;
+
+        SDL_DisplayMode mode;
+        if(SDL_GetDesktopDisplayMode(0, &mode) < 0) {
+            core::logger::logm("Couldn't get display mode.", core::logger::WARNING);
+            return false;
+        }
+
+        if(flags != 0)
+            return windowSize(mode.w, mode.h);
 
         if(SDL_SetWindowFullscreen(m_win, flags) < 0) {
             std::ostringstream oss;
@@ -111,7 +128,6 @@ namespace graphics
         ret.reserve(10);
 
         /** @todo Handle multiple screens. */
-        /** @todo Handle format of screen. */
         SDL_DisplayMode mode;
         for(int i = 0; i < SDL_GetNumDisplayModes(0); ++i) {
             if(SDL_GetDisplayMode(0, i, &mode) < 0) {
