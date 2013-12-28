@@ -50,6 +50,7 @@ bool GraphicsMenu::prepare()
     }
 
     /* Populate m_res. */
+    m_res->clear();
     std::vector<geometry::AABB> res = global::gfx->windowRes(800, 600);
     for(size_t i = 0; i < res.size(); ++i) {
         std::ostringstream label;
