@@ -35,7 +35,7 @@ ConfigMenu::~ConfigMenu()
     if(m_back)
         delete m_back;
     if(m_list) {
-        /** @todo Free submenus. */
+        m_list->freeData([] (void* data) { delete (Menu*)data; });
         delete m_list;
     }
 }
