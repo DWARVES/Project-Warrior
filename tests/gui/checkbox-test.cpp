@@ -40,6 +40,7 @@ int main()
 
     /* Setting up the checkbox */
     gui::CheckBox cb(gfx);
+    cb.label("A checkbox.");
     theme.apply(&cb);
 
     gui::Gui g(gfx);
@@ -57,8 +58,6 @@ int main()
             cont = false;
         if(ev.keyJustPressed(events::KeyMap::Backspace))
             g.focus(!g.focus());
-        if(ev.keyJustPressed(' '))
-            cb.square(!cb.square());
         g.update(ev);
 
         gfx->beginDraw();

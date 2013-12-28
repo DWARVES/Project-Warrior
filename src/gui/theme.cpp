@@ -29,6 +29,8 @@ namespace gui
         ret = ret && m_gfx->loadTexture("checkbox_sel",   m_path + "/checkbox/sel.png");
         ret = ret && m_gfx->loadTexture("checkbox_nselS", m_path + "/checkbox/nselS.png");
         ret = ret && m_gfx->loadTexture("checkbox_selS",  m_path + "/checkbox/selS.png");
+        ret = ret && m_gfx->loadFont   ("checkbox_font",  m_path + "/checkbox/font.wf");
+        ret = ret && m_gfx->loadFont   ("checkbox_fontS", m_path + "/checkbox/fontS.wf");
 
         /* List */
         ret = ret && m_gfx->loadTexture("list_r",  m_path + "/list/r.png");
@@ -128,12 +130,10 @@ namespace gui
         if(!m_data.existsNamespace("/checkbox"))
             return false;
         m_data.enterNamespace("/checkbox");
-        if(!m_data.existsEntity("width") || !m_data.existsEntity("height"))
+        if(!m_data.existsEntity("maxSize"))
             m_cbMs = false;
         else
             m_cbMs = true;
-        if(!m_data.existsEntity("square"))
-            return false;
 
         if(!m_data.existsNamespace("/gridlayout"))
             return false;
@@ -209,12 +209,12 @@ namespace gui
     {
         cb->setTexture(false, "checkbox_nsel",  "checkbox_sel");
         cb->setTexture(true,  "checkbox_nselS", "checkbox_selS");
+        cb->setFont(false, "checkbox_font");
+        cb->setFont(true,  "checkbox_fontS");
         m_data.enterNamespace("/checkbox");
         if(m_cbMs) {
-            cb->maxSize(geometry::AABB(m_data.getEntityValue("width"),
-                        m_data.getEntityValue("height")));
+            cb->maxSize(m_data.getEntityValue("maxSize"));
         }
-        cb->square(m_data.getEntityValue("square") > 0.0f);
     }
 
     void Theme::apply(GridLayout* gl)
@@ -306,6 +306,7 @@ namespace gui
             
     void Theme::apply(Radio* r)
     {
+    /*
         r->setTexture(false, "radio_nsel",  "radio_sel");
         r->setTexture(true,  "radio_nselS", "radio_selS");
         m_data.enterNamespace("/radio");
@@ -314,6 +315,7 @@ namespace gui
                         m_data.getEntityValue("height")));
         }
         r->square(m_data.getEntityValue("square") > 0.0f);
+        */
     }
             
     void Theme::guiNamespace()
