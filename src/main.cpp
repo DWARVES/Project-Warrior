@@ -116,17 +116,19 @@ void loadConfig(int argc, char *argv[])
 
     /* Defines the options. */
     /* Global options */
-    global::cfg->define("help", 0, _i("Display an help message and quit."), false);
+    global::cfg->define("help",    0,  _i("Display an help message and quit."), false);
     global::cfg->define("config", 'c', _i("The path to the config file."), "/etc/warrior.cfg");
-    global::cfg->define("rcs", 'r', _i("The path to the ressources directory."), "/usr/share/warrior/rcs");
+    global::cfg->define("rcs",    'r', _i("The path to the ressources directory."), "/usr/share/warrior/rcs");
     /* Graphics options */
     global::cfg->define("fullscreen", 'F', _i("A boolean indicating if the game must run in fullscreen mode. You can't precise the size : the desktop size will automaticly be used."), false);
-    global::cfg->define("resw", 'W', _i("The width of the window in pixels."), 1024);
-    global::cfg->define("resh", 'H', _i("The height of the window in pixels."), 768);
-    global::cfg->define("guitheme", 'T', _i("The path to the gui theme."), "/usr/share/warrior/guirc");
-    global::cfg->define("name", 0, _i("The name of the window."), "Project Warror");
+    global::cfg->define("resw",       'W', _i("The width of the window in pixels."), 1024);
+    global::cfg->define("resh",       'H', _i("The height of the window in pixels."), 768);
+    global::cfg->define("guitheme",   'T', _i("The path to the gui theme."), "/usr/share/warrior/guirc");
+    global::cfg->define("name",        0,  _i("The name of the window."), "Project Warror");
     /* Audio options */
     global::cfg->define("frequence", 0, _i("The frequence of the audio output."), 44100);
+    global::cfg->define("sounds",    0, _i("The volume of the sounds, between 0 and 255."), 255);
+    global::cfg->define("music",     0, _i("The volume of the music, between 0 and 255."), 200);
 
     /* Parses the command line. */
     if(!global::cfg->args(argc, argv))
@@ -182,6 +184,8 @@ void loadAudio()
     global::audio = new audio::Audio;
     if(!global::audio->init(global::cfg->get<int>("frequence")))
         throw init_exception("Couldn't initialize the audio.");
+    global::audio->musicVolume((unsigned char)global::cfg->get<unsigned int>("music"));
+    global::audio->soundsVolume((unsigned char)global::cfg->get<unsigned int>("sounds"));
 }
 
 void freeEverything()
