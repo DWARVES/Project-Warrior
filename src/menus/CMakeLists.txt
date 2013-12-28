@@ -11,5 +11,6 @@ add_library(${lib}
     aboutmenu.cpp    aboutmenu.hpp
     configmenu.cpp   configmenu.hpp
     graphicsmenu.cpp graphicsmenu.hpp
+    musicmenu.cpp    musicmenu.hpp
 	)
 

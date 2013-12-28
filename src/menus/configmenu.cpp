@@ -1,6 +1,7 @@
 
 #include "configmenu.hpp"
 #include "graphicsmenu.hpp"
+#include "musicmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 
@@ -37,6 +38,7 @@ ConfigMenu::~ConfigMenu()
     if(m_back)
         delete m_back;
     if(m_list) {
+        /** @todo Free submenus. */
         delete m_list;
     }
 }
@@ -48,6 +50,7 @@ bool ConfigMenu::prepare()
         m_list = new MenuList(&m_actual);
         global::theme->apply(m_list);
         /** @todo add submenus. */
+        m_list->addItem(0, _i("Music."),    0.0f, new MusicMenu);
         m_list->addItem(0, _i("Graphics."), 0.0f, new GraphicsMenu);
 
         m_back = new gui::Button(global::gfx);
@@ -93,7 +96,6 @@ bool ConfigMenu::update()
     global::gfx->enterNamespace("/mainmenu");
 
     global::gfx->beginDraw();
-    global::gfx->push();
     global::gfx->draw(rect, "bg");
     global::theme->guiNamespace();
     global::gui->draw();
