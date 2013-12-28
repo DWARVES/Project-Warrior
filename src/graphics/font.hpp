@@ -52,10 +52,11 @@ namespace graphics
                     geometry::Point rb; /**< @brief Right-bottom corner of the letter in the texture. */
                 };
                 std::unordered_map<unsigned int, Letter> m_letters; /**< @brief The map of all letters letters : symbol->Letter. */
-                float m_yspacing; /** @brief Distance between lines. */
-                float m_xspacing; /** @brief Space size. */
-                Texture* m_text;  /** @brief The texture managing the font texture. */
-                Shaders* m_shads; /** @brief The shaders, used to render text. */
+                float m_yspacing; /**< @brief Distance between lines. */
+                float m_xspacing; /**< @brief Space size. */
+                float m_letterSP; /**< @brief Space between letters. */
+                Texture* m_text;  /**< @brief The texture managing the font texture. */
+                Shaders* m_shads; /**< @brief The shaders, used to render text. */
 
                 /* Internal methods */
                 /** @brief Get the color of a pixel in an SDL_Surface. */

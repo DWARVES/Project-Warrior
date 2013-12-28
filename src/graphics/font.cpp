@@ -12,7 +12,7 @@ namespace graphics
     namespace internal
     {
         Font::Font(Shaders* shads)
-            : m_yspacing(0), m_xspacing(0), m_text(NULL), m_shads(shads)
+            : m_yspacing(0.0f), m_xspacing(0.0f), m_letterSP(0.0f), m_text(NULL), m_shads(shads)
         {}
 
         Font::~Font()
@@ -130,7 +130,8 @@ namespace graphics
             }
 
             /* Saving */
-            m_xspacing = (float)wd;
+            m_xspacing = (float)wd/2.0f;
+            m_letterSP = m_xspacing/10.0f;
             m_yspacing = (float)hd;
             bool ret = m_text->loadsdl(surf);
             if(!ret) {
@@ -201,7 +202,7 @@ namespace graphics
                         glTexCoord2f(l.lt.x, l.rb.y); glVertex2f(actPos.x,              actPos.y + l.h * fact);
                     }
                     glEnd();
-                    actPos.x += (float)l.w * fact;
+                    actPos.x += (float)l.w * fact + m_letterSP * fact;
                 }
             }
         }
@@ -227,7 +228,7 @@ namespace graphics
                     height += size;
                 }
                 else if(hasLetter(utf[i]))
-                    widths[act] += (m_letters.find(utf[i])->second.w * fact);
+                    widths[act] += (m_letters.find(utf[i])->second.w * fact + m_letterSP * fact);
                 else
                     widths[act] += (m_xspacing * fact); /* Non existant characters are replaced by spaces */
             }
