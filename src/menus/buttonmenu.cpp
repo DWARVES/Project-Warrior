@@ -26,13 +26,7 @@ void ButtonMenu::select()
 {
     m_menu->prepare();
     *m_feed = m_menu;
-
-    std::string last = global::audio->actualNamespace();
-    if(!global::audio->enterNamespace("/menubutton")
-            || global::audio->rctype("click") != audio::Audio::SOUND)
-        return;
-    global::audio->play("click");
-    global::audio->enterNamespace(last);
+    click();
 }
         
 void ButtonMenu::applyTheme(gui::Theme* th)
@@ -51,5 +45,15 @@ void ButtonMenu::draw()
         fontSize = -1.0f;
     maxFontSize(fontSize);
     Button::draw();
+}
+
+void ButtonMenu::click()
+{
+    std::string last = global::audio->actualNamespace();
+    if(!global::audio->enterNamespace("/menubutton")
+            || global::audio->rctype("click") != audio::Audio::SOUND)
+        return;
+    global::audio->play("click");
+    global::audio->enterNamespace(last);
 }
 

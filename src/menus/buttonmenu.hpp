@@ -23,8 +23,12 @@ class ButtonMenu : public gui::Button
         /** @brief Get the default theme of a button, and eventually change it a little. */
         void applyTheme(gui::Theme* th);
         virtual void draw();
-
         virtual void select();
+
+        /** @brief Play the sound of the clicked button.
+         * A ButtonMenu must have been created before calling.
+         */
+        static void click();
 
     private:
         Menu** m_feed;   /**< @brief The feedback pointer. */

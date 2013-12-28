@@ -2,6 +2,7 @@
 #include "configmenu.hpp"
 #include "graphicsmenu.hpp"
 #include "musicmenu.hpp"
+#include "buttonmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 
@@ -20,11 +21,7 @@ void MenuList::enter()
         return;
     *m_feed = menu;
 
-    /* Play a sound. */
-    if(!global::audio->enterNamespace("/menubutton")
-            || global::audio->rctype("click") != audio::Audio::SOUND)
-        return;
-    global::audio->play("click");
+    ButtonMenu::click();
 }
 
 ConfigMenu::ConfigMenu()
@@ -85,9 +82,7 @@ bool ConfigMenu::update()
     global::gui->update(*global::evs);
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
             || m_back->clicked()) {
-        if(global::audio->enterNamespace("/menubutton")
-                && global::audio->rctype("click") == audio::Audio::SOUND)
-            global::audio->play("click");
+        ButtonMenu::click();
         return false;
     }
 

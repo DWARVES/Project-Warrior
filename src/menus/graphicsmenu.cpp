@@ -1,5 +1,6 @@
 
 #include "graphicsmenu.hpp"
+#include "buttonmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 #include <sstream>
@@ -77,17 +78,13 @@ bool GraphicsMenu::update()
     global::gui->update(*global::evs);
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
             || m_back->clicked()) {
-        if(global::audio->enterNamespace("/menubutton")
-                && global::audio->rctype("click") == audio::Audio::SOUND)
-            global::audio->play("click");
+        ButtonMenu::click();
         return false;
     }
 
     /* Applying */
     if(m_apply->clicked()) {
-        if(global::audio->enterNamespace("/menubutton")
-                && global::audio->rctype("click") == audio::Audio::SOUND)
-            global::audio->play("click");
+        ButtonMenu::click();
 
         /** @todo Reoppening the window with the same gl context. */
         if(m_fs->get()) {

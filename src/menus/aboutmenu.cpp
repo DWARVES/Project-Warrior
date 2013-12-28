@@ -1,5 +1,6 @@
 
 #include "aboutmenu.hpp"
+#include "buttonmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 
@@ -74,9 +75,7 @@ bool AboutMenu::update()
 {
     global::gui->update(*global::evs);
     if(m_back->clicked()) {
-        if(global::audio->enterNamespace("/menubutton")
-                && global::audio->rctype("click") == audio::Audio::SOUND)
-            global::audio->play("click");
+        ButtonMenu::click();
         return false;
     }
 
