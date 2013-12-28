@@ -30,18 +30,16 @@ It also requires a namespace ``fillbar`` with a ``ratio`` entity, the ratio of t
 
 == CheckBox ==
 
-A //CheckBox// is a box with two states : clicked or not. It needs a ``checkbox`` directory with four pictures :
+A //CheckBox// is a box with two states : clicked or not. It needs a ``checkbox`` directory with :
 + ``nsel.png`` : the picture of the checkbox when it is not clicked.
 + ``sel.png`` : the picture of the checkbox when it is clicked.
 + ``nselS.png`` : the picture of the checkbox when it is not clicked but it is selected.
 + ``selS.png`` : the picture of the checkbox when it is clicked and selected.
++ ``font.wf`` : the font used to print the label when the checkbox is not selected.
++ ``fontS.wf`` : the font used to print the label when the checkbox is selected.
 
 
-It also needs a ``checkbox`` namespace, with some entities :
-- ``width`` : The maximum width of the checkbox, facultative.
-- ``height`` : The maximum height of the checkbox, facultative.
-- ``square`` : A boolean (0 or 1) indicating if the checkbox must be draw as a square instead of a rectangle.
-
+It also needs a ``checkbox`` namespace, with a facultative ``maxSize`` entity, describing the maximum side of the square of the checkbox.
 
 == List ==
 
