@@ -48,6 +48,8 @@ namespace gui
             void removeItem(ItemID id);
             /** @brief Removes all the items. */
             void clear();
+            /** @brief Free and nullify all non NULL data with fr. */
+            template <typename FR> void freeData(FR fr);
             /** @brief Returns the id of the item at a given pos, 0 if pos is outside the range. */
             ItemID item(size_t pos);
             /** @brief Returns the position of the selected item. */
@@ -129,6 +131,16 @@ namespace gui
             /** @brief Select the next item. */
             bool next();
     };
+
+    /* Template methods */
+    template <typename FR> void List::freeData(FR fr)
+    {
+        for(StoredItem st : m_items) {
+            if(st.data)
+                fr(st.data);
+            st.data = NULL;
+        }
+    }
 }
 
 #endif
