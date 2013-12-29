@@ -30,7 +30,8 @@ bool MainMenu::prepare()
 {
     /* Load the intro if necessary. */
     if(m_first) {
-        m_intro = new VideoMenu(global::cfg->get<std::string>("rcs") + "/intro.avi");
+        m_intro = new VideoMenu(global::cfg->get<std::string>("rcs") + "/intro_mov",
+                global::cfg->get<std::string>("rcs") + "/intro_mus");
         m_first = false;
         if(m_intro->prepare()) {
             m_actual = m_intro;
