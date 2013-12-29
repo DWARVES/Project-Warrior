@@ -51,6 +51,9 @@ namespace gui
 
     void Gui::focus(bool f)
     {
+        if(!m_main)
+            return;
+
         if(f && !m_focus) /* Focus earned */
             m_main->focus(true);
         else if(!f && m_focus) /* Focus lost */
