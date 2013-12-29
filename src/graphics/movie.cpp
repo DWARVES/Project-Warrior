@@ -7,6 +7,7 @@ extern "C" {
 }
 #include <sstream>
 #include <algorithm>
+#include <iostream>
 
 namespace graphics
 {
@@ -181,7 +182,7 @@ namespace graphics
                 while(m_sbytes > 0) {
                     bytesDecoded = avcodec_decode_video2(m_codecCtx, m_frame, &frameFinished, &m_packet);
                     if(bytesDecoded < 0) {
-                        core::logger::logm("Failed decoding a video frame, may be the end of the video", core::logger::MSG);
+                        core::logger::logm("Failed decoding a video frame, may be the end of the video.", core::logger::MSG);
                         return false;
                     }
 
@@ -253,17 +254,19 @@ to_rgb:
         {
             if(m_begin) {
                 m_ltime = SDL_GetTicks();
-                m_stime = frameTime();
+                m_stime = 0;
                 return nextFrame();
             }
 
             Uint32 etime = SDL_GetTicks() - m_ltime;
             etime = static_cast<Uint32>((float)etime * m_speed);
+            std::cout << "ETIME : " << etime << std::endl;
             while(etime > m_stime) {
+                std::cout << "In loop !" << std::endl;
                 if(!nextFrame())
                     return false;
                 etime -= m_stime;
-                m_stime = frameTime();
+                m_stime = static_cast<Uint32>(1000.0f * (float)m_codecCtx->ticks_per_frame * (float)av_q2d(m_codecCtx->time_base));
             }
             m_stime -= etime;
             m_ltime = SDL_GetTicks();
@@ -285,15 +288,6 @@ to_rgb:
         float Movie::speed() const
         {
             return m_speed;
-        }
-
-        unsigned int Movie::frameTime() const
-        {
-            unsigned int ret = static_cast<unsigned int>(1000.0f * (float)m_codecCtx->time_base.num / (float)m_codecCtx->time_base.den);
-            if(ret > 5)
-                return ret;
-            else /* If the frametime is lower than five, set it to 30fps = 33frametime */
-                return 33;
         }
 
         float Movie::ratio() const

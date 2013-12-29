@@ -50,9 +50,6 @@ namespace graphics
                 void speed(float fact);
                 /** @brief Returns the speed factor. */
                 float speed() const;
-
-                /** @brief Return the period in milliseconds of a framer. */
-                unsigned int frameTime() const;
                 /** @brief Return the ratio of the video. */
                 float ratio() const;
 
