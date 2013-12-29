@@ -5,9 +5,10 @@
 #include <sstream>
 #include <SDL.h>
 
-VideoMenu::VideoMenu(const std::string& path)
+VideoMenu::VideoMenu(const std::string& path, const std::string& music)
     : Menu()
 {
+    /* Loading the video. */
     if(!global::gfx->enterNamespace("/videomenu")) {
         if(!global::gfx->createNamespace("/videomenu"))
             return;
@@ -19,6 +20,21 @@ VideoMenu::VideoMenu(const std::string& path)
     if(!global::gfx->loadMovie(name.str(), path))
         return;
     m_name = name.str();
+
+    /* Loading the music. */
+    if(music.empty())
+        return;
+    if(!global::audio->enterNamespace("/videomenu")) {
+        if(!global::audio->createNamespace("/videomenu"))
+            return;
+        global::audio->enterNamespace("/videomenu");
+    }
+
+    name.clear();
+    name << core::path::head(music) << "_" << SDL_GetTicks();
+    if(!global::audio->loadRawMusic(name.str(), music))
+        return;
+    m_audio = name.str();
 }
 
 VideoMenu::~VideoMenu()
@@ -33,9 +49,15 @@ bool VideoMenu::prepare()
 {
     if(m_name.empty())
         return false;
+    /* Preparing the video. */
     global::gfx->enterNamespace("/videomenu");
     global::gfx->rewindMovie(m_name);
     global::gfx->disableVirtualSize();
+    /* Preparing the music. */
+    if(!m_audio.empty()) {
+        global::audio->enterNamespace("/videomenu");
+        global::audio->play(m_audio);
+    }
     return true;
 }
 
