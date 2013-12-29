@@ -21,8 +21,9 @@ namespace gui
         m_tofree = tofree;
         m_main   = m;
         m_pos    = pos;
-        m->width(width);
-        m->height(height);
+        m_main->width(width);
+        m_main->height(height);
+        m_main->focus(m_focus);
         return m_main;
     }
 
@@ -51,6 +52,7 @@ namespace gui
 
     void Gui::focus(bool f)
     {
+        m_focus = f;
         if(!m_main)
             return;
 
@@ -58,7 +60,6 @@ namespace gui
             m_main->focus(true);
         else if(!f && m_focus) /* Focus lost */
             m_main->focus(false);
-        m_focus = f;
     }
             
     bool Gui::focus() const
