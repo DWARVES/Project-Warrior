@@ -7,7 +7,7 @@
 #include <sstream>
 
 MainMenu::MainMenu()
-    : Menu(), m_play(NULL), m_cfg(NULL), m_about(NULL), m_quit(NULL), m_layout(NULL), m_actual(NULL)
+    : Menu(), m_play(NULL), m_cfg(NULL), m_about(NULL), m_quit(NULL), m_layout(NULL), m_actual(NULL), m_intro(NULL), m_first(true)
 {}
 
 MainMenu::~MainMenu()
@@ -22,10 +22,28 @@ MainMenu::~MainMenu()
         delete m_about;
     if(m_quit)
         delete m_quit;
+    if(m_intro)
+        delete m_intro;
 }
 
 bool MainMenu::prepare()
 {
+    /* Load the intro if necessary. */
+    if(m_first) {
+        m_intro = new VideoMenu(global::cfg->get<std::string>("rcs") + "/intro.avi");
+        m_first = false;
+        if(m_intro->prepare()) {
+            m_actual = m_intro;
+            return true;
+        }
+        else
+            core::logger::logm("Couldn't play the intro.", core::logger::MSG);
+    }
+    else if(m_intro) {
+        delete m_intro;
+        m_intro = NULL;
+    }
+
     /* Load the music if necessary. */
     if(!global::audio->enterNamespace("/menus")) {
         if(!global::audio->createNamespace("/menus"))
