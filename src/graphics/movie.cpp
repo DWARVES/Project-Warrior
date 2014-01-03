@@ -7,7 +7,6 @@ extern "C" {
 }
 #include <sstream>
 #include <algorithm>
-#include <iostream>
 
 namespace graphics
 {
@@ -260,9 +259,7 @@ to_rgb:
 
             Uint32 etime = SDL_GetTicks() - m_ltime;
             etime = static_cast<Uint32>((float)etime * m_speed);
-            std::cout << "ETIME : " << etime << std::endl;
             while(etime > m_stime) {
-                std::cout << "In loop !" << std::endl;
                 if(!nextFrame())
                     return false;
                 etime -= m_stime;
