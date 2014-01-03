@@ -30,7 +30,7 @@ namespace graphics
     bool Graphics::openWindow(const std::string& name, int w, int h)
     {
         m_win = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_OPENGL);
-        logWindow(false, m_win != NULL, m_win == NULL);
+        logWindow(false, false, m_win != NULL, m_win == NULL);
         internal::Movie::init();
 
         if(m_win != NULL) {
@@ -57,23 +57,25 @@ namespace graphics
         internal::Movie::init();
 
         if(!m_win) {
-            logWindow(true, false, true);
+            logWindow(false, true, false, true);
             return false;
         }
         else if(m_win && (windowWidth() < minw
                     ||   windowHeight() < minh)) {
             SDL_DestroyWindow(m_win);
             m_win = NULL;
-            logWindow(true, false);
+            logWindow(false, true, false);
             return false;
         }
         else {
             bool ctx = glContext();
-            logWindow(true, ctx, !ctx);
+            logWindow(false, true, ctx, !ctx);
             if(ctx)
                 disableVirtualSize();
-            else
+            else {
                 SDL_DestroyWindow(m_win);
+                m_win = NULL;
+            }
             return ctx;
         }
     }
@@ -86,40 +88,30 @@ namespace graphics
             core::logger::logm("Destroying the window.", core::logger::MSG);
             if(m_ctx)
                 SDL_GL_DeleteContext(m_ctx);
+            m_ctx = NULL;
             SDL_DestroyWindow(m_win);
+            m_fs.clear();
         }
         m_win = NULL;
     }
 
     bool Graphics::windowSize(int width, int height)
     {
-        /** @todo Resize context. */
-        SDL_SetWindowSize(m_win, width, height); 
-        return true;
+        std::string name = SDL_GetWindowTitle(m_win);
+        closeWindow();
+        return openWindow(name, width, height);
     }
             
     bool Graphics::setFullscreen(bool fs)
     {
-        Uint32 flags = 0;
+        std::string name = SDL_GetWindowTitle(m_win);
+        int w, h;
+        SDL_GetWindowSize(m_win, &w, &h);
+        closeWindow();
         if(fs)
-            flags = SDL_WINDOW_FULLSCREEN;
-
-        SDL_DisplayMode mode;
-        if(SDL_GetDesktopDisplayMode(0, &mode) < 0) {
-            core::logger::logm("Couldn't get display mode.", core::logger::WARNING);
-            return false;
-        }
-
-        if(flags != 0)
-            return windowSize(mode.w, mode.h);
-
-        if(SDL_SetWindowFullscreen(m_win, flags) < 0) {
-            std::ostringstream oss;
-            oss << "Couldn't change window fullscreen state : \"" << SDL_GetError() << "\".";
-            core::logger::logm(oss.str(), core::logger::WARNING);
-            return false;
-        }
-        return true;
+            return openFullscreenWindow(name);
+        else
+            return openWindow(name, w, h);
     }
             
     std::vector<geometry::AABB> Graphics::windowRes(float minw, float minh) const
@@ -173,13 +165,21 @@ namespace graphics
         return m_win != NULL;
     }
 
-    void Graphics::logWindow(bool full, bool ended, bool sdlerr)
+    void Graphics::logWindow(bool open, bool full, bool ended, bool sdlerr)
     {
         std::ostringstream oss;
-        if(!ended)
-            oss << "Couldn't create ";
-        else
-            oss << "Created ";
+        if(!ended) {
+            if(open)
+                oss << "Couldn't change to ";
+            else
+                oss << "Couldn't create ";
+        }
+        else {
+            if(open)
+                oss << "Changed to ";
+            else
+                oss << "Created ";
+        }
 
         if(full)
             oss << "fullscreen ";

@@ -46,9 +46,13 @@ namespace graphics
             bool openFullscreenWindow(const std::string& name, int minw = 0, int minh = 0);
             /** @brief Closes the window. */
             void closeWindow();
-            /** @brief Resizes the window, only valid in windowed mode. */
+            /** @brief Resizes the window, only valid in windowed mode.
+             * @note All the loaded ressources will be lost.
+             */
             bool windowSize(int width, int height);
-            /** @brief Set the window fullscreen/windowed. */
+            /** @brief Set the window fullscreen/windowed.
+             * @note All the loaded ressources will be lost.
+             */
             bool setFullscreen(bool fs);
             /** @brief Get all the possible resolutions above the given one. */
             std::vector<geometry::AABB> windowRes(float minw = 0.0f, float minh = 0.0f) const;
@@ -296,11 +300,12 @@ namespace graphics
              *   Internal functions   *
              **************************/
             /** @brief Log the state of the window.
+             * @param open Is this the opening or a change of the window.
              * @param full Indicates if the window is fullscreen.
              * @param ended Indicates if the window could have been loaded.
              * @param sdlerr Indicates if it should log the actual sdl error.
              */
-            void logWindow(bool full, bool ended, bool sdlerr = false);
+            void logWindow(bool open, bool full, bool ended, bool sdlerr = false);
             /** @brief Creates the openGL context and load the extensions and shaders. */
             bool glContext();
             /** @brief Depending on all the parameters of virtual size, compute the size and position of the black band used to preserve ratio. */
