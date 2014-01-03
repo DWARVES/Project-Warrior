@@ -47,7 +47,6 @@ bool ConfigMenu::prepare()
     if(!m_layout) {
         m_list = new MenuList(&m_actual);
         global::theme->apply(m_list);
-        /** @todo add submenus. */
         m_list->addItem(0, _i("Music."),    0.0f, new MusicMenu);
         m_list->addItem(0, _i("Graphics."), 0.0f, new GraphicsMenu);
 
