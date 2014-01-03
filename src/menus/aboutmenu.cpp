@@ -1,6 +1,7 @@
 
 #include "aboutmenu.hpp"
 #include "buttonmenu.hpp"
+#include "mainmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 
@@ -29,6 +30,8 @@ bool AboutMenu::prepare()
         std::ostringstream path;
         path << global::cfg->get<std::string>("rcs") << "/aboutmenu/";
         if(!global::gfx->loadTexture("aboutmenubg", path.str() + "bg.png"))
+            return false;
+        if(!MainMenu::loadRcs())
             return false;
     }
 

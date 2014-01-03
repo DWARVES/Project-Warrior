@@ -17,6 +17,8 @@ class MainMenu : public Menu
 
         virtual bool prepare();
         virtual bool update();
+        /** @brief Loads the texture of the mainmenu. */
+        static bool loadRcs();
 
     private:
         ButtonMenu* m_play;        /**< @brief The button for the play menu. */

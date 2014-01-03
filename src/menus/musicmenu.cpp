@@ -1,6 +1,7 @@
 
 #include "musicmenu.hpp"
 #include "buttonmenu.hpp"
+#include "mainmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 
@@ -58,6 +59,9 @@ bool MusicMenu::prepare()
         m_layout->addWidget(m_sndVol, 0, 3);
         m_layout->addWidget(m_back,   0, 4);
     }
+
+    if(!MainMenu::loadRcs())
+        return false;
 
     /* Get config. */
     unsigned char volume = global::audio->musicVolume();

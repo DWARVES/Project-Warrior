@@ -58,19 +58,8 @@ bool MainMenu::prepare()
     }
     global::audio->play("mus", false);
 
-    /* Load the textures if necessary. */
-    if(!global::gfx->enterNamespace("/mainmenu")) {
-        if(!global::gfx->createNamespace("/mainmenu"))
-            return false;
-        global::gfx->enterNamespace("/mainmenu");
-
-        std::ostringstream path;
-        path << global::cfg->get<std::string>("rcs") << "/mainmenu/";
-        if(!global::gfx->loadTexture("bg", path.str() + "bg.png"))
-            return false;
-        if(!global::gfx->loadTexture("title", path.str() + "title.png"))
-            return false;
-    }
+    if(!loadRcs())
+        return false;
 
     /* Create the widgets if necessary. */
     if(!m_layout) {
@@ -105,6 +94,25 @@ bool MainMenu::prepare()
     pos.x = global::gfx->getVirtualWidth() * 0.1f;
     pos.y = global::gfx->getVirtualHeight() * 0.2f;
     global::gui->main(m_layout, pos, global::gfx->getVirtualWidth() * 0.8f, global::gfx->getVirtualHeight() * 0.7f);
+
+    return true;
+}
+        
+bool MainMenu::loadRcs()
+{
+    /* Load the textures if necessary. */
+    if(!global::gfx->enterNamespace("/mainmenu")) {
+        if(!global::gfx->createNamespace("/mainmenu"))
+            return false;
+        global::gfx->enterNamespace("/mainmenu");
+
+        std::ostringstream path;
+        path << global::cfg->get<std::string>("rcs") << "/mainmenu/";
+        if(!global::gfx->loadTexture("bg", path.str() + "bg.png"))
+            return false;
+        if(!global::gfx->loadTexture("title", path.str() + "title.png"))
+            return false;
+    }
 
     return true;
 }

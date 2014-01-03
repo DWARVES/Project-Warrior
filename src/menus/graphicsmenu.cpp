@@ -1,6 +1,7 @@
 
 #include "graphicsmenu.hpp"
 #include "buttonmenu.hpp"
+#include "mainmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 #include <sstream>
@@ -58,6 +59,9 @@ bool GraphicsMenu::prepare()
         m_layout->addWidget(m_back,    1, 2, 0, 0);
     }
 
+    if(!MainMenu::loadRcs())
+        return false;
+
     /* Default value of m_fs. */
     if(global::cfg->get<bool>("fullscreen"))
         m_fs->set(true);
@@ -87,7 +91,6 @@ bool GraphicsMenu::update()
     if(m_apply->clicked()) {
         ButtonMenu::click();
 
-        /** @todo Reoppening the window with the same gl context. */
         if(m_fs->get()) {
             global::cfg->set<bool>("fullscreen", true);
             global::gfx->setFullscreen(true);
@@ -98,6 +101,12 @@ bool GraphicsMenu::update()
             geometry::AABB size = *(geometry::AABB*)m_res->selectedData();
             global::gfx->windowSize((int)size.width, (int)size.height);
         }
+
+        /* Re-loading gui theme. */
+        /** @todo Fatal error. */
+        if(!global::theme->load())
+            core::logger::logm("Couldn't load again the gui theme.", core::logger::ERROR);
+
         global::gfx->disableVirtualSize();
 
         return false;

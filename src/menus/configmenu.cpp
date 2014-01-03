@@ -3,6 +3,7 @@
 #include "graphicsmenu.hpp"
 #include "musicmenu.hpp"
 #include "buttonmenu.hpp"
+#include "mainmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 
@@ -59,6 +60,9 @@ bool ConfigMenu::prepare()
         m_layout->addWidget(m_list, 0, 0, 0, 4);
         m_layout->addWidget(m_back, 0, 5, 0, 0);
     }
+
+    if(!MainMenu::loadRcs())
+        return false;
 
     /* Set up the main. */
     geometry::Point pos;
