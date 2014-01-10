@@ -5,6 +5,7 @@ set(lib libgameplay)
 
 # List file here
 add_library(${lib}
-    save.cpp  save.hpp
+    save.cpp      save.hpp
+    character.cpp character.hpp
 	)
 
