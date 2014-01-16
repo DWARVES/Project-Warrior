@@ -51,6 +51,7 @@ namespace gameplay
         private:
             std::string m_namespace; /**< @brief The name of the namespace used by this character in gfx and audio. */
             std::string m_path;      /**< @brief The path to the directory of the character. */
+            static size_t m_count;   /**< @brief The number of created characters. */
 
             lua::Script m_preview;   /**< @brief The preview.lua script. */
             std::string m_name;      /**< @brief The name of the character. */

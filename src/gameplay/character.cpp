@@ -12,10 +12,16 @@
 
 namespace gameplay
 {
+    size_t Character::m_count = 0;
+
     Character::Character(const std::string& path)
-        : m_namespace("/characters/" + core::path::head(path)), m_path(path),
-        m_name("broken"), m_desc("Couldn't load."), m_valid(false)
-    {}
+        : m_path(path), m_name("broken"), m_desc("Couldn't load."), m_valid(false)
+    {
+        ++m_count;
+        std::ostringstream oss;
+        oss << "/characters/" << core::path::head(path) << m_count;
+        m_namespace = oss.str();
+    }
 
     Character::~Character()
     {
