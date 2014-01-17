@@ -9,6 +9,7 @@
 
 #include <sstream>
 #include <fstream>
+#include <SDL.h>
 
 namespace gameplay
 {
@@ -159,6 +160,201 @@ namespace gameplay
         global::gfx->move(dec.x, dec.y);
         global::gfx->draw(used, "preview");
         global::gfx->pop();
+    }
+
+    bool Character::load(Color c)
+    {
+        /* Loading the script. */
+        lua::exposure::Save::expose(&m_perso);
+        lua::exposure::Graphics::expose(&m_perso);
+        if(!m_perso.load(m_path + "/perso.lua")) {
+            std::ostringstream oss;
+            oss << "Couldn't load \"" << m_path << "/perso.lua\" script for " << m_namespace << " character.";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            return false;
+        }
+
+        /* Preparing the namespace. */
+        global::gfx->enterNamespace(m_namespace);
+        if(!global::gfx->createNamespace("perso")) {
+            std::ostringstream oss;
+            oss << "Couldn't create \"" << m_namespace << "/perso\" namespace for character.";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            return false;
+        }
+        global::gfx->enterNamespace("perso");
+
+        /* Checking the presence of necessary methods. */
+        bool valid = true;
+        valid = valid && checkFunc(m_perso, "perso.lua", "init");
+        valid = valid && checkFunc(m_perso, "perso.lua", "walk");
+        valid = valid && checkFunc(m_perso, "perso.lua", "run");
+        valid = valid && checkFunc(m_perso, "perso.lua", "stop");
+        valid = valid && checkFunc(m_perso, "perso.lua", "jump");
+        valid = valid && checkFunc(m_perso, "perso.lua", "jumpAir");
+        valid = valid && checkFunc(m_perso, "perso.lua", "down");
+        valid = valid && checkFunc(m_perso, "perso.lua", "fastDown");
+        valid = valid && checkFunc(m_perso, "perso.lua", "land");
+        valid = valid && checkFunc(m_perso, "perso.lua", "stand");
+        valid = valid && checkFunc(m_perso, "perso.lua", "attack");
+        valid = valid && checkFunc(m_perso, "perso.lua", "spell");
+        valid = valid && checkFunc(m_perso, "perso.lua", "smash");
+        valid = valid && checkFunc(m_perso, "perso.lua", "shield");
+        valid = valid && checkFunc(m_perso, "perso.lua", "staticDodge");
+        valid = valid && checkFunc(m_perso, "perso.lua", "flyingStaticDodge");
+        valid = valid && checkFunc(m_perso, "perso.lua", "dashDodge");
+        valid = valid && checkFunc(m_perso, "perso.lua", "flyingDashDodge");
+        valid = valid && checkFunc(m_perso, "perso.lua", "appear");
+        valid = valid && checkFunc(m_perso, "perso.lua", "won");
+        valid = valid && checkFunc(m_perso, "perso.lua", "lost");
+        valid = valid && checkFunc(m_perso, "perso.lua", "sent");
+        if(!valid)
+            return false;
+
+        /* Make the script load the character rcs. */
+        bool ret;
+        m_perso.callFunction<bool, int>("init", &ret, (int)c);
+        if(!ret) {
+            std::ostringstream oss;
+            oss << "Couldn't load ressources for character \"" << m_namespace << "\".";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+            return false;
+        }
+
+        action(Walk, Fixed);
+        return true;
+    }
+
+    void Character::action(Control control, Direction dir)
+    {
+        m_begin = SDL_GetTicks();
+
+        /** @todo Make transitions (depends on physics). */
+        switch(control) {
+            case Walk:
+                m_next = Action::None;
+                switch(dir) {
+                    case Left:  m_actual = Action::WalkLeft;  break;
+                    case Right: m_actual = Action::WalkRight; break;
+                    case Up:    m_actual = Action::Jump;      break; /* Handle jump air if not on ground. */
+                    case Down:  m_actual = Action::FastDown;  break;
+                    case Fixed: m_actual = Action::Stand;     break;
+                    default:    m_actual = Action::None;      break;
+                }
+                break;
+
+            case Run:
+                m_next = Action::None;
+                switch(dir) {
+                    case Left:  m_actual = Action::RunLeft;  break;
+                    case Right: m_actual = Action::RunRight; break;
+                    case Up:    m_actual = Action::Jump;     break; /* Handle jump air if not on ground. */
+                    case Down:  m_actual = Action::FastDown; break;
+                    case Fixed: m_actual = Action::Stop;
+                                m_next = Action::Stand;
+                                break;
+                    default:    m_actual = Action::None;     break;
+                }
+                break;
+
+            case Attack:
+                m_next = Action::Stand;
+                switch(dir) {
+                    case Left:  m_actual = Action::AttackLeft;  break;
+                    case Right: m_actual = Action::AttackRight; break;
+                    case Up:    m_actual = Action::AttackUp;    break;
+                    case Down:  m_actual = Action::AttackDown;  break;
+                    case Fixed: m_actual = Action::Attack;      break;
+                    default:    m_actual = Action::None;        break;
+                }
+                break;
+
+            case Spell:
+                m_next = Action::Stand;
+                switch(dir) {
+                    case Left:  m_actual = Action::SpellLeft;  break;
+                    case Right: m_actual = Action::SpellRight; break;
+                    case Up:    m_actual = Action::SpellUp;    break;
+                    case Down:  m_actual = Action::SpellDown;  break;
+                    case Fixed: m_actual = Action::Spell;      break;
+                    default:    m_actual = Action::None;       break;
+                }
+                break;
+
+            case Smash:
+                m_next = Action::Stand;
+                switch(dir) {
+                    case Left:  m_actual = Action::SmashLeft;  break;
+                    case Right: m_actual = Action::SmashRight; break;
+                    case Up:    m_actual = Action::SmashUp;    break;
+                    case Down:  m_actual = Action::SmashDown;  break;
+                    case Fixed: m_actual = Action::Stand;      break;
+                    default:    m_actual = Action::None;       break;
+                }
+                break;
+
+            case Dodge:
+                /* Handle flying dodge. */
+                m_actual = Action::StaticDodge;
+                m_next   = Action::Stand;
+                break;
+
+            case DDodge:
+                /* Handle flying dodge. */
+                m_next = Action::Stand;
+                switch(dir) {
+                    case Left:  m_actual = Action::DashDodgeLeft;  break;
+                    case Right: m_actual = Action::DashDodgeRight; break;
+                    case Up: case Down: case Fixed:
+                    default:    m_actual = Action::Stand;          break;
+                }
+                break;
+
+            case Catch:
+                m_next = Action::Stand;
+                switch(dir) {
+                    case Left:  m_actual = Action::CatchLeft;  break;
+                    case Right: m_actual = Action::CatchRight; break;
+                    case Up: case Down: case Fixed:
+                    default:    m_actual = Action::Stand;      break;
+                }
+                break;
+
+            default:
+                m_next   = Action::None;
+                m_actual = Action::Stand;
+                break;
+        }
+    }
+
+    void Character::draw()
+    {
+        /* Getting physic position. */
+        geometry::Point pos(0.0f, 0.0f);
+
+        /* Updating animation. */
+        actuateByLua();
+
+        /* Drawing. */
+        global::gfx->enterNamespace(m_namespace);
+        global::gfx->enterNamespace("perso");
+        global::gfx->blitTexture("drawed", pos);
+    }
+            
+    void Character::actuateByLua()
+    {
+        unsigned long ms = SDL_GetTicks() - m_begin;
+        /* TODO */
+    }
+
+    bool Character::checkFunc(lua::Script& script, const std::string& nm, const std::string& func)
+    {
+        if(script.existsFunction(func))
+            return true;
+        std::ostringstream oss;
+        oss << "Script " << nm << " in \"" << m_path << "\" doesn't hace the required \"" << func << "\" function.";
+        core::logger::logm(oss.str(), core::logger::WARNING);
+        return false;
     }
 
 }
