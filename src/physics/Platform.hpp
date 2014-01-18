@@ -6,11 +6,14 @@
 
 namespace physics
 {
+    /** @brief Entity based class facilitating creation of platforms */
     class Platform : public Entity
     {
         public:
-            Platform(const std::string& name, b2World* world, const geometry::Point& position); // Create an empty platform (without fixture)
-            Platform(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& rect, float friction = 1); // Create a basic platform with AABB fixture
+            /** @brief Creates an empty platform (without fixture) */
+            Platform(const std::string& name, b2World* world, const geometry::Point& position);
+            /** @brief Creates a basic platform with AABB fixture */
+            Platform(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& rect, float friction = 1);
     };
 }
 

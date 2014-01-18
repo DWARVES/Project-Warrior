@@ -13,6 +13,7 @@
 #include "Platform.hpp"
 #include "Obstacle.hpp"
 
+/** @brief Contains all classes and methods related to the physics engine */
 namespace physics
 {
     /** @brief A deleter for unique_ptr that avoid deletion doing nothing ; useful to prevent from conflicts between default deleters and Box2D protected destructors */
@@ -59,11 +60,11 @@ namespace physics
             Character* createCharacter(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float weight);
             /** @brief Adds an Attack to the world */
             Attack* createAttack(const std::string& name, const geometry::Point& position, const b2BodyType& bodyType, uint16 collideWith = Attack::CollideType::Normal, float gravityScale = 1, bool fixedRotation = true);
-            /** @brief Adds a Platform to the world with default parameters */
+            /** @brief Adds a Platform to the world without fixture */
             Platform* createPlatform(const std::string& name, const geometry::Point& position);
             /** @brief Adds a Platform to the world with specified rect and friction */
             Platform* createPlatform(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float friction = 1);
-            /** @brief Adds an Obstacle to the world with default parameters */
+            /** @brief Adds an Obstacle to the world without fixture */
             Obstacle* createObstacle(const std::string& name, const geometry::Point& position);
             /** @brief Adds an Obstacle to the world with specified rect and friction */
             Obstacle* createObstacle(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float friction = 1);

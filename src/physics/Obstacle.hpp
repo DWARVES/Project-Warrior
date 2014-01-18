@@ -6,11 +6,14 @@
 
 namespace physics
 {
+    /** @brief Entity based class facilitating creation of obstacles */
     class Obstacle : public Entity
     {
         public:
-            Obstacle(const std::string& name, b2World* world, const geometry::Point& position); // Create an empty obstacle (without fixture)
-            Obstacle(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& rect, float friction = 1); // Create a basic obstacle with AABB fixture
+            /** @brief Creates an empty platform (without fixture) */
+            Obstacle(const std::string& name, b2World* world, const geometry::Point& position);
+            /** @brief Creates a basic obstacle with AABB fixture */
+            Obstacle(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& rect, float friction = 1);
     };
 }
 
