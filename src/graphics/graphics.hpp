@@ -147,7 +147,7 @@ namespace graphics
             void free(const std::string& name);
             /** @brief Returns the type of a texture or NONE if it doesn't exists. */
             RcType rctype(const std::string& name) const;
-            /** @brief Creates a link to the ressource which path is target. */
+            /** @brief Creates a link to the ressource which path is target. If name exists, it will be erased. */
             bool link(const std::string& name, const std::string& target);
             /** @} */
 

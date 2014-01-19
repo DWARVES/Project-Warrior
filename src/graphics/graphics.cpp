@@ -574,7 +574,7 @@ namespace graphics
 
     bool Graphics::link(const std::string& name, const std::string& target)
     {
-        return m_fs.link(name, target);
+        return m_fs.link(name, target, true);
     }
 
     /*************************
