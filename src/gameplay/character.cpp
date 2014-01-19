@@ -232,97 +232,132 @@ namespace gameplay
         /** @todo Make transitions (depends on physics). */
         switch(control) {
             case Walk:
-                m_next = Action::None;
+                m_next.id = ActionID::None;
                 switch(dir) {
-                    case Left:  m_actual = Action::WalkLeft;  break;
-                    case Right: m_actual = Action::WalkRight; break;
-                    case Up:    m_actual = Action::Jump;      break; /* Handle jump air if not on ground. */
-                    case Down:  m_actual = Action::FastDown;  break;
-                    case Fixed: m_actual = Action::Stand;     break;
-                    default:    m_actual = Action::None;      break;
+                    case Left:  m_actual.id = ActionID::Walk; 
+                                m_actual.flip = false; 
+                                break;
+                    case Right: m_actual.id = ActionID::Walk;
+                                m_actual.flip = true;
+                                break;
+                    case Up:    m_actual.id = ActionID::Jump;      break; /* Handle jump air if not on ground. */
+                    case Down:  m_actual.id = ActionID::FastDown;  break;
+                    case Fixed: m_actual.id = ActionID::Stand;     break;
+                    default:    m_actual.id = ActionID::None;      break;
                 }
+                m_next.flip = m_actual.flip;
                 break;
 
             case Run:
-                m_next = Action::None;
+                m_next.id = ActionID::None;
                 switch(dir) {
-                    case Left:  m_actual = Action::RunLeft;  break;
-                    case Right: m_actual = Action::RunRight; break;
-                    case Up:    m_actual = Action::Jump;     break; /* Handle jump air if not on ground. */
-                    case Down:  m_actual = Action::FastDown; break;
-                    case Fixed: m_actual = Action::Stop;
-                                m_next = Action::Stand;
+                    case Left:  m_actual.id = ActionID::Run;
+                                m_actual.flip = false; 
                                 break;
-                    default:    m_actual = Action::None;     break;
+                    case Right: m_actual.id = ActionID::Run;
+                                m_actual.flip = true; 
+                                break;
+                    case Up:    m_actual.id = ActionID::Jump;     break; /* Handle jump air if not on ground. */
+                    case Down:  m_actual.id = ActionID::FastDown; break;
+                    case Fixed: m_actual.id = ActionID::Stop;
+                                m_next.id = ActionID::Stand;
+                                break;
+                    default:    m_actual.id = ActionID::None;     break;
                 }
+                m_next.flip = m_actual.flip;
                 break;
 
             case Attack:
-                m_next = Action::Stand;
+                m_next.id = ActionID::Stand;
                 switch(dir) {
-                    case Left:  m_actual = Action::AttackLeft;  break;
-                    case Right: m_actual = Action::AttackRight; break;
-                    case Up:    m_actual = Action::AttackUp;    break;
-                    case Down:  m_actual = Action::AttackDown;  break;
-                    case Fixed: m_actual = Action::Attack;      break;
-                    default:    m_actual = Action::None;        break;
+                    case Left:  m_actual.id = ActionID::AttackSide;
+                                m_actual.flip = false; 
+                                break;
+                    case Right: m_actual.id = ActionID::AttackSide;
+                                m_actual.flip = true; 
+                                break;
+                    case Up:    m_actual.id = ActionID::AttackUp;    break;
+                    case Down:  m_actual.id = ActionID::AttackDown;  break;
+                    case Fixed: m_actual.id = ActionID::Attack;      break;
+                    default:    m_actual.id = ActionID::None;        break;
                 }
+                m_next.flip = m_actual.flip;
                 break;
 
             case Spell:
-                m_next = Action::Stand;
+                m_next.id = ActionID::Stand;
                 switch(dir) {
-                    case Left:  m_actual = Action::SpellLeft;  break;
-                    case Right: m_actual = Action::SpellRight; break;
-                    case Up:    m_actual = Action::SpellUp;    break;
-                    case Down:  m_actual = Action::SpellDown;  break;
-                    case Fixed: m_actual = Action::Spell;      break;
-                    default:    m_actual = Action::None;       break;
+                    case Left:  m_actual.id = ActionID::SpellSide;
+                                m_actual.flip = false; 
+                                break;
+                    case Right: m_actual.id = ActionID::SpellSide;
+                                m_actual.flip = true; 
+                                break;
+                    case Up:    m_actual.id = ActionID::SpellUp;    break;
+                    case Down:  m_actual.id = ActionID::SpellDown;  break;
+                    case Fixed: m_actual.id = ActionID::Spell;      break;
+                    default:    m_actual.id = ActionID::None;       break;
                 }
                 break;
 
             case Smash:
-                m_next = Action::Stand;
+                m_next.id = ActionID::Stand;
                 switch(dir) {
-                    case Left:  m_actual = Action::SmashLeft;  break;
-                    case Right: m_actual = Action::SmashRight; break;
-                    case Up:    m_actual = Action::SmashUp;    break;
-                    case Down:  m_actual = Action::SmashDown;  break;
-                    case Fixed: m_actual = Action::Stand;      break;
-                    default:    m_actual = Action::None;       break;
+                    case Left:  m_actual.id = ActionID::SmashSide;
+                                m_actual.flip = false; 
+                                break;
+                    case Right: m_actual.id = ActionID::SmashSide;
+                                m_actual.flip = true; 
+                                break;
+                    case Up:    m_actual.id = ActionID::SmashUp;    break;
+                    case Down:  m_actual.id = ActionID::SmashDown;  break;
+                    case Fixed: m_actual.id = ActionID::Stand;      break;
+                    default:    m_actual.id = ActionID::None;       break;
                 }
+                m_next.flip = m_actual.flip;
                 break;
 
             case Dodge:
                 /* Handle flying dodge. */
-                m_actual = Action::StaticDodge;
-                m_next   = Action::Stand;
+                m_actual.id = ActionID::StaticDodge;
+                m_next.id   = ActionID::Stand;
+                m_next.flip = m_actual.flip;
                 break;
 
             case DDodge:
                 /* Handle flying dodge. */
-                m_next = Action::Stand;
+                m_next.id = ActionID::Stand;
                 switch(dir) {
-                    case Left:  m_actual = Action::DashDodgeLeft;  break;
-                    case Right: m_actual = Action::DashDodgeRight; break;
+                    case Left:  m_actual.id = ActionID::DashDodge;
+                                m_actual.flip = false; 
+                                break;
+                    case Right: m_actual.id = ActionID::DashDodge;
+                                m_actual.flip = true; 
+                                break;
                     case Up: case Down: case Fixed:
-                    default:    m_actual = Action::Stand;          break;
+                    default:    m_actual.id = ActionID::Stand;          break;
                 }
+                m_next.flip = m_actual.flip;
                 break;
 
             case Catch:
-                m_next = Action::Stand;
+                m_next.id = ActionID::Stand;
                 switch(dir) {
-                    case Left:  m_actual = Action::CatchLeft;  break;
-                    case Right: m_actual = Action::CatchRight; break;
+                    case Left:  m_actual.id = ActionID::Catch;
+                                m_actual.flip = false;
+                                break;
+                    case Right: m_actual.id = ActionID::Catch;
+                                m_actual.flip = true;
+                                break;
                     case Up: case Down: case Fixed:
-                    default:    m_actual = Action::Stand;      break;
+                    default:    m_actual.id = ActionID::Stand;      break;
                 }
+                m_next.flip = m_actual.flip;
                 break;
 
             default:
-                m_next   = Action::None;
-                m_actual = Action::Stand;
+                m_next.id   = ActionID::None;
+                m_actual.id = ActionID::Stand;
                 break;
         }
     }

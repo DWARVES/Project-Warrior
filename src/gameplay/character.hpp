@@ -92,11 +92,9 @@ namespace gameplay
 
             lua::Script m_perso;      /**< @brief The perso.lua script. */
             /** @brief Describe the possible actions of the character. */
-            enum class Action {
-                WalkLeft,             /**< @brief Walk to the left. */
-                WalkRight,            /**< @brief Walk to the right. */
-                RunLeft,              /**< @brief Run to the left. */
-                RunRight,             /**< @brief Run to the right. */
+            enum class ActionID {
+                Walk,                 /**< @brief Walk. */
+                Run,                  /**< @brief Run. */
                 Stop,                 /**< @brief Stop after running. */
                 Jump,                 /**< @brief Jump. */
                 JumpAir,              /**< @brief Do a double jump. */
@@ -107,27 +105,26 @@ namespace gameplay
                 Shield,               /**< @brief Protect itself with the shield. */
                 StaticDodge,          /**< @brief A static dodge on the ground. */
                 FlyingStaticDodge,    /**< @brief A static dodge in the air. */
-                DashDodgeLeft,        /**< @brief Dodge by dashing to left on the ground. */
-                DashDodgeRight,       /**< @brief Dodge by dashing to right on the ground. */
-                FlyingDashDodgeLeft,  /**< @brief Dodge by dashing to left in the air. */
-                FlyingDashDodgeRight, /**< @brief Dodge by dashing to right in the air. */
+                DashDodge,            /**< @brief Dodge by dashing to left on the ground. */
+                FlyingDashDodge,      /**< @brief Dodge by dashing to left in the air. */
                 Attack,               /**< @brief A regular non directional attack. */
-                AttackLeft,           /**< @brief A regular attack to the left. */
-                AttackRight,          /**< @brief A regular attack to the right. */
+                AttackSide,           /**< @brief A regular attack to the side. */
                 AttackUp,             /**< @brief A regular attack to top. */
                 AttackDown,           /**< @brief A regular attack to bottom. */
                 Spell,                /**< @brief A non directional magic attack. */
-                SpellLeft,            /**< @brief A magic attack to the left. */
-                SpellRight,           /**< @brief A magic attack to the right. */
+                SpellSide,            /**< @brief A magic attack to the side. */
                 SpellDown,            /**< @brief A magic attack to bottom. */
                 SpellUp,              /**< @brief A magic attack to top. */
-                SmashLeft,            /**< @brief A smash to the left. */
-                SmashRight,           /**< @brief A smash to the right. */
+                SmashSide,            /**< @brief A smash to the side. */
                 SmashUp,              /**< @brief A smash to top. */
                 SmashDown,            /**< @brief A smash to bottom. */
-                CatchLeft,            /**< @brief Catch something on the left. */
-                CatchRight,           /**< @brief Catch something on the right. */
+                Catch,                /**< @brief Catch something. */
                 None,                 /**< @brief No action. */
+            };
+            /** @brief Describes an action. */
+            struct Action {
+                ActionID id;          /**< @brief The ID of the action. */
+                bool flip;            /**< @brief If it is a side action, must it be flipped horizontally. */
             };
             Action m_actual;          /**< @brief The action the character is actually doing. */
             Action m_next;            /**< @brief The action the character will do once m_actual is finished. */
