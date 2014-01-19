@@ -14,6 +14,34 @@
 namespace gameplay
 {
     size_t Character::m_count = 0;
+    const char* const Character::m_luaCalls[(unsigned int)ActionID::None] = {
+        "walk",
+        "run",
+        "stop",
+        "jump",
+        "jumpAir",
+        "down",
+        "fastDown",
+        "land",
+        "stand",
+        "shield",
+        "staticDodge",
+        "flyingStaticDodge",
+        "dashDodge",
+        "flyingDashDodge",
+        "attack",
+        "attackSide",
+        "attackUp",
+        "attackDown",
+        "spell",
+        "spellSide",
+        "spellDown",
+        "spellUp",
+        "smashSide",
+        "smashUp",
+        "smashDown",
+        "catch",
+    };
 
     Character::Character(const std::string& path)
         : m_path(path), m_name("broken"), m_desc("Couldn't load."), m_valid(false)
@@ -197,13 +225,22 @@ namespace gameplay
         valid = valid && checkFunc(m_perso, "perso.lua", "land");
         valid = valid && checkFunc(m_perso, "perso.lua", "stand");
         valid = valid && checkFunc(m_perso, "perso.lua", "attack");
+        valid = valid && checkFunc(m_perso, "perso.lua", "attackSide");
+        valid = valid && checkFunc(m_perso, "perso.lua", "attackUp");
+        valid = valid && checkFunc(m_perso, "perso.lua", "attackDown");
         valid = valid && checkFunc(m_perso, "perso.lua", "spell");
-        valid = valid && checkFunc(m_perso, "perso.lua", "smash");
+        valid = valid && checkFunc(m_perso, "perso.lua", "spellSide");
+        valid = valid && checkFunc(m_perso, "perso.lua", "spellUp");
+        valid = valid && checkFunc(m_perso, "perso.lua", "spellDown");
+        valid = valid && checkFunc(m_perso, "perso.lua", "smashSide");
+        valid = valid && checkFunc(m_perso, "perso.lua", "smashUp");
+        valid = valid && checkFunc(m_perso, "perso.lua", "smashDown");
         valid = valid && checkFunc(m_perso, "perso.lua", "shield");
         valid = valid && checkFunc(m_perso, "perso.lua", "staticDodge");
         valid = valid && checkFunc(m_perso, "perso.lua", "flyingStaticDodge");
         valid = valid && checkFunc(m_perso, "perso.lua", "dashDodge");
         valid = valid && checkFunc(m_perso, "perso.lua", "flyingDashDodge");
+        valid = valid && checkFunc(m_perso, "perso.lua", "catch");
         valid = valid && checkFunc(m_perso, "perso.lua", "appear");
         valid = valid && checkFunc(m_perso, "perso.lua", "won");
         valid = valid && checkFunc(m_perso, "perso.lua", "lost");
@@ -213,7 +250,7 @@ namespace gameplay
 
         /* Make the script load the character rcs. */
         bool ret;
-        m_perso.callFunction<bool, int>("init", &ret, (int)c);
+        m_perso.callFunction<bool, std::string, int>("init", &ret, m_path, (int)c);
         if(!ret) {
             std::ostringstream oss;
             oss << "Couldn't load ressources for character \"" << m_namespace << "\".";
@@ -221,6 +258,7 @@ namespace gameplay
             return false;
         }
 
+        m_actual.flip = m_next.flip = false;
         action(Walk, Fixed);
         return true;
     }
@@ -373,13 +411,22 @@ namespace gameplay
         /* Drawing. */
         global::gfx->enterNamespace(m_namespace);
         global::gfx->enterNamespace("perso");
-        global::gfx->blitTexture("drawed", pos);
+        global::gfx->blitTexture("drawed", pos, m_actual.flip);
     }
-            
+
     void Character::actuateByLua()
     {
+        if(m_actual.id == ActionID::None)
+            return;
+
         unsigned long ms = SDL_GetTicks() - m_begin;
-        /* TODO */
+        bool ret = true;
+        m_perso.callFunction<bool, unsigned long>(m_luaCalls[(unsigned int)m_actual.id], &ret, ms);
+
+        if(!ret) {
+            m_actual = m_next;
+            m_begin = SDL_GetTicks();
+        }
     }
 
     bool Character::checkFunc(lua::Script& script, const std::string& nm, const std::string& func)

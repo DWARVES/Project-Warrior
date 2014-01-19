@@ -92,7 +92,7 @@ namespace gameplay
 
             lua::Script m_perso;      /**< @brief The perso.lua script. */
             /** @brief Describe the possible actions of the character. */
-            enum class ActionID {
+            enum class ActionID : unsigned int {
                 Walk,                 /**< @brief Walk. */
                 Run,                  /**< @brief Run. */
                 Stop,                 /**< @brief Stop after running. */
@@ -129,6 +129,9 @@ namespace gameplay
             Action m_actual;          /**< @brief The action the character is actually doing. */
             Action m_next;            /**< @brief The action the character will do once m_actual is finished. */
             unsigned long m_begin;    /**< @brief The timestamp of the actual action. */
+
+            /** @brief Link an actionID to the corresponding lua function. */
+            static const char* const m_luaCalls[(unsigned int)ActionID::None];
 
             /* Internal methods. */
             /** @brief Draw the "preview" texture with a maximum size. */
