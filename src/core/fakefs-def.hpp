@@ -111,7 +111,7 @@ namespace core
         return m_actual->entities.find(name) != m_actual->entities.end();
     }
 
-    template <typename T, typename L> bool FakeFS<T,L>::link(const std::string& name, const std::string& target)
+    template <typename T, typename L> bool FakeFS<T,L>::link(const std::string& name, const std::string& target, bool force)
     {
         /* Find the target entity */
         std::vector<std::string> left;
@@ -125,8 +125,12 @@ namespace core
 
         /* Link to an entity */
         if(left.size() == 1) {
-            if(existsEntity(name))
-                return false;
+            if(existsEntity(name)) {
+                if(force)
+                    deleteEntity(name);
+                else
+                    return false;
+            }
             _entity* t = abr->entities[left[0]];
             ++t->count;
             m_actual->entities[name] = t;

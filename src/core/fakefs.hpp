@@ -106,9 +106,10 @@ namespace core
              * It's the same for namespace link : there won't be any difference between the link and a mere namespace.
              * @param name The name of the link, which can only be a plain name.
              * @param target The path to the entity/namespace to link to.
+             * @param force If true, if an entity name exists, it will be erased, otherwise the call will fail.
              * @return False if name already exists or of target dosn't exists
              */
-            bool link(const std::string& name, const std::string& target);
+            bool link(const std::string& name, const std::string& target, bool force = false);
 
             /** @brief Change an entity value.
              * Be careful : the previous value is NOT free'd
