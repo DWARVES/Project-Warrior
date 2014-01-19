@@ -700,7 +700,7 @@ namespace graphics
     /*************************
      *       Drawing         *
      *************************/
-    void Graphics::blitTexture(const std::string& name, const geometry::Point& pos)
+    void Graphics::blitTexture(const std::string& name, const geometry::Point& pos, bool flip)
     {
         if(rctype(name) != TEXT) {
             core::logger::logm(std::string("Tried to blit an unexistant texture : ") + name, core::logger::WARNING);
@@ -715,19 +715,25 @@ namespace graphics
         m_shads.text(true);
         glBindTexture(GL_TEXTURE_2D, text->glID());
 
+        float xfill = 1.0f, xempty = 0.0f;
+        if(flip) {
+            xfill = 0.0f;
+            xempty = 1.0f;
+        }
+
         glColor4ub(255, 255, 255, 255);
         glBegin(GL_QUADS);
         if(m_yinvert) {
-            glTexCoord2f(0.0f,1.0f); glVertex2f(ori.x,                        ori.y);
-            glTexCoord2f(1.0f,1.0f); glVertex2f(ori.x + (float)text->width(), ori.y);
-            glTexCoord2f(1.0f,0.0f); glVertex2f(ori.x + (float)text->width(), ori.y + (float)text->height());
-            glTexCoord2f(0.0f,0.0f); glVertex2d(ori.x,                        ori.y + (float)text->height());
+            glTexCoord2f(xempty,1.0f); glVertex2f(ori.x,                        ori.y);
+            glTexCoord2f(xfill, 1.0f); glVertex2f(ori.x + (float)text->width(), ori.y);
+            glTexCoord2f(xfill, 0.0f); glVertex2f(ori.x + (float)text->width(), ori.y + (float)text->height());
+            glTexCoord2f(xempty,0.0f); glVertex2d(ori.x,                        ori.y + (float)text->height());
         }
         else {
-            glTexCoord2f(0.0f,0.0f); glVertex2f(ori.x,                        ori.y);
-            glTexCoord2f(1.0f,0.0f); glVertex2f(ori.x + (float)text->width(), ori.y);
-            glTexCoord2f(1.0f,1.0f); glVertex2f(ori.x + (float)text->width(), ori.y + (float)text->height());
-            glTexCoord2f(0.0f,1.0f); glVertex2d(ori.x,                        ori.y + (float)text->height());
+            glTexCoord2f(xempty,0.0f); glVertex2f(ori.x,                        ori.y);
+            glTexCoord2f(xfill, 0.0f); glVertex2f(ori.x + (float)text->width(), ori.y);
+            glTexCoord2f(xfill, 1.0f); glVertex2f(ori.x + (float)text->width(), ori.y + (float)text->height());
+            glTexCoord2f(xempty,1.0f); glVertex2d(ori.x,                        ori.y + (float)text->height());
         }
         glEnd();
     }

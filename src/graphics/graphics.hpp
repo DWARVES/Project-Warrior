@@ -219,8 +219,10 @@ namespace graphics
             /** @name Drawing functions.
              * @{
              */
-            /** @brief Draw a texture, taking in account its size and its hotPoint. */
-            void blitTexture(const std::string& name, const geometry::Point& pos);
+            /** @brief Draw a texture, taking in account its size and its hotPoint.
+             * @param flip If flip, the texture is flipped horizontaly.
+             */
+            void blitTexture(const std::string& name, const geometry::Point& pos, bool flip = false);
             /** @brief Draw a point with specified color and width (=radius). */
             void draw(const geometry::Point& point, const Color& col, float width = -1.0f);
             /** @brief Draw a line with specified color and width (=radius). */
