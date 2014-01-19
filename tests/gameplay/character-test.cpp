@@ -66,23 +66,21 @@ int main()
         else
             dir = gameplay::Character::Fixed;
 
-        if(evs.isKeyPressed(events::Key('a')))
+        if(evs.keyJustPressed(events::Key('a')))
             chara->action(gameplay::Character::Attack, dir);
-        else if(evs.isKeyPressed(events::Key('z'))) {
-            std::cout << "Spell !" << std::endl;
+        else if(evs.keyJustPressed(events::Key('z')))
             chara->action(gameplay::Character::Spell, dir);
-        }
-        else if(evs.isKeyPressed(events::Key('e')))
+        else if(evs.keyJustPressed(events::Key('e')))
             chara->action(gameplay::Character::Smash, dir);
-        else if(evs.isKeyPressed(events::Key('q')))
+        else if(evs.keyJustPressed(events::Key('q')))
             chara->action(gameplay::Character::Dodge, dir);
-        else if(evs.isKeyPressed(events::Key('e')))
+        else if(evs.keyJustPressed(events::Key('s')))
             chara->action(gameplay::Character::DDodge, dir);
-        else if(evs.isKeyPressed(events::Key('d')))
+        else if(evs.keyJustPressed(events::Key('d')))
             chara->action(gameplay::Character::Catch, dir);
-        else if(evs.isKeyPressed(events::Key(' ')))
+        else if(evs.keyJustPressed(events::Key(' ')))
             chara->action(gameplay::Character::Run, dir);
-        else
+        else if(evs.keyJustPressed(events::Key('r')))
             chara->action(gameplay::Character::Walk, dir);
 
         gfx->beginDraw();
