@@ -41,6 +41,8 @@ namespace gameplay
         "smashUp",
         "smashDown",
         "catch",
+        "won",
+        "lost",
     };
 
     Character::Character(const std::string& path)
@@ -155,26 +157,26 @@ namespace gameplay
     void Character::preview(const geometry::AABB& msize) const
     {
         global::gfx->enterNamespace(m_namespace);
-        drawPrev(msize);
+        drawPrev("preview", msize);
     }
 
     void Character::bigPreview(Color color, const geometry::AABB& msize)
     {
         global::gfx->enterNamespace(m_namespace + "/script");
         m_preview.callFunction<void, int>("loadPreview", NULL, (int)color);
-        drawPrev(msize);
+        drawPrev("preview", msize);
     }
 
-    void Character::drawPrev(const geometry::AABB& msize) const
+    void Character::drawPrev(const std::string& nm, const geometry::AABB& msize) const
     {
-        if(global::gfx->rctype("preview") != graphics::Graphics::TEXT)
+        if(global::gfx->rctype(nm) != graphics::Graphics::TEXT)
             return;
 
         geometry::AABB used = msize;
         geometry::Point dec(0.0f, 0.0f);
 
         float ratioSize = used.width / used.height;
-        float ratioPict = (float)global::gfx->getTextureWidth("preview") / (float)global::gfx->getTextureHeight("preview");
+        float ratioPict = (float)global::gfx->getTextureWidth(nm) / (float)global::gfx->getTextureHeight(nm);
         if(ratioPict > ratioSize) {
             used.height = used.width / ratioPict;
             dec.y = (msize.height - used.height) / 2.0f;
@@ -186,7 +188,7 @@ namespace gameplay
 
         global::gfx->push();
         global::gfx->move(dec.x, dec.y);
-        global::gfx->draw(used, "preview");
+        global::gfx->draw(used, nm);
         global::gfx->pop();
     }
 
@@ -266,6 +268,7 @@ namespace gameplay
     void Character::action(Control control, Direction dir)
     {
         m_begin = SDL_GetTicks();
+        m_useMsize = false;
 
         /** @todo Make transitions (depends on physics). */
         switch(control) {
@@ -419,7 +422,12 @@ namespace gameplay
         /* Drawing. */
         global::gfx->enterNamespace(m_namespace);
         global::gfx->enterNamespace("perso");
-        global::gfx->blitTexture("drawed", pos, m_actual.flip);
+        global::gfx->push();
+        global::gfx->move(pos.x, pos.y);
+        if(m_useMsize)
+            drawPrev("drawed", m_msize);
+        else
+            global::gfx->blitTexture("drawed", geometry::Point(0.0f,0.0f), m_actual.flip);
     }
 
     void Character::actuateByLua()
@@ -445,6 +453,36 @@ namespace gameplay
         oss << "Script " << nm << " in \"" << m_path << "\" doesn't hace the required \"" << func << "\" function.";
         core::logger::logm(oss.str(), core::logger::WARNING);
         return false;
+    }
+
+    void Character::appear(float percent, const geometry::AABB& msize)
+    {
+        global::gfx->enterNamespace(m_namespace);
+        global::gfx->enterNamespace("perso");
+        m_perso.callFunction<void, float>("appear", NULL, percent);
+        drawPrev("drawed", msize);
+    }
+
+    void Character::lost(const geometry::AABB& msize)
+    {
+        m_msize       = msize;
+        m_useMsize    = true;
+        m_begin       = SDL_GetTicks();
+        m_actual.flip = false;
+        m_actual.id   = ActionID::Lost;
+        m_next.flip   = false;
+        m_next.id     = ActionID::Stand;
+    }
+
+    void Character::won(const geometry::AABB& msize)
+    {
+        m_msize       = msize;
+        m_useMsize    = true;
+        m_begin       = SDL_GetTicks();
+        m_actual.flip = false;
+        m_actual.id   = ActionID::Won;
+        m_next.flip   = false;
+        m_next.id     = ActionID::Stand;
     }
 
 }

@@ -79,6 +79,15 @@ namespace gameplay
             void action(Control control, Direction dir);
             /** @brief Draw the character at the position setted by its physics (in the stage repere). */
             void draw();
+            /** @brief Draw the character appearing.
+             * @param percent The percentage of the animation [0-100].
+             * @param msize The maximum size.
+             */
+            void appear(float percent, const geometry::AABB& msize);
+            /** @brief The animation if the character won, with a maximum size. */
+            void lost(const geometry::AABB& msize);
+            /** @brief The animation if the character lost, with a maximum size. */
+            void won(const geometry::AABB& msize);
 
         private:
             std::string m_namespace;  /**< @brief The name of the namespace used by this character in gfx and audio. */
@@ -119,6 +128,8 @@ namespace gameplay
                 SmashUp,              /**< @brief A smash to top. */
                 SmashDown,            /**< @brief A smash to bottom. */
                 Catch,                /**< @brief Catch something. */
+                Won,                  /**< @brief The victory animation. */
+                Lost,                 /**< @brief The defeat animation. */
                 None,                 /**< @brief No action. */
             };
             /** @brief Describes an action. */
@@ -129,13 +140,15 @@ namespace gameplay
             Action m_actual;          /**< @brief The action the character is actually doing. */
             Action m_next;            /**< @brief The action the character will do once m_actual is finished. */
             unsigned long m_begin;    /**< @brief The timestamp of the actual action. */
+            bool m_useMsize;          /**< @brief Must the action be drawn with a maximum size. */
+            geometry::AABB m_msize;   /**< @brief The maximum size used when drawing. */
 
             /** @brief Link an actionID to the corresponding lua function. */
             static const char* const m_luaCalls[(unsigned int)ActionID::None];
 
             /* Internal methods. */
-            /** @brief Draw the "preview" texture with a maximum size. */
-            void drawPrev(const geometry::AABB& msize) const;
+            /** @brief Draw the nm texture with a maximum size. */
+            void drawPrev(const std::string& nm, const geometry::AABB& msize) const;
             /** @brief Check the existence of a function in a script, and log a warning on the contrary.
              * @param script The script.
              * @param nm     The name of the script for logging.
