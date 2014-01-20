@@ -50,6 +50,15 @@ int main()
     graphics::Color bgc(0, 255, 255);
     auto dir = gameplay::Character::Fixed;
 
+    /* Appearance over 2 seconds. */
+    for(Uint32 i = 0; i <= 20; ++i) {
+        gfx->beginDraw();
+        gfx->draw(bg, bgc);
+        chara->appear(float(i*5), geometry::AABB(800,600));
+        gfx->endDraw();
+        SDL_Delay(100);
+    }
+
     while(cont) {
         evs.update();
         if(evs.closed() || evs.quit() || evs.isKeyPressed(events::KeyMap::Escape))
@@ -78,10 +87,14 @@ int main()
             chara->action(gameplay::Character::DDodge, dir);
         else if(evs.keyJustPressed(events::Key('d')))
             chara->action(gameplay::Character::Catch, dir);
-        else if(evs.keyJustPressed(events::Key(' ')))
+        else if(evs.keyJustPressed(events::Key('t')))
             chara->action(gameplay::Character::Run, dir);
         else if(evs.keyJustPressed(events::Key('r')))
             chara->action(gameplay::Character::Walk, dir);
+        else if(evs.keyJustPressed(events::Key('o')))
+            chara->won(geometry::AABB(800,600));
+        else if(evs.keyJustPressed(events::Key('p')))
+            chara->lost(geometry::AABB(800,600));
 
         gfx->beginDraw();
         gfx->draw(bg, bgc);
