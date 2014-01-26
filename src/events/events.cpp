@@ -709,6 +709,23 @@ namespace events
         return m_joys.find(j) != m_joys.end();
     }
 
+    std::vector<std::string> Events::joyNames() const
+    {
+        std::vector<std::string> ret;
+        for(auto p : m_joys)
+            ret.push_back(p.first->name());
+        return ret;
+    }
+
+    Joystick* Events::joyFromName(const std::string& name) const
+    {
+        for(auto p : m_joys) {
+            if(name == p.first->name())
+                return p.first;
+        }
+        return NULL;
+    }
+
     std::vector<int> Events::lastJoyButtonsPressed(Joystick* j) const
     {
         std::vector<int> defRet;

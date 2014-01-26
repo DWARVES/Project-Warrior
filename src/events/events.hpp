@@ -186,6 +186,10 @@ namespace events
             void closeJoystick(Joystick* j);
             /** @brief Indicates if the joystick structure is a valid and loaded one. */
             bool isJoystickLoaded(Joystick* j) const;
+            /** @brief Get the names of all joystick loaded. */
+            std::vector<std::string> joyNames() const;
+            /** @brief Get a previously loaded joystick from its name. Return NULL if the joystick wasn't found. */
+            Joystick* joyFromName(const std::string& name) const;
             /** @brief Returns the buttons of joystick j pressed during the last call to update. */
             std::vector<int> lastJoyButtonsPressed(Joystick* j) const;
             /** @brief Returns the buttons of joystick j released during the last call to update. */
