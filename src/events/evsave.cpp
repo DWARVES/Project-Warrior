@@ -23,7 +23,7 @@ namespace events
 
     EvSave* EvSave::parse(const std::string& sv)
     {
-        boost::regex type ("^\\s*\\((.+?)\\)");
+        boost::regex type ("^\\s*\\((.+?)\\).*");
         boost::smatch results;
         if(!boost::regex_match(sv, results, type))
             return NULL;

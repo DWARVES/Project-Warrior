@@ -56,7 +56,7 @@ namespace events
 
     bool KeySave::load(const std::string& sv)
     {
-        boost::regex reg ("^\\s*(key)\\s*(\\d+?)");
+        boost::regex reg ("^\\s*\\(key\\)\\s*(\\d+?)");
         boost::smatch results;
         if(!boost::regex_match(sv, results, reg))
             return false;

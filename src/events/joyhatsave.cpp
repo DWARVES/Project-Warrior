@@ -92,7 +92,7 @@ namespace events
 
     bool JoyHatSave::load(const std::string& sv)
     {
-        boost::regex ld ("^\\s*(hat)\\s*(\\d+)->(\\d+)\\s*[(\\d+)]");
+        boost::regex ld ("^\\s*\\(hat\\)\\s*(\\d+)->(\\d+)\\s*[(\\d+)]");
         boost::smatch results;
         if(!boost::regex_match(sv, results, ld))
             return false;
