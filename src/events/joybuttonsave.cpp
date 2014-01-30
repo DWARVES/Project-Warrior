@@ -89,17 +89,21 @@ namespace events
 
     bool JoyButtonSave::load(const std::string& sv)
     {
-        boost::regex ld ("^\\s*\\(joy\\)\\s*(\\d+)\\s*\\[(\\d+)\\]");
+        boost::regex ld ("^\\s*\\(joybutton\\)\\s*(\\d+)\\s*(\\[(\\d+)\\])?");
         boost::smatch results;
         if(!boost::regex_match(sv, results, ld))
             return false;
 
-        std::istringstream iss(results[1]);
+        std::istringstream iss(results[2]);
         iss >> m_id;
-        iss.str(results[2]);
-        iss >> m_joyID;
+        if(results.size() > 3) {
+            iss.str(results[3]);
+            iss >> m_joyID;
+        }
+        else
+            m_joyID = -1;
         m_joy = NULL;
-        return false;
+        return true;
     }
 
     std::string JoyButtonSave::id() const

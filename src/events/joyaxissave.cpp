@@ -16,7 +16,10 @@ namespace events
     void JoyAxisSave::set(Joystick* joy, int mid, int value)
     {
         m_joy = joy;
-        m_joyID = m_joy->id();
+        if(m_joy)
+            m_joyID = m_joy->id();
+        else
+            m_joyID = -1;
         m_id = mid;
         m_value = value;
         m_valid = false;
@@ -92,7 +95,7 @@ namespace events
 
     bool JoyAxisSave::load(const std::string& sv)
     {
-        boost::regex ld ("^\\s*\\(axis\\)\\s*(\\d+)->(-?\\d+)\\s*[(\\d+)]");
+        boost::regex ld ("^\\s*\\(axis\\)\\s*(\\d+)->(-?\\d+)\\s*(\\[(\\d+)\\])?");
         boost::smatch results;
 
         if(!boost::regex_match(sv, results, ld))
@@ -103,8 +106,12 @@ namespace events
         iss >> m_id;
         iss.str(results[2]);
         iss >> m_value;
-        iss.str(results[3]);
-        iss >> m_joyID;
+        if(results.size() > 3) {
+            iss.str(results[3]);
+            iss >> m_joyID;
+        }
+        else
+            m_joyID = -1;
         return true;
     }
 
