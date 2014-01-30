@@ -69,6 +69,7 @@ namespace gameplay
             std::string m_namespace;                     /**< @brief The namespace of this controler. */
             Character* m_ch;                             /**< @brief The character controled. */
             events::EvSave* m_ctrls[(unsigned int)Last]; /**< @brief The loaded controls. */
+            Controls m_actual;                           /**< @brief The actually selected control. */
     };
 }
 
