@@ -187,10 +187,15 @@ namespace gameplay
         std::vector<std::string> plug = global::evs->joyNames();
 
         for(auto it = set.begin(); it != set.end(); ++it) {
+            if(*it == "Keyboard") {
+                ret.push_back("Keyboard");
+                continue;
+            }
+
             auto result = std::find(plug.begin(), plug.end(), *it);
-            ret.push_back(*it);
             if(result == plug.end())
                 continue;
+            ret.push_back(*it);
 
             plug.erase(result);
             if(plug.empty())
