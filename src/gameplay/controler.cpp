@@ -2,6 +2,7 @@
 #include "controler.hpp"
 #include "global.hpp"
 #include "core/logger.hpp"
+#include "events/joyeventsave.hpp"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
@@ -44,6 +45,18 @@ namespace gameplay
             }
         }
 
+        /* Loading the joystick if necessary. */
+        events::Joystick* j = NULL;
+        if(id != "Keyboard") {
+            j = global::evs->joyFromName(id);
+            if(!j) {
+                std::ostringstream oss;
+                oss << "Joystick \"" << id << "\" not plugged : can't be used.";
+                core::logger::logm(oss.str(), core::logger::ERROR);
+                return;
+            }
+        }
+
         /* Loading the controls config. */
         for(unsigned int i = 0; i < (unsigned int)Last; ++i) {
             m_ctrls[i] = events::EvSave::parse(m_evs.getEntityValue(controlsNames[i]));
@@ -53,6 +66,9 @@ namespace gameplay
                 core::logger::logm(oss.str(), core::logger::ERROR);
                 return;
             }
+
+            if(j)
+                dynamic_cast<events::JoyEventSave*>(m_ctrls[i])->setJoystick(j);
         }
         m_loaded = true;
     }
