@@ -17,6 +17,11 @@ namespace global {
 
 int main()
 {
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
+        std::cout << "Couldn't load SDL : " << SDL_GetError() << std::endl;
+        return 1;
+    }
+
     core::logger::init();
     core::logger::addOutput(&std::cout);
     graphics::Graphics* gfx = new graphics::Graphics;
@@ -26,12 +31,8 @@ int main()
     bool cont = false;
     events::Events evs;
     evs.enableInput(false);
+    evs.openJoysticks();
     global::evs = &evs;
-
-    if(SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cout << "Couldn't load SDL : " << SDL_GetError() << std::endl;
-        return 1;
-    }
 
     cont = gfx->openWindow("Test graphics::Graphics", 800, 600);
     if(!cont)
@@ -55,9 +56,20 @@ int main()
         return 1;
     }
     auto ids = gameplay::Controler::getIDs();
+    for(size_t i = 0; i < ids.size(); ++i)
+        std::cout << "\t#" << i << " -> " << ids[i] << std::endl;
+    std::cout << "Choose your device : ";
+    size_t choice;
+    std::cin >> choice;
+    if(choice >= ids.size())
+        return 1;
+
+    ids = gameplay::Controler::listAll();
+    std::cout << "All configured :" << std::endl;
     for(auto str : ids)
         std::cout << "\t-> " << str << std::endl;
-    gameplay::Controler ctrl("Keyboard");
+
+    gameplay::Controler ctrl(ids[choice]);
     if(!ctrl.isOpen()) {
         core::logger::logm("Couldn't load the keyboard config.", core::logger::FATAL);
         return 1;
