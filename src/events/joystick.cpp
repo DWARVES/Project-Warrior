@@ -34,7 +34,7 @@ namespace events
         }
         else {
             std::ostringstream oss;
-            oss << "Joystick #" << ID << " opened.";
+            oss << "Joystick #" << ID << " \"" << name() << "\" opened.";
             core::logger::logm(oss.str(), core::logger::MSG);
         }
     }
