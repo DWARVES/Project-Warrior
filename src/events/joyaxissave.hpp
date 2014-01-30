@@ -2,13 +2,13 @@
 #ifndef DEF_EVENTS_JOYAXISSAVE
 #define DEF_EVENTS_JOYAXISSAVE
 
-#include "events/evsave.hpp"
+#include "events/joyeventsave.hpp"
 #include "events/joystick.hpp"
 
 namespace events
 {
     /** @brief Represent a joystick axis event. */
-    class JoyAxisSave : public EvSave
+    class JoyAxisSave : public JoyEventSave
     {
         public:
             JoyAxisSave();
@@ -21,7 +21,7 @@ namespace events
              */
             void set(Joystick* joy, int mid, int value);
             /** @brief Change the joystick witheout changing the configuration. */
-            void setJoystick(Joystick* joy);
+            virtual void setJoystick(Joystick* joy);
             /** @brief Clears the saved event. */
             void clear();
             /** @brief Returns the joystick id loaded. */

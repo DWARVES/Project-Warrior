@@ -12,6 +12,7 @@ add_library(${lib}
     button.hpp         windowstate.hpp
     evsave.cpp         evsave.hpp
     keysave.cpp        keysave.hpp
+    joyeventsave.cpp   joyeventsave.hpp
     joybuttonsave.cpp  joybuttonsave.hpp
     joyhatsave.cpp     joyhatsave.hpp
     joyaxissave.cpp    joyaxissave.hpp

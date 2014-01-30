@@ -7,7 +7,7 @@
 namespace events
 {
     JoyAxisSave::JoyAxisSave()
-        : EvSave(), m_id(0), m_value(0), m_joy(NULL), m_joyID(-1), m_valid(false)
+        : JoyEventSave(), m_id(0), m_value(0), m_joy(NULL), m_joyID(-1), m_valid(false)
     {}
 
     JoyAxisSave::~JoyAxisSave()

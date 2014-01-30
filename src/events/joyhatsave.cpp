@@ -7,7 +7,7 @@
 namespace events
 {
     JoyHatSave::JoyHatSave()
-        : EvSave(), m_id(0), m_st(JoyHatState::Center), m_joy(NULL), m_joyID(-1), m_valid(false)
+        : JoyEventSave(), m_id(0), m_st(JoyHatState::Center), m_joy(NULL), m_joyID(-1), m_valid(false)
     {}
 
     JoyHatSave::~JoyHatSave()

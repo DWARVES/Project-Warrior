@@ -2,13 +2,13 @@
 #ifndef DEF_EVENTS_JOYHATSAVE
 #define DEF_EVENTS_JOYHATSAVE
 
-#include "events/evsave.hpp"
+#include "events/joyeventsave.hpp"
 #include "events/joystick.hpp"
 
 namespace events
 {
     /** @brief Represents a joystick hat event. */
-    class JoyHatSave : public EvSave
+    class JoyHatSave : public JoyEventSave
     {
         public:
             JoyHatSave();
@@ -21,7 +21,7 @@ namespace events
              */
             void set(Joystick* joy, int mid, JoyHatState st);
             /** @brief Change the joystick witheout changing the configuration. */
-            void setJoystick(Joystick* joy);
+            virtual void setJoystick(Joystick* joy);
             /** @brief Clears the saved event. */
             void clear();
             /** @brief Returns the joystick id loaded. */
