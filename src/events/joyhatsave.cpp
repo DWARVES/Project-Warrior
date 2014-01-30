@@ -16,7 +16,10 @@ namespace events
     void JoyHatSave::set(Joystick* joy, int mid, JoyHatState st)
     {
         m_joy = joy;
-        m_joyID = m_joy->id();
+        if(m_joy)
+            m_joyID = m_joy->id();
+        else
+            m_joyID = -1;
         m_id = mid;
         m_st = st;
         m_valid = false;
@@ -110,7 +113,7 @@ namespace events
         else
             m_joyID = -1;
         m_joy = NULL;
-        return false;
+        return true;
     }
 
     std::string JoyHatSave::id() const
