@@ -83,8 +83,6 @@ int main()
             chara->action(gameplay::Character::Smash, dir);
         else if(evs.keyJustPressed(events::Key('q')))
             chara->action(gameplay::Character::Dodge, dir);
-        else if(evs.keyJustPressed(events::Key('s')))
-            chara->action(gameplay::Character::DDodge, dir);
         else if(evs.keyJustPressed(events::Key('d')))
             chara->action(gameplay::Character::Catch, dir);
         else if(evs.keyJustPressed(events::Key('t')))

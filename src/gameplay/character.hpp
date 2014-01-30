@@ -60,8 +60,7 @@ namespace gameplay
                 Attack, /**< @brief The basic attack control. */
                 Spell,  /**< @brief The magic attack control. */
                 Smash,  /**< @brief The smash control. */
-                Dodge,  /**< @brief The static dodge control. */
-                DDodge, /**< @brief The dash dodge control. */
+                Dodge,  /**< @brief The dodge control. */
                 Catch,  /**< @brief The catch control. */
             };
             /** @brief The directions of the controls. */

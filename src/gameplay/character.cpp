@@ -361,31 +361,17 @@ namespace gameplay
             case Dodge:
                 /* Handle flying dodge. */
                 switch(dir) {
-                    case Left:  m_actual.id = ActionID::StaticDodge;
-                                m_actual.flip = false; 
-                                break;
-                    case Right: m_actual.id = ActionID::StaticDodge;
-                                m_actual.flip = true; 
-                                break;
-                    case Up: case Down: case Fixed:
-                    default:    m_actual.id = ActionID::Stand;          break;
-                }
-                m_next.flip = m_actual.flip;
-                break;
-
-            case DDodge:
-                /* Handle flying dodge. */
-                m_next.id = ActionID::Stand;
-                switch(dir) {
                     case Left:  m_actual.id = ActionID::DashDodge;
                                 m_actual.flip = false; 
                                 break;
                     case Right: m_actual.id = ActionID::DashDodge;
                                 m_actual.flip = true; 
                                 break;
-                    case Up: case Down: case Fixed:
-                    default:    m_actual.id = ActionID::Stand;          break;
+                    case Fixed: m_actual.id = ActionID::StaticDodge; break;
+                    case Up: case Down:
+                    default:    m_actual.id = ActionID::Stand;       break;
                 }
+                m_next.id = ActionID::Stand;
                 m_next.flip = m_actual.flip;
                 break;
 
