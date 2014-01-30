@@ -105,9 +105,11 @@ namespace events
         iss >> temp;
         m_st = (JoyHatState)temp;
         iss.str(results[1]);
+        iss.seekg(0, std::ios::beg);
         iss >> m_id;
         if(results.size() > 3) {
             iss.str(results[3]);
+            iss.seekg(0, std::ios::beg);
             iss >> m_joyID;
         }
         else

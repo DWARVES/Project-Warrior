@@ -105,9 +105,11 @@ namespace events
         std::istringstream iss (results[1]);
         iss >> m_id;
         iss.str(results[2]);
+        iss.seekg(0, std::ios::beg);
         iss >> m_value;
         if(results.size() > 3) {
             iss.str(results[3]);
+            iss.seekg(0, std::ios::beg);
             iss >> m_joyID;
         }
         else

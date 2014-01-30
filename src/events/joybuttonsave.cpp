@@ -94,10 +94,11 @@ namespace events
         if(!boost::regex_match(sv, results, ld))
             return false;
 
-        std::istringstream iss(results[2]);
+        std::istringstream iss(results[1]);
         iss >> m_id;
-        if(results.size() > 3) {
-            iss.str(results[3]);
+        if(results.size() > 2) {
+            iss.str(results[2]);
+            iss.seekg(0, std::ios::beg);
             iss >> m_joyID;
         }
         else
