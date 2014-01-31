@@ -89,24 +89,49 @@ namespace events
     std::string JoyHatSave::save() const
     {
         std::ostringstream oss;
-        oss << "(hat) " << m_id << "->" << (int)m_st << " [" << m_joyID << "]";
+        oss << "(hat) " << m_id << "->";
+        switch(m_st) {
+            case JoyHatState::Center: oss << "center"; break;
+            case JoyHatState::Left:   oss << "left";   break;
+            case JoyHatState::Right:  oss << "right";  break;
+            case JoyHatState::Up:     oss << "up";     break;
+            case JoyHatState::Down:   oss << "down";   break;
+            case JoyHatState::RightUp:
+            case JoyHatState::LeftUp:
+                                      oss << "up";
+                                      break;
+            case JoyHatState::RightDown:
+            case JoyHatState::LeftDown:
+                                      oss << "down";
+                                      break;
+            default:                  oss << "center"; break;
+        }
+        oss << " [" << m_joyID << "]";
         return oss.str();
     }
 
     bool JoyHatSave::load(const std::string& sv)
     {
-        boost::regex ld ("^\\s*\\(hat\\)\\s*(\\d+)->(\\d+)\\s*(\\[(\\d+)\\])?");
+        boost::regex ld ("^\\s*\\(hat\\)\\s*(\\d+)->(center|left|right|up|down)\\s*(\\[(\\d+)\\])?");
         boost::smatch results;
         if(!boost::regex_match(sv, results, ld))
             return false;
 
-        std::istringstream iss(results[2]);
-        Uint8 temp;
-        iss >> temp;
-        m_st = (JoyHatState)temp;
-        iss.str(results[1]);
+        std::istringstream iss(results[1]);
         iss.seekg(0, std::ios::beg);
         iss >> m_id;
+
+        if(results[2] == "center")
+            m_st = JoyHatState::Center;
+        else if(results[2] == "left")
+            m_st = JoyHatState::Left;
+        else if(results[2] == "right")
+            m_st = JoyHatState::Right;
+        else if(results[2] == "up")
+            m_st = JoyHatState::Up;
+        else if(results[2] == "down")
+            m_st = JoyHatState::Down;
+
         if(results.size() > 3) {
             iss.str(results[3]);
             iss.seekg(0, std::ios::beg);
