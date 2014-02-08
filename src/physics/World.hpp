@@ -4,6 +4,7 @@
 
 #include <map>
 #include <memory>
+#include <SDL.h>
 #include "core/logger.hpp"
 #include "Box2D/Box2D.h"
 #include "geometry/point.hpp"
@@ -77,6 +78,10 @@ namespace physics
             /** @brief Removes a Joint from the world */
             void destroyJoint(const std::string& name); 
 
+            /** @brief Launch the simulation, must be called once at the beggining of the loop. */
+            void start();
+            /** @brief Do the simulation, must be called once per loop. */
+            void step();
             /** @brief Calls the user implemented callback corresponding to the Entities colliding's types */
             void collisionCallback(Entity* entityA, Entity* entityB); 
 
@@ -101,6 +106,8 @@ namespace physics
             std::map<std::string, std::unique_ptr<Entity>> m_entities; 
             /** @brief A map containing all the joints of the world, allowing to access them with a specific name given by the user when created (unique_ptr allows polymorphism behavior) */
             std::map<std::string, std::unique_ptr<b2Joint, NullDeleter>> m_joints; 
+            /** @brief Timestamp used to compute the time of each step. */
+            Uint32 m_ltime;
     };
 }
 

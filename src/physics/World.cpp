@@ -309,5 +309,17 @@ namespace physics
         else
             return nullptr;
     }
+            
+    void World::start()
+    {
+        m_ltime = SDL_GetTicks();
+    }
+
+    void World::step()
+    {
+        Uint32 time = SDL_GetTicks();
+        m_world->Step(float(time - m_ltime) / 1000.0f, 10, 8);
+        m_ltime = time;
+    }
 
 }
