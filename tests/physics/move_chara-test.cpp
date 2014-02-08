@@ -28,7 +28,7 @@ int main()
     graphics::Graphics* gfx = new graphics::Graphics;
     global::gfx = gfx;
     lua::exposure::Graphics::setGraphicsInstance(gfx);
-    physics::World world(-10,0);
+    physics::World world(0,-10.0f);
 
     bool cont = false;
     events::Events evs;
@@ -101,6 +101,7 @@ int main()
     gfx->invertYAxis(true);
     gfx->setVirtualSize(1600, 1200);
 
+    world.start();
     while(cont) {
         evs.update();
         if(evs.closed() || evs.quit() || evs.isKeyPressed(events::KeyMap::Escape))
@@ -111,12 +112,13 @@ int main()
         gfx->draw(bg, bgc);
         gfx->draw(groundbox, obstcol);
 
-        gfx->move(ent->getPosition().x - 200, ent->getPosition().y - 200);
+        gfx->move(ent->getPosition().x*30 - 200, ent->getPosition().y*30 - 200);
         gfx->draw(colrect, graphics::Color(255, 255, 0));
         chara->draw();
         gfx->endDraw();
 
-        SDL_Delay(1000/30);
+        world.step();
+        SDL_Delay(1000/60);
     }
 
     delete chara;

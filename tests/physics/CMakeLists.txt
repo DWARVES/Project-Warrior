@@ -21,6 +21,7 @@ target_link_libraries (
 	glut
     glui
     ${OPENGL_LIBRARIES}
+    ${SDL2_LIBRARIES}
 ) 
 
 add_executable(move_chara-test move_chara-test.cpp)
