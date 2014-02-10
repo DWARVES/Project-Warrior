@@ -90,7 +90,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Entity *entity = new Entity(name, m_world, position, bodyType, type, collideWith, gravityScale, fixedRotation);
-            m_entities.setEntityValue(name, entity);
+            m_entities.createEntity(name, entity);
             core::logger::logm("The entity \"" + name + "\" has been created.", core::logger::MSG);
             return entity;
         }
@@ -104,7 +104,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Character *character = new Character(name, m_world, position, rect, weight);
-            m_entities.setEntityValue(name, character);
+            m_entities.createEntity(name, character);
             core::logger::logm("The character \"" + name + "\" has been created.", core::logger::MSG);
             return character;
         }
@@ -118,7 +118,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Attack *attack = new Attack(name, m_world, position, bodyType, collideWith, gravityScale, fixedRotation);
-            m_entities.setEntityValue(name, attack);
+            m_entities.createEntity(name, attack);
             core::logger::logm("The attack \"" + name + "\" has been created.", core::logger::MSG);
             return attack;
         }
@@ -132,7 +132,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Platform *platform = new Platform(name, m_world, position);
-            m_entities.setEntityValue(name, platform);
+            m_entities.createEntity(name, platform);
             core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::MSG);
             return platform;
         }
@@ -145,7 +145,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Platform *platform = new Platform(name, m_world, position, rect, friction);
-            m_entities.setEntityValue(name, platform);
+            m_entities.createEntity(name, platform);
             core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::MSG);
             return platform;
         }       
@@ -159,7 +159,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Obstacle *obstacle = new Obstacle(name, m_world, position);
-            m_entities.setEntityValue(name, obstacle);
+            m_entities.createEntity(name, obstacle);
             core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::MSG);
             return obstacle;
         }
@@ -172,7 +172,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Obstacle *obstacle = new Obstacle(name, m_world, position, rect, friction);
-            m_entities.setEntityValue(name, obstacle);
+            m_entities.createEntity(name, obstacle);
             core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::MSG);
             return obstacle;
         }
