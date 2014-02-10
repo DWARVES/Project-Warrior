@@ -35,7 +35,7 @@ namespace physics
             return nullptr;
         }
 
-        return m_entities.at(name).get();
+        return m_entities.getEntityValue(name);
     }
 
     b2Joint* World::getJoint(const std::string& name) const
@@ -75,10 +75,7 @@ namespace physics
 
     bool World::existsEntity(const std::string& name) const
     {
-        if(m_entities.count(name))
-            return true;
-        else
-            return false;
+        return m_entities.existsEntity(name);
     }
 
     bool World::existsJoint(const std::string& name) const
@@ -93,7 +90,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Entity *entity = new Entity(name, m_world, position, bodyType, type, collideWith, gravityScale, fixedRotation);
-            m_entities[name] = std::unique_ptr<Entity>(entity);
+            m_entities.setEntityValue(name, entity);
             core::logger::logm("The entity \"" + name + "\" has been created.", core::logger::MSG);
             return entity;
         }
@@ -107,7 +104,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Character *character = new Character(name, m_world, position, rect, weight);
-            m_entities[name] = std::unique_ptr<Character>(character);
+            m_entities.setEntityValue(name, character);
             core::logger::logm("The character \"" + name + "\" has been created.", core::logger::MSG);
             return character;
         }
@@ -121,7 +118,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Attack *attack = new Attack(name, m_world, position, bodyType, collideWith, gravityScale, fixedRotation);
-            m_entities[name] = std::unique_ptr<Attack>(attack);
+            m_entities.setEntityValue(name, attack);
             core::logger::logm("The attack \"" + name + "\" has been created.", core::logger::MSG);
             return attack;
         }
@@ -135,7 +132,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Platform *platform = new Platform(name, m_world, position);
-            m_entities[name] = std::unique_ptr<Platform>(platform);
+            m_entities.setEntityValue(name, platform);
             core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::MSG);
             return platform;
         }
@@ -148,7 +145,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Platform *platform = new Platform(name, m_world, position, rect, friction);
-            m_entities[name] = std::unique_ptr<Platform>(platform);
+            m_entities.setEntityValue(name, platform);
             core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::MSG);
             return platform;
         }       
@@ -162,7 +159,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Obstacle *obstacle = new Obstacle(name, m_world, position);
-            m_entities[name] = std::unique_ptr<Obstacle>(obstacle);
+            m_entities.setEntityValue(name, obstacle);
             core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::MSG);
             return obstacle;
         }
@@ -175,7 +172,7 @@ namespace physics
     {
         if(!existsEntity(name)) {
             Obstacle *obstacle = new Obstacle(name, m_world, position, rect, friction);
-            m_entities[name] = std::unique_ptr<Obstacle>(obstacle);
+            m_entities.setEntityValue(name, obstacle);
             core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::MSG);
             return obstacle;
         }
@@ -210,8 +207,8 @@ namespace physics
     void World::destroyEntity(const std::string& name)
     {
         if(existsEntity(name)) {
-            m_world->DestroyBody(m_entities.at(name).get()->getBody());
-            m_entities.erase(name);
+            m_world->DestroyBody(m_entities.getEntityValue(name)->getBody());
+            m_entities.deleteEntity(name);
             core::logger::logm("The entity \"" + name + "\" has been destroyed.", core::logger::MSG);
         }
         else

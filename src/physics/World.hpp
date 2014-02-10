@@ -6,6 +6,7 @@
 #include <memory>
 #include <SDL.h>
 #include "core/logger.hpp"
+#include "core/fakefs.hpp"
 #include "Box2D/Box2D.h"
 #include "geometry/point.hpp"
 #include "Entity.hpp"
@@ -20,7 +21,7 @@ namespace physics
     /** @brief A deleter for unique_ptr that avoid deletion doing nothing ; useful to prevent from conflicts between default deleters and Box2D protected destructors */
     struct NullDeleter
     {
-        void operator()(void* p) {}
+        void operator()(void*) {}
     };
 
     /** @brief The main class, instanciated by the user and used to manage physical entities and relations between them */
@@ -102,8 +103,8 @@ namespace physics
         protected:
             /** @brief The world used in Box2D for simulation, containing all the bodies and fixtures (that we grouped in the Entity class) */
             b2World* m_world; 
-            /** @brief A map containing all the entities of the world, allowing to access them with a specific name given by the user when created (unique_ptr allows polymorphism behavior) */
-            std::map<std::string, std::unique_ptr<Entity>> m_entities; 
+            /** @brief A FakeFS containing all the entities of the world, allowing to access them with a specific name given by the user when created */
+            core::FakeFS<Entity*, core::PointerLiberator<Entity*>> m_entities; 
             /** @brief A map containing all the joints of the world, allowing to access them with a specific name given by the user when created (unique_ptr allows polymorphism behavior) */
             std::map<std::string, std::unique_ptr<b2Joint, NullDeleter>> m_joints; 
             /** @brief Timestamp used to compute the time of each step. */
