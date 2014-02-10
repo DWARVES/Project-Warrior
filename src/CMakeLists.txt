@@ -10,32 +10,34 @@ add_executable(${exe}
     )
 
 add_subdirectory(menus)
-target_link_libraries(${exe} menus)
+set(libs "menus")
 add_subdirectory(gameplay)
-target_link_libraries(${exe} libgameplay)
+set(libs "${libs};libgameplay")
 add_subdirectory(lua)
-target_link_libraries(${exe} liblua)
+set(libs "${libs};liblua")
 add_subdirectory(Box2D)
-target_link_libraries(${exe} Box2D)
+set(libs "${libs};Box2D")
 add_subdirectory(physics)
-target_link_libraries(${exe} libphysics)
+set(libs "${libs};libphysics")
 add_subdirectory(graphics)
-target_link_libraries(${exe} libgraphics)
+set(libs "${libs};libgraphics")
 add_subdirectory(audio)
-target_link_libraries(${exe} libaudio)
+set(libs "${libs};libaudio")
 add_subdirectory(gui)
-target_link_libraries(${exe} libgui)
+set(libs "${libs};libgui")
 add_subdirectory(events)
-target_link_libraries(${exe} libevents)
+set(libs "${libs};libevents")
 add_subdirectory(liblua)
-target_link_libraries(${exe} liblua5.2)
+set(libs "${libs};liblua5.2")
 add_subdirectory(geometry)
-target_link_libraries(${exe} libgeometry)
+set(libs "${libs};libgeometry")
 add_subdirectory(core)
-target_link_libraries(${exe} libcore)
+set(libs "${libs};libcore")
 
 target_link_libraries(
     ${exe}
+    ${libs}
+    ${libs}
     ${Boost_REGEX_LIBRARY}
     ${Boost_FILESYSTEM_LIBRARY}
     ${SDL2_LIBRARIES}
