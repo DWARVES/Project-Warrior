@@ -86,6 +86,17 @@ namespace physics
             /** @brief Calls the user implemented callback corresponding to the Entities colliding's types */
             void collisionCallback(Entity* entityA, Entity* entityB); 
 
+            /** @brief Create a namespace, return false if couldn't create. */
+            bool createNamespace(const std::string& path);
+            /** @brief Delete a namespace. */
+            void deleteNamespace(const std::string& path);
+            /** @brief Check the existence of a namespace. */
+            bool existsNamespace(const std::string& path) const;
+            /** @brief Enter a namespace. */
+            void enterNamespace(const std::string& path);
+            /** @brief Get the actual namespace. */
+            std::string actualNamespace() const;
+
         protected:
             /** @brief Callback from b2DestructionListener called when a joint is destroyed */
             virtual void SayGoodbye(b2Joint* joint);

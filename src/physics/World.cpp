@@ -306,7 +306,7 @@ namespace physics
         else
             return nullptr;
     }
-            
+
     void World::start()
     {
         m_ltime = SDL_GetTicks();
@@ -317,6 +317,31 @@ namespace physics
         Uint32 time = SDL_GetTicks();
         m_world->Step(float(time - m_ltime) / 1000.0f, 10, 8);
         m_ltime = time;
+    }
+
+    bool World::createNamespace(const std::string& path)
+    {
+        return m_entities.createNamespace(path);
+    }
+
+    void World::deleteNamespace(const std::string& path)
+    {
+        m_entities.deleteNamespace(path);
+    }
+
+    bool World::existsNamespace(const std::string& path) const
+    {
+        return m_entities.existsNamespace(path);
+    }
+
+    void World::enterNamespace(const std::string& path)
+    {
+        m_entities.enterNamespace(path);
+    }
+
+    std::string World::actualNamespace() const
+    {
+        return m_entities.actualNamespace();
     }
 
 }
