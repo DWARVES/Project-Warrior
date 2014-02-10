@@ -1,6 +1,7 @@
 
 #include "global.hpp"
 #include "core/i18n.hpp"
+#include "gameplay/controler.hpp"
 
 namespace global
 {
@@ -124,6 +125,22 @@ namespace global
         if(!core::initLocale())
             throw init_exception("Couldn't init the locale.");
     }
+    
+    void loadControlers()
+    {
+        std::string path = cfg->get<std::string>("rcs") + "/controls";
+        if(gameplay::Controler::load(path)) {
+            std::ostringstream oss;
+            oss << "Loaded controlers config file \"" << path << "\".";
+            core::logger::logm(oss.str(), core::logger::MSG);
+        }
+        else {
+            std::ostringstream oss;
+            oss << "Couldn't load controlers config file \"" << path << "\".";
+            core::logger::logm(oss.str(), core::logger::WARNING);
+        }
+    }
+
 }
 
 

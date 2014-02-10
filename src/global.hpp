@@ -48,6 +48,8 @@ namespace global
     void loadAudio();
     /** @brief Prepare the event handler. */
     void loadEvents();
+    /** @brief Load the controlers, must be called after loadConfig */
+    void loadControlers();
     /** @brief Free the global variables. */
     void freeEverything();
 }

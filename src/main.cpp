@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
         global::loadGui();
         global::loadAudio();
         global::loadEvents();
+        global::loadControlers();
     }
     catch(const std::exception& e) {
         std::ostringstream oss;
