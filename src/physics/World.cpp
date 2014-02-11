@@ -24,24 +24,16 @@ namespace physics
     {
         m_world->SetContactListener(this);
         m_world->SetDestructionListener(this);
-
-        core::logger::init();
-        core::logger::addOutput(&std::cout);
     }
 
     World::World(b2World* world) : m_world(world)
     {
         m_world->SetContactListener(this);
         m_world->SetDestructionListener(this);
-
-        core::logger::init();
-        core::logger::addOutput(&std::cout);
     }
 
     World::~World()
-    {
-        core::logger::free();
-    }
+    {}
 
     Entity* World::getEntity(const std::string& name) const
     {
