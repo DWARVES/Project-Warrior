@@ -24,6 +24,20 @@ namespace physics
         void operator()(void*) {}
     };
 
+    /** @brief A deleter for core::FakeFS that also remove the entity from world. */
+    class EntityDeleter
+    {
+        public:
+            /** @param world The world to delete the entity from. */
+            EntityDeleter(b2World* world);
+            /** Mustn't be called, only to complie with fakefs template requirments. */
+            EntityDeleter();
+            void operator()(Entity* e) const;
+
+        private:
+            b2World* m_world;
+    };
+
     /** @brief The main class, instanciated by the user and used to manage physical entities and relations between them */
     class World : public b2DestructionListener, b2ContactListener
     {
@@ -115,7 +129,7 @@ namespace physics
             /** @brief The world used in Box2D for simulation, containing all the bodies and fixtures (that we grouped in the Entity class) */
             b2World* m_world; 
             /** @brief A FakeFS containing all the entities of the world, allowing to access them with a specific name given by the user when created */
-            core::FakeFS<Entity*, core::PointerLiberator<Entity*>> m_entities; 
+            core::FakeFS<Entity*, EntityDeleter> m_entities; 
             /** @brief A map containing all the joints of the world, allowing to access them with a specific name given by the user when created (unique_ptr allows polymorphism behavior) */
             std::map<std::string, std::unique_ptr<b2Joint, NullDeleter>> m_joints; 
             /** @brief Timestamp used to compute the time of each step. */
