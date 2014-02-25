@@ -5,6 +5,10 @@
 #include "menu.hpp"
 #include "events/joystick.hpp"
 #include "gameplay/controler.hpp"
+#include "gui/list.hpp"
+#include "gui/button.hpp"
+#include "gui/text.hpp"
+#include "gui/gridlayout.hpp"
 #include <string>
 
 /** @brief A menu allowing to change the keybinds of a controler. */
@@ -24,6 +28,11 @@ class ControlerMenu : public Menu
         events::Joystick* m_joy;    /**< @brief The joystick corresponding to the id, NULL if the controler is the keyboard. */
         gameplay::Controler m_ctrl; /**< @brief The corresponding controler, storing the configuration. */
         bool m_plugged;             /**< @brief Is the joystick plugged. */
+
+        gui::List* m_ctrls;         /**< @brief The list used to select the control to configure (only if the controler is plugged). */
+        gui::Button* m_back;        /**< @brief The button to get back to main menu. */
+        gui::Text* m_text;          /**< @brief If the controler is plugged, a help message, else an error message. */
+        gui::GridLayout* m_layout;  /**< @brief The layout. */
 };
 
 #endif
