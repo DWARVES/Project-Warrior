@@ -58,6 +58,10 @@ namespace gameplay
             };
             /** @brief Change a control, will only work if loaded. nev mustn't be free'd by the user. */
             void set(Controls ctrl, events::EvSave* nev);
+            /** @brief Get the saved string of an event. */
+            std::string get(Controls ctrl) const;
+            /** @brief Get the name of a control. */
+            static std::string controlName(Controls ctrl);
 
         private:
             /** @brief Store all the configurated controlers. */

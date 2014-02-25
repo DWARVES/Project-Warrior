@@ -241,6 +241,21 @@ namespace gameplay
         m_evs.setEntityValue(controlsNames[(unsigned int)ctrl], nev->save());
     }
 
+    std::string Controler::get(Controls ctrl) const
+    {
+        if(!m_loaded || ctrl == Last)
+            return "";
+        return m_ctrls[(unsigned int)ctrl]->save();
+    }
+            
+    std::string Controler::controlName(Controls ctrl)
+    {
+        if(ctrl != Last)
+            return controlsNames[(unsigned int)ctrl];
+        else
+            return "Invalid";
+    }
+
 }
 
 
