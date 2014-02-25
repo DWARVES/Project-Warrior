@@ -3,6 +3,7 @@
 #include "graphicsmenu.hpp"
 #include "musicmenu.hpp"
 #include "buttonmenu.hpp"
+#include "controlermenu.hpp"
 #include "mainmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
@@ -55,11 +56,10 @@ bool ConfigMenu::prepare()
         std::vector<std::string> conts = gameplay::Controler::listAll();
         int i = 2;
         for(std::string id : conts) {
-            /** @todo Create the menu. */
-            m_list->addItem(i, id, 0.0f, NULL);
-            std::cout << "Adding " << id << " at " << i << std::endl;
+            m_list->addItem(i, id, 0.0f, new ControlerMenu(id));
             ++i;
         }
+        /** @todo Create the menu. */
         m_list->addItem(i, _i("New controler"), 0.0f, NULL);
 
         m_back = new gui::Button(global::gfx);
