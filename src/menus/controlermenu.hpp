@@ -33,6 +33,9 @@ class ControlerMenu : public Menu
         gui::Button* m_back;        /**< @brief The button to get back to main menu. */
         gui::Text* m_text;          /**< @brief If the controler is plugged, a help message, else an error message. */
         gui::GridLayout* m_layout;  /**< @brief The layout. */
+
+        /** @brief Update the name of all the items of the list according to the config. */
+        void updatePrinted() const;
 };
 
 #endif

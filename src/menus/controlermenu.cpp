@@ -56,10 +56,11 @@ bool ControlerMenu::prepare()
             m_text = new gui::Text(global::gfx);
             global::theme->apply(m_text);
 
-            m_layout->setSize(2, 3);
-            m_layout->addWidget(m_ctrls, 0, 0, 0, 2);
-            m_layout->addWidget(m_back,  1, 0, 0, 0);
-            m_layout->addWidget(m_text,  1, 1, 0, 1);
+            m_layout->setSize(4, 3);
+            m_layout->addWidget(m_ctrls, 0, 0, 2, 2);
+            m_layout->addWidget(m_back,  3, 0, 0, 0);
+            m_layout->addWidget(m_text,  3, 1, 0, 1);
+            updatePrinted();
         }
         /* If the controler isn't plugged. */
         else {
@@ -110,4 +111,12 @@ bool ControlerMenu::update()
     return true;
 }
 
+void ControlerMenu::updatePrinted() const
+{
+    for(size_t i = 0; i < 11; ++i) {
+        std::ostringstream oss;
+        oss << gameplay::Controler::controlName((gameplay::Controler::Controls)i) << " : " << m_ctrl.get((gameplay::Controler::Controls)i);
+        m_ctrls->setItem(m_ctrls->item(i), oss.str());
+    }
+}
 
