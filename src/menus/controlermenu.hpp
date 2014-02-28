@@ -19,7 +19,7 @@ class ControlerMenu : public Menu
         class List : public gui::List
         {
             public:
-                List(gui::Text* text, gameplay::Controler* ctrl, events::Joystick* joy);
+                List(gui::Text* text, gameplay::Controler* ctrl, events::Joystick* joy, bool* ch);
                 virtual ~List();
 
                 virtual void select();
@@ -29,6 +29,7 @@ class ControlerMenu : public Menu
                 gui::Text* m_text;           /**< @brief The text widget to which the description of the selected event will be printed. */
                 gameplay::Controler* m_ctrl; /**< @brief The controler used to save the entered events. */
                 events::Joystick* m_joy;     /**< @brief The joystick to configure (NULL if keyboard). */
+                bool* m_changed;             /**< @brief Must the ControlerMenu call updatePrinted. */
 
                 events::EvSave* getEvent();
         };
@@ -47,6 +48,7 @@ class ControlerMenu : public Menu
         events::Joystick* m_joy;    /**< @brief The joystick corresponding to the id, NULL if the controler is the keyboard. */
         gameplay::Controler m_ctrl; /**< @brief The corresponding controler, storing the configuration. */
         bool m_plugged;             /**< @brief Is the joystick plugged. */
+        bool m_changed;             /**< @brief Must updatePrinted be called. */
 
         gui::List* m_ctrls;         /**< @brief The list used to select the control to configure (only if the controler is plugged). */
         gui::Button* m_back;        /**< @brief The button to get back to main menu. */
