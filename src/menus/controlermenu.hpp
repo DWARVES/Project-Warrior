@@ -14,6 +14,25 @@
 /** @brief A menu allowing to change the keybinds of a controler. */
 class ControlerMenu : public Menu
 {
+    private:
+        /** @brief The list widget used to configure the events. */
+        class List : public gui::List
+        {
+            public:
+                List(gui::Text* text, gameplay::Controler* ctrl, events::Joystick* joy);
+                virtual ~List();
+
+                virtual void select();
+                virtual void enter();
+
+            private:
+                gui::Text* m_text;           /**< @brief The text widget to which the description of the selected event will be printed. */
+                gameplay::Controler* m_ctrl; /**< @brief The controler used to save the entered events. */
+                events::Joystick* m_joy;     /**< @brief The joystick to configure (NULL if keyboard). */
+
+                events::EvSave* getEvent();
+        };
+
     public:
         ControlerMenu() = delete;
         /** @param id The id of the controler to configure. */

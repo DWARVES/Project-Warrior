@@ -36,7 +36,13 @@ bool ControlerMenu::prepare()
 
         /* If the controler is plugged. */
         if(m_plugged) {
-            m_ctrls = new gui::List(global::gfx);
+            m_back = new gui::Button(global::gfx);
+            m_back->text("Back");
+            global::theme->apply(m_back);
+            m_text = new gui::Text(global::gfx);
+            global::theme->apply(m_text);
+
+            m_ctrls = new List(m_text, &m_ctrl, m_joy);
             global::theme->apply(m_ctrls);
             m_ctrls->addItem( 0, _i("Left"),      0.0f, _i("The left direction."));
             m_ctrls->addItem( 1, _i("Right"),     0.0f, _i("The right direction."));
@@ -49,12 +55,7 @@ bool ControlerMenu::prepare()
             m_ctrls->addItem( 8, _i("Dodge"),     0.0f, _i("Dodging allows you to evades attacks."));
             m_ctrls->addItem( 9, _i("Catch"),     0.0f, _i("Catching an opponent allows you to hit him and throw him elsewhere."));
             m_ctrls->addItem(10, _i("Jump"),      0.0f, _i("The jump control."));
-
-            m_back = new gui::Button(global::gfx);
-            m_back->text("Back");
-            global::theme->apply(m_back);
-            m_text = new gui::Text(global::gfx);
-            global::theme->apply(m_text);
+            m_text->setText((const char*)m_ctrls->getData(m_ctrls->item(0)));
 
             m_layout->setSize(4, 3);
             m_layout->addWidget(m_ctrls, 0, 0, 2, 2);
@@ -119,4 +120,27 @@ void ControlerMenu::updatePrinted() const
         m_ctrls->setItem(m_ctrls->item(i), oss.str());
     }
 }
+
+ControlerMenu::List::List(gui::Text* text, gameplay::Controler* ctrl, events::Joystick* joy)
+    : gui::List(global::gfx), m_text(text), m_ctrl(ctrl), m_joy(joy)
+{}
+
+ControlerMenu::List::~List()
+{}
+
+void ControlerMenu::List::select()
+{
+    const char* data = (const char*)selectedData();
+    m_text->setText(data);
+}
+
+void ControlerMenu::List::enter()
+{
+}
+
+events::EvSave* ControlerMenu::List::getEvent()
+{
+    return NULL;
+}
+
 
