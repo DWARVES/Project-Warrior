@@ -55,6 +55,7 @@ namespace global
             delete global::gui;
         if(global::theme)
             delete global::theme;
+        gameplay::Controler::close();
     }
 
     void loadConfig(int argc, char *argv[])
