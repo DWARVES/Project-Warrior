@@ -11,7 +11,7 @@
 #include <sstream>
 
     ControlerMenu::ControlerMenu(const std::string& id)
-: m_id(id), m_joy(NULL), m_ctrl(id), m_plugged(false), m_changed(false),
+: m_id(id), m_joy(NULL), m_ctrl(id), m_plugged(false), m_getting(gameplay::Controler::Last),
     m_ctrls(NULL), m_back(NULL), m_text(NULL), m_layout(NULL)
 {
     if(m_ctrl.isOpen()) {
@@ -47,7 +47,7 @@ bool ControlerMenu::prepare()
             m_text = new gui::Text(global::gfx);
             global::theme->apply(m_text);
 
-            m_ctrls = new List(m_text, &m_ctrl, m_joy, &m_changed);
+            m_ctrls = new List(m_text, &m_ctrl, m_joy, &m_getting);
             global::theme->apply(m_ctrls);
             m_ctrls->addItem( 0, _i("Left"),      0.0f, _i("The left direction."));
             m_ctrls->addItem( 1, _i("Right"),     0.0f, _i("The right direction."));
@@ -102,9 +102,14 @@ bool ControlerMenu::update()
             || m_back->clicked())
         return false;
 
-    if(m_changed) {
-        updatePrinted();
-        m_changed = false;
+    if(m_getting != gameplay::Controler::Last) {
+        events::EvSave* ev = getEvent();
+        if(ev) {
+            m_ctrl.set(m_getting, ev);
+            m_getting = gameplay::Controler::Last;
+            global::gui->focus(true);
+            updatePrinted();
+        }
     }
 
     /* Drawing */
@@ -129,8 +134,8 @@ void ControlerMenu::updatePrinted() const
     }
 }
 
-ControlerMenu::List::List(gui::Text* text, gameplay::Controler* ctrl, events::Joystick* joy, bool* ch)
-    : gui::List(global::gfx), m_text(text), m_ctrl(ctrl), m_joy(joy), m_changed(ch)
+    ControlerMenu::List::List(gui::Text* text, gameplay::Controler* ctrl, events::Joystick* joy, gameplay::Controler::Controls* gt)
+: gui::List(global::gfx), m_text(text), m_ctrl(ctrl), m_joy(joy), m_gt(gt)
 {}
 
 ControlerMenu::List::~List()
@@ -147,76 +152,53 @@ void ControlerMenu::List::enter()
     const char* data = (const char*)selectedData();
     std::string str(_i("Enter the control for : "));
     m_text->setText(str + data);
-
+    *m_gt = (gameplay::Controler::Controls)selected();
     global::gui->focus(false);
-    events::EvSave* ev = getEvent();
-    global::gui->focus(true);
-    if(!ev)
-        return;
-
-    m_ctrl->set((gameplay::Controler::Controls)selected(), ev);
-    m_text->setText(data);
 }
 
-events::EvSave* ControlerMenu::List::getEvent()
+events::EvSave* ControlerMenu::getEvent()
 {
-    bool cont = true;
-    events::EvSave* ret = NULL;
+    /* Keyboard event. */
+    if(m_joy == NULL) {
+        std::vector<events::Key> keys = global::evs->lastKeysPressed();
+        if(!keys.empty())
+            return new events::KeySave(keys[0]);
+    }
 
-    while(cont) {
-        global::gui->update(*global::evs);
-        global::evs->update();
-        if(global::evs->quit() || global::evs->closed())
-            return NULL;
-
-        /* Keyboard event. */
-        if(m_joy == NULL) {
-            std::vector<events::Key> keys = global::evs->lastKeysPressed();
-            if(!keys.empty()) {
-                ret = new events::KeySave(keys[0]);
-                break;
-            }
+    /* Joystick event. */
+    else {
+        /* Joy button event. */
+        std::vector<int> changed = global::evs->lastJoyButtonsPressed(m_joy);
+        if(!changed.empty()) {
+            events::JoyButtonSave* jbs = new events::JoyButtonSave;
+            jbs->set(m_joy, changed[0]);
+            return jbs;
         }
 
-        /* Joystick event. */
-        else {
-            /* Joy button event. */
-            std::vector<int> changed = global::evs->lastJoyButtonsPressed(m_joy);
-            if(!changed.empty()) {
-                events::JoyButtonSave* jbs = new events::JoyButtonSave;
-                jbs->set(m_joy, changed[0]);
-                ret = jbs;
-                break;
-            }
+        /* Joy axis event. */
+        changed = global::evs->lastAxesMoved(m_joy);
+        if(!changed.empty()) {
+            events::JoyAxisSave* jas = new events::JoyAxisSave;
+            int value = m_joy->axis(changed[0]);
+            /** @todo Handle two levels of axis move. */
+            if(value > 0)
+                value = 32768;
+            else
+                value = -32768;
+            jas->set(m_joy, changed[0], value);
+            return jas;
+        }
 
-            /* Joy axis event. */
-            changed = global::evs->lastAxesMoved(m_joy);
-            if(!changed.empty()) {
-                events::JoyAxisSave* jas = new events::JoyAxisSave;
-                int value = m_joy->axis(changed[0]);
-                /** @todo Handle two levels of axis move. */
-                if(value > 0)
-                    value = 32768;
-                else
-                    value = -32768;
-                jas->set(m_joy, changed[0], value);
-                ret = jas;
-                break;
-            }
-
-            /* Joy hat event. */
-            changed = global::evs->lastHatsMoved(m_joy);
-            if(!changed.empty()) {
-                events::JoyHatSave* jhs = new events::JoyHatSave;
-                jhs->set(m_joy, changed[0], m_joy->hat(changed[0]));
-                ret = jhs;
-                break;
-            }
+        /* Joy hat event. */
+        changed = global::evs->lastHatsMoved(m_joy);
+        if(!changed.empty()) {
+            events::JoyHatSave* jhs = new events::JoyHatSave;
+            jhs->set(m_joy, changed[0], m_joy->hat(changed[0]));
+            return jhs;
         }
     }
 
-    *m_changed = true;
-    return ret;
+    return NULL;
 }
 
 
