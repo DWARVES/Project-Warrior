@@ -11,7 +11,7 @@
 #include <sstream>
 
     ControlerMenu::ControlerMenu(const std::string& id)
-: m_id(id), m_joy(NULL), m_ctrl(id), m_plugged(false), m_getting(gameplay::Controler::Last),
+: m_id(id), m_joy(NULL), m_ctrl(id), m_plugged(false), m_getting(gameplay::Controler::Last), m_last(m_getting),
     m_ctrls(NULL), m_back(NULL), m_text(NULL), m_layout(NULL)
 {
     if(m_ctrl.isOpen()) {
@@ -42,7 +42,7 @@ bool ControlerMenu::prepare()
         /* If the controler is plugged. */
         if(m_plugged) {
             m_back = new gui::Button(global::gfx);
-            m_back->text("Back");
+            m_back->text(_i("Back"));
             global::theme->apply(m_back);
             m_text = new gui::Text(global::gfx);
             global::theme->apply(m_text);
@@ -103,7 +103,10 @@ bool ControlerMenu::update()
         return false;
 
     if(m_getting != gameplay::Controler::Last) {
-        events::EvSave* ev = getEvent();
+        events::EvSave* ev = NULL;
+        if(m_last != gameplay::Controler::Last)
+            ev = getEvent();
+
         if(ev) {
             m_ctrl.set(m_getting, ev);
             m_getting = gameplay::Controler::Last;
@@ -122,6 +125,7 @@ bool ControlerMenu::update()
     global::gui->draw();
     global::gfx->endDraw();
 
+    m_last = m_getting;
     return true;
 }
 

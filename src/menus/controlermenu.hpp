@@ -48,6 +48,7 @@ class ControlerMenu : public Menu
         gameplay::Controler m_ctrl;              /**< @brief The corresponding controler, storing the configuration. */
         bool m_plugged;                          /**< @brief Is the joystick plugged. */
         gameplay::Controler::Controls m_getting; /**< @brief The control to get (Last if none selected). */
+        gameplay::Controler::Controls m_last;    /**< @brief The last state of m_getting. */
 
         gui::List* m_ctrls;                      /**< @brief The list used to select the control to configure (only if the controler is plugged). */
         gui::Button* m_back;                     /**< @brief The button to get back to main menu. */
