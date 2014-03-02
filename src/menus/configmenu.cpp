@@ -94,7 +94,6 @@ bool ConfigMenu::update()
         return true;
     }
 
-    global::gui->update(*global::evs);
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
             || m_back->clicked()) {
         ButtonMenu::click();

@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
             while(menu.update())
             {
                 global::evs->update();
+                global::gui->update(*global::evs);
                 if(global::evs->quit() || global::evs->closed())
                     break;
                 if(global::evs->joysticksChanged()) {

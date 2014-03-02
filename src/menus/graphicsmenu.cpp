@@ -80,7 +80,6 @@ bool GraphicsMenu::prepare()
 
 bool GraphicsMenu::update()
 {
-    global::gui->update(*global::evs);
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
             || m_back->clicked()) {
         ButtonMenu::click();
