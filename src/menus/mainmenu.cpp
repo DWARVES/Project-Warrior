@@ -46,7 +46,7 @@ bool MainMenu::prepare()
     }
 
     /* Load the music if necessary. */
-    if(!global::audio->enterNamespace("/menus")) {
+    if(!global::audio->existsNamespace("/menus")) {
         if(!global::audio->createNamespace("/menus"))
             return false;
         global::audio->enterNamespace("/menus");
@@ -101,7 +101,7 @@ bool MainMenu::prepare()
 bool MainMenu::loadRcs()
 {
     /* Load the textures if necessary. */
-    if(!global::gfx->enterNamespace("/mainmenu")) {
+    if(!global::gfx->existsNamespace("/mainmenu")) {
         if(!global::gfx->createNamespace("/mainmenu"))
             return false;
         global::gfx->enterNamespace("/mainmenu");

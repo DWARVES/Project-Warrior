@@ -61,6 +61,8 @@ namespace audio
             void deleteNamespace(const std::string& name);
             /** @brief Get the absolute path of the actual namespace. */
             std::string actualNamespace() const;
+            /** @brief Check if a namespace exists. */
+            bool existsNamespace(const std::string& name) const;
 
             /*************************
              *  Ressources loading   *

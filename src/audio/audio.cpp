@@ -89,6 +89,11 @@ namespace audio
     {
         return m_fs.actualNamespace();
     }
+            
+    bool Audio::existsNamespace(const std::string& name) const
+    {
+        return m_fs.existsNamespace(name);
+    }
 
     bool Audio::loadSound(const std::string& name, const std::string& path)
     {
