@@ -40,6 +40,8 @@ namespace gameplay
             static std::vector<std::string> getIDs();
             /** @brief Get a list of all the controlers with setup, even if they are not plugged. */
             static std::vector<std::string> listAll();
+            /** @brief Add a new controler (default settings will be applyed). Return false if already existant. */
+            static bool create(const std::string& name);
 
             /** @brief The differents controls. */
             enum Controls : unsigned int {
