@@ -4,6 +4,7 @@
 #include "musicmenu.hpp"
 #include "buttonmenu.hpp"
 #include "controlermenu.hpp"
+#include "addcontrolermenu.hpp"
 #include "mainmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
@@ -59,8 +60,7 @@ bool ConfigMenu::prepare()
             m_list->addItem(i, id, 0.0f, new ControlerMenu(id));
             ++i;
         }
-        /** @todo Create the menu. */
-        m_list->addItem(i, _i("New controler"), 0.0f, NULL);
+        m_list->addItem(i, _i("New controler"), 0.0f, new AddControlerMenu);
 
         m_back = new gui::Button(global::gfx);
         m_back->text(_i("Back to main menu."));
