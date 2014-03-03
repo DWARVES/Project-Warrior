@@ -2,6 +2,7 @@
 #include "mainmenu.hpp"
 #include "aboutmenu.hpp"
 #include "configmenu.hpp"
+#include "playerselmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 #include <sstream>
@@ -63,8 +64,7 @@ bool MainMenu::prepare()
 
     /* Create the widgets if necessary. */
     if(!m_layout) {
-        /** @todo Set the right menus. */
-        m_play = new ButtonMenu(global::gfx, &m_actual, new MainMenu, true);
+        m_play = new ButtonMenu(global::gfx, &m_actual, new PlayerSelMenu, true);
         m_play->text(_i("Play"));
         m_play->applyTheme(global::theme);
 

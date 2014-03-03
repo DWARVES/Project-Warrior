@@ -15,5 +15,6 @@ add_library(${lib}
     videomenu.cpp        videomenu.hpp
     controlermenu.cpp    controlermenu.hpp
     addcontrolermenu.cpp addcontrolermenu.hpp
+    playerselmenu.cpp    playerselmenu.hpp
 	)
 
