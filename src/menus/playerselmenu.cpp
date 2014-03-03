@@ -7,7 +7,7 @@
 
     PlayerSelMenu::PlayerSelMenu()
 : m_act(0), m_layout(NULL), m_list(NULL), m_text(NULL),
-    m_cancel(NULL), m_play(NULL), m_back(NULL)
+    m_cancel(NULL), m_play(NULL), m_back(NULL), m_game(NULL)
 {}
 
 PlayerSelMenu::~PlayerSelMenu()
@@ -77,6 +77,9 @@ bool PlayerSelMenu::prepare()
 
 bool PlayerSelMenu::update()
 {
+    if(m_game)
+        return m_game->update();
+
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
             || m_back->clicked())
         return false;
@@ -92,7 +95,7 @@ bool PlayerSelMenu::update()
     }
 
     if(m_play->clicked()) {
-        /** @todo Launch game. */
+        /** @todo Launch game by creating m_game. */
         global::audio->enterNamespace("/menubutton");
         global::audio->play("click");
     }

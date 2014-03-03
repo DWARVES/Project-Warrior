@@ -44,6 +44,7 @@ class PlayerSelMenu : public Menu
         gui::Button* m_cancel;     /**< @brief Cancel the last selected controler. */
         gui::Button* m_play;       /**< @brief Launch the game with the characters selected. */
         gui::Button* m_back;       /**< @brief Get back to main menu. */
+        Menu* m_game;              /**< @brief The menu lauched when play is clicked. */
 
         /** @brief Update the text printed. */
         void updateText();
