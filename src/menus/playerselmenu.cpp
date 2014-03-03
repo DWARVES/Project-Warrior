@@ -77,8 +77,6 @@ bool PlayerSelMenu::prepare()
 
 bool PlayerSelMenu::update()
 {
-    /** @todo Add click sounds. */
-
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
             || m_back->clicked())
         return false;
@@ -88,10 +86,15 @@ bool PlayerSelMenu::update()
             m_players[m_act].clear();
         --m_act;
         updateText();
+
+        global::audio->enterNamespace("/menubutton");
+        global::audio->play("click");
     }
 
     if(m_play->clicked()) {
         /** @todo Launch game. */
+        global::audio->enterNamespace("/menubutton");
+        global::audio->play("click");
     }
 
     std::string sel = m_list->entered();
@@ -100,6 +103,9 @@ bool PlayerSelMenu::update()
         if(m_act < 4)
             ++m_act;
         updateText();
+
+        global::audio->enterNamespace("/menubutton");
+        global::audio->play("click");
     }
 
     /* Drawing. */
