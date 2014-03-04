@@ -2,6 +2,7 @@
 #include "global.hpp"
 #include "core/i18n.hpp"
 #include "gameplay/controler.hpp"
+#include "lua/graphicsExposure.hpp"
 
 namespace global
 {
@@ -114,6 +115,8 @@ namespace global
                         global::cfg->get<int>("resh")))
                 throw init_exception("Couldn't open the window.");
         }
+
+        lua::exposure::Graphics::setGraphicsInstance(global::gfx);
     }
 
     void loadEvents()
