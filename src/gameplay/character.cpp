@@ -471,5 +471,12 @@ namespace gameplay
         m_next.id     = ActionID::Stand;
     }
 
+    Character* Character::clone() const
+    {
+        Character* cl = new Character(m_path);
+        cl->preload();
+        return cl;
+    }
+
 }
 
