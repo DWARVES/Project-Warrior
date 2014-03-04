@@ -1,5 +1,6 @@
 
 #include "playerselmenu.hpp"
+#include "charaselmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 #include "gameplay/controler.hpp"
@@ -24,6 +25,8 @@ PlayerSelMenu::~PlayerSelMenu()
         delete m_play;
     if(m_back != NULL)
         delete m_back;
+    if(m_game != NULL)
+        delete m_game;
 }
 
 bool PlayerSelMenu::prepare()
@@ -31,6 +34,9 @@ bool PlayerSelMenu::prepare()
     m_act = 0;
     for(int i = 0; i < 4; ++i)
         m_players[i].clear();
+    if(m_game != NULL)
+        delete m_game;
+    m_game = NULL;
 
     if(!m_layout) {
         /* Create GUI elems. */
@@ -95,7 +101,8 @@ bool PlayerSelMenu::update()
     }
 
     if(m_play->clicked()) {
-        /** @todo Launch game by creating m_game. */
+        m_game = new CharaSelMenu(m_act, m_players);
+        m_game->prepare();
         global::audio->enterNamespace("/menubutton");
         global::audio->play("click");
     }
