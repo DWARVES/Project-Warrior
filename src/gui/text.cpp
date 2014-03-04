@@ -5,7 +5,7 @@
 namespace gui
 {
     Text::Text(graphics::Graphics* gfx)
-        : Widget(gfx), m_begin(0), m_size(0)
+        : Widget(gfx), m_begin(0), m_size(0), m_oneline(false)
     {}
 
     Text::~Text()
@@ -17,7 +17,7 @@ namespace gui
         m_lines = cutToReturn(m_txt);
         shrinkLines();
     }
-            
+
     void Text::addText(const std::string& txt)
     {
         size_t idx = m_lines.size();
@@ -38,6 +38,18 @@ namespace gui
     std::string Text::getText() const
     {
         return m_txt;
+    }
+
+    bool Text::oneline(bool en)
+    {
+        m_oneline = en;
+        shrinkLines();
+        return m_oneline;
+    }
+
+    bool Text::oneline() const
+    {
+        return m_oneline;
     }
 
     float Text::width(float w)
@@ -152,15 +164,18 @@ namespace gui
         if(words.empty())
             return ret;
 
+        float pts = m_pts;
+        if(m_oneline)
+            pts = height() * 0.9f;
         std::string lp = words[0];
         std::string prev = lp;
-        float wid = m_gfx->stringWidth(m_font, lp, m_pts);
+        float wid = m_gfx->stringWidth(m_font, lp, pts);
         size_t i;
         for(i = 1; i < words.size() && wid < width(); ++i) {
             prev = lp;
             lp += ' ';
             lp += words[i];
-            wid = m_gfx->stringWidth(m_font, lp, m_pts);
+            wid = m_gfx->stringWidth(m_font, lp, pts);
         }
 
         if(i == words.size()) {
@@ -185,6 +200,13 @@ namespace gui
 
     std::string Text::getPrinted()
     {
+        if(m_oneline) {
+            if(!m_lines.empty())
+                return m_lines[0];
+            else
+                return "";
+        }
+
         std::string str;
         /* We may reserve a little too mush,
          * but that doesn't matter on an actual computer
@@ -203,17 +225,24 @@ namespace gui
         if(width() < 0.00001f || m_lines.empty())
             return;
 
-        std::vector<std::string> nlines;
-        nlines.reserve(m_lines.size() * 3);
-        if(from > 0)
-            nlines.insert(nlines.begin(), m_lines.begin(), m_lines.begin() + from);
-
-        for(size_t i = from; i < m_lines.size(); ++i) {
-            std::vector<std::string> ret = shrinkLine(m_lines[i], width());
-            nlines.insert(nlines.end(), ret.begin(), ret.end());
+        if(m_oneline) {
+            if(m_lines.empty())
+                return;
+            m_lines = shrinkLine(m_lines[0], width());
         }
+        else {
+            std::vector<std::string> nlines;
+            nlines.reserve(m_lines.size() * 3);
+            if(from > 0)
+                nlines.insert(nlines.begin(), m_lines.begin(), m_lines.begin() + from);
 
-        m_lines = nlines;
+            for(size_t i = from; i < m_lines.size(); ++i) {
+                std::vector<std::string> ret = shrinkLine(m_lines[i], width());
+                nlines.insert(nlines.end(), ret.begin(), ret.end());
+            }
+
+            m_lines = nlines;
+        }
     }
 
     std::vector<std::string> Text::cutToReturn(const std::string& txt)
