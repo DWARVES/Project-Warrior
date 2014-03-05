@@ -256,6 +256,7 @@ namespace physics
 
         if(entityA == nullptr || entityB == nullptr)
         {
+            core::logger::logm("A colliding fixture doesn't belong to an existing entity : stopped management of the collision.", core::logger::ERROR);
             return;
         }
 

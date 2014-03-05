@@ -77,9 +77,6 @@ namespace physics
             /** @brief Removes a Joint from the world */
             void destroyJoint(const std::string& name); 
 
-            /** @brief Calls the user implemented callback corresponding to the Entities colliding's types */
-            void collisionCallback(Entity* entityA, Entity* entityB); 
-
         protected:
             /** @brief Callback from b2DestructionListener called when a joint is destroyed */
             virtual void SayGoodbye(b2Joint* joint);
@@ -91,16 +88,20 @@ namespace physics
             /** @brief Callback from b2ContactListener called when two entities stop colliding */
             void EndContact(b2Contact* contact);
 
+            /** @brief Calls the user implemented callback corresponding to the entities colliding's types */
+            void collisionCallback(Entity* entityA, Entity* entityB); 
+
             /** @brief Returns a pointer to the Entity owning the fixture passed in parameter */
             Entity* getEntityFromFixture(b2Fixture* fixture) const; 
 
         protected:
             /** @brief The world used in Box2D for simulation, containing all the bodies and fixtures (that we grouped in the Entity class) */
             b2World* m_world; 
+
             /** @brief A map containing all the entities of the world, allowing to access them with a specific name given by the user when created (unique_ptr allows polymorphism behavior) */
             std::map<std::string, std::unique_ptr<Entity>> m_entities; 
             /** @brief A map containing all the joints of the world, allowing to access them with a specific name given by the user when created (unique_ptr allows polymorphism behavior) */
-            std::map<std::string, std::unique_ptr<b2Joint, NullDeleter>> m_joints; 
+            std::map<std::string, std::unique_ptr<b2Joint, NullDeleter>> m_joints;
     };
 }
 
