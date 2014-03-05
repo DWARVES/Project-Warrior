@@ -63,6 +63,8 @@ class CharaSelMenu : public Menu
         gameplay::Character* m_sels[4];            /**< @brief The selected characters. */
         std::vector<gameplay::Character*> m_avail; /**< @brief Available characters. */
         Menu* m_launched;                          /**< @brief The launched menu (game or rules). */
+        Uint32 m_timem;                            /**< @brief Time of the last change of selection in the list. */
+        bool m_showing;                            /**< @brief Is it displaying the preview or the description of the character. */
 
         gui::GridLayout* m_layout;                 /**< @brief The layout. */
         List* m_charas;                            /**< @brief The list of characters. */

@@ -57,7 +57,7 @@ void CharaSelMenu::CharaPrev::draw()
 }
 
     CharaSelMenu::CharaSelMenu(int nb_players, std::string ctrls[4])
-: Menu(), m_nb(nb_players), m_act(0), m_launched(NULL), m_layout(NULL),
+: Menu(), m_nb(nb_players), m_act(0), m_launched(NULL), m_timem(0), m_layout(NULL),
     m_charas(NULL), m_title(NULL), m_desc(NULL), m_prev(NULL),
     m_play(NULL), m_cancel(NULL), m_rules(NULL), m_back(NULL)
 {
@@ -108,6 +108,8 @@ bool CharaSelMenu::prepare()
             delete m_sels[i];
         m_sels[i] = NULL;
     }
+    m_timem = SDL_GetTicks();
+    m_showing = true;
 
     if(!m_layout) {
         /* Creating the widgets. */
@@ -173,8 +175,22 @@ bool CharaSelMenu::update()
         global::audio->play("click");
     }
 
-    if(m_charas->moved())
+    if(m_charas->moved()) {
+        m_timem = SDL_GetTicks();
         updateDesc();
+    }
+
+    Uint32 lapsed = SDL_GetTicks() - m_timem;
+    if(lapsed > 2000 && m_showing) {
+        m_showing = false;
+        m_layout->removeWidget(2, 1);
+        m_layout->addWidget(m_desc, 2, 1, 0, 3);
+    }
+    else if(lapsed < 2000 && !m_showing) {
+        m_showing = true;
+        m_layout->removeWidget(2, 1);
+        m_layout->addWidget(m_prev, 2, 1, 0, 3);
+    }
 
     if(m_cancel->clicked() && m_act > 0) {
         --m_act;
