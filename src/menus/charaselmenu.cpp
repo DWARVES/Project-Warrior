@@ -37,10 +37,29 @@ std::string CharaSelMenu::List::entered()
     return temp;
 }
 
+CharaSelMenu::CharaPrev::CharaPrev()
+    : Widget(global::gfx), m_chara(NULL)
+{}
+
+void CharaSelMenu::CharaPrev::set(gameplay::Character* c)
+{
+    m_chara = c;
+}
+
+void CharaSelMenu::CharaPrev::draw()
+{
+    if(!m_chara)
+        return;
+    std::string actual = m_gfx->actualNamespace();
+    geometry::AABB rect(width(), height());
+    m_chara->bigPreview(gameplay::Character::None, rect);
+    m_gfx->enterNamespace(actual);
+}
+
     CharaSelMenu::CharaSelMenu(int nb_players, std::string ctrls[4])
 : Menu(), m_nb(nb_players), m_act(0), m_launched(NULL), m_layout(NULL),
-    m_charas(NULL), m_title(NULL), m_desc(NULL), m_play(NULL),
-    m_cancel(NULL), m_rules(NULL), m_back(NULL)
+    m_charas(NULL), m_title(NULL), m_desc(NULL), m_prev(NULL),
+    m_play(NULL), m_cancel(NULL), m_rules(NULL), m_back(NULL)
 {
     for(int i = 0; i < 4; ++i) {
         m_ctrls[i] = ctrls[i];
@@ -60,6 +79,8 @@ CharaSelMenu::~CharaSelMenu()
         delete m_title;
     if(m_desc != NULL)
         delete m_desc;
+    if(m_prev != NULL)
+        delete m_prev;
     if(m_play != NULL)
         delete m_play;
     if(m_cancel != NULL)
@@ -94,6 +115,7 @@ bool CharaSelMenu::prepare()
         m_charas = new List;
         m_title  = new gui::Text(global::gfx);   m_title->oneline(true);
         m_desc   = new gui::Text(global::gfx);
+        m_prev   = new CharaPrev;
         m_play   = new gui::Button(global::gfx); m_play->text(_i("Play"));
         m_cancel = new gui::Button(global::gfx); m_cancel->text(_i("Cancel"));
         m_rules  = new gui::Button(global::gfx); m_rules->text(_i("Edit rules"));
@@ -118,7 +140,7 @@ bool CharaSelMenu::prepare()
         /* Setting up the layout. */
         m_layout->addWidget(m_title,  0, 0, 2, 0);
         m_layout->addWidget(m_charas, 0, 1, 1, 7);
-        m_layout->addWidget(m_desc,   2, 1, 0, 3);
+        m_layout->addWidget(m_prev,   2, 1, 0, 3);
         m_layout->addWidget(m_cancel, 2, 5, 0, 0);
         m_layout->addWidget(m_play,   2, 6, 0, 0);
         m_layout->addWidget(m_rules,  2, 7, 0, 0);
@@ -183,11 +205,12 @@ void CharaSelMenu::updateTitle()
     oss << _i("Selecting player ") << m_act << _i(" character.");
     m_title->setText(oss.str());
 }
-        
+
 void CharaSelMenu::updateDesc()
 {
     gameplay::Character* sel = (gameplay::Character*)m_charas->selectedData();
     m_desc->setText(sel->desc());
+    m_prev->set(sel);
 }
 
 void CharaSelMenu::loadCharas()
