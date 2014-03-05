@@ -18,12 +18,6 @@
 /** @brief Contains all classes and methods related to the physics engine */
 namespace physics
 {
-    /** @brief A deleter for unique_ptr that avoid deletion doing nothing ; useful to prevent from conflicts between default deleters and Box2D protected destructors */
-    struct NullDeleter
-    {
-        void operator()(void*) {}
-    };
-
     /** @brief A deleter for core::FakeFS that also remove the entity from world. */
     class EntityDeleter
     {
@@ -97,8 +91,6 @@ namespace physics
             void start();
             /** @brief Do the simulation, must be called once per loop. */
             void step();
-            /** @brief Calls the user implemented callback corresponding to the Entities colliding's types */
-            void collisionCallback(Entity* entityA, Entity* entityB); 
 
             /** @brief Create a namespace, return false if couldn't create. */
             bool createNamespace(const std::string& path);
@@ -133,8 +125,8 @@ namespace physics
             b2World* m_world; 
             /** @brief A FakeFS containing all the entities of the world, allowing to access them with a specific name given by the user when created */
             core::FakeFS<Entity*, EntityDeleter> m_entities; 
-            /** @brief A map containing all the joints of the world, allowing to access them with a specific name given by the user when created (unique_ptr allows polymorphism behavior) */
-            std::map<std::string, std::unique_ptr<b2Joint, NullDeleter>> m_joints; 
+            /** @brief A map containing all the joints of the world, allowing to access them with a specific name given by the user when created */
+            std::map<std::string, b2Joint*> m_joints; 
             /** @brief Timestamp used to compute the time of each step. */
             Uint32 m_ltime;
     };

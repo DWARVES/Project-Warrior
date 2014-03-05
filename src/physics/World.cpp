@@ -52,7 +52,7 @@ namespace physics
             return nullptr;
         }
 
-        return m_joints.at(name).get();
+        return m_joints.at(name);
     }
 
     float World::getXGravity() const
@@ -201,7 +201,7 @@ namespace physics
             jointDef.maxLength = maxLength;
             b2RopeJoint* joint = (b2RopeJoint*)m_world->CreateJoint(&jointDef);
 
-            m_joints[name] = std::unique_ptr<b2RopeJoint, NullDeleter>(joint, NullDeleter());
+            m_joints[name] = joint;
             core::logger::logm("The rope joint \"" + name + "\" has been created.", core::logger::MSG);
             return joint;
         }
@@ -224,7 +224,7 @@ namespace physics
     void World::destroyJoint(const std::string& name)
     {
         if(existsJoint(name)) {
-            m_world->DestroyJoint(m_joints.at(name).get());
+            m_world->DestroyJoint(m_joints.at(name));
             core::logger::logm("The joint \"" + name + "\" has been destroyed.", core::logger::MSG);
             m_joints.erase(name);
         }
@@ -236,9 +236,9 @@ namespace physics
 
     void World::SayGoodbye(b2Joint* joint)
     {
-        std::map<std::string, std::unique_ptr<b2Joint, NullDeleter>>::iterator it;
+        std::map<std::string, b2Joint*>::iterator it;
         for(it = m_joints.begin() ; it != m_joints.end() ; ++it) {
-            if(it->second.get() == joint) {
+            if(it->second == joint) {
                 core::logger::logm("The joint \"" + it->first + "\" has been destroyed.", core::logger::MSG);
                 m_joints.erase(it->first);
                 break;
@@ -263,7 +263,7 @@ namespace physics
             return;
         }
 
-        collisionCallback(entityA, entityB);
+        //collisionCallback(entityA, entityB);
 
         // Platform collision management
 
