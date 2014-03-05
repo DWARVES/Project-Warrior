@@ -40,6 +40,8 @@ namespace gameplay
             static std::vector<std::string> getIDs();
             /** @brief Get a list of all the controlers with setup, even if they are not plugged. */
             static std::vector<std::string> listAll();
+            /** @brief Add a new controler (default settings will be applyed). Return false if already existant. */
+            static bool create(const std::string& name);
 
             /** @brief The differents controls. */
             enum Controls : unsigned int {
@@ -58,6 +60,10 @@ namespace gameplay
             };
             /** @brief Change a control, will only work if loaded. nev mustn't be free'd by the user. */
             void set(Controls ctrl, events::EvSave* nev);
+            /** @brief Get the saved string of an event. */
+            std::string get(Controls ctrl) const;
+            /** @brief Get the name of a control. */
+            static std::string controlName(Controls ctrl);
 
         private:
             /** @brief Store all the configurated controlers. */

@@ -17,7 +17,10 @@
 */
 
 #include "Test.h"
+#include "core/logger.hpp"
 #include <cstdio>
+#include <iostream>
+
 using namespace std;
 
 void DestructionListener::SayGoodbye(b2Joint* joint)
@@ -34,6 +37,9 @@ void DestructionListener::SayGoodbye(b2Joint* joint)
 
 Test::Test()
 {
+    core::logger::init();
+    core::logger::addOutput(&cout);
+
 	b2Vec2 gravity;
 	gravity.Set(0.0f, -10.0f);
 	m_world = new b2World(gravity);
@@ -63,6 +69,7 @@ Test::~Test()
 	// By deleting the world, we delete the bomb, mouse joint, etc.
 	delete m_world;
 	m_world = NULL;
+    core::logger::free();
 }
 
 void Test::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)

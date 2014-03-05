@@ -3,9 +3,12 @@
 #include "graphicsmenu.hpp"
 #include "musicmenu.hpp"
 #include "buttonmenu.hpp"
+#include "controlermenu.hpp"
+#include "addcontrolermenu.hpp"
 #include "mainmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
+#include "gameplay/controler.hpp"
 
 MenuList::MenuList(Menu** feed)
     : List(global::gfx), m_feed(feed)
@@ -50,6 +53,15 @@ bool ConfigMenu::prepare()
         m_list->addItem(0, _i("Music."),    0.0f, new MusicMenu);
         m_list->addItem(0, _i("Graphics."), 0.0f, new GraphicsMenu);
 
+        /* Add controlers. */
+        std::vector<std::string> conts = gameplay::Controler::listAll();
+        int i = 2;
+        for(std::string id : conts) {
+            m_list->addItem(i, id, 0.0f, new ControlerMenu(id));
+            ++i;
+        }
+        m_list->addItem(i, _i("New controler"), 0.0f, new AddControlerMenu);
+
         m_back = new gui::Button(global::gfx);
         m_back->text(_i("Back to main menu."));
         global::theme->apply(m_back);
@@ -82,7 +94,6 @@ bool ConfigMenu::update()
         return true;
     }
 
-    global::gui->update(*global::evs);
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
             || m_back->clicked()) {
         ButtonMenu::click();

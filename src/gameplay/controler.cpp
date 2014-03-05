@@ -241,6 +241,49 @@ namespace gameplay
         m_evs.setEntityValue(controlsNames[(unsigned int)ctrl], nev->save());
     }
 
+    std::string Controler::get(Controls ctrl) const
+    {
+        if(!m_loaded || ctrl == Last)
+            return "";
+        return m_ctrls[(unsigned int)ctrl]->save();
+    }
+            
+    std::string Controler::controlName(Controls ctrl)
+    {
+        if(ctrl != Last)
+            return controlsNames[(unsigned int)ctrl];
+        else
+            return "Invalid";
+    }
+            
+    bool Controler::create(const std::string& name)
+    {
+        m_evs.enterNamespace("/");
+        if(m_evs.existsNamespace(name))
+            return false;
+
+        /* Create the controler. */
+        if(!m_evs.createNamespace(name))
+            return false;
+        m_evs.enterNamespace(name);
+
+        /* Set default values. */
+        m_evs.createEntity("up",       "(axis) 1->-16384");
+        m_evs.createEntity("down",     "(axis) 1->16384");
+        m_evs.createEntity("left",     "(axis) 0->-16384");
+        m_evs.createEntity("right",    "(axis) 0->16384");
+        m_evs.createEntity("runleft",  "(axis) 0->-32768");
+        m_evs.createEntity("runright", "(axis) 0->32768");
+        m_evs.createEntity("attack",   "(joybutton) 0");
+        m_evs.createEntity("special",  "(joybutton) 1");
+        m_evs.createEntity("jump",     "(joybutton) 2");
+        m_evs.createEntity("catch",    "(joybutton) 3");
+        m_evs.createEntity("dodge",    "(joybutton) 4");
+
+        m_evs.enterNamespace("/");
+        return true;
+    }
+
 }
 
 

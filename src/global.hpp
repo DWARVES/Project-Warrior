@@ -24,6 +24,34 @@ namespace global
     extern gui::Gui* gui;
     /** @brief The gui theme. */
     extern gui::Theme* theme;
+
+    /** @brief An exception used to report a fatal error while initializing the game. */
+    class init_exception : public std::exception
+    {
+        public:
+            init_exception(const char* msg) noexcept;
+            const char* what() const noexcept;
+
+        private:
+            const char* m_msg;
+    };
+
+    /** @brief Load the locale. */
+    void loadLocale();
+    /** @brief Parses the command line argument and config file. */
+    void loadConfig(int argc, char *argv[]);
+    /** @brief Load the SDL and init the graphics. */
+    void initGraphics();
+    /** @brief Load the gui and the gui theme. */
+    void loadGui();
+    /** @brief Init the audio. */
+    void loadAudio();
+    /** @brief Prepare the event handler. */
+    void loadEvents();
+    /** @brief Load the controlers, must be called after loadConfig */
+    void loadControlers();
+    /** @brief Free the global variables. */
+    void freeEverything();
 }
 
 #endif

@@ -19,5 +19,6 @@ add_library(${lib}
     input.cpp      input.hpp
     button.cpp     button.hpp
     theme.cpp      theme.hpp
+    image.cpp      image.hpp
 	)
 

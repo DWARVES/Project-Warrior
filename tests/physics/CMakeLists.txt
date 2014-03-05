@@ -21,4 +21,9 @@ target_link_libraries (
 	glut
     glui
     ${OPENGL_LIBRARIES}
+    ${SDL2_LIBRARIES}
 ) 
+
+add_executable(move_chara-test move_chara-test.cpp)
+target_link_libraries(move_chara-test liblua libgameplay liblua libgameplay libevents libgraphics libgeometry libcore liblua5.2 libphysics Box2D ${Boost_REGEX_LIBRARY} ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${FFMPEG_LIBRARIES} ${GLEW_LIBRARIES} ${Boost_FILESYSTEM_LIBRARY})
+

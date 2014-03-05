@@ -88,6 +88,9 @@ namespace gameplay
             /** @brief The animation if the character lost, with a maximum size. */
             void won(const geometry::AABB& msize);
 
+            /** @brief Allocate another character with the same path. */
+            Character* clone() const;
+
         private:
             std::string m_namespace;  /**< @brief The name of the namespace used by this character in gfx and audio. */
             std::string m_path;       /**< @brief The path to the directory of the character. */

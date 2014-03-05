@@ -76,7 +76,6 @@ bool AboutMenu::prepare()
 
 bool AboutMenu::update()
 {
-    global::gui->update(*global::evs);
     if(m_back->clicked()) {
         ButtonMenu::click();
         return false;

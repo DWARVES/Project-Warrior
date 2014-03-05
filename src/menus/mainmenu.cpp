@@ -2,6 +2,7 @@
 #include "mainmenu.hpp"
 #include "aboutmenu.hpp"
 #include "configmenu.hpp"
+#include "playerselmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 #include <sstream>
@@ -46,7 +47,7 @@ bool MainMenu::prepare()
     }
 
     /* Load the music if necessary. */
-    if(!global::audio->enterNamespace("/menus")) {
+    if(!global::audio->existsNamespace("/menus")) {
         if(!global::audio->createNamespace("/menus"))
             return false;
         global::audio->enterNamespace("/menus");
@@ -63,8 +64,7 @@ bool MainMenu::prepare()
 
     /* Create the widgets if necessary. */
     if(!m_layout) {
-        /** @todo Set the right menus. */
-        m_play = new ButtonMenu(global::gfx, &m_actual, new MainMenu, true);
+        m_play = new ButtonMenu(global::gfx, &m_actual, new PlayerSelMenu, true);
         m_play->text(_i("Play"));
         m_play->applyTheme(global::theme);
 
@@ -101,7 +101,7 @@ bool MainMenu::prepare()
 bool MainMenu::loadRcs()
 {
     /* Load the textures if necessary. */
-    if(!global::gfx->enterNamespace("/mainmenu")) {
+    if(!global::gfx->existsNamespace("/mainmenu")) {
         if(!global::gfx->createNamespace("/mainmenu"))
             return false;
         global::gfx->enterNamespace("/mainmenu");
@@ -127,7 +127,6 @@ bool MainMenu::update()
         return true;
     }
 
-    global::gui->update(*global::evs);
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
             || m_quit->clicked())
         return false;

@@ -13,6 +13,7 @@
 #include "frame.hpp"
 #include "button.hpp"
 #include "radio.hpp"
+#include "image.hpp"
 #include "graphics/graphics.hpp"
 #include "core/fakefs.hpp"
 
@@ -48,6 +49,7 @@ namespace gui
             void apply(Frame* fr);
             void apply(Button* b);
             void apply(Radio* r);
+            void apply(Image*);
             /**
              * @}
              */

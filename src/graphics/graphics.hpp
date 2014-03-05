@@ -111,6 +111,7 @@ namespace graphics
             bool createNamespace(const std::string& name);
             void deleteNamespace(const std::string& name);
             std::string actualNamespace() const;
+            bool existsNamespace(const std::string& name) const;
             /** @} */
 
             /*************************

@@ -101,6 +101,8 @@ namespace gui
                 m_map[st.rx + i][st.ry + j] = st;
             }
         }
+
+        updateSizes();
         return true;
     }
 
@@ -143,8 +145,8 @@ namespace gui
 
         StoredWidget swd;
         swd.widget = NULL;
-        for(; x < mx; ++x) {
-            for(; y < my; ++y) {
+        for(; x <= mx; ++x) {
+            for(; y <= my; ++y) {
                 m_map[x][y] = swd;
             }
         }

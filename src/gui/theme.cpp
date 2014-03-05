@@ -321,6 +321,11 @@ namespace gui
         m_gfx->enterNamespace("/");
         m_gfx->enterNamespace("gui");
     }
+            
+    void Theme::apply(Image*)
+    {
+        /* Nothing to do. */
+    }
 
 }
 

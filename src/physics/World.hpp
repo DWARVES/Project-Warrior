@@ -4,7 +4,9 @@
 
 #include <map>
 #include <memory>
+#include <SDL.h>
 #include "core/logger.hpp"
+#include "core/fakefs.hpp"
 #include "Box2D/Box2D.h"
 #include "geometry/point.hpp"
 #include "Entity.hpp"
@@ -19,7 +21,21 @@ namespace physics
     /** @brief A deleter for unique_ptr that avoid deletion doing nothing ; useful to prevent from conflicts between default deleters and Box2D protected destructors */
     struct NullDeleter
     {
-        void operator()(void* p) {}
+        void operator()(void*) {}
+    };
+
+    /** @brief A deleter for core::FakeFS that also remove the entity from world. */
+    class EntityDeleter
+    {
+        public:
+            /** @param world The world to delete the entity from. */
+            EntityDeleter(b2World* world);
+            /** Mustn't be called, only to complie with fakefs template requirments. */
+            EntityDeleter();
+            void operator()(Entity* e) const;
+
+        private:
+            b2World* m_world;
     };
 
     /** @brief The main class, instanciated by the user and used to manage physical entities and relations between them */
@@ -77,6 +93,24 @@ namespace physics
             /** @brief Removes a Joint from the world */
             void destroyJoint(const std::string& name); 
 
+            /** @brief Launch the simulation, must be called once at the beggining of the loop. */
+            void start();
+            /** @brief Do the simulation, must be called once per loop. */
+            void step();
+            /** @brief Calls the user implemented callback corresponding to the Entities colliding's types */
+            void collisionCallback(Entity* entityA, Entity* entityB); 
+
+            /** @brief Create a namespace, return false if couldn't create. */
+            bool createNamespace(const std::string& path);
+            /** @brief Delete a namespace. */
+            void deleteNamespace(const std::string& path);
+            /** @brief Check the existence of a namespace. */
+            bool existsNamespace(const std::string& path) const;
+            /** @brief Enter a namespace. */
+            void enterNamespace(const std::string& path);
+            /** @brief Get the actual namespace. */
+            std::string actualNamespace() const;
+
         protected:
             /** @brief Callback from b2DestructionListener called when a joint is destroyed */
             virtual void SayGoodbye(b2Joint* joint);
@@ -97,11 +131,12 @@ namespace physics
         protected:
             /** @brief The world used in Box2D for simulation, containing all the bodies and fixtures (that we grouped in the Entity class) */
             b2World* m_world; 
-
-            /** @brief A map containing all the entities of the world, allowing to access them with a specific name given by the user when created (unique_ptr allows polymorphism behavior) */
-            std::map<std::string, std::unique_ptr<Entity>> m_entities; 
+            /** @brief A FakeFS containing all the entities of the world, allowing to access them with a specific name given by the user when created */
+            core::FakeFS<Entity*, EntityDeleter> m_entities; 
             /** @brief A map containing all the joints of the world, allowing to access them with a specific name given by the user when created (unique_ptr allows polymorphism behavior) */
-            std::map<std::string, std::unique_ptr<b2Joint, NullDeleter>> m_joints;
+            std::map<std::string, std::unique_ptr<b2Joint, NullDeleter>> m_joints; 
+            /** @brief Timestamp used to compute the time of each step. */
+            Uint32 m_ltime;
     };
 }
 

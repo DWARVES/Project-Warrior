@@ -9,7 +9,7 @@ VideoMenu::VideoMenu(const std::string& path, const std::string& music)
     : Menu()
 {
     /* Loading the video. */
-    if(!global::gfx->enterNamespace("/videomenu")) {
+    if(!global::gfx->existsNamespace("/videomenu")) {
         if(!global::gfx->createNamespace("/videomenu"))
             return;
         global::gfx->enterNamespace("/videomenu");
@@ -24,7 +24,7 @@ VideoMenu::VideoMenu(const std::string& path, const std::string& music)
     /* Loading the music. */
     if(music.empty())
         return;
-    if(!global::audio->enterNamespace("/videomenu")) {
+    if(!global::audio->existsNamespace("/videomenu")) {
         if(!global::audio->createNamespace("/videomenu"))
             return;
         global::audio->enterNamespace("/videomenu");

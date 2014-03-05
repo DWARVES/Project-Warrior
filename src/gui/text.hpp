@@ -24,6 +24,15 @@ namespace gui
             /** @brief Get the actual text. */
             std::string getText() const;
 
+            /* One line. */
+            /** @brief Enable/disbale oneline mode.
+             *
+             * In oneline mode, only the first line is printed, and the font size is setted to this->height()*.9f
+             */
+            bool oneline(bool en);
+            /** @brief Indicates if oneline mode is set. */
+            bool oneline() const;
+
             /* Size */
             virtual float width(float w);
             virtual float height(float h);
@@ -53,6 +62,7 @@ namespace gui
             size_t m_size;                    /**< @brief The number of lines shown. */
             std::string m_font;               /**< @brief The font used. */
             float m_pts;                      /**< @brief The size of the font. */
+            bool m_oneline;                   /**< @brief Is oneline mode setted. */
 
             /* Internal methods */
             /** @brief Compute the number of lines that can be shown in the height of the widget. */

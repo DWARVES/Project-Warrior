@@ -363,6 +363,11 @@ namespace graphics
     {
         return m_fs.actualNamespace();
     }
+            
+    bool Graphics::existsNamespace(const std::string& name) const
+    {
+        return m_fs.existsNamespace(name);
+    }
 
     void Graphics::EntityLiberator::operator()(Entity* tofree) const
     {

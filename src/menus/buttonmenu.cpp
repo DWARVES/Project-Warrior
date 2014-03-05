@@ -5,7 +5,7 @@
 ButtonMenu::ButtonMenu(graphics::Graphics* gfx, Menu** feedback, Menu* menu, bool tofree)
     : Button(gfx), m_feed(feedback), m_menu(menu), m_tofree(tofree)
 {
-    if(!global::audio->enterNamespace("/menubutton")) {
+    if(!global::audio->existsNamespace("/menubutton")) {
         if(!global::audio->createNamespace("/menubutton"))
             return;
         global::audio->enterNamespace("/menubutton");
