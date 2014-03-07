@@ -176,6 +176,17 @@ namespace physics
         return fixtureDef;
     }
 
+    void Entity::destroyFixture(const std::string& name)
+    {
+        if(m_fixtures.count(name)) {
+            m_body->DestroyFixture(m_fixtures.at(name));
+            core::logger::logm("The fixture \"" + name + "\" has been destroyed in entity \"" + m_name + "\".", core::logger::MSG);
+            m_fixtures.erase(name);
+        }
+        else
+            core::logger::logm("Tried to destroy unexisting fixture \"" + name + "\" in entity \"" + m_name + "\" : cancelled operation.", core::logger::WARNING);
+    }
+
     void Entity::applyForce(float forceX, float forceY)
     {
         m_body->ApplyForce(b2Vec2(forceX, forceY), m_body->GetWorldCenter());

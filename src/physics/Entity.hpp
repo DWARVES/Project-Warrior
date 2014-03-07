@@ -75,7 +75,7 @@ namespace physics
 
             /** @brief Defines if the entity should rotate (fixedRotation = false) or not (fixedRotation = false) */
             void setFixedRotation(bool fixedRotation);
-            
+
             /** @brief Creates a fixture based on a line-shaped hitbox, automatically adding it to the entity's fixtures map, and returning a pointer to the fixture */
             b2Fixture* createFixture(const std::string& name, const geometry::Line& line, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith);
             /** @brief Creates a fixture based on an aabb-shaped hitbox, automatically adding it to the entity's fixtures map, and returning a pointer to the fixture */
@@ -84,6 +84,9 @@ namespace physics
             b2Fixture* createFixture(const std::string& name, const geometry::Circle& circle, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, const geometry::Point& position = geometry::Point(0, 0));
             /** @brief Creates a fixture based on an polygon-shaped hitbox, automatically adding it to the entity's fixtures map, and returning a pointer to the fixture */
             b2Fixture* createFixture(const std::string& name, const geometry::Polygon& polygon, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith);
+
+            /** @brief Destroy the fixture named "name" in the map */
+            void destroyFixture(const std::string& name);
 
             /** @brief Applies a force of coordinates (forceX ; forceY) to the entity's center */
             void applyForce(float forceX, float forceY);
@@ -114,7 +117,7 @@ namespace physics
             /** @brief The b2Body of the entity, used in Box2D simulations */
             b2Body* m_body;
             /** @brief A map containing all the fixtures of the body, allowing to access them with a specific name given by the user when created */
-            std::map<std::string, b2Fixture*> m_fixtures; // 
+            std::map<std::string, b2Fixture*> m_fixtures;
     };
 }
 
