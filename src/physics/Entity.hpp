@@ -15,6 +15,8 @@ namespace physics
     /** @brief The class representing the physical entities in the World. An entity is composed of one or many fixtures corresponding to geometric shapes with specific physical properties. */
     class Entity
     {
+        friend class World;
+
         public:
             /** @brief Bit flags enum used by collision masks between entity types */
             typedef enum 

@@ -246,8 +246,18 @@ namespace physics
         }
     }
 
-    void World::SayGoodbye(b2Fixture* fixture) {}
-
+    void World::SayGoodbye(b2Fixture* fixture)
+    {
+        Entity* entity = getEntityFromFixture(fixture);
+        std::map<std::string, b2Fixture*>::iterator it;
+        for(it = entity->m_fixtures.begin() ; it != entity->m_fixtures.end() ; ++it) {
+            if(it->second == fixture) {
+                core::logger::logm("The fixture \"" + it->first + "\" in entity \"" + entity->m_name + "\" has been destroyed.", core::logger::MSG);
+                entity->m_fixtures.erase(it->first);
+                break;
+            }
+        }
+    }
 
     void World::BeginContact(b2Contact* contact)
     {
