@@ -22,7 +22,7 @@ namespace gameplay
 
     bool Stage::preload()
     {
-        if(core::path::type(m_path) != core::path::Type::Reg)
+        if(core::path::type(m_path) != core::path::Type::Dir)
             return false;
 
         /* Loading the name. */
