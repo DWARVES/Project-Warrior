@@ -1,5 +1,6 @@
 
 #include "charaselmenu.hpp"
+#include "stageselmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 #include "core/pathParser.hpp"
@@ -111,6 +112,10 @@ bool CharaSelMenu::prepare()
     m_timem = SDL_GetTicks();
     m_showing = true;
 
+    if(m_launched != NULL)
+        delete m_launched;
+    m_launched = NULL;
+
     if(!m_layout) {
         /* Creating the widgets. */
         m_layout = new gui::GridLayout(global::gfx, 3, 9);
@@ -160,6 +165,9 @@ bool CharaSelMenu::prepare()
 
 bool CharaSelMenu::update()
 {
+    if(m_launched != NULL)
+        return m_launched->update();
+
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
             || m_back->clicked())
         return false;
@@ -198,6 +206,13 @@ bool CharaSelMenu::update()
         m_sels[m_act] = NULL;
         updateTitle();
 
+        global::audio->enterNamespace("/menubutton");
+        global::audio->play("click");
+    }
+
+    if(m_play->clicked()) {
+        m_launched = new StageSelMenu(m_sels);
+        m_launched->prepare();
         global::audio->enterNamespace("/menubutton");
         global::audio->play("click");
     }
@@ -246,6 +261,7 @@ void CharaSelMenu::loadCharas()
                 std::ostringstream oss;
                 oss << "Couldn't preload character \"" << dir << "\".\n";
                 core::logger::logm(oss.str(), core::logger::WARNING);
+                delete chara;
             }
         }
     }
