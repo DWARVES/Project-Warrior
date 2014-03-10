@@ -126,7 +126,7 @@ namespace physics
             /** @brief A FakeFS containing all the entities of the world, allowing to access them with a specific name given by the user when created */
             core::FakeFS<Entity*, EntityDeleter> m_entities; 
             /** @brief A map containing all the joints of the world, allowing to access them with a specific name given by the user when created */
-            std::map<std::string, b2Joint*> m_joints; 
+            core::FakeFS<b2Joint*> m_joints; 
             /** @brief Timestamp used to compute the time of each step. */
             Uint32 m_ltime;
     };

@@ -52,7 +52,7 @@ namespace physics
             return nullptr;
         }
 
-        return m_joints.at(name);
+        return m_joints.getEntityValue(name);
     }
 
     float World::getXGravity() const
@@ -87,10 +87,7 @@ namespace physics
 
     bool World::existsJoint(const std::string& name) const
     {
-        if(m_joints.count(name))
-            return true;
-        else
-            return false;
+        return m_joints.existsEntity(name);
     }
 
     Entity* World::createEntity(const std::string& name, const geometry::Point& position, const b2BodyType& bodyType, uint16 type, uint16 collideWith, float gravityScale, bool fixedRotation)
@@ -201,7 +198,7 @@ namespace physics
             jointDef.maxLength = maxLength;
             b2RopeJoint* joint = (b2RopeJoint*)m_world->CreateJoint(&jointDef);
 
-            m_joints[name] = joint;
+            m_joints.createEntity(name, joint);
             core::logger::logm("The rope joint \"" + name + "\" has been created.", core::logger::MSG);
             return joint;
         }
@@ -224,9 +221,9 @@ namespace physics
     void World::destroyJoint(const std::string& name)
     {
         if(existsJoint(name)) {
-            m_world->DestroyJoint(m_joints.at(name));
+            m_world->DestroyJoint(m_joints.getEntityValue(name));
+            m_joints.deleteEntity(name);
             core::logger::logm("The joint \"" + name + "\" has been destroyed.", core::logger::MSG);
-            m_joints.erase(name);
         }
         else
             core::logger::logm("Tried to destroy unexisting joint \"" + name + "\" : cancelled operation.", core::logger::WARNING);
@@ -236,11 +233,12 @@ namespace physics
 
     void World::SayGoodbye(b2Joint* joint)
     {
-        std::map<std::string, b2Joint*>::iterator it;
-        for(it = m_joints.begin() ; it != m_joints.end() ; ++it) {
-            if(it->second == joint) {
-                core::logger::logm("The joint \"" + it->first + "\" has been destroyed.", core::logger::MSG);
-                m_joints.erase(it->first);
+        std::vector<std::string> jointsNamesList = m_joints.listEntities();
+        std::vector<std::string>::iterator it;
+        for(it = jointsNamesList.begin() ; it != jointsNamesList.end() ; ++it) {
+            if(m_joints.getEntityValue(*it) == joint) {
+                core::logger::logm("The joint \"" + *it + "\" has been destroyed.", core::logger::MSG);
+                m_joints.deleteEntity(*it);
                 break;
             }
         }
