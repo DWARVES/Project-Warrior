@@ -237,8 +237,8 @@ namespace physics
         std::vector<std::string>::iterator it;
         for(it = jointsNamesList.begin() ; it != jointsNamesList.end() ; ++it) {
             if(m_joints.getEntityValue(*it) == joint) {
-                core::logger::logm("The joint \"" + *it + "\" has been destroyed.", core::logger::MSG);
                 m_joints.deleteEntity(*it);
+                core::logger::logm("The joint \"" + *it + "\" has been destroyed.", core::logger::MSG);
                 break;
             }
         }
@@ -247,11 +247,12 @@ namespace physics
     void World::SayGoodbye(b2Fixture* fixture)
     {
         Entity* entity = getEntityFromFixture(fixture);
-        std::map<std::string, b2Fixture*>::iterator it;
-        for(it = entity->m_fixtures.begin() ; it != entity->m_fixtures.end() ; ++it) {
-            if(it->second == fixture) {
-                core::logger::logm("The fixture \"" + it->first + "\" in entity \"" + entity->m_name + "\" has been destroyed.", core::logger::MSG);
-                entity->m_fixtures.erase(it->first);
+        std::vector<std::string> fixturesNamesList = entity->m_fixtures.listEntities();
+        std::vector<std::string>::iterator it;
+        for(it = fixturesNamesList.begin() ; it != fixturesNamesList.end() ; ++it) {
+            if(entity->m_fixtures.getEntityValue(*it) == fixture) {
+                entity->m_fixtures.deleteEntity(*it);
+                core::logger::logm("The fixture \"" + *it + "\" in entity \"" + entity->m_name + "\" has been destroyed.", core::logger::MSG);
                 break;
             }
         }

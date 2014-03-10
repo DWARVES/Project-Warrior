@@ -27,13 +27,13 @@ namespace physics
 
     b2Fixture* Entity::getFixture(const std::string& name) const
     {
-        if(!m_fixtures.count(name))
+        if(!m_fixtures.existsEntity(name))
         {
             core::logger::logm("Tried to get unexisting fixture \"" + name + "\" from entity \"" + m_name + "\" : returned nullptr.", core::logger::WARNING);
             return nullptr;
         }
 
-        return m_fixtures.at(name);
+        return m_fixtures.getEntityValue(name);
     }
 
     uint16 Entity::getType() const
@@ -96,9 +96,9 @@ namespace physics
         shape.Set(b2Vec2(toMeters(line.p1.x), toMeters(line.p1.y)), b2Vec2(toMeters(line.p2.x), toMeters(line.p2.y)));
         fixtureDef->shape = &shape;
 
-        m_fixtures[name] = m_body->CreateFixture(fixtureDef);
+        m_fixtures.createEntity(name, m_body->CreateFixture(fixtureDef));
 
-        return m_fixtures.at(name);
+        return m_fixtures.getEntityValue(name);
     }
 
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::AABB& aabb, float density, float friction, uint16 type, uint16 collideWith, const geometry::Point& position)
@@ -111,9 +111,9 @@ namespace physics
         shape.SetAsBox(toMeters(aabb.width / 2), toMeters(aabb.height / 2), b2Vec2(toMeters(position.x), toMeters(position.y)), 0);
         fixtureDef->shape = &shape;
 
-        m_fixtures[name] = m_body->CreateFixture(fixtureDef);
+        m_fixtures.createEntity(name, m_body->CreateFixture(fixtureDef));
 
-        return m_fixtures.at(name);
+        return m_fixtures.getEntityValue(name);
     }
 
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::Circle& circle, float density, float friction, uint16 type, uint16 collideWith, const geometry::Point& position)
@@ -127,9 +127,9 @@ namespace physics
         shape.m_radius = toMeters(circle.radius);
         fixtureDef->shape = &shape;
 
-        m_fixtures[name] = m_body->CreateFixture(fixtureDef);
+        m_fixtures.createEntity(name, m_body->CreateFixture(fixtureDef));
 
-        return m_fixtures.at(name);
+        return m_fixtures.getEntityValue(name);
     }
 
     b2Fixture* Entity::createFixture(const std::string& name, const geometry::Polygon& polygon, float density, float friction, uint16 type, uint16 collideWith)
@@ -146,14 +146,14 @@ namespace physics
         shape.Set(points, ptnb);
         fixtureDef->shape = &shape;
 
-        m_fixtures[name] = m_body->CreateFixture(fixtureDef);
+        m_fixtures.createEntity(name, m_body->CreateFixture(fixtureDef));
 
-        return m_fixtures.at(name);
+        return m_fixtures.getEntityValue(name);
     }
 
     b2FixtureDef* Entity::createBaseFixtureDef(const std::string& name, float density, float friction, uint16 type, uint16 collideWith) const
     {
-        if(m_fixtures.count(name))
+        if(m_fixtures.existsEntity(name))
         {
             core::logger::logm("Tried to override existing fixture \"" + name + "\" in entity \"" + m_name + "\" : cancelled operation and returned nullptr.", core::logger::WARNING);
             return nullptr;
@@ -178,10 +178,10 @@ namespace physics
 
     void Entity::destroyFixture(const std::string& name)
     {
-        if(m_fixtures.count(name)) {
-            m_body->DestroyFixture(m_fixtures.at(name));
+        if(m_fixtures.existsEntity(name)) {
+            m_body->DestroyFixture(m_fixtures.getEntityValue(name));
+            m_fixtures.deleteEntity(name);
             core::logger::logm("The fixture \"" + name + "\" has been destroyed in entity \"" + m_name + "\".", core::logger::MSG);
-            m_fixtures.erase(name);
         }
         else
             core::logger::logm("Tried to destroy unexisting fixture \"" + name + "\" in entity \"" + m_name + "\" : cancelled operation.", core::logger::WARNING);

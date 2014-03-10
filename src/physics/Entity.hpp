@@ -9,6 +9,7 @@
 #include "geometry/aabb.hpp"
 #include "geometry/circle.hpp"
 #include "geometry/polygon.hpp"
+#include "core/fakefs.hpp"
 
 namespace physics
 {
@@ -119,7 +120,7 @@ namespace physics
             /** @brief The b2Body of the entity, used in Box2D simulations */
             b2Body* m_body;
             /** @brief A map containing all the fixtures of the body, allowing to access them with a specific name given by the user when created */
-            std::map<std::string, b2Fixture*> m_fixtures;
+            core::FakeFS<b2Fixture*> m_fixtures; 
     };
 }
 
