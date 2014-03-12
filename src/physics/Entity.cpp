@@ -36,6 +36,11 @@ namespace physics
         return m_fixtures.getEntityValue(name);
     }
 
+    std::string Entity::getName() const
+    {
+        return m_name;
+    }
+    
     uint16 Entity::getType() const
     {
         return m_type;

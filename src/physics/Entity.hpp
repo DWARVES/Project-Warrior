@@ -53,6 +53,8 @@ namespace physics
             /** @brief Returns a pointer to the fixture named "name" in the entity fixtures map */
             b2Fixture* getFixture(const std::string& name) const;
 
+            /** @brief Returns the name of the entity */
+            std::string getName() const;
             /** @brief Returns the type of the entity */
             uint16 getType() const;
             /** @brief Returns the current position of the entity */

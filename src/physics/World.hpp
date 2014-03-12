@@ -114,6 +114,10 @@ namespace physics
             /** @brief Callback from b2ContactListener called when two entities stop colliding */
             void EndContact(b2Contact* contact);
 
+            /** @brief Sets callbacks at [nameA][nameB] and [nameB][nameA] locations with the user's custom one */
+            void setCallback(std::string nameA, std::string nameB, void (*callback)(Entity*, Entity*));
+            /** @brief Removes the callbacks at [nameA][nameB] and [nameB][nameA] locations */
+            void removeCallback(std::string nameA, std::string nameB);
             /** @brief Calls the user implemented callback corresponding to the entities colliding's types */
             void collisionCallback(Entity* entityA, Entity* entityB); 
 
@@ -125,8 +129,10 @@ namespace physics
             b2World* m_world; 
             /** @brief A FakeFS containing all the entities of the world, allowing to access them with a specific name given by the user when created */
             core::FakeFS<Entity*, EntityDeleter> m_entities; 
-            /** @brief A map containing all the joints of the world, allowing to access them with a specific name given by the user when created */
+            /** @brief A FakeFS containing all the joints of the world, allowing to access them with a specific name given by the user when created */
             core::FakeFS<b2Joint*> m_joints; 
+            /** @brief A two-dimensional map containing all the collision callbacks */
+            std::map<std::string, std::map<std::string, void (*)(Entity*, Entity*)>> m_callbacks;
             /** @brief Timestamp used to compute the time of each step. */
             Uint32 m_ltime;
     };

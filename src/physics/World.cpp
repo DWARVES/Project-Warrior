@@ -229,7 +229,27 @@ namespace physics
             core::logger::logm("Tried to destroy unexisting joint \"" + name + "\" : cancelled operation.", core::logger::WARNING);
     }
 
-    void World::collisionCallback(Entity* entityA, Entity* entityB) {}
+    void World::setCallback(std::string nameA, std::string nameB, void (*callback)(Entity*, Entity*))
+    {
+        m_callbacks[nameA][nameB] = callback;
+        m_callbacks[nameB][nameA] = callback;
+    }
+
+    void World::removeCallback(std::string nameA, std::string nameB)
+    {
+        m_callbacks[nameA][nameB] = nullptr;
+        m_callbacks[nameB][nameA] = nullptr;
+    }
+
+    void World::collisionCallback(Entity* entityA, Entity* entityB)
+    {
+        std::string nameA = entityA->getName();
+        std::string nameB = entityB->getName();
+        if(m_callbacks[nameA][nameB] != nullptr)
+            (*m_callbacks[nameA][nameB])(entityA, entityB);
+        else
+            return;
+    }
 
     void World::SayGoodbye(b2Joint* joint)
     {
@@ -272,7 +292,7 @@ namespace physics
             return;
         }
 
-        //collisionCallback(entityA, entityB);
+        collisionCallback(entityA, entityB);
 
         // Platform collision management
 
