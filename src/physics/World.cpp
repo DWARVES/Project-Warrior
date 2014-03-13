@@ -4,23 +4,8 @@
 
 namespace physics
 {
-    EntityDeleter::EntityDeleter(b2World* world)
-        : m_world(world)
-    {}
-            
-    EntityDeleter::EntityDeleter()
-        : m_world(NULL)
-    {}
-
-    void EntityDeleter::operator()(Entity* e) const
-    {
-        if(m_world)
-            m_world->DestroyBody(e->getBody());
-        delete e;
-    }
-
     World::World(float x, float y)
-        : m_world(new b2World(b2Vec2(x,y))), m_entities(new EntityDeleter(m_world), true)
+        : m_world(new b2World(b2Vec2(x,y)))
     {
         m_world->SetContactListener(this);
         m_world->SetDestructionListener(this);
@@ -211,6 +196,7 @@ namespace physics
     void World::destroyEntity(const std::string& name)
     {
         if(existsEntity(name)) {
+            m_world->DestroyBody(m_entities.getEntityValue(name)->getBody());
             m_entities.deleteEntity(name);
             core::logger::logm("The entity \"" + name + "\" has been destroyed.", core::logger::MSG);
         }

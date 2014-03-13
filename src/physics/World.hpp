@@ -18,20 +18,6 @@
 /** @brief Contains all classes and methods related to the physics engine */
 namespace physics
 {
-    /** @brief A deleter for core::FakeFS that also remove the entity from world. */
-    class EntityDeleter
-    {
-        public:
-            /** @param world The world to delete the entity from. */
-            EntityDeleter(b2World* world);
-            /** Mustn't be called, only to complie with fakefs template requirments. */
-            EntityDeleter();
-            void operator()(Entity* e) const;
-
-        private:
-            b2World* m_world;
-    };
-
     /** @brief The main class, instanciated by the user and used to manage physical entities and relations between them */
     class World : public b2DestructionListener, b2ContactListener
     {
@@ -87,6 +73,11 @@ namespace physics
             /** @brief Removes a Joint from the world */
             void destroyJoint(const std::string& name); 
 
+            /** @brief Sets callbacks at [nameA][nameB] and [nameB][nameA] locations with the user's custom one */
+            void setCallback(std::string nameA, std::string nameB, void (*callback)(Entity*, Entity*));
+            /** @brief Removes the callbacks at [nameA][nameB] and [nameB][nameA] locations */
+            void removeCallback(std::string nameA, std::string nameB);
+
             /** @brief Launch the simulation, must be called once at the beggining of the loop. */
             void start();
             /** @brief Do the simulation, must be called once per loop. */
@@ -114,10 +105,6 @@ namespace physics
             /** @brief Callback from b2ContactListener called when two entities stop colliding */
             void EndContact(b2Contact* contact);
 
-            /** @brief Sets callbacks at [nameA][nameB] and [nameB][nameA] locations with the user's custom one */
-            void setCallback(std::string nameA, std::string nameB, void (*callback)(Entity*, Entity*));
-            /** @brief Removes the callbacks at [nameA][nameB] and [nameB][nameA] locations */
-            void removeCallback(std::string nameA, std::string nameB);
             /** @brief Calls the user implemented callback corresponding to the entities colliding's types */
             void collisionCallback(Entity* entityA, Entity* entityB); 
 
@@ -128,7 +115,7 @@ namespace physics
             /** @brief The world used in Box2D for simulation, containing all the bodies and fixtures (that we grouped in the Entity class) */
             b2World* m_world; 
             /** @brief A FakeFS containing all the entities of the world, allowing to access them with a specific name given by the user when created */
-            core::FakeFS<Entity*, EntityDeleter> m_entities; 
+            core::FakeFS<Entity*> m_entities; 
             /** @brief A FakeFS containing all the joints of the world, allowing to access them with a specific name given by the user when created */
             core::FakeFS<b2Joint*> m_joints; 
             /** @brief A two-dimensional map containing all the collision callbacks */

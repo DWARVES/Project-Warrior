@@ -17,6 +17,17 @@
 using namespace geometry;
 using namespace physics;
 
+void ground_square1_callback(Entity* entityA, Entity* entityB)
+{
+    Entity* square1;
+    if(entityA->getName() == "Ground")
+        square1 = entityB;
+    else
+        square1 = entityA;
+    square1->applyLinearImpulse(0, 500);
+    std::cout << "zbre" << std::endl;
+}
+
 class PhysicsTest : public Test
 {
     public:
@@ -56,6 +67,10 @@ class PhysicsTest : public Test
             platform = world->createPlatform("Platform of the death", Point(-100, 300), AABB(500, 20));
 
             ground = world->createObstacle("Ground", Point(0, 0), AABB(2500, 1));
+
+            // Adding callbacks
+
+            world->setCallback("Ground", "Square 1", ground_square1_callback);
 
             // Testing different errors
             ground->createFixture("body", Line(Point(0, 0), Point(2500, 0), Point(1250, 0)), 1, 1);
