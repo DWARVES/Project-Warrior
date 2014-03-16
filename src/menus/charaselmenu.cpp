@@ -210,7 +210,7 @@ bool CharaSelMenu::update()
         global::audio->play("click");
     }
 
-    if(m_play->clicked()) {
+    if(m_play->clicked() && m_act == m_nb) {
         m_launched = new StageSelMenu(m_sels);
         m_launched->prepare();
         global::audio->enterNamespace("/menubutton");

@@ -100,7 +100,7 @@ bool PlayerSelMenu::update()
         global::audio->play("click");
     }
 
-    if(m_play->clicked()) {
+    if(m_play->clicked() && m_act > 0) {
         m_game = new CharaSelMenu(m_act, m_players);
         m_game->prepare();
         global::audio->enterNamespace("/menubutton");
