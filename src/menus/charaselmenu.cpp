@@ -142,6 +142,7 @@ bool CharaSelMenu::prepare()
         /* Populating the list. */
         for(size_t i = 0; i < m_avail.size(); ++i)
             m_charas->addItem(i, m_avail[i]->name(), 0.0f, (void*)m_avail[i]);
+        m_charas->addItem(m_avail.size(), _i("Random"), 0.0f, NULL);
         updateDesc();
 
         /* Setting up the layout. */
@@ -175,6 +176,11 @@ bool CharaSelMenu::update()
     std::string entered = m_charas->entered();
     if(!entered.empty() && m_act < m_nb) {
         gameplay::Character* c = (gameplay::Character*)m_charas->selectedData();
+        while(c == NULL) { /* Means random character. */
+            size_t pos = rand() % m_avail.size();
+            c = (gameplay::Character*)m_charas->getData(m_charas->item(pos));
+        }
+
         m_sels[m_act] = c->clone();
         ++m_act;
         updateTitle();
@@ -240,6 +246,11 @@ void CharaSelMenu::updateTitle()
 void CharaSelMenu::updateDesc()
 {
     gameplay::Character* sel = (gameplay::Character*)m_charas->selectedData();
+    if(sel == NULL) {
+        m_desc->setText(_i("Pic up a random character."));
+        m_prev->set(NULL);
+        return;
+    }
     m_desc->setText(sel->desc());
     m_prev->set(sel);
 }

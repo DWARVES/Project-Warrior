@@ -12,6 +12,7 @@
 int main(int argc, char *argv[])
 {
     int retcode = 0;
+    srand((unsigned int)time(NULL));
 
     /* Init the logger. */
     core::logger::init();
