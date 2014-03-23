@@ -17,8 +17,11 @@
 using namespace geometry;
 using namespace physics;
 
-void ground_square1_callback(Entity* entityA, Entity* entityB)
+void ground_square1_callback(Entity* entityA, Entity* entityB, bool start)
 {
+    if(!start)
+        return;
+
     Entity* square1;
     if(entityA->getName() == "Ground")
         square1 = entityB;
@@ -28,9 +31,14 @@ void ground_square1_callback(Entity* entityA, Entity* entityB)
     std::cout << "zbre" << std::endl;
 }
 
-void spectre_attack_callback(Entity*, Entity* ent)
+void spectre_attack_callback(Entity*, Entity* ent, bool start)
 {
-    std::cout << "Attack collide with : " << ent->getName() << std::endl;
+    std::cout << "Attack ";
+    if(start)
+        std::cout << "started";
+    else
+        std::cout << "ended";
+    std::cout << " colliding with : " << ent->getName() << std::endl;
 }
 
 class PhysicsTest : public Test

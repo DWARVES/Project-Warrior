@@ -215,7 +215,7 @@ namespace physics
             core::logger::logm("Tried to destroy unexisting joint \"" + name + "\" : cancelled operation.", core::logger::WARNING);
     }
 
-    void World::setCallback(std::string nameA, std::string nameB, void (*callback)(Entity*, Entity*))
+    void World::setCallback(std::string nameA, std::string nameB, Callback callback)
     {
         if(!m_entities.existsEntity(nameA) || !m_entities.existsEntity(nameB))
             return;
@@ -248,7 +248,7 @@ namespace physics
         }
     }
 
-    void World::setCallback(std::string name, void (*callback)(Entity*, Entity*))
+    void World::setCallback(std::string name, Callback callback)
     {
         if(!m_entities.existsEntity(name))
             return;
@@ -265,7 +265,7 @@ namespace physics
             m_glcallbacks.erase(ent);
     }
 
-    void World::setCallback(Entity* ent, b2Fixture* fixt, void (*callback)(Entity*,Entity*))
+    void World::setCallback(Entity* ent, b2Fixture* fixt, Callback callback)
     {
         m_ftcallbacks[ent][fixt] = callback;
     }
@@ -280,23 +280,23 @@ namespace physics
         }
     }
 
-    void World::collisionCallback(Entity* entityA, b2Fixture* fA, Entity* entityB, b2Fixture* fB)
+    void World::collisionCallback(Entity* entityA, b2Fixture* fA, Entity* entityB, b2Fixture* fB, bool st)
     {
         if(m_callbacks.find(entityA) != m_callbacks.end()
                 && m_callbacks[entityA].find(entityB) != m_callbacks[entityA].end())
-            (*m_callbacks[entityA][entityB])(entityA, entityB);
+            (*m_callbacks[entityA][entityB])(entityA, entityB, st);
 
         if(m_glcallbacks.find(entityA) != m_glcallbacks.end())
-            (*m_glcallbacks[entityA])(entityA, entityB);
+            (*m_glcallbacks[entityA])(entityA, entityB, st);
         if(m_glcallbacks.find(entityB) != m_glcallbacks.end())
-            (*m_glcallbacks[entityB])(entityB, entityA);
+            (*m_glcallbacks[entityB])(entityB, entityA, st);
 
         if(m_ftcallbacks.find(entityA) != m_ftcallbacks.end()
                 && m_ftcallbacks[entityA].find(fA) != m_ftcallbacks[entityA].end())
-            (*m_ftcallbacks[entityA][fA])(entityA, entityB);
+            (*m_ftcallbacks[entityA][fA])(entityA, entityB, st);
         if(m_ftcallbacks.find(entityB) != m_ftcallbacks.end()
                 && m_ftcallbacks[entityB].find(fB) != m_ftcallbacks[entityB].end())
-            (*m_ftcallbacks[entityB][fB])(entityB, entityA);
+            (*m_ftcallbacks[entityB][fB])(entityB, entityA, st);
     }
 
     void World::SayGoodbye(b2Joint* joint)
@@ -340,7 +340,7 @@ namespace physics
             return;
         }
 
-        collisionCallback(entityA, fixtureA, entityB, fixtureB);
+        collisionCallback(entityA, fixtureA, entityB, fixtureB, true);
 
         // Platform collision management
 
@@ -375,6 +375,14 @@ namespace physics
 
     void World::EndContact(b2Contact* contact)
     {
+        b2Fixture* fixtureA = contact->GetFixtureA();
+        b2Fixture* fixtureB = contact->GetFixtureB();
+        Entity* entityA = getEntityFromFixture(fixtureA);
+        Entity* entityB = getEntityFromFixture(fixtureB);
+        if(entityA == nullptr || entityB == nullptr)
+            return; /* No need to log error : it has already been done when the contact started. */
+        collisionCallback(entityA, fixtureA, entityB, fixtureB, false);
+
         // Platform collision management
 
         // Reset the default state of the contact in case it comes back for more

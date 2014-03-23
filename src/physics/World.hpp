@@ -22,6 +22,11 @@ namespace physics
     class World : public b2DestructionListener, b2ContactListener
     {
         public:
+            /** @brief The callback type. The two first arguments are the entities concerned by the collision,
+             * the third indicates if the collision has started (true) or has ended (false).
+             */
+            typedef void (*Callback)(Entity*, Entity*, bool);
+
             /** @brief Creates a new World with x and y gravity */
             World(float x, float y);
             /** @brief Initializes m_world from world. Not so useful, except for testing purposes with Testbed */
@@ -74,13 +79,13 @@ namespace physics
             void destroyJoint(const std::string& name); 
 
             /** @brief Sets callbacks at [nameA][nameB] and [nameB][nameA] locations with the user's custom one */
-            void setCallback(std::string nameA, std::string nameB, void (*callback)(Entity*, Entity*));
+            void setCallback(std::string nameA, std::string nameB, Callback callback);
             /** @brief Set a global callback : will be called if the entity collide with any other entity.
              * The first param passed to the callback is the entity itself and the second is the entity it collide with.
              */
-            void setCallback(std::string name, void (*callback)(Entity*, Entity*));
+            void setCallback(std::string name, Callback callback);
             /** @brief Set a fixture callback. */
-            void setCallback(Entity* ent, b2Fixture* fixt, void (*callback)(Entity*,Entity*));
+            void setCallback(Entity* ent, b2Fixture* fixt, Callback callback);
             /** @brief Removes the callbacks at [nameA][nameB] and [nameB][nameA] locations */
             void removeCallback(std::string nameA, std::string nameB);
             /** @brief Removes a global callback. */
@@ -116,7 +121,7 @@ namespace physics
             void EndContact(b2Contact* contact);
 
             /** @brief Calls the user implemented callback corresponding to the entities colliding's types */
-            void collisionCallback(Entity* entityA, b2Fixture* fA, Entity* entityB, b2Fixture* fB); 
+            void collisionCallback(Entity* entityA, b2Fixture* fA, Entity* entityB, b2Fixture* fB, bool st); 
 
             /** @brief Returns a pointer to the Entity owning the fixture passed in parameter */
             Entity* getEntityFromFixture(b2Fixture* fixture) const; 
@@ -129,11 +134,11 @@ namespace physics
             /** @brief A FakeFS containing all the joints of the world, allowing to access them with a specific name given by the user when created */
             core::FakeFS<b2Joint*> m_joints; 
             /** @brief A two-dimensional map containing all the collision callbacks */
-            std::map<Entity*, std::map<Entity*, void (*)(Entity*, Entity*)>> m_callbacks;
+            std::map<Entity*, std::map<Entity*, Callback>> m_callbacks;
             /** @brief A map containing the global callbacks. */
-            std::map<Entity*, void (*)(Entity*, Entity*)> m_glcallbacks;
+            std::map<Entity*, Callback> m_glcallbacks;
             /** @brief A map containing the fixtures callbacks. */
-            std::map<Entity*, std::map<b2Fixture*, void (*)(Entity*, Entity*)>> m_ftcallbacks;
+            std::map<Entity*, std::map<b2Fixture*, Callback>> m_ftcallbacks;
             /** @brief Timestamp used to compute the time of each step. */
             Uint32 m_ltime;
     };
