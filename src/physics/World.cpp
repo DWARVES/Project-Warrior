@@ -217,22 +217,42 @@ namespace physics
 
     void World::setCallback(std::string nameA, std::string nameB, void (*callback)(Entity*, Entity*))
     {
-        m_callbacks[nameA][nameB] = callback;
-        m_callbacks[nameB][nameA] = callback;
+        if(!m_entities.existsEntity(nameA) || !m_entities.existsEntity(nameB))
+            return;
+
+        Entity* entA = m_entities.getEntityValue(nameA);
+        Entity* entB = m_entities.getEntityValue(nameB);
+        m_callbacks[entA][entB] = callback;
+        m_callbacks[entB][entA] = callback;
     }
 
     void World::removeCallback(std::string nameA, std::string nameB)
     {
-        m_callbacks[nameA][nameB] = nullptr;
-        m_callbacks[nameB][nameA] = nullptr;
+        if(!m_entities.existsEntity(nameA) || !m_entities.existsEntity(nameB))
+            return;
+        Entity* entA = m_entities.getEntityValue(nameA);
+        Entity* entB = m_entities.getEntityValue(nameB);
+
+        if(m_callbacks.find(entA) != m_callbacks.end()
+                && m_callbacks[entA].find(entB) != m_callbacks[entA].end()) {
+            m_callbacks[entA].erase(entB);
+            if(m_callbacks[entA].begin() == m_callbacks[entA].end())
+                m_callbacks.erase(entA);
+        }
+
+        if(m_callbacks.find(entB) != m_callbacks.end()
+                && m_callbacks[entB].find(entA) != m_callbacks[entB].end()) {
+            m_callbacks[entB].erase(entA);
+            if(m_callbacks[entB].begin() == m_callbacks[entB].end())
+                m_callbacks.erase(entB);
+        }
     }
 
     void World::collisionCallback(Entity* entityA, Entity* entityB)
     {
-        std::string nameA = entityA->getName();
-        std::string nameB = entityB->getName();
-        if(m_callbacks[nameA][nameB] != nullptr)
-            (*m_callbacks[nameA][nameB])(entityA, entityB);
+        if(m_callbacks.find(entityA) != m_callbacks.end()
+                && m_callbacks[entityA].find(entityB) != m_callbacks[entityA].end())
+            (*m_callbacks[entityA][entityB])(entityA, entityB);
         else
             return;
     }

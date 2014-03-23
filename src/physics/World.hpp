@@ -119,7 +119,7 @@ namespace physics
             /** @brief A FakeFS containing all the joints of the world, allowing to access them with a specific name given by the user when created */
             core::FakeFS<b2Joint*> m_joints; 
             /** @brief A two-dimensional map containing all the collision callbacks */
-            std::map<std::string, std::map<std::string, void (*)(Entity*, Entity*)>> m_callbacks;
+            std::map<Entity*, std::map<Entity*, void (*)(Entity*, Entity*)>> m_callbacks;
             /** @brief Timestamp used to compute the time of each step. */
             Uint32 m_ltime;
     };
