@@ -215,15 +215,17 @@ namespace physics
             core::logger::logm("Tried to destroy unexisting joint \"" + name + "\" : cancelled operation.", core::logger::WARNING);
     }
 
-    void World::setCallback(std::string nameA, std::string nameB, Callback callback)
+    void World::setCallback(std::string nameA, std::string nameB, Callback callback, void* data)
     {
         if(!m_entities.existsEntity(nameA) || !m_entities.existsEntity(nameB))
             return;
 
         Entity* entA = m_entities.getEntityValue(nameA);
         Entity* entB = m_entities.getEntityValue(nameB);
-        m_callbacks[entA][entB] = callback;
-        m_callbacks[entB][entA] = callback;
+        m_callbacks[entA][entB].first  = callback;
+        m_callbacks[entA][entB].second = data;
+        m_callbacks[entB][entA].first  = callback;
+        m_callbacks[entB][entA].second = data;
     }
 
     void World::removeCallback(std::string nameA, std::string nameB)
@@ -248,12 +250,13 @@ namespace physics
         }
     }
 
-    void World::setCallback(std::string name, Callback callback)
+    void World::setCallback(std::string name, Callback callback, void* data)
     {
         if(!m_entities.existsEntity(name))
             return;
         Entity* ent = m_entities.getEntityValue(name);
-        m_glcallbacks[ent] = callback;
+        m_glcallbacks[ent].first  = callback;
+        m_glcallbacks[ent].second = data;
     }
 
     void World::removeCallback(std::string name)
@@ -265,9 +268,10 @@ namespace physics
             m_glcallbacks.erase(ent);
     }
 
-    void World::setCallback(Entity* ent, b2Fixture* fixt, Callback callback)
+    void World::setCallback(Entity* ent, b2Fixture* fixt, Callback callback, void* data)
     {
-        m_ftcallbacks[ent][fixt] = callback;
+        m_ftcallbacks[ent][fixt].first  = callback;
+        m_ftcallbacks[ent][fixt].second = data;
     }
 
     void World::removeCallback(Entity* ent, b2Fixture* fixt)
@@ -284,19 +288,19 @@ namespace physics
     {
         if(m_callbacks.find(entityA) != m_callbacks.end()
                 && m_callbacks[entityA].find(entityB) != m_callbacks[entityA].end())
-            (*m_callbacks[entityA][entityB])(entityA, entityB, st);
+            (*m_callbacks[entityA][entityB].first)(entityA, entityB, st, m_callbacks[entityA][entityB].second);
 
         if(m_glcallbacks.find(entityA) != m_glcallbacks.end())
-            (*m_glcallbacks[entityA])(entityA, entityB, st);
+            (*m_glcallbacks[entityA].first)(entityA, entityB, st, m_glcallbacks[entityA].second);
         if(m_glcallbacks.find(entityB) != m_glcallbacks.end())
-            (*m_glcallbacks[entityB])(entityB, entityA, st);
+            (*m_glcallbacks[entityB].first)(entityB, entityA, st, m_glcallbacks[entityB].second);
 
         if(m_ftcallbacks.find(entityA) != m_ftcallbacks.end()
                 && m_ftcallbacks[entityA].find(fA) != m_ftcallbacks[entityA].end())
-            (*m_ftcallbacks[entityA][fA])(entityA, entityB, st);
+            (*m_ftcallbacks[entityA][fA].first)(entityA, entityB, st, m_ftcallbacks[entityA][fA].second);
         if(m_ftcallbacks.find(entityB) != m_ftcallbacks.end()
                 && m_ftcallbacks[entityB].find(fB) != m_ftcallbacks[entityB].end())
-            (*m_ftcallbacks[entityB][fB])(entityB, entityA, st);
+            (*m_ftcallbacks[entityB][fB].first)(entityB, entityA, st, m_ftcallbacks[entityB][fB].second);
     }
 
     void World::SayGoodbye(b2Joint* joint)

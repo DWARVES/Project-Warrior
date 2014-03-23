@@ -17,7 +17,7 @@
 using namespace geometry;
 using namespace physics;
 
-void ground_square1_callback(Entity* entityA, Entity* entityB, bool start)
+void ground_square1_callback(Entity* entityA, Entity* entityB, bool start, void*)
 {
     if(!start)
         return;
@@ -31,7 +31,7 @@ void ground_square1_callback(Entity* entityA, Entity* entityB, bool start)
     std::cout << "zbre" << std::endl;
 }
 
-void spectre_attack_callback(Entity*, Entity* ent, bool start)
+void spectre_attack_callback(Entity*, Entity* ent, bool start, void*)
 {
     std::cout << "Attack ";
     if(start)
@@ -41,7 +41,7 @@ void spectre_attack_callback(Entity*, Entity* ent, bool start)
     std::cout << " colliding with : " << ent->getName() << std::endl;
 }
 
-void near_square1_callback(Entity*, Entity* ent, bool start)
+void near_square1_callback(Entity*, Entity* ent, bool start, void*)
 {
     std::cout << "Entity " << ent->getName();
     if(start)

@@ -23,9 +23,10 @@ namespace physics
     {
         public:
             /** @brief The callback type. The two first arguments are the entities concerned by the collision,
-             * the third indicates if the collision has started (true) or has ended (false).
+             * the third indicates if the collision has started (true) or has ended (false) and the last is
+             * personnalized data.
              */
-            typedef void (*Callback)(Entity*, Entity*, bool);
+            typedef void (*Callback)(Entity*, Entity*, bool, void*);
 
             /** @brief Creates a new World with x and y gravity */
             World(float x, float y);
@@ -79,13 +80,13 @@ namespace physics
             void destroyJoint(const std::string& name); 
 
             /** @brief Sets callbacks at [nameA][nameB] and [nameB][nameA] locations with the user's custom one */
-            void setCallback(std::string nameA, std::string nameB, Callback callback);
+            void setCallback(std::string nameA, std::string nameB, Callback callback, void* data = NULL);
             /** @brief Set a global callback : will be called if the entity collide with any other entity.
              * The first param passed to the callback is the entity itself and the second is the entity it collide with.
              */
-            void setCallback(std::string name, Callback callback);
+            void setCallback(std::string name, Callback callback, void* data = NULL);
             /** @brief Set a fixture callback. */
-            void setCallback(Entity* ent, b2Fixture* fixt, Callback callback);
+            void setCallback(Entity* ent, b2Fixture* fixt, Callback callback, void* data = NULL);
             /** @brief Removes the callbacks at [nameA][nameB] and [nameB][nameA] locations */
             void removeCallback(std::string nameA, std::string nameB);
             /** @brief Removes a global callback. */
@@ -134,11 +135,11 @@ namespace physics
             /** @brief A FakeFS containing all the joints of the world, allowing to access them with a specific name given by the user when created */
             core::FakeFS<b2Joint*> m_joints; 
             /** @brief A two-dimensional map containing all the collision callbacks */
-            std::map<Entity*, std::map<Entity*, Callback>> m_callbacks;
+            std::map<Entity*, std::map<Entity*, std::pair<Callback, void*>>> m_callbacks;
             /** @brief A map containing the global callbacks. */
-            std::map<Entity*, Callback> m_glcallbacks;
+            std::map<Entity*, std::pair<Callback, void*>> m_glcallbacks;
             /** @brief A map containing the fixtures callbacks. */
-            std::map<Entity*, std::map<b2Fixture*, Callback>> m_ftcallbacks;
+            std::map<Entity*, std::map<b2Fixture*, std::pair<Callback, void*>>> m_ftcallbacks;
             /** @brief Timestamp used to compute the time of each step. */
             Uint32 m_ltime;
     };
