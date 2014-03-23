@@ -41,6 +41,16 @@ void spectre_attack_callback(Entity*, Entity* ent, bool start)
     std::cout << " colliding with : " << ent->getName() << std::endl;
 }
 
+void near_square1_callback(Entity*, Entity* ent, bool start)
+{
+    std::cout << "Entity " << ent->getName();
+    if(start)
+        std::cout << " entered";
+    else
+        std::cout << " left";
+    std::cout << " surroundings of square1." << std::endl;
+}
+
 class PhysicsTest : public Test
 {
     public:
@@ -62,6 +72,9 @@ class PhysicsTest : public Test
             square1 = world->createCharacter("Square 1", Point(-300, 50), AABB(100, 100), Character::Weight::Heavy);
             square2 = world->createCharacter("Square 2", Point(-500, 50), AABB(100, 100), Character::Weight::Medium);
             square3 = world->createCharacter("Square 3", Point(-700, 50), AABB(100, 100), Character::Weight::Lightweight);
+
+            b2Fixture* sens = square1->createFixture("Sensor", geometry::Circle(200), 1, 1, physics::Entity::Type::ThisType,
+                    physics::Entity::Type::ThisCollideWith, geometry::Point(0,0), true);
 
             circle = world->createAttack("Spectre attack", Point(-100, 500), b2_dynamicBody, Attack::CollideType::Spectre, 0);
             circle->createFixture("body", Circle(50));
@@ -85,6 +98,7 @@ class PhysicsTest : public Test
 
             world->setCallback("Ground", "Square 1", ground_square1_callback);
             world->setCallback("Spectre attack",     spectre_attack_callback);
+            world->setCallback(square1, sens,        near_square1_callback);
 
             // Testing different errors
             ground->createFixture("body", Line(Point(0, 0), Point(2500, 0), Point(1250, 0)), 1, 1);
