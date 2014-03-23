@@ -22,10 +22,20 @@ namespace physics
 
         public:
             /** @brief Constructor defining some attributes and physical parameters ; should not be used directly to instanciate a b2Body in a b2World, but only through World::createCharacter method */
-            Character(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& rect, float weight);
+            Character(const std::string& name, World* world, const geometry::Point& position, const geometry::AABB& rect, float weight);
+            virtual ~Character();
 
             /** @brief Make jump the character at a speed based on vel and his weight */
             void jump(float vel);
+            /** @brief Indicates if the character is on the ground. */
+            bool onGround() const;
+
+        private:
+            std::vector<Entity*> m_underfoot; /**< @brief A list of all entities under the player foot. */
+            World* m_world;
+
+            /** @brief the callback used by Character to keep track of the ground. */
+            static void character_foot_callback(Entity* ch, Entity* ground, bool start, void*);
     };
 }
 
