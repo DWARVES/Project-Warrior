@@ -13,6 +13,8 @@
 
 namespace physics
 {
+    class World;
+
     /** @brief The class representing the physical entities in the World. An entity is composed of one or many fixtures corresponding to geometric shapes with specific physical properties. */
     class Entity
     {
@@ -46,7 +48,7 @@ namespace physics
             /** @brief Default constructor */
             Entity();
             /** @brief Constructor defining some attributes and physical parameters ; should not be used directly to instanciate a b2Body in a b2World, but only through World::createEntity method */
-            Entity(const std::string& name, b2World* world, const geometry::Point& position, const b2BodyType& bodyType, uint16 type = Type::Default, uint16 collideWith = Type::All, float gravityScale = 1, bool fixedRotation = true);
+            Entity(const std::string& name, World* world, const geometry::Point& position, const b2BodyType& bodyType, uint16 type = Type::Default, uint16 collideWith = Type::All, float gravityScale = 1, bool fixedRotation = true);
 
             /** @brief Return a pointer to the entity's b2Body ; should be used only by other physics engine classes */
             b2Body* getBody() const; 

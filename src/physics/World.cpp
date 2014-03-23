@@ -78,7 +78,7 @@ namespace physics
     Entity* World::createEntity(const std::string& name, const geometry::Point& position, const b2BodyType& bodyType, uint16 type, uint16 collideWith, float gravityScale, bool fixedRotation)
     {
         if(!existsEntity(name)) {
-            Entity *entity = new Entity(name, m_world, position, bodyType, type, collideWith, gravityScale, fixedRotation);
+            Entity *entity = new Entity(name, this, position, bodyType, type, collideWith, gravityScale, fixedRotation);
             m_entities.createEntity(name, entity);
             core::logger::logm("The entity \"" + name + "\" has been created.", core::logger::MSG);
             return entity;
@@ -92,7 +92,7 @@ namespace physics
     Character* World::createCharacter(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float weight)
     {
         if(!existsEntity(name)) {
-            Character *character = new Character(name, m_world, position, rect, weight);
+            Character *character = new Character(name, this, position, rect, weight);
             m_entities.createEntity(name, character);
             core::logger::logm("The character \"" + name + "\" has been created.", core::logger::MSG);
             return character;
@@ -106,7 +106,7 @@ namespace physics
     Attack* World::createAttack(const std::string& name, const geometry::Point& position, const b2BodyType& bodyType, uint16 collideWith, float gravityScale, bool fixedRotation)
     {
         if(!existsEntity(name)) {
-            Attack *attack = new Attack(name, m_world, position, bodyType, collideWith, gravityScale, fixedRotation);
+            Attack *attack = new Attack(name, this, position, bodyType, collideWith, gravityScale, fixedRotation);
             m_entities.createEntity(name, attack);
             core::logger::logm("The attack \"" + name + "\" has been created.", core::logger::MSG);
             return attack;
@@ -120,7 +120,7 @@ namespace physics
     Platform* World::createPlatform(const std::string& name, const geometry::Point& position)
     {
         if(!existsEntity(name)) {
-            Platform *platform = new Platform(name, m_world, position);
+            Platform *platform = new Platform(name, this, position);
             m_entities.createEntity(name, platform);
             core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::MSG);
             return platform;
@@ -133,7 +133,7 @@ namespace physics
     Platform* World::createPlatform(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float friction)
     {
         if(!existsEntity(name)) {
-            Platform *platform = new Platform(name, m_world, position, rect, friction);
+            Platform *platform = new Platform(name, this, position, rect, friction);
             m_entities.createEntity(name, platform);
             core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::MSG);
             return platform;
@@ -147,7 +147,7 @@ namespace physics
     Obstacle* World::createObstacle(const std::string& name, const geometry::Point& position)
     {
         if(!existsEntity(name)) {
-            Obstacle *obstacle = new Obstacle(name, m_world, position);
+            Obstacle *obstacle = new Obstacle(name, this, position);
             m_entities.createEntity(name, obstacle);
             core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::MSG);
             return obstacle;
@@ -160,7 +160,7 @@ namespace physics
     Obstacle* World::createObstacle(const std::string& name, const geometry::Point& position, const geometry::AABB& rect, float friction)
     {
         if(!existsEntity(name)) {
-            Obstacle *obstacle = new Obstacle(name, m_world, position, rect, friction);
+            Obstacle *obstacle = new Obstacle(name, this, position, rect, friction);
             m_entities.createEntity(name, obstacle);
             core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::MSG);
             return obstacle;
@@ -438,6 +438,11 @@ namespace physics
     std::string World::actualNamespace() const
     {
         return m_entities.actualNamespace();
+    }
+            
+    b2World* World::getWorld() const
+    {
+        return m_world;
     }
 
 }

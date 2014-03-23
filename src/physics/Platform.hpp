@@ -11,9 +11,9 @@ namespace physics
     {
         public:
             /** @brief Creates an empty platform (without fixture) */
-            Platform(const std::string& name, b2World* world, const geometry::Point& position);
+            Platform(const std::string& name, World* world, const geometry::Point& position);
             /** @brief Creates a basic platform with AABB fixture */
-            Platform(const std::string& name, b2World* world, const geometry::Point& position, const geometry::AABB& rect, float friction = 1);
+            Platform(const std::string& name, World* world, const geometry::Point& position, const geometry::AABB& rect, float friction = 1);
     };
 }
 

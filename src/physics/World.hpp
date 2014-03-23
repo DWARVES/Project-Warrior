@@ -79,6 +79,9 @@ namespace physics
             /** @brief Removes a Joint from the world */
             void destroyJoint(const std::string& name); 
 
+            /** @brief Access the b2World. */
+            b2World* getWorld() const;
+
             /** @brief Sets callbacks at [nameA][nameB] and [nameB][nameA] locations with the user's custom one */
             void setCallback(std::string nameA, std::string nameB, Callback callback, void* data = NULL);
             /** @brief Set a global callback : will be called if the entity collide with any other entity.

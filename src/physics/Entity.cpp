@@ -1,5 +1,6 @@
 
 #include "Entity.hpp"
+#include "World.hpp"
 #include "unit_conversions.hpp"
 #include "core/logger.hpp"
 
@@ -8,14 +9,14 @@ namespace physics
     Entity::Entity()
     {}
 
-    Entity::Entity(const std::string& name, b2World* world, const geometry::Point& position, const b2BodyType& bodyType, uint16 type, uint16 collideWith, float gravityScale, bool fixedRotation) : m_name(name), m_type(type), m_collideWith(collideWith)
+    Entity::Entity(const std::string& name, World* world, const geometry::Point& position, const b2BodyType& bodyType, uint16 type, uint16 collideWith, float gravityScale, bool fixedRotation) : m_name(name), m_type(type), m_collideWith(collideWith)
     {
         b2BodyDef bodyDef;
         bodyDef.type = bodyType;
         bodyDef.position = b2Vec2(toMeters(position.x), toMeters(position.y));
         bodyDef.gravityScale = gravityScale;
 
-        m_body = world->CreateBody(&bodyDef);
+        m_body = world->getWorld()->CreateBody(&bodyDef);
         m_body->SetFixedRotation(fixedRotation);
         m_body->SetUserData(this);
     }
