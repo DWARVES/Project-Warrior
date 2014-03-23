@@ -248,13 +248,33 @@ namespace physics
         }
     }
 
+    void World::setCallback(std::string name, void (*callback)(Entity*, Entity*))
+    {
+        if(!m_entities.existsEntity(name))
+            return;
+        Entity* ent = m_entities.getEntityValue(name);
+        m_glcallbacks[ent] = callback;
+    }
+
+    void World::removeCallback(std::string name)
+    {
+        if(!m_entities.existsEntity(name))
+            return;
+        Entity* ent = m_entities.getEntityValue(name);
+        if(m_glcallbacks.find(ent) != m_glcallbacks.end())
+            m_glcallbacks.erase(ent);
+    }
+
     void World::collisionCallback(Entity* entityA, Entity* entityB)
     {
         if(m_callbacks.find(entityA) != m_callbacks.end()
                 && m_callbacks[entityA].find(entityB) != m_callbacks[entityA].end())
             (*m_callbacks[entityA][entityB])(entityA, entityB);
-        else
-            return;
+
+        if(m_glcallbacks.find(entityA) != m_glcallbacks.end())
+            (*m_glcallbacks[entityA])(entityA, entityB);
+        if(m_glcallbacks.find(entityB) != m_glcallbacks.end())
+            (*m_glcallbacks[entityB])(entityB, entityA);
     }
 
     void World::SayGoodbye(b2Joint* joint)

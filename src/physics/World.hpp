@@ -75,8 +75,14 @@ namespace physics
 
             /** @brief Sets callbacks at [nameA][nameB] and [nameB][nameA] locations with the user's custom one */
             void setCallback(std::string nameA, std::string nameB, void (*callback)(Entity*, Entity*));
+            /** @brief Set a global callback : will be called if the entity collide with any other entity.
+             * The first param passed to the callback is the entity itself and the second is the entity it collide with.
+             */
+            void setCallback(std::string name, void (*callback)(Entity*, Entity*));
             /** @brief Removes the callbacks at [nameA][nameB] and [nameB][nameA] locations */
             void removeCallback(std::string nameA, std::string nameB);
+            /** @brief Removes a global callback. */
+            void removeCallback(std::string name);
 
             /** @brief Launch the simulation, must be called once at the beggining of the loop. */
             void start();
@@ -120,6 +126,8 @@ namespace physics
             core::FakeFS<b2Joint*> m_joints; 
             /** @brief A two-dimensional map containing all the collision callbacks */
             std::map<Entity*, std::map<Entity*, void (*)(Entity*, Entity*)>> m_callbacks;
+            /** @brief A map containing the global callbacks. */
+            std::map<Entity*, void (*)(Entity*, Entity*)> m_glcallbacks;
             /** @brief Timestamp used to compute the time of each step. */
             Uint32 m_ltime;
     };
