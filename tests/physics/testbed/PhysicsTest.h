@@ -28,6 +28,11 @@ void ground_square1_callback(Entity* entityA, Entity* entityB)
     std::cout << "zbre" << std::endl;
 }
 
+void spectre_attack_callback(Entity*, Entity* ent)
+{
+    std::cout << "Attack collide with : " << ent->getName() << std::endl;
+}
+
 class PhysicsTest : public Test
 {
     public:
@@ -71,6 +76,7 @@ class PhysicsTest : public Test
             // Adding callbacks
 
             world->setCallback("Ground", "Square 1", ground_square1_callback);
+            world->setCallback("Spectre attack",     spectre_attack_callback);
 
             // Testing different errors
             ground->createFixture("body", Line(Point(0, 0), Point(2500, 0), Point(1250, 0)), 1, 1);
