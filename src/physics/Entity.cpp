@@ -91,9 +91,9 @@ namespace physics
         m_body->SetFixedRotation(fixedRotation);
     }
 
-    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Line& line, float density, float friction, uint16 type, uint16 collideWith)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Line& line, float density, float friction, uint16 type, uint16 collideWith, bool sensor)
     {
-        b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith);
+        b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith, sensor);
         if(fixtureDef == nullptr)
             return nullptr;
         
@@ -106,9 +106,9 @@ namespace physics
         return m_fixtures.getEntityValue(name);
     }
 
-    b2Fixture* Entity::createFixture(const std::string& name, const geometry::AABB& aabb, float density, float friction, uint16 type, uint16 collideWith, const geometry::Point& position)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::AABB& aabb, float density, float friction, uint16 type, uint16 collideWith, const geometry::Point& position, bool sensor)
     {
-        b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith);
+        b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith, sensor);
         if(fixtureDef == nullptr)
             return nullptr;
         
@@ -121,9 +121,9 @@ namespace physics
         return m_fixtures.getEntityValue(name);
     }
 
-    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Circle& circle, float density, float friction, uint16 type, uint16 collideWith, const geometry::Point& position)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Circle& circle, float density, float friction, uint16 type, uint16 collideWith, const geometry::Point& position, bool sensor)
     {
-        b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith);
+        b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith, sensor);
         if(fixtureDef == nullptr)
             return nullptr;
         
@@ -137,9 +137,9 @@ namespace physics
         return m_fixtures.getEntityValue(name);
     }
 
-    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Polygon& polygon, float density, float friction, uint16 type, uint16 collideWith)
+    b2Fixture* Entity::createFixture(const std::string& name, const geometry::Polygon& polygon, float density, float friction, uint16 type, uint16 collideWith, bool sensor)
     {
-        b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith);
+        b2FixtureDef* fixtureDef = createBaseFixtureDef(name, density, friction, type, collideWith, sensor);
         if(fixtureDef == nullptr)
             return nullptr;
         
@@ -156,7 +156,7 @@ namespace physics
         return m_fixtures.getEntityValue(name);
     }
 
-    b2FixtureDef* Entity::createBaseFixtureDef(const std::string& name, float density, float friction, uint16 type, uint16 collideWith) const
+    b2FixtureDef* Entity::createBaseFixtureDef(const std::string& name, float density, float friction, uint16 type, uint16 collideWith, bool sensor) const
     {
         if(m_fixtures.existsEntity(name))
         {
@@ -168,6 +168,7 @@ namespace physics
 
         fixtureDef->density = density;
         fixtureDef->friction = friction;
+        fixtureDef->isSensor = sensor;
 
         if(type != Type::ThisType)
             fixtureDef->filter.categoryBits = type;

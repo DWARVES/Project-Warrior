@@ -82,13 +82,13 @@ namespace physics
             void setFixedRotation(bool fixedRotation);
 
             /** @brief Creates a fixture based on a line-shaped hitbox, automatically adding it to the entity's fixtures map, and returning a pointer to the fixture */
-            b2Fixture* createFixture(const std::string& name, const geometry::Line& line, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith);
+            b2Fixture* createFixture(const std::string& name, const geometry::Line& line, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, bool sensor = false);
             /** @brief Creates a fixture based on an aabb-shaped hitbox, automatically adding it to the entity's fixtures map, and returning a pointer to the fixture */
-            b2Fixture* createFixture(const std::string& name, const geometry::AABB& aabb, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, const geometry::Point& position = geometry::Point(0, 0));
+            b2Fixture* createFixture(const std::string& name, const geometry::AABB& aabb, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, const geometry::Point& position = geometry::Point(0, 0), bool sensor = false);
             /** @brief Creates a fixture based on a circle-shaped hitbox, automatically adding it to the entity's fixtures map, and returning a pointer to the fixture */
-            b2Fixture* createFixture(const std::string& name, const geometry::Circle& circle, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, const geometry::Point& position = geometry::Point(0, 0));
+            b2Fixture* createFixture(const std::string& name, const geometry::Circle& circle, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, const geometry::Point& position = geometry::Point(0, 0), bool sensor = false);
             /** @brief Creates a fixture based on an polygon-shaped hitbox, automatically adding it to the entity's fixtures map, and returning a pointer to the fixture */
-            b2Fixture* createFixture(const std::string& name, const geometry::Polygon& polygon, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith);
+            b2Fixture* createFixture(const std::string& name, const geometry::Polygon& polygon, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, bool sensor = false);
 
             /** @brief Destroy the fixture named "name" in the map */
             void destroyFixture(const std::string& name);
@@ -109,7 +109,7 @@ namespace physics
 
         protected:
             /** @brief Creates a base b2FixtureDef based on density, friction and collision parameters, and return a pointer to it ; used in createFixture overloaded functions to avoid code repetitions */
-            b2FixtureDef* createBaseFixtureDef(const std::string& name, float density, float friction, uint16 type, uint16 collideWith) const;
+            b2FixtureDef* createBaseFixtureDef(const std::string& name, float density, float friction, uint16 type, uint16 collideWith, bool sensor) const;
 
         protected:
             /** @brief The entity name */
