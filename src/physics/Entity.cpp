@@ -21,6 +21,9 @@ namespace physics
         m_body->SetUserData(this);
     }
 
+    Entity::~Entity()
+    {}
+
     b2Body* Entity::getBody() const
     {
         return m_body;
