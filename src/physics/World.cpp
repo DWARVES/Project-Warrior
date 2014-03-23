@@ -265,7 +265,22 @@ namespace physics
             m_glcallbacks.erase(ent);
     }
 
-    void World::collisionCallback(Entity* entityA, Entity* entityB)
+    void World::setCallback(Entity* ent, b2Fixture* fixt, void (*callback)(Entity*,Entity*))
+    {
+        m_ftcallbacks[ent][fixt] = callback;
+    }
+
+    void World::removeCallback(Entity* ent, b2Fixture* fixt)
+    {
+        if(m_ftcallbacks.find(ent) != m_ftcallbacks.end()
+                && m_ftcallbacks[ent].find(fixt) != m_ftcallbacks[ent].end()) {
+            m_ftcallbacks[ent].erase(fixt);
+            if(m_ftcallbacks[ent].begin() == m_ftcallbacks[ent].end())
+                m_ftcallbacks.erase(ent);
+        }
+    }
+
+    void World::collisionCallback(Entity* entityA, b2Fixture* fA, Entity* entityB, b2Fixture* fB)
     {
         if(m_callbacks.find(entityA) != m_callbacks.end()
                 && m_callbacks[entityA].find(entityB) != m_callbacks[entityA].end())
@@ -275,6 +290,13 @@ namespace physics
             (*m_glcallbacks[entityA])(entityA, entityB);
         if(m_glcallbacks.find(entityB) != m_glcallbacks.end())
             (*m_glcallbacks[entityB])(entityB, entityA);
+
+        if(m_ftcallbacks.find(entityA) != m_ftcallbacks.end()
+                && m_ftcallbacks[entityA].find(fA) != m_ftcallbacks[entityA].end())
+            (*m_ftcallbacks[entityA][fA])(entityA, entityB);
+        if(m_ftcallbacks.find(entityB) != m_ftcallbacks.end()
+                && m_ftcallbacks[entityB].find(fB) != m_ftcallbacks[entityB].end())
+            (*m_ftcallbacks[entityB][fB])(entityB, entityA);
     }
 
     void World::SayGoodbye(b2Joint* joint)
@@ -318,7 +340,7 @@ namespace physics
             return;
         }
 
-        collisionCallback(entityA, entityB);
+        collisionCallback(entityA, fixtureA, entityB, fixtureB);
 
         // Platform collision management
 

@@ -79,10 +79,14 @@ namespace physics
              * The first param passed to the callback is the entity itself and the second is the entity it collide with.
              */
             void setCallback(std::string name, void (*callback)(Entity*, Entity*));
+            /** @brief Set a fixture callback. */
+            void setCallback(Entity* ent, b2Fixture* fixt, void (*callback)(Entity*,Entity*));
             /** @brief Removes the callbacks at [nameA][nameB] and [nameB][nameA] locations */
             void removeCallback(std::string nameA, std::string nameB);
             /** @brief Removes a global callback. */
             void removeCallback(std::string name);
+            /** @brief Removes a fixture callback. */
+            void removeCallback(Entity* ent, b2Fixture* fixt);
 
             /** @brief Launch the simulation, must be called once at the beggining of the loop. */
             void start();
@@ -112,7 +116,7 @@ namespace physics
             void EndContact(b2Contact* contact);
 
             /** @brief Calls the user implemented callback corresponding to the entities colliding's types */
-            void collisionCallback(Entity* entityA, Entity* entityB); 
+            void collisionCallback(Entity* entityA, b2Fixture* fA, Entity* entityB, b2Fixture* fB); 
 
             /** @brief Returns a pointer to the Entity owning the fixture passed in parameter */
             Entity* getEntityFromFixture(b2Fixture* fixture) const; 
@@ -128,6 +132,8 @@ namespace physics
             std::map<Entity*, std::map<Entity*, void (*)(Entity*, Entity*)>> m_callbacks;
             /** @brief A map containing the global callbacks. */
             std::map<Entity*, void (*)(Entity*, Entity*)> m_glcallbacks;
+            /** @brief A map containing the fixtures callbacks. */
+            std::map<Entity*, std::map<b2Fixture*, void (*)(Entity*, Entity*)>> m_ftcallbacks;
             /** @brief Timestamp used to compute the time of each step. */
             Uint32 m_ltime;
     };
