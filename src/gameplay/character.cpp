@@ -46,7 +46,7 @@ namespace gameplay
     };
 
     Character::Character(const std::string& path)
-        : m_path(path), m_name("broken"), m_desc("Couldn't load."), m_valid(false)
+        : m_path(path), m_name("broken"), m_desc("Couldn't load."), m_valid(false), m_world(NULL), m_ch(NULL)
     {
         ++m_count;
         std::ostringstream oss;
@@ -476,6 +476,48 @@ namespace gameplay
         Character* cl = new Character(m_path);
         cl->preload();
         return cl;
+    }
+
+    void Character::world(physics::World* w)
+    {
+        m_world = w;
+        /** @todo Create m_ch and configure it. */
+    }
+
+    physics::World* Character::world() const
+    {
+        return m_world;
+    }
+
+    bool Character::onGround() const
+    {
+        if(!m_ch)
+            return false;
+        else
+            return m_ch->onGround();
+    }
+
+    bool Character::requireMana(unsigned int mn)
+    {
+        if(mn > m_mana)
+            return false;
+        m_mana -= mn;
+        return true;
+    }
+            
+    void Character::addMana(unsigned int mn)
+    {
+        m_mana = std::max(m_mana + mn, m_manamax);
+    }
+
+    unsigned int Character::mana() const
+    {
+        return m_mana;
+    }
+
+    unsigned int Character::manaMax() const
+    {
+        return m_manamax;
     }
 
 }

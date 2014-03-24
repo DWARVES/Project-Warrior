@@ -5,6 +5,8 @@
 #include <string>
 #include "geometry/aabb.hpp"
 #include "lua/script.hpp"
+#include "physics/World.hpp"
+#include "physics/Character.hpp"
 
 namespace gameplay
 {
@@ -88,11 +90,26 @@ namespace gameplay
             /** @brief The animation if the character lost, with a maximum size. */
             void won(const geometry::AABB& msize);
 
+            /** @brief Create the character in the physics world. */
+            void world(physics::World* w);
+            /** @brief Get the physics::World used. */
+            physics::World* world() const;
+            /** @brief Indicates if the character is onGround. */
+            bool onGround() const;
+            /** @brief Use mana from the character, return false if there were not enough mana. */
+            bool requireMana(unsigned int mn);
+            /** @brief Add mana to the actual level of mana of the character. */
+            void addMana(unsigned int mn);
+            /** @brief Get the mana left. */
+            unsigned int mana() const;
+            /** @brief Get the maximum mana of the character. */
+            unsigned int manaMax() const;
+
             /** @brief Allocate another character with the same path. */
             Character* clone() const;
 
         private:
-            std::string m_namespace;  /**< @brief The name of the namespace used by this character in gfx and audio. */
+            std::string m_namespace;  /**< @brief The name of the namespace used by this character in gfx, audio and physics. */
             std::string m_path;       /**< @brief The path to the directory of the character. */
             static size_t m_count;    /**< @brief The number of created characters. */
 
@@ -147,6 +164,16 @@ namespace gameplay
 
             /** @brief Link an actionID to the corresponding lua function. */
             static const char* const m_luaCalls[(unsigned int)ActionID::None];
+
+            /* Mana. */
+            unsigned int m_mana;      /**< @brief The mana left of the character. */
+            unsigned int m_manamax;   /**< @brief The maximum mana of the character. */
+
+            /* Physics integration. */
+            physics::World* m_world;  /**< @brief The physics world. */
+            physics::Character* m_ch; /**< @brief The physics entity of the character. */
+            geometry::AABB m_phsize;  /**< @brief The size of the entity in the physic world. */
+            unsigned int m_phweight;  /**< @brief The weight of the entity on the physic world. */
 
             /* Internal methods. */
             /** @brief Draw the nm texture with a maximum size. */
