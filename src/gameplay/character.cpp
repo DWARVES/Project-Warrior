@@ -6,6 +6,7 @@
 #include "graphics/graphics.hpp"
 #include "lua/graphicsExposure.hpp"
 #include "lua/saveExposure.hpp"
+#include "lua/pathExposure.hpp"
 
 #include <sstream>
 #include <fstream>
@@ -103,6 +104,7 @@ namespace gameplay
         /* Loading the preview.lua script. */
         lua::exposure::Save::expose(&m_preview);
         lua::exposure::Graphics::expose(&m_preview);
+        lua::exposure::Path::expose(&m_preview);
         if(!m_preview.load(m_path + "/preview.lua")) {
             std::ostringstream oss;
             oss << "Couldn't load \"" << m_path << "/preview.lua\" script for " << m_namespace << " character.";
@@ -197,6 +199,7 @@ namespace gameplay
         /* Loading the script. */
         lua::exposure::Save::expose(&m_perso);
         lua::exposure::Graphics::expose(&m_perso);
+        lua::exposure::Path::expose(&m_perso);
         if(!m_perso.load(m_path + "/perso.lua")) {
             std::ostringstream oss;
             oss << "Couldn't load \"" << m_path << "/perso.lua\" script for " << m_namespace << " character.";
