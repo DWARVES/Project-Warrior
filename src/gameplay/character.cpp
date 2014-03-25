@@ -270,8 +270,8 @@ namespace gameplay
 
     void Character::action(Control control, Direction dir)
     {
-        m_begin = SDL_GetTicks();
         m_useMsize = false;
+        Action save = m_actual;
 
         /** @todo Make transitions (depends on physics). */
         switch(control) {
@@ -398,6 +398,9 @@ namespace gameplay
                 m_actual.id = ActionID::Stand;
                 break;
         }
+
+        if(save.id != m_actual.id)
+            m_begin = SDL_GetTicks();
     }
 
     void Character::draw()
