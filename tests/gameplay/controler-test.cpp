@@ -38,7 +38,7 @@ int main()
     if(!cont)
         return 1;
 
-    gameplay::Character* chara = new gameplay::Character("rcs/chara/stick");
+    gameplay::Character* chara = new gameplay::Character("rcs/chara/fighter");
     if(!chara->preload()) {
         core::logger::logm("Couldn't load the character preview.", core::logger::FATAL);
         return 1;
