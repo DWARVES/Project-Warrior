@@ -64,7 +64,7 @@ namespace lua
             std::vector<Script::VarType> args = helper::listArguments(st);
             if(args.size() != 2
                     || args[0] != Script::NUMBER
-                    || args[0] != Script::NUMBER)
+                    || args[1] != Script::NUMBER)
                 return 0;
             characters[C]->phSize(geometry::AABB(lua_tonumber(st, 1), lua_tonumber(st, 2)));
             return 0;
