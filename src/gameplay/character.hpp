@@ -91,9 +91,11 @@ namespace gameplay
             void won(const geometry::AABB& msize);
 
             /** @brief Create the character in the physics world. */
-            void world(physics::World* w);
+            bool world(physics::World* w);
             /** @brief Get the physics::World used. */
             physics::World* world() const;
+            /** @brief Defines the position to appear. Must be called before world. */
+            void appearancePos(const geometry::Point& pos);
             /** @brief Indicates if the character is onGround. */
             bool onGround() const;
             /** @brief Use mana from the character, return false if there were not enough mana. */
@@ -173,7 +175,8 @@ namespace gameplay
             physics::World* m_world;  /**< @brief The physics world. */
             physics::Character* m_ch; /**< @brief The physics entity of the character. */
             geometry::AABB m_phsize;  /**< @brief The size of the entity in the physic world. */
-            unsigned int m_phweight;  /**< @brief The weight of the entity on the physic world. */
+            float m_phweight;         /**< @brief The weight of the entity on the physic world. */
+            geometry::Point m_phpos;  /**< @brief The position of appearance of the character in the physics world. */
 
             /* Internal methods. */
             /** @brief Draw the nm texture with a maximum size. */

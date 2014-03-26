@@ -59,6 +59,9 @@ namespace gameplay
     {
         global::gfx->enterNamespace("/");
         global::gfx->deleteNamespace(m_namespace);
+
+        if(m_ch && m_world)
+            m_world->deleteNamespace(m_namespace);
     }
 
     bool Character::preload()
@@ -484,10 +487,28 @@ namespace gameplay
         return cl;
     }
 
-    void Character::world(physics::World* w)
+    bool Character::world(physics::World* w)
     {
+        /* Preparing the world. */
         m_world = w;
-        /** @todo Create m_ch and configure it. */
+        m_world->createNamespace(m_namespace);
+        m_world->enterNamespace(m_namespace);
+
+        /* Creating the character. */
+        m_ch = m_world->createCharacter(m_name, m_phpos, m_phsize, m_phweight);
+        if(!m_ch) {
+            std::ostringstream oss;
+            oss << "Couldn't create physic entity for character " << m_name << ".";
+            core::logger::logm(oss.str(), core::logger::ERROR);
+            return false;
+        }
+
+        return true;
+    }
+            
+    void Character::appearancePos(const geometry::Point& pos)
+    {
+        m_phpos = pos;
     }
 
     physics::World* Character::world() const
@@ -498,7 +519,7 @@ namespace gameplay
     bool Character::onGround() const
     {
         if(!m_ch)
-            return false;
+            return true;
         else
             return m_ch->onGround();
     }
