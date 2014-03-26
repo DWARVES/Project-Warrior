@@ -8,6 +8,7 @@ add_library(${lib}
     saveExposure.cpp     saveExposure.hpp
     graphicsExposure.cpp graphicsExposure.hpp
     pathExposure.cpp     pathExposure.hpp
+    charaExposure.cpp    charaExposure.hpp
     script.cpp           script.hpp           luna.hpp
     helper.cpp           helper.hpp
     exception.cpp        exception.hpp
