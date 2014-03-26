@@ -275,7 +275,6 @@ namespace gameplay
 
     void Character::action(Control control, Direction dir)
     {
-        m_useMsize = false;
         Action save = m_actual;
 
         if(onGround())
@@ -474,6 +473,8 @@ namespace gameplay
     {
         /* Getting physic position. */
         geometry::Point pos(0.0f, 0.0f);
+        if(m_ch)
+            pos = m_ch->getPosition();
 
         /* Updating animation. */
         actuateByLua();
@@ -624,6 +625,12 @@ namespace gameplay
     void Character::setManaMax(unsigned int m)
     {
         m_manamax = m;
+    }
+            
+    void Character::enableMSize(bool en, const geometry::AABB& ms)
+    {
+        m_useMsize = en;
+        m_msize = ms;
     }
 
 }

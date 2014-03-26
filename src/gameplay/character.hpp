@@ -80,6 +80,8 @@ namespace gameplay
              * @param dir     The direction of the control.
              */
             void action(Control control, Direction dir);
+            /** @brief Enable/disable a maximum size when drawing. */
+            void enableMSize(bool en, const geometry::AABB& ms = geometry::AABB(0.0f,0.0f));
             /** @brief Draw the character at the position setted by its physics (in the stage repere). */
             void draw();
             /** @brief Draw the character appearing.
