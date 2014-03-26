@@ -86,6 +86,7 @@ int main()
     world.createPlatform("ground", geometry::Point(800,10), groundbox);
     chara->appearancePos(geometry::Point(800,600));
     chara->world(&world);
+    chara->enableMSize(false, geometry::AABB(20.0f, 20.0f));
 
     geometry::AABB bg(1600, 1200);
     graphics::Color bgc(0, 255, 255);
