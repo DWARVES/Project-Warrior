@@ -53,8 +53,10 @@ namespace gameplay
              */
             void bigPreview(Color color, const geometry::AABB& msize);
 
-            /** @brief Load the character main script and rcs for a specified color. */
-            bool load(Color c);
+            /** @brief Load the character main script and rcs for a specified color.
+             * @param nb The id of the character in [0;3].
+             */
+            bool load(Color c, int nb);
             /** @brief The controls that can be sent to the character. */
             enum Control {
                 Walk,   /**< @brief The walk control. */
@@ -96,6 +98,12 @@ namespace gameplay
             physics::World* world() const;
             /** @brief Defines the position to appear. Must be called before world. */
             void appearancePos(const geometry::Point& pos);
+            /** @brief Defines the physic size of the character. */
+            void phSize(const geometry::AABB& size);
+            /** @brief Defines the physic weight of the character. */
+            void phWeight(float w);
+            /** @brief Defines the maximum mana of the character. */
+            void setManaMax(unsigned int m);
             /** @brief Indicates if the character is onGround. */
             bool onGround() const;
             /** @brief Use mana from the character, return false if there were not enough mana. */

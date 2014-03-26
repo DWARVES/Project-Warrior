@@ -7,6 +7,7 @@
 #include "lua/graphicsExposure.hpp"
 #include "lua/saveExposure.hpp"
 #include "lua/pathExposure.hpp"
+#include "lua/charaExposure.hpp"
 
 #include <sstream>
 #include <fstream>
@@ -197,12 +198,13 @@ namespace gameplay
         global::gfx->pop();
     }
 
-    bool Character::load(Color c)
+    bool Character::load(Color c, int nb)
     {
         /* Loading the script. */
         lua::exposure::Save::expose(&m_perso);
         lua::exposure::Graphics::expose(&m_perso);
         lua::exposure::Path::expose(&m_perso);
+        lua::exposure::exposeChara(&m_perso, nb);
         if(!m_perso.load(m_path + "/perso.lua")) {
             std::ostringstream oss;
             oss << "Couldn't load \"" << m_path << "/perso.lua\" script for " << m_namespace << " character.";
@@ -607,6 +609,21 @@ namespace gameplay
     unsigned int Character::manaMax() const
     {
         return m_manamax;
+    }
+
+    void Character::phSize(const geometry::AABB& size)
+    {
+        m_phsize = size;
+    }
+
+    void Character::phWeight(float w)
+    {
+        m_phweight = w;
+    }
+
+    void Character::setManaMax(unsigned int m)
+    {
+        m_manamax = m;
     }
 
 }

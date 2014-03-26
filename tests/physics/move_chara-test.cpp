@@ -47,7 +47,7 @@ int main()
     }
     std::cout << "Character **" << chara->name() << "** loaded : " << chara->desc() << std::endl;
 
-    if(!chara->load(gameplay::Character::None)) {
+    if(!chara->load(gameplay::Character::None, 0)) {
         core::logger::logm("Couldn't load the character.", core::logger::FATAL);
         return 1;
     }
