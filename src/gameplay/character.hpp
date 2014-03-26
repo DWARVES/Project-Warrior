@@ -160,6 +160,7 @@ namespace gameplay
             };
             Action m_actual;          /**< @brief The action the character is actually doing. */
             Action m_next;            /**< @brief The action the character will do once m_actual is finished. */
+            bool m_doubleJump;        /**< @brief Has used its double jump. */
             unsigned long m_begin;    /**< @brief The timestamp of the actual action. */
             bool m_useMsize;          /**< @brief Must the action be drawn with a maximum size. */
             geometry::AABB m_msize;   /**< @brief The maximum size used when drawing. */

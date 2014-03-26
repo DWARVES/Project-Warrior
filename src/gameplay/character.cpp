@@ -276,40 +276,82 @@ namespace gameplay
         m_useMsize = false;
         Action save = m_actual;
 
-        /** @todo Make transitions (depends on physics). */
+        if(onGround())
+            m_doubleJump = false;
+
         switch(control) {
             case Walk:
-                m_next.id = ActionID::None;
+                m_next.id   = ActionID::None;
+                m_actual.id = ActionID::None;
                 switch(dir) {
-                    case Left:  m_actual.id = ActionID::Walk; 
-                                m_actual.flip = false; 
-                                break;
-                    case Right: m_actual.id = ActionID::Walk;
-                                m_actual.flip = true;
-                                break;
-                    case Up:    m_actual.id = ActionID::Jump;      break; /* Handle jump air if not on ground. */
-                    case Down:  m_actual.id = ActionID::FastDown;  break;
-                    case Fixed: m_actual.id = ActionID::Stand;     break;
-                    default:    m_actual.id = ActionID::None;      break;
+                    case Left:  
+                        if(onGround())
+                            m_actual.id = ActionID::Walk; 
+                        m_actual.flip = false; 
+                        break;
+
+                    case Right: 
+                        if(onGround())
+                            m_actual.id = ActionID::Walk;
+                        m_actual.flip = true;
+                        break;
+
+                    case Up:
+                        if(onGround())
+                            m_actual.id = ActionID::Jump;
+                        else if(!m_doubleJump) {
+                            m_actual.id = ActionID::JumpAir;
+                            m_doubleJump = true;
+                        }
+                        break;
+
+                    case Down:
+                        if(!onGround())
+                            m_actual.id = ActionID::FastDown;
+                        break;
+
+                    case Fixed:
+                        if(onGround())
+                            m_actual.id = ActionID::Stand;
+                        break;
+
+                    default:
+                        m_actual.id = ActionID::None;
+                        break;
                 }
                 m_next.flip = m_actual.flip;
                 break;
 
             case Run:
                 m_next.id = ActionID::None;
+                m_actual.id = ActionID::None;
                 switch(dir) {
-                    case Left:  m_actual.id = ActionID::Run;
-                                m_actual.flip = false; 
-                                break;
-                    case Right: m_actual.id = ActionID::Run;
-                                m_actual.flip = true; 
-                                break;
-                    case Up:    m_actual.id = ActionID::Jump;     break; /* Handle jump air if not on ground. */
-                    case Down:  m_actual.id = ActionID::FastDown; break;
-                    case Fixed: m_actual.id = ActionID::Stop;
-                                m_next.id = ActionID::Stand;
-                                break;
-                    default:    m_actual.id = ActionID::None;     break;
+                    case Left:
+                        if(onGround())
+                            m_actual.id = ActionID::Run;
+                        m_actual.flip = false; 
+                        break;
+
+                    case Right:
+                        if(onGround())
+                            m_actual.id = ActionID::Run;
+                        m_actual.flip = true; 
+                        break;
+
+                    case Up: case Down:
+                        action(Walk, dir);
+                        break;
+
+                    case Fixed:
+                        if(onGround()) {
+                            m_actual.id = ActionID::Stop;
+                            m_next.id = ActionID::Stand;
+                        }
+                        break;
+
+                    default:
+                        m_actual.id = ActionID::None;
+                        break;
                 }
                 m_next.flip = m_actual.flip;
                 break;
@@ -365,17 +407,37 @@ namespace gameplay
                 break;
 
             case Dodge:
-                /* Handle flying dodge. */
                 switch(dir) {
-                    case Left:  m_actual.id = ActionID::DashDodge;
-                                m_actual.flip = false; 
-                                break;
-                    case Right: m_actual.id = ActionID::DashDodge;
-                                m_actual.flip = true; 
-                                break;
-                    case Fixed: m_actual.id = ActionID::StaticDodge; break;
+                    case Left:
+                        if(onGround())
+                            m_actual.id = ActionID::DashDodge;
+                        else
+                            m_actual.id = ActionID::FlyingDashDodge;
+                        m_actual.flip = false; 
+                        break;
+
+                    case Right:
+                        if(onGround())
+                            m_actual.id = ActionID::DashDodge;
+                        else
+                            m_actual.id = ActionID::FlyingDashDodge;
+                        m_actual.flip = true; 
+                        break;
+
+                    case Fixed:
+                        if(onGround())
+                            m_actual.id = ActionID::StaticDodge;
+                        else
+                            m_actual.id = ActionID::FlyingStaticDodge;
+                        break;
+
                     case Up: case Down:
-                    default:    m_actual.id = ActionID::Stand;       break;
+                    default:
+                        if(onGround())
+                            m_actual.id = ActionID::Stand;
+                        else
+                            m_actual.id = ActionID::None;
+                        break;
                 }
                 m_next.id = ActionID::Stand;
                 m_next.flip = m_actual.flip;
@@ -505,7 +567,7 @@ namespace gameplay
 
         return true;
     }
-            
+
     void Character::appearancePos(const geometry::Point& pos)
     {
         m_phpos = pos;
@@ -531,7 +593,7 @@ namespace gameplay
         m_mana -= mn;
         return true;
     }
-            
+
     void Character::addMana(unsigned int mn)
     {
         m_mana = std::max(m_mana + mn, m_manamax);
