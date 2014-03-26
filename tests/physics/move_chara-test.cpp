@@ -41,7 +41,7 @@ int main()
     if(!cont)
         return 1;
 
-    gameplay::Character* chara = new gameplay::Character("rcs/chara/stick");
+    gameplay::Character* chara = new gameplay::Character("rcs/chara/fighter");
     if(!chara->preload()) {
         core::logger::logm("Couldn't load the character preview.", core::logger::FATAL);
         return 1;
@@ -81,13 +81,11 @@ int main()
     ctrl.attach(chara);
 
     /* Creating the world. */
-    geometry::Point pos(800,600);
-    geometry::AABB colrect(400,400);
-    physics::Character* ent = world.createCharacter("Chara", pos, colrect, physics::Character::Weight::Heavy);
-
     graphics::Color obstcol(255,0,0);
     geometry::AABB groundbox(1600,20);
-    physics::Platform* ground = world.createPlatform("ground", geometry::Point(800,10), groundbox);
+    world.createPlatform("ground", geometry::Point(800,10), groundbox);
+    chara->appearancePos(geometry::Point(800,600));
+    chara->world(&world);
 
     geometry::AABB bg(1600, 1200);
     graphics::Color bgc(0, 255, 255);
@@ -113,9 +111,6 @@ int main()
         gfx->beginDraw();
         gfx->draw(bg, bgc);
         gfx->draw(groundbox, obstcol);
-
-        gfx->move(ent->getPosition().x*30 - 200, ent->getPosition().y*30 - 200);
-        gfx->draw(colrect, graphics::Color(255, 255, 0));
         chara->draw();
         gfx->endDraw();
 
