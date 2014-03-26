@@ -8,6 +8,7 @@
 #include "gameplay/character.hpp"
 #include "gameplay/controler.hpp"
 #include "lua/graphicsExposure.hpp"
+#include "lua/charaExposure.hpp"
 #include "global.hpp"
 
 namespace global {
@@ -44,6 +45,7 @@ int main()
         return 1;
     }
     std::cout << "Character **" << chara->name() << "** loaded : " << chara->desc() << std::endl;
+    lua::exposure::characters[0] = chara;
 
     if(!chara->load(gameplay::Character::None, 0)) {
         core::logger::logm("Couldn't load the character.", core::logger::FATAL);
