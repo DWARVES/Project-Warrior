@@ -89,6 +89,7 @@ int main()
         gfx->endDraw();
         SDL_Delay(100);
     }
+    chara->enableMSize(true, geometry::AABB(800,600));
 
     while(cont) {
         evs.update();
