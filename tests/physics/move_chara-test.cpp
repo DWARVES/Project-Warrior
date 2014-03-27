@@ -82,11 +82,10 @@ int main()
 
     /* Creating the world. */
     graphics::Color obstcol(255,0,0);
-    geometry::AABB groundbox(1600,20);
-    world.createPlatform("ground", geometry::Point(800,10), groundbox);
-    chara->appearancePos(geometry::Point(800,600));
+    geometry::AABB groundbox(30,.5f);
+    world.createPlatform("ground", geometry::Point(15,.25f), groundbox);
+    chara->appearancePos(geometry::Point(13.3f,15.0f));
     chara->world(&world);
-    chara->enableMSize(false, geometry::AABB(20.0f, 20.0f));
 
     geometry::AABB bg(1600, 1200);
     graphics::Color bgc(0, 255, 255);
@@ -100,7 +99,8 @@ int main()
         SDL_Delay(100);
     }
     gfx->invertYAxis(true);
-    gfx->setVirtualSize(1600, 1200);
+    gfx->setVirtualSize(26.7f, 20.0f);
+    chara->enableMSize(true, geometry::AABB(5.0f, 5.0f));
 
     world.start();
     while(cont) {
