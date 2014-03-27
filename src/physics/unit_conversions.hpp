@@ -6,7 +6,7 @@
 
 namespace physics
 {
-    const float DIST_SCALE = 30.f;
+    const float DIST_SCALE = 1.f;
     const float ANGLE_SCALE = 180 / b2_pi;
 
     float toMeters(float pixels);
