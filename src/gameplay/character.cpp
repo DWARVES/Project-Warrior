@@ -173,7 +173,7 @@ namespace gameplay
         drawPrev("preview", msize);
     }
 
-    void Character::drawPrev(const std::string& nm, const geometry::AABB& msize, bool flip) const
+    void Character::drawPrev(const std::string& nm, const geometry::AABB& msize, bool flip, bool center) const
     {
         if(global::gfx->rctype(nm) != graphics::Graphics::TEXT)
             return;
@@ -194,6 +194,8 @@ namespace gameplay
 
         global::gfx->push();
         global::gfx->move(dec.x, dec.y);
+        if(center)
+            global::gfx->move(-used.width / 2.0f, -used.height / 2.0f);
         if(flip) {
             global::gfx->move(used.width, 0.0f);
             global::gfx->scale(-1.0f, 1.0f);
@@ -489,9 +491,9 @@ namespace gameplay
         global::gfx->push();
         global::gfx->move(pos.x, pos.y);
         if(m_useMsize)
-            drawPrev("drawed", m_msize, m_actual.flip);
+            drawPrev("drawed", m_msize, m_actual.flip, true);
         else
-            global::gfx->blitTexture("drawed", geometry::Point(0.0f,0.0f), m_actual.flip);
+            global::gfx->blitTexture("drawed", geometry::Point(0.0f,0.0f), m_actual.flip); /* TODO center */
     }
 
     void Character::actuateByLua()

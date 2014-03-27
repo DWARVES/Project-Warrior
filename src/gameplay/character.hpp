@@ -191,7 +191,7 @@ namespace gameplay
 
             /* Internal methods. */
             /** @brief Draw the nm texture with a maximum size, can flip it horizontally. */
-            void drawPrev(const std::string& nm, const geometry::AABB& msize, bool flip = false) const;
+            void drawPrev(const std::string& nm, const geometry::AABB& msize, bool flip = false, bool center = false) const;
             /** @brief Check the existence of a function in a script, and log a warning on the contrary.
              * @param script The script.
              * @param nm     The name of the script for logging.
