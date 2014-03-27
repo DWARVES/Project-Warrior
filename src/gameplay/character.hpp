@@ -190,8 +190,8 @@ namespace gameplay
             geometry::Point m_phpos;  /**< @brief The position of appearance of the character in the physics world. */
 
             /* Internal methods. */
-            /** @brief Draw the nm texture with a maximum size. */
-            void drawPrev(const std::string& nm, const geometry::AABB& msize) const;
+            /** @brief Draw the nm texture with a maximum size, can flip it horizontally. */
+            void drawPrev(const std::string& nm, const geometry::AABB& msize, bool flip = false) const;
             /** @brief Check the existence of a function in a script, and log a warning on the contrary.
              * @param script The script.
              * @param nm     The name of the script for logging.

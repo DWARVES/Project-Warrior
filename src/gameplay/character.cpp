@@ -173,7 +173,7 @@ namespace gameplay
         drawPrev("preview", msize);
     }
 
-    void Character::drawPrev(const std::string& nm, const geometry::AABB& msize) const
+    void Character::drawPrev(const std::string& nm, const geometry::AABB& msize, bool flip) const
     {
         if(global::gfx->rctype(nm) != graphics::Graphics::TEXT)
             return;
@@ -194,6 +194,10 @@ namespace gameplay
 
         global::gfx->push();
         global::gfx->move(dec.x, dec.y);
+        if(flip) {
+            global::gfx->move(used.width, 0.0f);
+            global::gfx->scale(-1.0f, 1.0f);
+        }
         global::gfx->draw(used, nm);
         global::gfx->pop();
     }
@@ -485,7 +489,7 @@ namespace gameplay
         global::gfx->push();
         global::gfx->move(pos.x, pos.y);
         if(m_useMsize)
-            drawPrev("drawed", m_msize);
+            drawPrev("drawed", m_msize, m_actual.flip);
         else
             global::gfx->blitTexture("drawed", geometry::Point(0.0f,0.0f), m_actual.flip);
     }
