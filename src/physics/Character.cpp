@@ -33,7 +33,7 @@ namespace physics
 
     void Character::jump(float vel)
     {
-        float force = vel * getFixture("body")->GetDensity();
+        float force = (vel + 10) * m_body->GetMass();
         applyLinearImpulse(0.0f, force);
         for(Entity* ent : m_underfoot)
             ent->applyLinearImpulse(0.0f, -force);
