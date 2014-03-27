@@ -471,8 +471,40 @@ namespace gameplay
                 break;
         }
 
+        actuateByPhysic(m_actual, save);
         if(save.id != m_actual.id)
             m_begin = SDL_GetTicks();
+    }
+            
+    void Character::actuateByPhysic(Action actual, Action previous)
+    {
+        /** @todo Implement */
+        if(!m_ch)
+            return;
+
+        switch(actual.id) {
+            case ActionID::Walk:
+                if(actual.flip)
+                    m_ch->setXLinearVelocity(5.0f);
+                else
+                    m_ch->setXLinearVelocity(-5.0f);
+                break;
+            case ActionID::Run:
+                if(actual.flip)
+                    m_ch->setXLinearVelocity(10.0f);
+                else
+                    m_ch->setXLinearVelocity(-10.0f);
+                break;
+            case ActionID::Jump:
+            case ActionID::JumpAir:
+                m_ch->jump(m_ch->getXLinearVelocity());
+                break;
+            case ActionID::Won:
+            case ActionID::Lost:
+            case ActionID::None:
+            default:
+                break;
+        }
     }
 
     void Character::draw()
@@ -506,6 +538,7 @@ namespace gameplay
         m_perso.callFunction<bool, unsigned long>(m_luaCalls[(unsigned int)m_actual.id], &ret, ms);
 
         if(!ret) {
+            actuateByPhysic(m_next, m_actual);
             m_actual = m_next;
             m_begin = SDL_GetTicks();
         }

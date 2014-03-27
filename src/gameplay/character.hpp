@@ -201,6 +201,8 @@ namespace gameplay
             bool checkFunc(lua::Script& script, const std::string& nm, const std::string& func);
             /** @brief Call the right lua function depending on the actual action. */
             void actuateByLua();
+            /** @brief Apply the physic action depending on the control. */
+            void actuateByPhysic(Action actual, Action previous);
     };
 }
 
