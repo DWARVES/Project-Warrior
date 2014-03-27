@@ -185,7 +185,7 @@ events::EvSave* ControlerMenu::getEvent()
             int value = m_joy->axis(changed[0]);
             /** @todo Handle two levels of axis move. */
             if(value > 0)
-                value = 32768;
+                value = 32767;
             else
                 value = -32768;
             jas->set(m_joy, changed[0], value);
