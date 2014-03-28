@@ -496,8 +496,12 @@ namespace gameplay
                     m_ch->setXLinearVelocity(-10.0f);
                 break;
             case ActionID::Jump:
+                if(previous.id != ActionID::Jump)
+                    m_ch->jump(m_ch->getXLinearVelocity());
+                break;
             case ActionID::JumpAir:
-                m_ch->jump(m_ch->getXLinearVelocity());
+                if(previous.id != ActionID::JumpAir)
+                    m_ch->jump(m_ch->getXLinearVelocity());
                 break;
             case ActionID::Won:
             case ActionID::Lost:
