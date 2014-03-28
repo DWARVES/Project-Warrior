@@ -23,6 +23,7 @@ namespace gameplay
         "jump",
         "jumpAir",
         "down",
+        "down",
         "fastDown",
         "land",
         "stand",
@@ -294,12 +295,16 @@ namespace gameplay
                     case Left:  
                         if(onGround())
                             m_actual.id = ActionID::Walk; 
+                        else if(m_ch->getYLinearVelocity() < 0.0f) /* going down */
+                            m_actual.id = ActionID::Stir;
                         m_actual.flip = false; 
                         break;
 
                     case Right: 
                         if(onGround())
                             m_actual.id = ActionID::Walk;
+                        else if(m_ch->getYLinearVelocity() < 0.0f) /* going down */
+                            m_actual.id = ActionID::Stir;
                         m_actual.flip = true;
                         break;
 
@@ -320,6 +325,8 @@ namespace gameplay
                     case Fixed:
                         if(onGround())
                             m_actual.id = ActionID::Stand;
+                        else if(m_ch->getYLinearVelocity() < 0.0f)
+                            m_actual.id = ActionID::Down;
                         break;
 
                     default:
@@ -336,12 +343,16 @@ namespace gameplay
                     case Left:
                         if(onGround())
                             m_actual.id = ActionID::Run;
+                        else if(m_ch->getYLinearVelocity() < 0.0f) /* going down */
+                            m_actual.id = ActionID::Stir;
                         m_actual.flip = false; 
                         break;
 
                     case Right:
                         if(onGround())
                             m_actual.id = ActionID::Run;
+                        else if(m_ch->getYLinearVelocity() < 0.0f) /* going down */
+                            m_actual.id = ActionID::Stir;
                         m_actual.flip = true; 
                         break;
 
@@ -354,6 +365,8 @@ namespace gameplay
                             m_actual.id = ActionID::Stop;
                             m_next.id = ActionID::Stand;
                         }
+                        else if(m_ch->getYLinearVelocity() < 0.0f)
+                            m_actual.id = ActionID::Down;
                         break;
 
                     default:
@@ -466,8 +479,11 @@ namespace gameplay
                 break;
 
             default:
-                m_next.id   = ActionID::None;
-                m_actual.id = ActionID::Stand;
+                if((save.id == ActionID::Down || save.id == ActionID::FastDown)
+                        && m_ch->onGround()) {
+                    m_actual.id = ActionID::Land;
+                    m_next.id   = ActionID::Stand;
+                }
                 break;
         }
 
@@ -489,6 +505,12 @@ namespace gameplay
                 else
                     m_ch->setXLinearVelocity(-5.0f);
                 break;
+            case ActionID::Stir:
+                if(actual.flip)
+                    m_ch->applyForce(500.0f, 0.0f);
+                else
+                    m_ch->applyForce(-500.0f, 0.0f);
+                break;
             case ActionID::Run:
                 if(actual.flip)
                     m_ch->setXLinearVelocity(10.0f);
@@ -503,6 +525,11 @@ namespace gameplay
                 if(previous.id != ActionID::JumpAir)
                     m_ch->jump(m_ch->getXLinearVelocity());
                 break;
+            case ActionID::FastDown:
+                m_ch->applyForce(0.0f, -200.0f);
+                break;
+            case ActionID::Land:
+            case ActionID::Down:
             case ActionID::Won:
             case ActionID::Lost:
             case ActionID::None:
