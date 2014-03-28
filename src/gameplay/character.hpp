@@ -82,6 +82,10 @@ namespace gameplay
             void action(Control control, Direction dir);
             /** @brief Enable/disable a maximum size when drawing. */
             void enableMSize(bool en, const geometry::AABB& ms = geometry::AABB(0.0f,0.0f));
+            /** @brief Sets the msize to the physic size, with a fact.
+             * @param hgh If true, the size limitation if only on the height.
+             */
+            void physicMSize(float fact = 1.0f, bool hgh = false);
             /** @brief Set the default direction and the one to flip : false = left normal. */
             void setFlip(bool f);
             /** @brief Draw the character at the position setted by its physics (in the stage repere). */

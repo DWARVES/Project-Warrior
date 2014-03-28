@@ -190,7 +190,10 @@ namespace gameplay
         }
         else {
             used.width = used.height * ratioPict;
-            dec.x = (msize.width - used.width) / 2.0f;
+            if(msize.width < 100000.0f) /* Special value of "infinite" width. */
+                dec.x = (msize.width - used.width) / 2.0f;
+            else
+                dec.x = 0.0f;
         }
 
         global::gfx->push();
@@ -707,6 +710,16 @@ namespace gameplay
     void Character::setFlip(bool f)
     {
         m_flip = f;
+    }
+            
+    void Character::physicMSize(float fact, bool hgh)
+    {
+        geometry::AABB size = m_phsize;
+        size.width  *= fact;
+        size.height *= fact;
+        if(hgh)
+            size.width = 100000.f;
+        enableMSize(true, size);
     }
 
 }
