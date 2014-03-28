@@ -82,6 +82,8 @@ namespace gameplay
             void action(Control control, Direction dir);
             /** @brief Enable/disable a maximum size when drawing. */
             void enableMSize(bool en, const geometry::AABB& ms = geometry::AABB(0.0f,0.0f));
+            /** @brief Set the default direction and the one to flip : false = left normal. */
+            void setFlip(bool f);
             /** @brief Draw the character at the position setted by its physics (in the stage repere). */
             void draw();
             /** @brief Draw the character appearing.
@@ -175,6 +177,7 @@ namespace gameplay
             unsigned long m_begin;    /**< @brief The timestamp of the actual action. */
             bool m_useMsize;          /**< @brief Must the action be drawn with a maximum size. */
             geometry::AABB m_msize;   /**< @brief The maximum size used when drawing. */
+            bool m_flip;              /**< @brief Must the picture be flipped when drawing to the left. */
 
             /** @brief Link an actionID to the corresponding lua function. */
             static const char* const m_luaCalls[(unsigned int)ActionID::None];

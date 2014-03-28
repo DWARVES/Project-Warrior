@@ -49,7 +49,7 @@ namespace gameplay
     };
 
     Character::Character(const std::string& path)
-        : m_path(path), m_name("broken"), m_desc("Couldn't load."), m_valid(false), m_world(NULL), m_ch(NULL)
+        : m_path(path), m_name("broken"), m_desc("Couldn't load."), m_valid(false), m_flip(false), m_world(NULL), m_ch(NULL)
     {
         ++m_count;
         std::ostringstream oss;
@@ -297,7 +297,7 @@ namespace gameplay
                             m_actual.id = ActionID::Walk; 
                         else if(m_ch->getYLinearVelocity() < 0.0f) /* going down */
                             m_actual.id = ActionID::Stir;
-                        m_actual.flip = false; 
+                        m_actual.flip = m_flip; 
                         break;
 
                     case Right: 
@@ -305,7 +305,7 @@ namespace gameplay
                             m_actual.id = ActionID::Walk;
                         else if(m_ch->getYLinearVelocity() < 0.0f) /* going down */
                             m_actual.id = ActionID::Stir;
-                        m_actual.flip = true;
+                        m_actual.flip = !m_flip;
                         break;
 
                     case Up:
@@ -345,7 +345,7 @@ namespace gameplay
                             m_actual.id = ActionID::Run;
                         else if(m_ch->getYLinearVelocity() < 0.0f) /* going down */
                             m_actual.id = ActionID::Stir;
-                        m_actual.flip = false; 
+                        m_actual.flip = m_flip; 
                         break;
 
                     case Right:
@@ -353,7 +353,7 @@ namespace gameplay
                             m_actual.id = ActionID::Run;
                         else if(m_ch->getYLinearVelocity() < 0.0f) /* going down */
                             m_actual.id = ActionID::Stir;
-                        m_actual.flip = true; 
+                        m_actual.flip = !m_flip; 
                         break;
 
                     case Up: case Down:
@@ -380,10 +380,10 @@ namespace gameplay
                 m_next.id = ActionID::Stand;
                 switch(dir) {
                     case Left:  m_actual.id = ActionID::AttackSide;
-                                m_actual.flip = false; 
+                                m_actual.flip = m_flip; 
                                 break;
                     case Right: m_actual.id = ActionID::AttackSide;
-                                m_actual.flip = true; 
+                                m_actual.flip = !m_flip; 
                                 break;
                     case Up:    m_actual.id = ActionID::AttackUp;    break;
                     case Down:  m_actual.id = ActionID::AttackDown;  break;
@@ -397,10 +397,10 @@ namespace gameplay
                 m_next.id = ActionID::Stand;
                 switch(dir) {
                     case Left:  m_actual.id = ActionID::SpellSide;
-                                m_actual.flip = false; 
+                                m_actual.flip = m_flip; 
                                 break;
                     case Right: m_actual.id = ActionID::SpellSide;
-                                m_actual.flip = true; 
+                                m_actual.flip = !m_flip; 
                                 break;
                     case Up:    m_actual.id = ActionID::SpellUp;    break;
                     case Down:  m_actual.id = ActionID::SpellDown;  break;
@@ -413,10 +413,10 @@ namespace gameplay
                 m_next.id = ActionID::Stand;
                 switch(dir) {
                     case Left:  m_actual.id = ActionID::SmashSide;
-                                m_actual.flip = false; 
+                                m_actual.flip = m_flip; 
                                 break;
                     case Right: m_actual.id = ActionID::SmashSide;
-                                m_actual.flip = true; 
+                                m_actual.flip = !m_flip; 
                                 break;
                     case Up:    m_actual.id = ActionID::SmashUp;    break;
                     case Down:  m_actual.id = ActionID::SmashDown;  break;
@@ -433,7 +433,7 @@ namespace gameplay
                             m_actual.id = ActionID::DashDodge;
                         else
                             m_actual.id = ActionID::FlyingDashDodge;
-                        m_actual.flip = false; 
+                        m_actual.flip = m_flip; 
                         break;
 
                     case Right:
@@ -441,7 +441,7 @@ namespace gameplay
                             m_actual.id = ActionID::DashDodge;
                         else
                             m_actual.id = ActionID::FlyingDashDodge;
-                        m_actual.flip = true; 
+                        m_actual.flip = !m_flip; 
                         break;
 
                     case Fixed:
@@ -467,10 +467,10 @@ namespace gameplay
                 m_next.id = ActionID::Stand;
                 switch(dir) {
                     case Left:  m_actual.id = ActionID::Catch;
-                                m_actual.flip = false;
+                                m_actual.flip = m_flip;
                                 break;
                     case Right: m_actual.id = ActionID::Catch;
-                                m_actual.flip = true;
+                                m_actual.flip = !m_flip;
                                 break;
                     case Up: case Down: case Fixed:
                     default:    m_actual.id = ActionID::Stand;      break;
@@ -500,19 +500,19 @@ namespace gameplay
 
         switch(actual.id) {
             case ActionID::Walk:
-                if(actual.flip)
+                if(actual.flip != m_flip)
                     m_ch->setXLinearVelocity(5.0f);
                 else
                     m_ch->setXLinearVelocity(-5.0f);
                 break;
             case ActionID::Stir:
-                if(actual.flip)
+                if(actual.flip != m_flip)
                     m_ch->applyForce(500.0f, 0.0f);
                 else
                     m_ch->applyForce(-500.0f, 0.0f);
                 break;
             case ActionID::Run:
-                if(actual.flip)
+                if(actual.flip != m_flip)
                     m_ch->setXLinearVelocity(10.0f);
                 else
                     m_ch->setXLinearVelocity(-10.0f);
@@ -528,6 +528,7 @@ namespace gameplay
             case ActionID::FastDown:
                 m_ch->applyForce(0.0f, -200.0f);
                 break;
+            case ActionID::Stand:
             case ActionID::Land:
             case ActionID::Down:
             case ActionID::Won:
@@ -701,6 +702,11 @@ namespace gameplay
     {
         m_useMsize = en;
         m_msize = ms;
+    }
+            
+    void Character::setFlip(bool f)
+    {
+        m_flip = f;
     }
 
 }
