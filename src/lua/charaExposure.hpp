@@ -38,6 +38,7 @@ namespace lua
                 int setMana(lua_State* st); /**< @brief Set the mana max of the character. */
                 int onGround(lua_State* st);
                 int requireMana(lua_State* st);
+                int flip(lua_State* st);
         };
 
         /* Template implementation. */
@@ -48,6 +49,7 @@ namespace lua
             {"mana",        &Character<C>::setMana},
             {"requireMana", &Character<C>::requireMana},
             {"onGround",    &Character<C>::onGround},
+            {"flip",        &Character<C>::flip},
             {NULL, NULL}
         };
         template <int C> const Script::Properties<Character<C>> Character<C>::properties[] = {
@@ -102,6 +104,16 @@ namespace lua
                     || args[0] != Script::NUMBER)
                 return 0;
             return helper::returnBoolean(st, characters[C]->requireMana(lua_tonumber(st, 1)));
+        }
+
+        template <int C> int Character<C>::flip(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 1
+                    || args[0] != Script::BOOL)
+                return 0;
+            characters[C]->setFlip(lua_toboolean(st, 1));
+            return 0;
         }
 
     }
