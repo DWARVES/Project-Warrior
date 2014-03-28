@@ -100,7 +100,7 @@ int main()
     }
     gfx->invertYAxis(true);
     gfx->setVirtualSize(26.7f, 20.0f);
-    chara->enableMSize(true, geometry::AABB(5.0f, 5.0f));
+    chara->physicMSize(1.0f, true);
 
     world.start();
     while(cont) {
