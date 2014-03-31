@@ -936,7 +936,7 @@ namespace graphics
         for(geometry::Polygon p : conv) {
             glBegin(GL_POLYGON);
             glColor4ub(col.r, col.g, col.b, col.a);
-            for(size_t i = 0; i < poly.points.size(); ++i)
+            for(size_t i = 0; i < p.points.size(); ++i)
                 glVertex2f(p.points[i].x, p.points[i].y);
             glEnd();
         }
