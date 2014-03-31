@@ -104,7 +104,7 @@ namespace gameplay
         if(!m_ch || !m_loaded)
             return;
 
-        for(unsigned int i = (unsigned int)RunLeft; i < (unsigned int)Last; ++i)
+        for(unsigned int i = (unsigned int)Attack; i < (unsigned int)Last; ++i)
             m_ctrls[i]->still(*global::evs);
 
         Character::Control ctrl = Character::Walk;
@@ -121,19 +121,18 @@ namespace gameplay
             ctrl = Character::Run;
             dir  = Character::Up;
         }
-        else if(m_ctrls[(unsigned int)RunLeft]->valid(*global::evs)) {
+        else if(m_ctrls[(unsigned int)RunLeft]->still(*global::evs)) {
             ctrl = Character::Run;
             dir  = Character::Left;
         }
-        else if(m_ctrls[(unsigned int)RunRight]->valid(*global::evs)) {
+        else if(m_ctrls[(unsigned int)RunRight]->still(*global::evs)) {
             ctrl = Character::Run;
             dir  = Character::Right;
         }
 
         if(dir == Character::Fixed) {
             for(unsigned int i = (unsigned int)Left; i <= (unsigned int)Down; ++i) {
-                if((m_ctrls[i]->valid() && m_ctrls[i]->still(*global::evs))
-                        || m_ctrls[i]->valid(*global::evs)) {
+                if(m_ctrls[i]->still(*global::evs)) {
                     dir = (Character::Direction)i;
                     break;
                 }
