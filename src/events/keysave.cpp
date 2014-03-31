@@ -42,7 +42,7 @@ namespace events
     bool KeySave::still(const Events& ev)
     {
         if(!m_valid)
-            return false;
+            return valid(ev);
         m_valid = ev.isKeyPressed(m_key);
         return m_valid;
     }

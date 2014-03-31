@@ -20,7 +20,9 @@ namespace events
             virtual bool valid(const events::Events& ev) = 0;
             /** @brief Indicates if the event is being holded. */
             virtual bool valid() const = 0;
-            /** @brief Check if the event is still holded. */
+            /** @brief Check if the event is still holded.
+             * If the EvSave hasn't been validated before, this has the same effect as valid(ev).
+             */
             virtual bool still(const events::Events& ev) = 0;
             /** @brief Save the event to a string. */
             virtual std::string save() const = 0;

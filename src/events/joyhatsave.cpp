@@ -72,8 +72,10 @@ namespace events
 
     bool JoyHatSave::still(const events::Events& ev)
     {
-        if(!m_joy || !m_valid)
+        if(!m_joy)
             return false;
+        if(!m_valid)
+            return valid(ev);
 
         std::vector<int> lmv = ev.lastHatsMoved(m_joy);
         auto it = std::find(lmv.begin(), lmv.end(), m_id);
