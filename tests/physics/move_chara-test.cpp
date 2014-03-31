@@ -107,6 +107,7 @@ int main()
     chara->physicMSize(1.0f, true);
 
     world.start();
+    world.enableDebugDraw(true);
     while(cont) {
         evs.update();
         if(evs.closed() || evs.quit() || evs.isKeyPressed(events::KeyMap::Escape))
@@ -120,6 +121,7 @@ int main()
         gfx->draw(obs, obstcol);
         gfx->move(-5, -7.5);
         chara->draw();
+        world.debugDraw(gfx);
         gfx->endDraw();
 
         world.step();
