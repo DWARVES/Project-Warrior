@@ -1,24 +1,34 @@
 
 #include "World.hpp"
+#include "graphics/graphics.hpp"
 #include <iostream>
 
 namespace physics
 {
+    World::World()
+        : m_world(NULL), m_dd(false), m_ddraw(NULL)
+    {}
+
     World::World(float x, float y)
-        : m_world(new b2World(b2Vec2(x,y)))
+        : World()
     {
+        m_world = new b2World(b2Vec2(x,y));
         m_world->SetContactListener(this);
         m_world->SetDestructionListener(this);
     }
 
-    World::World(b2World* world) : m_world(world)
+    World::World(b2World* world) : World()
     {
+        m_world = world;
         m_world->SetContactListener(this);
         m_world->SetDestructionListener(this);
     }
 
     World::~World()
-    {}
+    {
+        if(m_ddraw != NULL)
+            delete m_ddraw;
+    }
 
     Entity* World::getEntity(const std::string& name) const
     {
@@ -439,10 +449,44 @@ namespace physics
     {
         return m_entities.actualNamespace();
     }
-            
+
     b2World* World::getWorld() const
     {
         return m_world;
+    }
+
+    void World::enableDebugDraw(bool en)
+    {
+        if(en == m_dd)
+            return;
+        if(!en) {
+            if(m_ddraw) {
+                delete m_ddraw;
+                m_ddraw = NULL;
+            }
+            m_world->SetDebugDraw(NULL);
+            m_dd = false;
+        }
+        else {
+            if(!m_ddraw)
+                m_ddraw = new DebugDraw;
+            m_world->SetDebugDraw(m_ddraw);
+            m_ddraw->SetFlags(b2Draw::e_shapeBit);
+            m_dd = true;
+        }
+    }
+
+    bool World::debugDraw() const
+    {
+        return m_dd;
+    }
+
+    void World::debugDraw(graphics::Graphics* gfx)
+    {
+        if(!m_dd)
+            return;
+        m_ddraw->set(gfx);
+        m_world->DrawDebugData();
     }
 
 }

@@ -12,5 +12,6 @@ add_library(${lib}
     Platform.cpp            Platform.hpp
     Obstacle.cpp            Obstacle.hpp
     unit_conversions.cpp    unit_conversions.hpp
+    debugDraw.cpp           debugDraw.hpp
 	)
 

@@ -14,6 +14,12 @@
 #include "Attack.hpp"
 #include "Platform.hpp"
 #include "Obstacle.hpp"
+#include "debugDraw.hpp"
+
+namespace graphics
+{
+    class Graphics;
+}
 
 /** @brief Contains all classes and methods related to the physics engine */
 namespace physics
@@ -28,6 +34,7 @@ namespace physics
              */
             typedef void (*Callback)(Entity*, Entity*, bool, void*);
 
+            World();
             /** @brief Creates a new World with x and y gravity */
             World(float x, float y);
             /** @brief Initializes m_world from world. Not so useful, except for testing purposes with Testbed */
@@ -101,6 +108,12 @@ namespace physics
             void start();
             /** @brief Do the simulation, must be called once per loop. */
             void step();
+            /** @brief Enable/disable debug drawing. */
+            void enableDebugDraw(bool en);
+            /** @brief Indicates if the debug draw is enabled. */
+            bool debugDraw() const;
+            /** @brief Do the debug draw (won't do anything if the debug draw isn't enabled). */
+            void debugDraw(graphics::Graphics* gfx);
 
             /** @brief Create a namespace, return false if couldn't create. */
             bool createNamespace(const std::string& path);
@@ -145,6 +158,10 @@ namespace physics
             std::map<Entity*, std::map<b2Fixture*, std::pair<Callback, void*>>> m_ftcallbacks;
             /** @brief Timestamp used to compute the time of each step. */
             Uint32 m_ltime;
+            /** @brief Is the debug draw enabled. */
+            bool m_dd;
+            /** @brief The debug draw class. */
+            DebugDraw* m_ddraw;
     };
 }
 
