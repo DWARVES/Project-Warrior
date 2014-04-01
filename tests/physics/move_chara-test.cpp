@@ -17,6 +17,59 @@ namespace global {
     events::Events* evs;
 }
 
+/* Defining the platforms. */
+/* center.x, center.y, width, height */
+float plats[][4] = {
+    {0.0f, 0.0f, 60.0f, 0.5f},
+    {0.0f, 8.0f, 20.0f, 1.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f}
+};
+
+/* Place the platforms. */
+void placePlats(physics::World& w)
+{
+    geometry::Point pos(0.0f, 0.0f);
+    geometry::AABB rect(1.0f, 1.0f);
+    int i = 0;
+
+    while(true) {
+        pos  = geometry::Point(plats[i][0], plats[i][1]);
+        rect = geometry::AABB(plats[i][2], plats[i][3]);
+        if(rect.width < 0.001f)
+            break;
+
+        std::ostringstream name;
+        name << "platform" << i;
+        w.createPlatform(name.str(), pos, rect);
+
+        ++i;
+    }
+}
+
+/* Draw the platforms. */
+void drawPlats()
+{
+    geometry::Point pos(0.0f, 0.0f);
+    geometry::AABB rect(1.0f, 1.0f);
+    int i = 0;
+
+    while(true) {
+        pos  = geometry::Point(plats[i][0], plats[i][1]);
+        rect = geometry::AABB(plats[i][2], plats[i][3]);
+        if(rect.width < 0.001f)
+            break;
+
+        global::gfx->push();
+        global::gfx->move(pos.x, pos.y);
+        global::gfx->move(-rect.width/2.0f, -rect.height/2.0f);
+        global::gfx->draw(rect, graphics::Color(0, 0, 255));
+        global::gfx->pop();
+
+        ++i;
+    }
+}
+
+/* Center the view to the character. */
 void center(const gameplay::Character& ch)
 {
     geometry::Point pos = ch.getPos();
@@ -91,23 +144,17 @@ int main()
     ctrl.attach(chara);
 
     /* Creating the world. */
-    graphics::Color obstcol(255,0,0);
-    geometry::AABB groundbox(60,.5f);
-    world.createPlatform("ground", geometry::Point(30,.25f), groundbox);
-
-    geometry::AABB obs(20, 1);
-    world.createPlatform("obs", geometry::Point(15, 8), obs);
-
+    placePlats(world);
     chara->appearancePos(geometry::Point(13.3f,15.0f));
     chara->world(&world);
 
-    geometry::AABB bg(1600, 1200);
+    geometry::AABB bg(26.667f, 20.f);
     graphics::Color bgc(0, 255, 255);
 
     /* Appearance over 2 seconds. */
     for(Uint32 i = 0; i <= 20; ++i) {
         gfx->beginDraw();
-        gfx->draw(bg, bgc);
+        gfx->draw(geometry::AABB(800,600), bgc);
         chara->appear(float(i*5), geometry::AABB(800,600));
         gfx->endDraw();
         SDL_Delay(100);
@@ -122,15 +169,15 @@ int main()
         evs.update();
         if(evs.closed() || evs.quit() || evs.isKeyPressed(events::KeyMap::Escape))
             cont = false;
+        if(evs.keyJustPressed(events::Key(' ')))
+            world.enableDebugDraw(!world.debugDraw());
         ctrl.update();
 
         gfx->beginDraw();
-        center(*chara);
         gfx->draw(bg, bgc);
-        gfx->draw(groundbox, obstcol);
-        gfx->move(5, 7.5);
-        gfx->draw(obs, obstcol);
-        gfx->move(-5, -7.5);
+
+        center(*chara);
+        drawPlats();
         chara->draw();
         world.debugDraw(gfx);
         gfx->endDraw();
