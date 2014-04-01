@@ -23,7 +23,6 @@ namespace gameplay
         "jump",
         "jumpAir",
         "down",
-        "down",
         "fastDown",
         "land",
         "stand",
@@ -286,6 +285,7 @@ namespace gameplay
     void Character::action(Control control, Direction dir)
     {
         Action save = m_actual;
+        m_stir = 0.0f;
 
         if(onGround())
             m_doubleJump = false;
@@ -298,16 +298,20 @@ namespace gameplay
                     case Left:  
                         if(onGround())
                             m_actual.id = ActionID::Walk; 
-                        else if(m_ch->getYLinearVelocity() < 0.0f) /* going down */
-                            m_actual.id = ActionID::Stir;
+                        else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
+                            m_stir = 500.0f;
+                            m_actual.id = ActionID::Down;
+                        }
                         m_actual.flip = m_flip; 
                         break;
 
                     case Right: 
                         if(onGround())
                             m_actual.id = ActionID::Walk;
-                        else if(m_ch->getYLinearVelocity() < 0.0f) /* going down */
-                            m_actual.id = ActionID::Stir;
+                        else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
+                            m_stir = 500.0f;
+                            m_actual.id = ActionID::Down;
+                        }
                         m_actual.flip = !m_flip;
                         break;
 
@@ -356,16 +360,20 @@ namespace gameplay
                     case Left:
                         if(onGround())
                             m_actual.id = ActionID::Run;
-                        else if(m_ch->getYLinearVelocity() < 0.0f) /* going down */
-                            m_actual.id = ActionID::Stir;
+                        else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
+                            m_stir = 500.0f;
+                            m_actual.id = ActionID::Down;
+                        }
                         m_actual.flip = m_flip; 
                         break;
 
                     case Right:
                         if(onGround())
                             m_actual.id = ActionID::Run;
-                        else if(m_ch->getYLinearVelocity() < 0.0f) /* going down */
-                            m_actual.id = ActionID::Stir;
+                        else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
+                            m_stir = 500.0f;
+                            m_actual.id = ActionID::Down;
+                        }
                         m_actual.flip = !m_flip; 
                         break;
 
@@ -517,12 +525,6 @@ namespace gameplay
                 else
                     m_ch->setXLinearVelocity(-5.0f);
                 break;
-            case ActionID::Stir:
-                if(actual.flip != m_flip)
-                    m_ch->applyForce(500.0f, 0.0f);
-                else
-                    m_ch->applyForce(-500.0f, 0.0f);
-                break;
             case ActionID::Run:
                 if(actual.flip != m_flip)
                     m_ch->setXLinearVelocity(10.0f);
@@ -548,6 +550,13 @@ namespace gameplay
             case ActionID::None:
             default:
                 break;
+        }
+
+        if(std::abs(m_stir) > 0.00001f) {
+            float stir = m_stir;
+            if(actual.flip == m_flip)
+                stir *= -1.0f;
+            m_ch->applyForce(stir, 0.0f);
         }
     }
 

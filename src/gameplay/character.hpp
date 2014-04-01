@@ -145,7 +145,6 @@ namespace gameplay
                 Jump,                 /**< @brief Jump. */
                 JumpAir,              /**< @brief Do a double jump. */
                 Down,                 /**< @brief Get down from midair. */
-                Stir,                 /**< @brief Going to a side while going done : no animation, just physic. */
                 FastDown,             /**< @brief Get down from midair fast. */
                 Land,                 /**< @brief After going down, land on ground. */
                 Stand,                /**< @brief Stay witheout moving. */
@@ -170,6 +169,7 @@ namespace gameplay
                 Lost,                 /**< @brief The defeat animation. */
                 None,                 /**< @brief No action. */
             };
+            float m_stir;             /**< @brief Indicates to actuateByPhysics the value of a lateral force to apply. */
             /** @brief Describes an action. */
             struct Action {
                 ActionID id;          /**< @brief The ID of the action. */
