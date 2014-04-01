@@ -311,15 +311,6 @@ namespace gameplay
                         m_actual.flip = !m_flip;
                         break;
 
-                    case Up:
-                        if(onGround())
-                            m_actual.id = ActionID::Jump;
-                        else if(!m_doubleJump) {
-                            m_actual.id = ActionID::JumpAir;
-                            m_doubleJump = true;
-                        }
-                        break;
-
                     case Down:
                         if(!onGround())
                             m_actual.id = ActionID::FastDown;
@@ -332,6 +323,7 @@ namespace gameplay
                             m_actual.id = ActionID::Down;
                         break;
 
+                    case Up:
                     default:
                         m_actual.id = ActionID::None;
                         break;
@@ -359,8 +351,17 @@ namespace gameplay
                         m_actual.flip = !m_flip; 
                         break;
 
-                    case Up: case Down:
-                        action(Walk, dir);
+                    case Up:
+                        if(onGround())
+                            m_actual.id = ActionID::Jump;
+                        else if(!m_doubleJump) {
+                            m_actual.id = ActionID::JumpAir;
+                            m_doubleJump = true;
+                        }
+                        break;
+
+                    case Down:
+                        action(Walk, Down);
                         break;
 
                     case Fixed:
@@ -529,7 +530,7 @@ namespace gameplay
                     m_ch->jump(m_ch->getXLinearVelocity());
                 break;
             case ActionID::FastDown:
-                m_ch->applyForce(0.0f, -200.0f);
+                m_ch->applyForce(0.0f, -20.0f * m_ch->getMass());
                 break;
             case ActionID::Stand:
             case ActionID::Land:
