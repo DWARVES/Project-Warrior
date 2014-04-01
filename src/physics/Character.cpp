@@ -19,7 +19,7 @@ namespace physics
     {
         createFixture("body", rect, weight, 1);
 
-        geometry::AABB feet(rect.width, rect.height * 0.05f);
+        geometry::AABB feet(rect.width * 0.99f, rect.height * 0.05f);
         geometry::Point pos(0, -rect.height / 2);
         b2Fixture* sens = createFixture("feet", feet, 1, 1, Type::ThisType, Type::ThisCollideWith, pos, true);
         world->setCallback(this, sens, character_foot_callback);
