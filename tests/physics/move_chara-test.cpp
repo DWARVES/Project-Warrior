@@ -17,6 +17,16 @@ namespace global {
     events::Events* evs;
 }
 
+void center(const gameplay::Character& ch)
+{
+    geometry::Point pos = ch.getPos();
+    pos.x *= -1.f;
+    pos.y *= -1.f;
+    pos.x += 13.333f;
+    pos.y += 10.0f;
+    global::gfx->move(pos.x, pos.y);
+}
+
 int main()
 {
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
@@ -103,7 +113,7 @@ int main()
         SDL_Delay(100);
     }
     gfx->invertYAxis(true);
-    gfx->setVirtualSize(53.0f, 40.0f);
+    gfx->setVirtualSize(26.667f, 20.0f);
     chara->physicMSize(1.0f, true);
 
     world.start();
@@ -115,6 +125,7 @@ int main()
         ctrl.update();
 
         gfx->beginDraw();
+        center(*chara);
         gfx->draw(bg, bgc);
         gfx->draw(groundbox, obstcol);
         gfx->move(5, 7.5);
