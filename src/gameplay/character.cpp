@@ -332,6 +332,8 @@ namespace gameplay
                                 m_actual.id = ActionID::Stop;
                                 m_next.id   = ActionID::Stand;
                             }
+                            else if(save.id == ActionID::Jump)
+                                m_actual.id = ActionID::Jump;
                             else
                                 m_actual.id = ActionID::Stand;
                         }
