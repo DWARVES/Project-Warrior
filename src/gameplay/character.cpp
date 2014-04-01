@@ -758,5 +758,9 @@ namespace gameplay
         enableMSize(true, size);
     }
 
+    geometry::Point Character::getPos() const
+    {
+        return m_ch->getPosition();
+    }
 }
 

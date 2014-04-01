@@ -104,6 +104,8 @@ namespace gameplay
             bool world(physics::World* w);
             /** @brief Get the physics::World used. */
             physics::World* world() const;
+            /** @brief Get the coordinates of the character. */
+            geometry::Point getPos() const;
             /** @brief Defines the position to appear. Must be called before world. */
             void appearancePos(const geometry::Point& pos);
             /** @brief Defines the physic size of the character. */
