@@ -314,11 +314,27 @@ namespace gameplay
                     case Down:
                         if(!onGround())
                             m_actual.id = ActionID::FastDown;
+                        else if(save.id == ActionID::Down || save.id == ActionID::FastDown || save.id == ActionID::Land) {
+                            m_actual.id = ActionID::Land;
+                            m_next.id   = ActionID::Stand;
+                        }
+                        else
+                            m_actual.id = ActionID::Stand;
                         break;
 
                     case Fixed:
-                        if(onGround())
-                            m_actual.id = ActionID::Stand;
+                        if(onGround()) {
+                            if(save.id == ActionID::Down || save.id == ActionID::FastDown || save.id == ActionID::Land) {
+                                m_actual.id = ActionID::Land;
+                                m_next.id   = ActionID::Stand;
+                            }
+                            else if(save.id == ActionID::Run || save.id == ActionID::Stop) {
+                                m_actual.id = ActionID::Stop;
+                                m_next.id   = ActionID::Stand;
+                            }
+                            else
+                                m_actual.id = ActionID::Stand;
+                        }
                         else if(m_ch->getYLinearVelocity() < 0.0f)
                             m_actual.id = ActionID::Down;
                         break;
@@ -362,16 +378,11 @@ namespace gameplay
 
                     case Down:
                         action(Walk, Down);
-                        break;
+                        return;
 
                     case Fixed:
-                        if(onGround()) {
-                            m_actual.id = ActionID::Stop;
-                            m_next.id = ActionID::Stand;
-                        }
-                        else if(m_ch->getYLinearVelocity() < 0.0f)
-                            m_actual.id = ActionID::Down;
-                        break;
+                        action(Walk, Fixed);
+                        return;
 
                     default:
                         m_actual.id = ActionID::None;
@@ -483,11 +494,6 @@ namespace gameplay
                 break;
 
             default:
-                if((save.id == ActionID::Down || save.id == ActionID::FastDown)
-                        && m_ch->onGround()) {
-                    m_actual.id = ActionID::Land;
-                    m_next.id   = ActionID::Stand;
-                }
                 break;
         }
 
@@ -495,7 +501,7 @@ namespace gameplay
         if(save.id != m_actual.id)
             m_begin = SDL_GetTicks();
     }
-            
+
     void Character::actuateByPhysic(Action actual, Action previous)
     {
         /** @todo Implement */
@@ -701,18 +707,18 @@ namespace gameplay
     {
         m_manamax = m;
     }
-            
+
     void Character::enableMSize(bool en, const geometry::AABB& ms)
     {
         m_useMsize = en;
         m_msize = ms;
     }
-            
+
     void Character::setFlip(bool f)
     {
         m_flip = f;
     }
-            
+
     void Character::physicMSize(float fact, bool hgh)
     {
         geometry::AABB size = m_phsize;
