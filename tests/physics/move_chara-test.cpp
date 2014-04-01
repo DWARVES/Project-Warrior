@@ -159,7 +159,13 @@ int main()
     chara->appearancePos(geometry::Point(13.3f,15.0f));
     chara->world(&world);
 
+    /* Graphics RCS. */
+    if(!gfx->loadTexture("bg", "rc/bg.png"))
+        return 1;
+    if(!gfx->loadTexture("climb", "rc/bg_climb.png"))
+        return 1;
     geometry::AABB bg(26.667f, 20.f);
+    geometry::AABB bgClimb(100.0f, 100.0f);
     graphics::Color bgc(0, 255, 255);
 
     /* Appearance over 2 seconds. */
@@ -185,11 +191,19 @@ int main()
         ctrl.update();
 
         gfx->beginDraw();
-        gfx->draw(bg, bgc);
+
+        if(world.debugDraw())
+            gfx->draw(bg, bgc);
+        else
+            gfx->draw(bg, "bg");
 
         center(*chara);
-        if(!world.debugDraw())
+        if(!world.debugDraw()) {
+            gfx->move(-50.0f, 0.0f);
+            gfx->draw(bgClimb, "climb");
+            gfx->move(50.0f, 0.0f);
             drawPlats();
+        }
         chara->draw();
         world.debugDraw(gfx);
         gfx->endDraw();
