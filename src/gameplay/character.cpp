@@ -296,21 +296,29 @@ namespace gameplay
                 m_actual.id = ActionID::None;
                 switch(dir) {
                     case Left:  
-                        if(onGround())
+                        if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                             m_actual.id = ActionID::Walk; 
                         else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
                             m_stir = 500.0f;
                             m_actual.id = ActionID::Down;
                         }
+                        else { /* going up */
+                            m_stir = 250.0f;
+                            m_actual.id = save.id;
+                        }
                         m_actual.flip = m_flip; 
                         break;
 
                     case Right: 
-                        if(onGround())
-                            m_actual.id = ActionID::Walk;
+                        if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
+                                m_actual.id = ActionID::Walk;
                         else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
                             m_stir = 500.0f;
                             m_actual.id = ActionID::Down;
+                        }
+                        else { /* going up */
+                            m_stir = 250.0f;
+                            m_actual.id = save.id;
                         }
                         m_actual.flip = !m_flip;
                         break;
@@ -336,8 +344,8 @@ namespace gameplay
                                 m_actual.id = ActionID::Stop;
                                 m_next.id   = ActionID::Stand;
                             }
-                            else if(save.id == ActionID::Jump)
-                                m_actual.id = ActionID::Jump;
+                            else if(save.id == ActionID::Jump || save.id == ActionID::JumpAir)
+                                m_actual.id = save.id;
                             else
                                 m_actual.id = ActionID::Stand;
                         }
@@ -358,32 +366,42 @@ namespace gameplay
                 m_actual.id = ActionID::None;
                 switch(dir) {
                     case Left:
-                        if(onGround())
-                            m_actual.id = ActionID::Run;
+                        if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
+                                m_actual.id = ActionID::Run;
                         else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
                             m_stir = 500.0f;
                             m_actual.id = ActionID::Down;
+                        }
+                        else {
+                            m_stir = 250.0f;
+                            m_actual.id = save.id;
                         }
                         m_actual.flip = m_flip; 
                         break;
 
                     case Right:
-                        if(onGround())
-                            m_actual.id = ActionID::Run;
+                        if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
+                                m_actual.id = ActionID::Run;
                         else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
                             m_stir = 500.0f;
                             m_actual.id = ActionID::Down;
+                        }
+                        else {
+                            m_stir = 250.0f;
+                            m_actual.id = save.id;
                         }
                         m_actual.flip = !m_flip; 
                         break;
 
                     case Up:
-                        if(onGround())
+                        if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                             m_actual.id = ActionID::Jump;
                         else if(!m_doubleJump) {
                             m_actual.id = ActionID::JumpAir;
                             m_doubleJump = true;
                         }
+                        else if(save.id == ActionID::Jump || save.id == ActionID::JumpAir)
+                            m_actual.id = save.id;
                         break;
 
                     case Down:
