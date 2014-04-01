@@ -92,6 +92,8 @@ namespace physics
             b2Fixture* createFixture(const std::string& name, const geometry::Circle& circle, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, const geometry::Point& position = geometry::Point(0, 0), bool sensor = false);
             /** @brief Creates a fixture based on an polygon-shaped hitbox, automatically adding it to the entity's fixtures map, and returning a pointer to the fixture */
             b2Fixture* createFixture(const std::string& name, const geometry::Polygon& polygon, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, bool sensor = false);
+            /** @brief Get the mass of the body. */
+            float getMass() const;
 
             /** @brief Destroy the fixture named "name" in the map */
             void destroyFixture(const std::string& name);

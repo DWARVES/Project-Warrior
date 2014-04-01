@@ -226,4 +226,9 @@ namespace physics
     {
         m_body->ApplyAngularImpulse(force);
     }
+            
+    float Entity::getMass() const
+    {
+        return m_body->GetMass();
+    }
 }
