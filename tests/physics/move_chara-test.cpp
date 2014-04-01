@@ -81,13 +81,13 @@ void drawPlats()
 }
 
 /* Center the view to the character. */
-void center(const gameplay::Character& ch)
+void center(const gameplay::Character& ch, const geometry::AABB& view)
 {
     geometry::Point pos = ch.getPos();
     pos.x *= -1.f;
     pos.y *= -1.f;
-    pos.x += 13.333f;
-    pos.y += 10.0f;
+    pos.x += view.width / 2.0f;
+    pos.y += view.height / 2.0f;
     global::gfx->move(pos.x, pos.y);
 }
 
@@ -100,6 +100,7 @@ int main()
 
     core::logger::init();
     core::logger::addOutput(&std::cout);
+    core::logger::minLevel(core::logger::WARNING);
     graphics::Graphics* gfx = new graphics::Graphics;
     global::gfx = gfx;
     lua::exposure::Graphics::setGraphicsInstance(gfx);
@@ -177,7 +178,7 @@ int main()
         SDL_Delay(100);
     }
     gfx->invertYAxis(true);
-    gfx->setVirtualSize(26.667f, 20.0f);
+    gfx->setVirtualSize(bg.width, bg.height);
     chara->physicMSize(1.0f, true);
 
     world.start();
@@ -190,6 +191,22 @@ int main()
             world.enableDebugDraw(!world.debugDraw());
         ctrl.update();
 
+        {
+            bool changed = false;
+            if(evs.keyJustPressed(events::Key('l'))) {
+                bg.height += 2.0f;
+                changed = true;
+            }
+            else if(evs.keyJustPressed(events::Key('m'))) {
+                bg.height -= 2.0f;
+                changed = true;
+            }
+            if(changed) {
+                bg.width = bg.height / 3.0f * 4.0f;
+                gfx->setVirtualSize(bg.width, bg.height);
+            }
+        }
+
         gfx->beginDraw();
 
         if(world.debugDraw())
@@ -197,7 +214,7 @@ int main()
         else
             gfx->draw(bg, "bg");
 
-        center(*chara);
+        center(*chara, bg);
         if(!world.debugDraw()) {
             gfx->move(-50.0f, 0.0f);
             gfx->draw(bgClimb, "climb");
