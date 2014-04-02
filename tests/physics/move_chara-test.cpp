@@ -91,6 +91,15 @@ void center(const gameplay::Character& ch, const geometry::AABB& view)
     global::gfx->move(pos.x, pos.y);
 }
 
+/* Handle when the character get outside the map. */
+void outside(gameplay::Character* ch)
+{
+    geometry::Point pos = ch->getPos();
+    if(pos.x < -60.0f || pos.x > 60.0f
+            || pos.y < -20.0f || pos.y > 120.0f)
+        ch->warp(geometry::Point(13.3f, 15.0f));
+}
+
 int main()
 {
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
@@ -225,6 +234,7 @@ int main()
         world.debugDraw(gfx);
         gfx->endDraw();
 
+        outside(chara);
         world.step();
         SDL_Delay(1000/60);
     }
