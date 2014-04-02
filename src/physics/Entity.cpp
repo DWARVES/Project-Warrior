@@ -231,4 +231,9 @@ namespace physics
     {
         return m_body->GetMass();
     }
+            
+    void Entity::setPosition(const geometry::Point& p)
+    {
+        m_body->SetTransform(b2Vec2(p.x, p.y), m_body->GetAngle());
+    }
 }

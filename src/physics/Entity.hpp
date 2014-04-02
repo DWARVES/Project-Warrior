@@ -62,6 +62,8 @@ namespace physics
             uint16 getType() const;
             /** @brief Returns the current position of the entity */
             geometry::Point getPosition() const;
+            /** @brief Warp the entity to a position. */
+            void setPosition(const geometry::Point& p);
 
             /** @brief Returns the entity horizontal linear velocity */
             float getXLinearVelocity();
