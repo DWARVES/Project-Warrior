@@ -80,6 +80,8 @@ namespace gameplay
              * @param dir     The direction of the control.
              */
             void action(Control control, Direction dir);
+            /** @brief Warp the character. */
+            void warp(const geometry::Point& p);
             /** @brief Enable/disable a maximum size when drawing. */
             void enableMSize(bool en, const geometry::AABB& ms = geometry::AABB(0.0f,0.0f));
             /** @brief Sets the msize to the physic size, with a fact.

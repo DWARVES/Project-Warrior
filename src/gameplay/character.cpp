@@ -532,7 +532,6 @@ namespace gameplay
 
     void Character::actuateByPhysic(Action actual, Action previous)
     {
-        /** @todo Implement */
         if(!m_ch)
             return;
 
@@ -761,6 +760,11 @@ namespace gameplay
     geometry::Point Character::getPos() const
     {
         return m_ch->getPosition();
+    }
+            
+    void Character::warp(const geometry::Point& p)
+    {
+        m_ch->setPosition(p);
     }
 }
 
