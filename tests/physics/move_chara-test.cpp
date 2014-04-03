@@ -23,13 +23,13 @@ float plats[][4] = {
     {0.0f, 0.0f, 100.0f, 1.0f},    /* Low border. */
     {-50.0f, 50.0f, 1.0f, 101.0f}, /* Left border. */
     {50.0f, 50.0f, 1.0f, 101.0f},  /* Right border. */
-    {0.0f, 26.0f, 60.0f, 0.5f},    /* Base platform. */
-    {-35.0f, 13.0f, 15.0f, 0.5f},  /* Left accesser (from low border to base platform). */
-    {35.0f, 13.0f, 15.0f, 0.5f},   /* Right accesser (from low border to base platform). */
-    {0.0f, 39.0f, 20.0f, 1.0f},    /* Up 1 platform. */
-    {25.0f, 50.0f, 20.0f, 1.0f},   /* Up 2 platform. */
-    {-20.0f, 56.0f, 20.0f, 1.0f},  /* Up 3 platform. */
-    {-5.0f, 69.0f, 10.0f, 1.0f},   /* Top platform. */
+    {0.0f, 10.0f, 60.0f, 0.1f},    /* Base platform. */
+    {-35.0f, 5.0f, 15.0f, 0.1f},   /* Left accesser (from low border to base platform). */
+    {35.0f, 5.0f, 15.0f, 0.1f},    /* Right accesser (from low border to base platform). */
+    {0.0f, 15.0f, 20.0f, 0.1f},    /* Up 1 platform. */
+    {25.0f, 17.0f, 20.0f, 0.1f},   /* Up 2 platform. */
+    {-20.0f, 20.0f, 20.0f, 0.1f},  /* Up 3 platform. */
+    {-5.0f, 25.0f, 10.0f, 0.1f},   /* Top platform. */
     {0.0f, 0.0f, 0.0f, 0.0f}
 };
 

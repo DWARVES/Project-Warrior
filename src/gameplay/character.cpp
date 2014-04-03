@@ -299,11 +299,11 @@ namespace gameplay
                         if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                             m_actual.id = ActionID::Walk; 
                         else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
-                            m_stir = 500.0f;
+                            m_stir = 50.0f;
                             m_actual.id = ActionID::Down;
                         }
                         else { /* going up */
-                            m_stir = 250.0f;
+                            m_stir = 50.0f;
                             m_actual.id = save.id;
                         }
                         m_actual.flip = m_flip; 
@@ -313,11 +313,11 @@ namespace gameplay
                         if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                                 m_actual.id = ActionID::Walk;
                         else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
-                            m_stir = 500.0f;
+                            m_stir = 50.0f;
                             m_actual.id = ActionID::Down;
                         }
                         else { /* going up */
-                            m_stir = 250.0f;
+                            m_stir = 50.0f;
                             m_actual.id = save.id;
                         }
                         m_actual.flip = !m_flip;
@@ -369,11 +369,11 @@ namespace gameplay
                         if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                                 m_actual.id = ActionID::Run;
                         else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
-                            m_stir = 500.0f;
+                            m_stir = 50.0f;
                             m_actual.id = ActionID::Down;
                         }
                         else {
-                            m_stir = 250.0f;
+                            m_stir = 50.0f;
                             m_actual.id = save.id;
                         }
                         m_actual.flip = m_flip; 
@@ -383,11 +383,11 @@ namespace gameplay
                         if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                                 m_actual.id = ActionID::Run;
                         else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
-                            m_stir = 500.0f;
+                            m_stir = 50.0f;
                             m_actual.id = ActionID::Down;
                         }
                         else {
-                            m_stir = 250.0f;
+                            m_stir = 50.0f;
                             m_actual.id = save.id;
                         }
                         m_actual.flip = !m_flip; 
