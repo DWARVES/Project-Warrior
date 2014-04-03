@@ -34,6 +34,7 @@ namespace physics
     void Character::jump(float vel)
     {
         float force = (vel/5.0f + 8.0f) * m_body->GetMass();
+        setYLinearVelocity(0.0f);
         applyLinearImpulse(0.0f, force);
         for(Entity* ent : m_underfoot)
             ent->applyLinearImpulse(0.0f, -force);
