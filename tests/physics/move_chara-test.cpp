@@ -121,7 +121,7 @@ int main()
     evs.openJoysticks();
     global::evs = &evs;
 
-    cont = gfx->openWindow("Test graphics::Graphics", 800, 600);
+    cont = gfx->openWindow("Test graphics::Graphics", 1152, 864);
     if(!cont)
         return 1;
 
@@ -181,8 +181,8 @@ int main()
     /* Appearance over 2 seconds. */
     for(Uint32 i = 0; i <= 20; ++i) {
         gfx->beginDraw();
-        gfx->draw(geometry::AABB(800,600), bgc);
-        chara->appear(float(i*5), geometry::AABB(800,600));
+        gfx->draw(geometry::AABB(1152,864), bgc);
+        chara->appear(float(i*5), geometry::AABB(1152,864));
         gfx->endDraw();
         SDL_Delay(100);
     }
