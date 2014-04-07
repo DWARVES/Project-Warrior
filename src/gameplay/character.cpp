@@ -560,6 +560,9 @@ namespace gameplay
                 m_ch->applyForce(0.0f, -20.0f * m_ch->getMass());
                 break;
             case ActionID::Stand:
+                if(previous.id == ActionID::Walk)
+                    m_ch->setXLinearVelocity(0.0f);
+                break;
             case ActionID::Land:
             case ActionID::Down:
             case ActionID::Won:
