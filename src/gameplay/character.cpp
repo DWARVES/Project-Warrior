@@ -173,7 +173,7 @@ namespace gameplay
         drawPrev("preview", msize);
     }
 
-    void Character::drawPrev(const std::string& nm, const geometry::AABB& msize, bool flip, bool center) const
+    void Character::drawPrev(const std::string& nm, const geometry::AABB& msize, bool flip, bool hp) const
     {
         if(global::gfx->rctype(nm) != graphics::Graphics::TEXT)
             return;
@@ -181,8 +181,12 @@ namespace gameplay
         geometry::AABB used = msize;
         geometry::Point dec(0.0f, 0.0f);
 
+        float twidth  = (float)global::gfx->getTextureWidth(nm);
+        float theight = (float)global::gfx->getTextureHeight(nm);
+        geometry::Point hot = global::gfx->getTextureHotPoint(nm);
+
         float ratioSize = used.width / used.height;
-        float ratioPict = (float)global::gfx->getTextureWidth(nm) / (float)global::gfx->getTextureHeight(nm);
+        float ratioPict = twidth / theight;  
         if(ratioPict > ratioSize) {
             used.height = used.width / ratioPict;
             dec.y = (msize.height - used.height) / 2.0f;
@@ -197,8 +201,10 @@ namespace gameplay
 
         global::gfx->push();
         global::gfx->move(dec.x, dec.y);
-        if(center)
+        if(hp) {
             global::gfx->move(-used.width / 2.0f, -used.height / 2.0f);
+            global::gfx->move(0.0f, -(1 - hot.y / theight) * used.height);
+        }
         if(flip) {
             global::gfx->move(used.width, 0.0f);
             global::gfx->scale(-1.0f, 1.0f);
