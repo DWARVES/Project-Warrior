@@ -610,6 +610,14 @@ namespace graphics
         return true;
     }
 
+    geometry::Point Graphics::getTextureHotPoint(const std::string& name) const
+    {
+        if(rctype(name) != TEXT)
+            return geometry::Point(0,0);
+        Entity* ent = m_fs.getEntityValue(name);
+        return ent->stored.text->hotpoint();
+    }
+
     /*************************
      *   Fonts management    *
      *************************/

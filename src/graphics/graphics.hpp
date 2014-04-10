@@ -164,6 +164,8 @@ namespace graphics
             int getTextureHeight(const std::string& name) const;
             /** @brief Set the hotpoint of a texture. */
             bool setTextureHotpoint(const std::string& name, int x, int y);
+            /** @brief Get the hotpoint of a texture. */
+            geometry::Point getTextureHotPoint(const std::string& name) const;
             /** @} */
 
             /*************************
