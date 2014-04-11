@@ -3,7 +3,11 @@
 #define DEF_GAMEPLAY_STAGE
 
 #include <string>
+#include "controler.hpp"
+#include "events/events.hpp"
+#include "physics/World.hpp"
 #include "geometry/aabb.hpp"
+#include "lua/script.hpp"
 
 namespace gameplay
 {
@@ -27,15 +31,35 @@ namespace gameplay
             /** @brief Draw the preview of the stage in an AABB. */
             void draw(const geometry::AABB& rect) const;
 
+            /** @brief Load the stage for its use.
+             * The valid ctrls will be deleted when the stage is free'd.
+             */
+            bool load(gameplay::Controler* ctrls[4]);
+            /** @brief Update the stage. */
+            void update(const events::Events& ev);
+            /** @brief Draw the stage. */
+            void draw();
+
+            
+        private: /* The methods to expose to lua. */
+            /* TODO */
+
         private:
-            static int m_count;      /**< @brief Count of all stages. */
-            std::string m_path;      /**< @brief Path to the directory of the stage. */
-            std::string m_namespace; /**< @brief The namespace used by the stage. */
-            std::string m_name;      /**< @brief The name of the stage. */
-            bool m_valid;            /**< @brief Has the stage been validated. */
+            static int m_count;              /**< @brief Count of all stages. */
+            std::string m_path;              /**< @brief Path to the directory of the stage. */
+            std::string m_namespace;         /**< @brief The namespace used by the stage. */
+            std::string m_name;              /**< @brief The name of the stage. */
+            bool m_valid;                    /**< @brief Has the stage been validated. */
+
+            physics::World m_world;          /**< @brief The physic world used. */
+            gameplay::Controler* m_ctrls[4]; /**< @brief The controlers used. */
+            int m_nbPlayers;                 /**< @brief The number of players [1-4]. */
+            lua::Script m_script;            /**< @brief The lua script. */
 
             /** @brief Create and return the namespace used. */
             std::string getNamespace();
+            /** @brief Center the view on the character shown. */
+            void centerView();
     };
 }
 
