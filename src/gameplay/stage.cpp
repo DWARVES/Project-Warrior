@@ -12,6 +12,8 @@
 
 namespace gameplay
 {
+    /** @brief Number of pixels per physic unit. */
+    const int pixelsPerPhysic = 100;
     int Stage::m_count = 0;
 
     Stage::Stage(const std::string& path)
@@ -159,22 +161,134 @@ namespace gameplay
             return false;
         }
 
+        /* Setting up the drawing. */
+        global::gfx->invertYAxis(true);
+        m_windowRect.width = global::gfx->windowWidth() / pixelsPerPhysic;
+        m_windowRect.height = global::gfx->windowHeight() / pixelsPerPhysic;
+        geometry::AABB toshow = ratioResize(m_maxSize, m_windowRect, true).first;
+        global::gfx->setVirtualSize(toshow.width, toshow.height);
+        for(int i = 0; i < m_nbPlayers; ++i)
+            m_ctrls[i]->attached()->physicMSize(1.0f, true);
+        m_world.enableDebugDraw(false);
+
         return true;
     }
 
     void Stage::update(const events::Events& ev)
     {
-        /* TODO */
+        for(int i = 0; i < m_nbPlayers; ++i)
+            m_ctrls[i]->update();
+        /** @todo Appearance of characters. */
+        /** @todo Physics callbacks for stage. */
     }
 
     void Stage::draw()
     {
-        /* TODO */
+        global::gfx->beginDraw();
+        centerView();
+        m_script.callFunction<void>("drawBG", NULL);
+        for(int i = 0; i < m_nbPlayers; ++i) {
+            global::gfx->push();
+            gameplay::Character* c = m_ctrls[i]->attached();
+            geometry::Point pos = c->getPos();
+            global::gfx->move(pos.x, pos.y);
+            c->draw();
+            global::gfx->pop();
+        }
+        m_script.callFunction<void>("drawFG", NULL);
+        global::gfx->endDraw();
     }
             
     void Stage::centerView()
     {
-        /* TODO */
+        std::vector<geometry::Point> centers;
+        for(int i = 0; i < m_nbPlayers; ++i) {
+            if(isIn(m_ctrls[i]->attached()->getPos(), m_deathRect, m_center))
+                centers.push_back(m_ctrls[i]->attached()->getPos());
+        }
+
+        if(centers.size() == 0) {
+            global::gfx->move(-m_center.x / 2.0f, -m_center.y / 2.0f);
+            m_windowRect.width = global::gfx->windowWidth() / pixelsPerPhysic;
+            m_windowRect.height = global::gfx->windowHeight() / pixelsPerPhysic;
+            geometry::AABB toshow = ratioResize(m_maxSize, m_windowRect, true).first;
+            global::gfx->setVirtualSize(toshow.width, toshow.height);
+            return;
+        }
+        else if(centers.size() == 1) {
+            global::gfx->move(-centers[0].x / 2.0f, -centers[0].y / 2.0f);
+            m_windowRect.width = global::gfx->windowWidth() / pixelsPerPhysic;
+            m_windowRect.height = global::gfx->windowHeight() / pixelsPerPhysic;
+            geometry::AABB toshow = ratioResize(m_maxSize, m_windowRect, true).first;
+            global::gfx->setVirtualSize(toshow.width, toshow.height);
+            return;
+        }
+
+        geometry::Point p1(centers[0]);
+        geometry::Point p2(centers[0]);
+        for(geometry::Point p : centers) {
+            p1.x = std::min(p1.x, p.x);
+            p1.y = std::min(p1.y, p.y);
+            p2.x = std::max(p2.x, p.x);
+            p2.y = std::max(p2.y, p.y);
+        }
+
+        geometry::Point center((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f);
+        geometry::AABB rect(p2.x - p1.x, p2.y - p1.y);
+        /* Adding marging in the rect. */
+        rect.width += 2.0f;
+        rect.height += 2.0f;
+
+        std::pair<geometry::AABB,geometry::Point> englobe = ratioResize(m_windowRect, rect, true);
+        global::gfx->move(-center.x / 2.0f, -center.y / 2.0f);
+        global::gfx->move(englobe.second.x, englobe.second.y);
+        global::gfx->setVirtualSize(englobe.first.width, englobe.first.height);
+    }
+            
+    std::pair<geometry::AABB,geometry::Point> Stage::ratioResize(const geometry::AABB& res, const geometry::AABB& fit, bool large) const
+    {
+        geometry::AABB result;
+        geometry::Point dec;
+
+        /* Compute result size. */
+        float r1 = res.width / res.height;
+        float r2 = fit.width / fit.height;
+        if(r1 < r2) {
+            if(large) {
+                result.width = fit.width;
+                result.height = result.width / r1;
+            } else {
+                result.height = fit.height;
+                result.width = result.height * r1;
+            }
+        } else {
+            if(large) {
+                result.height = fit.height;
+                result.width = result.height * r1;
+            } else {
+                result.width = fit.width;
+                result.height = result.width / r1;
+            }
+        }
+
+        /* Compute dec. */
+        dec.x = (fit.width - result.width) / 2.0f;
+        dec.y = (fit.height - result.height) / 2.0f;
+
+        return std::pair<geometry::AABB,geometry::Point>(result, dec);
+    }
+            
+    bool Stage::isIn(const geometry::Point& p, const geometry::AABB& rect, const geometry::Point& center) const
+    {
+        geometry::Point p1(center.x - rect.width/2.0f, center.y - rect.width/2.0f);
+        geometry::Point p2(center.x + rect.width/2.0f, center.y + rect.width/2.0f);
+        if(p.x < p1.x
+                || p.x > p2.x
+                || p.y < p1.y
+                || p.y > p2.y)
+            return false;
+        else
+            return true;
     }
 
 }

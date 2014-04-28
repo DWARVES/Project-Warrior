@@ -56,10 +56,24 @@ namespace gameplay
             int m_nbPlayers;                 /**< @brief The number of players [1-4]. */
             lua::Script m_script;            /**< @brief The lua script. */
 
+            geometry::Point m_center;        /**< @brief The coordinates of the center of m_maxSize and m_deathRect. */
+            geometry::AABB m_maxSize;        /**< @brief Characters outside this AABB won't be shown. */
+            geometry::AABB m_deathRect;      /**< @brief Characters outside this AABB will die. */
+            geometry::AABB m_minSize;        /**< @brief The AABB to use when only one character is shown. */
+            geometry::AABB m_windowRect;     /**< @brief The window size in physic units. */
+
             /** @brief Create and return the namespace used. */
             std::string getNamespace();
             /** @brief Center the view on the character shown. */
             void centerView();
+            /** @brief Make a rect fit/englobe another one with ratio respect.
+             * @param res   The AABB to resize.
+             * @param fit   The AABB to englobe/fit in.
+             * @param large Must englobe (true) or fit in (false).
+             */
+            std::pair<geometry::AABB,geometry::Point> ratioResize(const geometry::AABB& res, const geometry::AABB& fit, bool large = false) const;
+            /** @brief Check if a coordinate is in a rect. */
+            bool isIn(const geometry::Point& p, const geometry::AABB& rect, const geometry::Point& center) const;
     };
 }
 
