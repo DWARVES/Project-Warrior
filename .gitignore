@@ -36,6 +36,10 @@ install_manifest.txt
 *.gcda
 *.gcov
 
+## Temp files
+*.swp
+*~
+
 ## Miscellaneous
 *.tar
 *.tar.*
