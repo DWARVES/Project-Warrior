@@ -139,9 +139,10 @@ namespace gameplay
         lua::exposure::Save::expose(&m_script);
         lua::exposure::Graphics::expose(&m_script);
         lua::exposure::Path::expose(&m_script);
-        /** @todo Expose characters. */
+        lua::exposure::Character::expose(&m_script);
         if(!m_script.load(m_path + "/stage.lua"))
             return false;
+        m_script.setVariable("characterNB", m_nbPlayers);
         if(!m_script.existsFunction("init")) {
             std::ostringstream oss;
             oss << "The stage script for \"" << m_path << "\" doesn't have a init function.";
@@ -157,6 +158,8 @@ namespace gameplay
             core::logger::logm(oss.str(), core::logger::ERROR);
             return false;
         }
+
+        return true;
     }
 
     void Stage::update(const events::Events& ev)
