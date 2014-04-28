@@ -7,20 +7,94 @@ namespace lua
     {
         gameplay::Character* characters[4];
 
-        void exposeChara(Script* scr, int nb)
-        {
-            Character<0> chara0;
-            Character<1> chara1;
-            Character<2> chara2;
-            Character<3> chara3;
+        const char* Character::className = "Character";
+        const Script::Methods<Character> Character::methods[] = {
+            {"current",     &Character::setUsed},
+            {"size",        &Character::size},
+            {"weight",      &Character::weight},
+            {"mana",        &Character::setMana},
+            {"requireMana", &Character::requireMana},
+            {"onGround",    &Character::onGround},
+            {"flip",        &Character::flip},
+            {NULL, NULL}
+        };
+        const Script::Properties<Character> Character::properties[] = {
+            {NULL, NULL, NULL}
+        };
 
-            switch(nb) {
-                case 0:  chara0.expose(scr); break;
-                case 1:  chara1.expose(scr); break;
-                case 2:  chara2.expose(scr); break;
-                case 3:  chara3.expose(scr); break;
-                default: chara0.expose(scr); break;
-            }
+        void Character::expose(Script* scr)
+        {
+            scr->registerClass<Character>();
+        }
+
+        int Character::size(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 2
+                    || args[0] != Script::NUMBER
+                    || args[1] != Script::NUMBER)
+                return 0;
+            characters[m_char]->phSize(geometry::AABB((float)lua_tonumber(st, 1), (float)lua_tonumber(st, 2)));
+            return 0;
+        }
+
+        int Character::weight(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 1
+                    || args[0] != Script::NUMBER)
+                return 0;
+            characters[m_char]->phWeight((float)lua_tonumber(st, 1));
+            return 0;
+        }
+
+        int Character::setMana(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 1
+                    || args[0] != Script::NUMBER)
+                return 0;
+            characters[m_char]->setManaMax((unsigned int)lua_tonumber(st, 1));
+            return 0;
+        }
+
+        int Character::onGround(lua_State* st)
+        {
+            return helper::returnBoolean(st, characters[m_char]->onGround());
+        }
+
+        int Character::requireMana(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 1
+                    || args[0] != Script::NUMBER)
+                return 0;
+            return helper::returnBoolean(st, characters[m_char]->requireMana((unsigned int)lua_tonumber(st, 1)));
+        }
+
+        int Character::flip(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 1
+                    || args[0] != Script::BOOL)
+                return 0;
+            characters[m_char]->setFlip(lua_toboolean(st, 1));
+            return 0;
+        }
+                
+        int Character::setUsed(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 1
+                    || args[0] != Script::NUMBER)
+                return 0;
+            double c = lua_tonumber(st, 1);
+            m_char = static_cast<int>(c);
+            if(m_char < 0)
+                m_char = 0;
+            else if(m_char > 3)
+                m_char = 3;
+            return 0;
         }
     }
 }

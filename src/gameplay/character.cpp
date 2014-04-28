@@ -219,13 +219,14 @@ namespace gameplay
         lua::exposure::Save::expose(&m_perso);
         lua::exposure::Graphics::expose(&m_perso);
         lua::exposure::Path::expose(&m_perso);
-        lua::exposure::exposeChara(&m_perso, nb);
+        lua::exposure::Character::expose(&m_perso);
         if(!m_perso.load(m_path + "/perso.lua")) {
             std::ostringstream oss;
             oss << "Couldn't load \"" << m_path << "/perso.lua\" script for " << m_namespace << " character.";
             core::logger::logm(oss.str(), core::logger::WARNING);
             return false;
         }
+        m_perso.setVariable("characterID", nb);
 
         /* Preparing the namespace. */
         global::gfx->enterNamespace(m_namespace);
