@@ -1,0 +1,45 @@
+## C/C++ files
+# Compiled files
+*.slo
+*.lo
+*.ko
+*.o
+*.obj
+*.elf
+# Compiled dynamic libraries
+*.so
+*.so.*
+*.dylib
+*.dll
+# Compiled static libraries
+*.lai
+*.la
+*.a
+*.lib
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+## CMake files
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
+
+## GCov files
+*.gcno
+*.gcda
+*.gcov
+
+## Miscellaneous
+*.tar
+*.tar.*
+*.gz
+*.xz
+*.bz2
+
