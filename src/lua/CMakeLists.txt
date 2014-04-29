@@ -9,6 +9,7 @@ add_library(${lib}
     graphicsExposure.cpp graphicsExposure.hpp
     pathExposure.cpp     pathExposure.hpp
     charaExposure.cpp    charaExposure.hpp
+    stageExposure.cpp    stageExposure.hpp
     script.cpp           script.hpp           luna.hpp
     helper.cpp           helper.hpp
     exception.cpp        exception.hpp

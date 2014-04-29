@@ -8,6 +8,7 @@
 #include "physics/World.hpp"
 #include "geometry/aabb.hpp"
 #include "lua/script.hpp"
+#include "lua/stageExposure.hpp"
 
 namespace gameplay
 {
@@ -16,6 +17,8 @@ namespace gameplay
      */
     class Stage
     {
+        friend lua::exposure::Stage;
+
         public:
             Stage() = delete;
             Stage(const Stage&) = delete;
