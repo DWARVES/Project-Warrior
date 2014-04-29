@@ -171,8 +171,8 @@ namespace gameplay
 
         /* Setting up the drawing. */
         global::gfx->invertYAxis(true);
-        m_windowRect.width = global::gfx->windowWidth() / pixelsPerPhysic;
-        m_windowRect.height = global::gfx->windowHeight() / pixelsPerPhysic;
+        m_windowRect.width = (float)global::gfx->windowWidth() / (float)pixelsPerPhysic;
+        m_windowRect.height = (float)global::gfx->windowHeight() / (float)pixelsPerPhysic;
         geometry::AABB toshow = ratioResize(m_maxSize, m_windowRect, true).first;
         global::gfx->setVirtualSize(toshow.width, toshow.height);
         for(int i = 0; i < m_nbPlayers; ++i)
@@ -243,16 +243,16 @@ namespace gameplay
 
         if(centers.size() == 0) {
             global::gfx->move(-m_center.x / 2.0f, -m_center.y / 2.0f);
-            m_windowRect.width = global::gfx->windowWidth() / pixelsPerPhysic;
-            m_windowRect.height = global::gfx->windowHeight() / pixelsPerPhysic;
+            m_windowRect.width = (float)global::gfx->windowWidth() / (float)pixelsPerPhysic;
+            m_windowRect.height = (float)global::gfx->windowHeight() / (float)pixelsPerPhysic;
             geometry::AABB toshow = ratioResize(m_maxSize, m_windowRect, true).first;
             global::gfx->setVirtualSize(toshow.width, toshow.height);
             return;
         }
         else if(centers.size() == 1) {
             global::gfx->move(-centers[0].x / 2.0f, -centers[0].y / 2.0f);
-            m_windowRect.width = global::gfx->windowWidth() / pixelsPerPhysic;
-            m_windowRect.height = global::gfx->windowHeight() / pixelsPerPhysic;
+            m_windowRect.width = (float)global::gfx->windowWidth() / (float)pixelsPerPhysic;
+            m_windowRect.height = (float)global::gfx->windowHeight() / (float)pixelsPerPhysic;
             geometry::AABB toshow = ratioResize(m_maxSize, m_windowRect, true).first;
             global::gfx->setVirtualSize(toshow.width, toshow.height);
             return;
