@@ -79,6 +79,7 @@ namespace gameplay
             geometry::AABB m_appearSize;     /**< @brief The size of appearance, setted by the script. */
             geometry::Point m_appearPos[4];  /**< @brief The pos of appearance of each character, setted by the script. */
             geometry::AABB m_appearView;     /**< @brief The AABB to view during appearance. */
+            geometry::Point m_appearDec;     /**< @brief The decalage to apply during appearance. */
 
             /** @brief Create and return the namespace used. */
             std::string getNamespace();

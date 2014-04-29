@@ -181,6 +181,8 @@ namespace gameplay
 
         m_justLoaded = true;
         m_beggining = 0;
+        for(int i = 0; i < m_nbPlayers; ++i)
+            m_ctrls[i]->attached()->appearancePos(m_appearPos[i]);
 
         return true;
     }
@@ -193,6 +195,9 @@ namespace gameplay
         if(m_justLoaded) {
             m_justLoaded = false;
             m_beggining = SDL_GetTicks();
+            auto pair = ratioResize(m_appearView, m_windowRect, true);
+            m_appearView = pair.first;
+            m_appearDec  = pair.second;
             return;
         }
 
@@ -209,6 +214,9 @@ namespace gameplay
         /* Drawing the appearance. */
         Uint32 time = SDL_GetTicks() - m_beggining;
         if(time <= appearTime) {
+            global::gfx->move(-m_center.x / 2.0f, -m_center.y / 2.0f);
+            global::gfx->move(m_appearDec.x, m_appearDec.y);
+            global::gfx->setVirtualSize(m_appearView.width, m_appearView.height);
             m_script.callFunction<void>("drawBG", NULL);
             float percent = (float)time / (float)appearTime * 100.0f;
             for(int i = 0; i < m_nbPlayers; ++i)
