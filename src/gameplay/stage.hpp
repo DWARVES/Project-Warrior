@@ -62,6 +62,13 @@ namespace gameplay
             geometry::AABB m_minSize;        /**< @brief The AABB to use when only one character is shown. */
             geometry::AABB m_windowRect;     /**< @brief The window size in physic units. */
 
+            /* Managing appearance. */
+            bool m_justLoaded;               /**< @brief Is set to true by load and to false by update. */
+            Uint32 m_beggining;              /**< @brief The time of the beggining of the game. */
+            geometry::AABB m_appearSize;     /**< @brief The size of appearance, setted by the script. */
+            geometry::Point m_appearPos[4];  /**< @brief The pos of appearance of each character, setted by the script. */
+            geometry::AABB m_appearView;     /**< @brief The AABB to view during appearance. */
+
             /** @brief Create and return the namespace used. */
             std::string getNamespace();
             /** @brief Center the view on the character shown. */

@@ -14,6 +14,8 @@ namespace gameplay
 {
     /** @brief Number of pixels per physic unit. */
     const int pixelsPerPhysic = 100;
+    /** @brief Time of appearance of characters in milliseconds. */
+    const Uint32 appearTime = 5000;
     int Stage::m_count = 0;
 
     Stage::Stage(const std::string& path)
@@ -171,6 +173,9 @@ namespace gameplay
             m_ctrls[i]->attached()->physicMSize(1.0f, true);
         m_world.enableDebugDraw(false);
 
+        m_justLoaded = true;
+        m_beggining = 0;
+
         return true;
     }
 
@@ -178,13 +183,36 @@ namespace gameplay
     {
         for(int i = 0; i < m_nbPlayers; ++i)
             m_ctrls[i]->update();
-        /** @todo Appearance of characters. */
+
+        if(m_justLoaded) {
+            m_justLoaded = false;
+            m_beggining = SDL_GetTicks();
+            return;
+        }
+
+        Uint32 time = SDL_GetTicks() - m_beggining;
+        if(time <= appearTime)
+            return;
+
         /** @todo Physics callbacks for stage. */
     }
 
     void Stage::draw()
     {
         global::gfx->beginDraw();
+        /* Drawing the appearance. */
+        Uint32 time = SDL_GetTicks() - m_beggining;
+        if(time <= appearTime) {
+            m_script.callFunction<void>("drawBG", NULL);
+            float percent = (float)time / (float)appearTime * 100.0f;
+            for(int i = 0; i < m_nbPlayers; ++i)
+                m_ctrls[i]->attached()->appear(percent, m_appearSize);
+            m_script.callFunction<void>("drawFG", NULL);
+            global::gfx->endDraw();
+            return;
+        }
+
+        /* Drawing the game. */
         centerView();
         m_script.callFunction<void>("drawBG", NULL);
         for(int i = 0; i < m_nbPlayers; ++i) {
