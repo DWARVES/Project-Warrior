@@ -217,7 +217,17 @@ bool CharaSelMenu::update()
     }
 
     if(m_play->clicked() && m_act == m_nb) {
-        m_launched = new StageSelMenu(m_sels);
+        gameplay::Controler* ctrls[4];
+        for(int i = 0; i < 4; ++i) {
+            if(i >= m_act) {
+                ctrls[i] = NULL;
+                continue;
+            }
+            ctrls[i] = new gameplay::Controler(m_ctrls[i]);
+            ctrls[i]->attach(m_sels[i]);
+        }
+
+        m_launched = new StageSelMenu(ctrls);
         m_launched->prepare();
         global::audio->enterNamespace("/menubutton");
         global::audio->play("click");

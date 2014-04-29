@@ -3,7 +3,8 @@
 #define DEF_STAGESELMENU
 
 #include "menu.hpp"
-#include "gameplay/character.hpp"
+#include "gamemenu.hpp"
+#include "gameplay/controler.hpp"
 #include "gameplay/stage.hpp"
 #include "gui/list.hpp"
 #include "gui/button.hpp"
@@ -43,19 +44,20 @@ class StageSelMenu : public Menu
 
     public:
         StageSelMenu() = delete;
-        StageSelMenu(gameplay::Character* charas[4]);
+        StageSelMenu(gameplay::Controler* charas[4]);
         virtual ~StageSelMenu();
 
         virtual bool prepare();
         virtual bool update();
 
     private:
-        gameplay::Character* m_charas[4]; /**< @brief The list of characters of players. */
+        gameplay::Controler* m_charas[4]; /**< @brief The list of characters of players. */
         gui::GridLayout* m_layout;        /**< @brief The layout used. */
         List* m_list;                     /**< @brief The list of stages. */
         gui::Button* m_play;              /**< @brief The play button. */
         gui::Button* m_back;              /**< @brief The back button. */
         StagePreview* m_prev;             /**< @brief The preview of the stage. */
+        GameMenu* m_menu;                 /**< @brief The game to launch. */
 
         /** @brief Load the stages and populate the list. */
         void populateList();

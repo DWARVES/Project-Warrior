@@ -47,8 +47,8 @@ bool StageSelMenu::List::moved()
     return ret;
 }
 
-StageSelMenu::StageSelMenu(gameplay::Character* charas[4])
-    : m_layout(NULL), m_list(NULL), m_play(NULL), m_back(NULL), m_prev(NULL)
+StageSelMenu::StageSelMenu(gameplay::Controler* charas[4])
+    : m_layout(NULL), m_list(NULL), m_play(NULL), m_back(NULL), m_prev(NULL), m_menu(NULL)
 {
     for(int i = 0; i < 4; ++i)
         m_charas[i] = charas[i];
@@ -66,6 +66,8 @@ StageSelMenu::~StageSelMenu()
         delete m_back;
     if(m_prev != NULL)
         delete m_prev;
+    if(m_menu != NULL)
+        delete m_menu;
 }
 
 bool StageSelMenu::prepare()
@@ -109,10 +111,22 @@ bool StageSelMenu::update()
             || m_back->clicked())
         return false;
 
+    if(m_menu != NULL)
+        return m_menu->update();
+
     if(m_list->moved()) 
         m_prev->set((gameplay::Stage*)m_list->selectedData());
 
     /** @todo click on play. */
+    if(m_play->clicked()) {
+        gameplay::Stage* sel = (gameplay::Stage*)m_list->selectedData();
+        if(!sel->load(m_charas)) {
+            std::ostringstream oss;
+            core::logger::logm("Couldn't launch the game because couldn't load the stage.", core::logger::ERROR);
+        }
+        m_menu = new GameMenu(sel);
+        m_menu->prepare();
+    }
 
     /* Drawing. */
     global::gfx->enterNamespace("/mainmenu");
