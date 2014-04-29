@@ -5,6 +5,7 @@
 #include "core/i18n.hpp"
 #include "core/pathParser.hpp"
 #include "core/logger.hpp"
+#include "lua/charaExposure.hpp"
 #include <sstream>
 
     CharaSelMenu::List::List()
@@ -225,6 +226,11 @@ bool CharaSelMenu::update()
             }
             ctrls[i] = new gameplay::Controler(m_ctrls[i]);
             ctrls[i]->attach(m_sels[i]);
+            lua::exposure::characters[i] = m_sels[i];
+            if(!m_sels[i]->load(gameplay::Character::Color::None, i)) {
+                core::logger::logm("Couldn't launch game because couldn't load a character.", core::logger::ERROR);
+                return false;
+            }
         }
 
         m_launched = new StageSelMenu(ctrls);
