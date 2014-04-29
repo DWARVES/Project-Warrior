@@ -107,12 +107,20 @@ bool StageSelMenu::prepare()
 
 bool StageSelMenu::update()
 {
+    if(m_menu != NULL) {
+        if(!m_menu->update()) {
+            global::gfx->disableVirtualSize();
+            global::gfx->invertYAxis(false);
+            delete m_menu;
+            m_menu = NULL;
+            return false;
+        }
+        return true;
+    }
+
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
             || m_back->clicked())
         return false;
-
-    if(m_menu != NULL)
-        return m_menu->update();
 
     if(m_list->moved()) 
         m_prev->set((gameplay::Stage*)m_list->selectedData());
