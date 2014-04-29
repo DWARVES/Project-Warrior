@@ -210,7 +210,6 @@ namespace gameplay
 
     void Stage::draw()
     {
-        global::gfx->beginDraw();
         /* Drawing the appearance. */
         Uint32 time = SDL_GetTicks() - m_beggining;
         if(time <= appearTime) {
@@ -222,7 +221,6 @@ namespace gameplay
             for(int i = 0; i < m_nbPlayers; ++i)
                 m_ctrls[i]->attached()->appear(percent, m_appearSize);
             m_script.callFunction<void>("drawFG", NULL);
-            global::gfx->endDraw();
             return;
         }
 
@@ -238,7 +236,6 @@ namespace gameplay
             global::gfx->pop();
         }
         m_script.callFunction<void>("drawFG", NULL);
-        global::gfx->endDraw();
     }
             
     void Stage::centerView()
