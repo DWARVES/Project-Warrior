@@ -7,10 +7,14 @@ namespace physics
 {
     World::World()
         : m_world(NULL), m_dd(false), m_ddraw(NULL)
-    {}
+    {
+        m_world = new b2World(b2Vec2(0.0f,-10.0f));
+        m_world->SetContactListener(this);
+        m_world->SetDestructionListener(this);
+    }
 
     World::World(float x, float y)
-        : World()
+        : m_world(NULL), m_dd(false), m_ddraw(NULL)
     {
         m_world = new b2World(b2Vec2(x,y));
         m_world->SetContactListener(this);
