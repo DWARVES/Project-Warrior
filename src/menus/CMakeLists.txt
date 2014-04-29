@@ -18,5 +18,6 @@ add_library(${lib}
     playerselmenu.cpp    playerselmenu.hpp
     charaselmenu.cpp     charaselmenu.hpp
     stageselmenu.cpp     stageselmenu.hpp
+    gamemenu.cpp         gamemenu.hpp
 	)
 
