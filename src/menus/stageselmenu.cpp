@@ -123,6 +123,7 @@ bool StageSelMenu::update()
         if(!sel->load(m_charas)) {
             std::ostringstream oss;
             core::logger::logm("Couldn't launch the game because couldn't load the stage.", core::logger::ERROR);
+            return false;
         }
         m_menu = new GameMenu(sel);
         m_menu->prepare();
