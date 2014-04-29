@@ -39,6 +39,8 @@ namespace lua
                 int appearPos(lua_State* st);
                 int appearSize(lua_State* st);
                 int appearView(lua_State* st);
+                int obstacle(lua_State* st);
+                int platform(lua_State* st);
 
 
             private:

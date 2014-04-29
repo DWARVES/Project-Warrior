@@ -54,6 +54,9 @@ namespace gameplay
             void setAppearPos(int id, const geometry::Point& p);
             void setAppearSize(const geometry::AABB& size);
             void setAppearView(const geometry::AABB& view);
+            bool addPlatform(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect);
+            bool addObstacle(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect);
+            void removeEntity(const std::string& nm);
 
         private:
             static int m_count;              /**< @brief Count of all stages. */

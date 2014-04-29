@@ -375,6 +375,21 @@ namespace gameplay
     {
         m_appearView = view;
     }
+            
+    bool Stage::addPlatform(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect)
+    {
+        return m_world.createPlatform(nm, center, rect) != NULL;
+    }
+
+    bool Stage::addObstacle(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect)
+    {
+        return m_world.createObstacle(nm, center, rect) != NULL;
+    }
+
+    void Stage::removeEntity(const std::string& nm)
+    {
+        m_world.destroyEntity(nm);
+    }
 
 }
 

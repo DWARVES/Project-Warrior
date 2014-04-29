@@ -10,6 +10,17 @@ namespace lua
         /* Lua exposure. */
         const char* Stage::className = "Stage";
         const Script::Methods<Stage> Stage::methods[] = {
+            {"worldCenter", &Stage::worldCenter},
+            {"maxSize",     &Stage::maxSize},
+            {"deathRect",   &Stage::deathRect},
+            {"minSize",     &Stage::minSize},
+            {"width",       &Stage::windowWidth},
+            {"height",      &Stage::windowHeight},
+            {"appearPos",   &Stage::appearPos},
+            {"appearSize",  &Stage::appearSize},
+            {"appearView",  &Stage::appearView},
+            {"obstacle",    &Stage::obstacle},
+            {"platform",    &Stage::platform},
             {NULL, NULL}
         };
         const Script::Properties<Stage> Stage::properties[] = {
@@ -130,6 +141,40 @@ namespace lua
             get.x = rect.width;
             get.y = rect.height;
             return true;
+        }
+                
+        int Stage::obstacle(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 5
+                    || args[0] != Script::STRING
+                    || args[1] != Script::NUMBER
+                    || args[2] != Script::NUMBER
+                    || args[3] != Script::NUMBER
+                    || args[4] != Script::NUMBER)
+                return helper::returnBoolean(st, false);
+            geometry::Point center((float)lua_tonumber(st, 2), (float)lua_tonumber(st, 3));
+            geometry::AABB  rect  ((float)lua_tonumber(st, 4), (float)lua_tonumber(st, 5));
+            std::string name = lua_tostring(st, 1);
+            bool ret = m_used->addObstacle(name, center, rect);
+            return helper::returnBoolean(st, ret);
+        }
+
+        int Stage::platform(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 5
+                    || args[0] != Script::STRING
+                    || args[1] != Script::NUMBER
+                    || args[2] != Script::NUMBER
+                    || args[3] != Script::NUMBER
+                    || args[4] != Script::NUMBER)
+                return helper::returnBoolean(st, false);
+            geometry::Point center((float)lua_tonumber(st, 2), (float)lua_tonumber(st, 3));
+            geometry::AABB  rect  ((float)lua_tonumber(st, 4), (float)lua_tonumber(st, 5));
+            std::string name = lua_tostring(st, 1);
+            bool ret = m_used->addPlatform(name, center, rect);
+            return helper::returnBoolean(st, ret);
         }
 
     }
