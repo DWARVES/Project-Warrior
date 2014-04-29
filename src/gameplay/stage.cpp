@@ -142,6 +142,7 @@ namespace gameplay
         /* Loading the lua script. */
         lua::exposure::Save::expose(&m_script);
         lua::exposure::Graphics::expose(&m_script);
+        global::gfx->enterNamespace(m_namespace);
         lua::exposure::Path::expose(&m_script);
         lua::exposure::Character::expose(&m_script);
         lua::exposure::Stage::expose(&m_script);
@@ -218,16 +219,19 @@ namespace gameplay
             global::gfx->move(-m_center.x / 2.0f, -m_center.y / 2.0f);
             global::gfx->move(m_appearDec.x, m_appearDec.y);
             global::gfx->setVirtualSize(m_appearView.width, m_appearView.height);
+            global::gfx->enterNamespace(m_namespace);
             m_script.callFunction<void>("drawBG", NULL);
             float percent = (float)time / (float)appearTime * 100.0f;
             for(int i = 0; i < m_nbPlayers; ++i)
                 m_ctrls[i]->attached()->appear(percent, m_appearSize);
+            global::gfx->enterNamespace(m_namespace);
             m_script.callFunction<void>("drawFG", NULL);
             return;
         }
 
         /* Drawing the game. */
         centerView();
+        global::gfx->enterNamespace(m_namespace);
         m_script.callFunction<void>("drawBG", NULL);
         for(int i = 0; i < m_nbPlayers; ++i) {
             global::gfx->push();
@@ -237,6 +241,7 @@ namespace gameplay
             c->draw();
             global::gfx->pop();
         }
+        global::gfx->enterNamespace(m_namespace);
         m_script.callFunction<void>("drawFG", NULL);
     }
             
