@@ -153,6 +153,12 @@ namespace gameplay
             core::logger::logm(oss.str(), core::logger::ERROR);
             return false;
         }
+        if(!m_script.existsFunction("drawBG") || !m_script.existsFunction("drawFG")) {
+            std::ostringstream oss;
+            oss << "The stage script for \"" << m_path << "\" doesn't have the drawing functions drawFG and drawBG.";
+            core::logger::logm(oss.str(), core::logger::ERROR);
+            return false;
+        }
 
         bool ret;
         m_script.callFunction<bool, std::string>("init", &ret, m_path);
