@@ -325,5 +325,51 @@ namespace gameplay
             return true;
     }
 
+    void Stage::setWorldCenter(const geometry::Point& c)
+    {
+        m_center = c;
+    }
+
+    void Stage::setMaxSize(const geometry::AABB& ms)
+    {
+        m_maxSize = ms;
+    }
+
+    void Stage::setDeathRect(const geometry::AABB& dr)
+    {
+        m_deathRect = dr;
+    }
+
+    void Stage::setMinSize(const geometry::AABB& ms)
+    {
+        m_minSize = ms;
+    }
+
+    float Stage::getWindowWidth() const
+    {
+        return m_windowRect.width;
+    }
+
+    float Stage::getWindowHeight() const
+    {
+        return m_windowRect.height;
+    }
+
+    void Stage::setAppearPos(int id, const geometry::Point& p)
+    {
+        if(id >= 0 && id < 4)
+            m_appearPos[id] = p;
+    }
+
+    void Stage::setAppearSize(const geometry::AABB& size)
+    {
+        m_appearSize = size;
+    }
+
+    void Stage::setAppearView(const geometry::AABB& view)
+    {
+        m_appearView = view;
+    }
+
 }
 

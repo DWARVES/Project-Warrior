@@ -42,7 +42,15 @@ namespace gameplay
 
             
         private: /* The methods to expose to lua. */
-            /* TODO */
+            void setWorldCenter(const geometry::Point& c);
+            void setMaxSize(const geometry::AABB& ms);
+            void setDeathRect(const geometry::AABB& dr);
+            void setMinSize(const geometry::AABB& ms);
+            float getWindowWidth() const;
+            float getWindowHeight() const;
+            void setAppearPos(int id, const geometry::Point& p);
+            void setAppearSize(const geometry::AABB& size);
+            void setAppearView(const geometry::AABB& view);
 
         private:
             static int m_count;              /**< @brief Count of all stages. */
