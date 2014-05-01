@@ -272,6 +272,7 @@ namespace graphics
             bool m_bandLR;               /**< @brief Must the black bands be on left and right or on top and bottom. */
             bool m_virtualR;             /**< @brief Must the ratio be preserved. */
             bool m_yinvert;              /**< @brief Is the y axis inverted. */
+            bool m_indraw;               /**< @brief Indicates if the class is in drawong mode. */
             /* Drawing */
             float m_lineWidth;           /**< @brief The width of lines used when drawing. */
 

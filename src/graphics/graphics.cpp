@@ -14,7 +14,7 @@ namespace graphics
     Graphics::Graphics()
         : m_win(NULL), m_ctx(0), m_shads(&m_exts),
         m_virtualW(0.0f), m_virtualH(0.0f), m_appliedW(0.0f), m_appliedH(0.0f), m_bandWidth(0.0f),
-        m_bandLR(true), m_virtualR(false), m_yinvert(false),
+        m_bandLR(true), m_virtualR(false), m_yinvert(false), m_indraw(false),
         m_lineWidth(1.0f)
     {}
 
@@ -244,6 +244,16 @@ namespace graphics
         m_virtualW = w;
         m_virtualH = h;
         computeBands();
+
+        /* If in drawing mode, apply changes immediatly. */
+        if(m_indraw) {
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            if(m_yinvert)
+                glOrtho(0, m_appliedW, 0, m_appliedH, 1, -1);
+            else
+                glOrtho(0, m_appliedW, m_appliedH, 0, 1, -1);
+        }
     }
 
     void Graphics::disableVirtualSize()
@@ -1005,6 +1015,8 @@ namespace graphics
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         m_shads.enable(true);
+
+        m_indraw = true;
     }
 
     void Graphics::endDraw()
@@ -1031,6 +1043,7 @@ namespace graphics
 
         glFlush();
         SDL_GL_SwapWindow(m_win);
+        m_indraw = false;
     }
 
 }
