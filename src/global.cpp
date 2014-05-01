@@ -74,6 +74,7 @@ namespace global
         global::cfg->define("resh",       'H', _i("The height of the window in pixels."), 768);
         global::cfg->define("guitheme",   'T', _i("The path to the gui theme."), "/usr/share/warrior/guirc");
         global::cfg->define("name",        0,  _i("The name of the window."), "Project Warror");
+        global::cfg->define("phdebug",     0,  _i("Enable debug draw in the physic engine."), false);
         /* Audio options */
         global::cfg->define("frequence", 0, _i("The frequence of the audio output."), 44100);
         global::cfg->define("sounds",    0, _i("The volume of the sounds, between 0 and 255."), 255);

@@ -177,7 +177,7 @@ namespace gameplay
         global::gfx->setVirtualSize(toshow.width, toshow.height);
         for(int i = 0; i < m_nbPlayers; ++i)
             m_ctrls[i]->attached()->physicMSize(1.0f, true);
-        m_world.enableDebugDraw(false);
+        m_world.enableDebugDraw(global::cfg->get<bool>("phdebug"));
 
         m_justLoaded = true;
         m_beggining = 0;
