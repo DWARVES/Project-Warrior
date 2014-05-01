@@ -83,6 +83,7 @@ namespace gameplay
             geometry::Point m_appearPos[4];  /**< @brief The pos of appearance of each character, setted by the script. */
             geometry::AABB m_appearView;     /**< @brief The AABB to view during appearance. */
             geometry::Point m_appearDec;     /**< @brief The decalage to apply during appearance. */
+            bool m_started;                  /**< @brief Setted to true when the physics are launched, false before. */
 
             /** @brief Create and return the namespace used. */
             std::string getNamespace();

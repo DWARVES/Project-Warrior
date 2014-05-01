@@ -19,7 +19,7 @@ namespace gameplay
     int Stage::m_count = 0;
 
     Stage::Stage(const std::string& path)
-        : m_path(path), m_namespace(getNamespace()), m_valid(false), m_nbPlayers(0)
+        : m_path(path), m_namespace(getNamespace()), m_valid(false), m_nbPlayers(0), m_started(false)
     {}
 
     Stage::~Stage()
@@ -197,6 +197,7 @@ namespace gameplay
 
         if(m_justLoaded) {
             m_justLoaded = false;
+            m_started = false;
             m_beggining = SDL_GetTicks();
             auto pair = ratioResize(m_windowRect, m_appearView, true);
             m_appearView = pair.first;
@@ -207,6 +208,12 @@ namespace gameplay
         Uint32 time = SDL_GetTicks() - m_beggining;
         if(time <= appearTime)
             return;
+        if(!m_started) {
+            m_started = true;
+            m_world.start();
+        }
+
+        m_world.step();
 
         /** @todo Physics callbacks for stage. */
     }
@@ -388,11 +395,13 @@ namespace gameplay
             
     bool Stage::addPlatform(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect)
     {
+        m_world.enterNamespace(m_namespace);
         return m_world.createPlatform(nm, center, rect) != NULL;
     }
 
     bool Stage::addObstacle(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect)
     {
+        m_world.enterNamespace(m_namespace);
         return m_world.createObstacle(nm, center, rect) != NULL;
     }
 
