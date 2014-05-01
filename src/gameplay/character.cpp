@@ -594,12 +594,14 @@ namespace gameplay
         if(m_ch)
             pos = m_ch->getPosition();
 
+        /* Getting in the right namespace. */
+        global::gfx->enterNamespace(m_namespace);
+        global::gfx->enterNamespace("perso");
+
         /* Updating animation. */
         actuateByLua();
 
         /* Drawing. */
-        global::gfx->enterNamespace(m_namespace);
-        global::gfx->enterNamespace("perso");
         global::gfx->push();
         global::gfx->move(pos.x, pos.y);
         if(m_useMsize)
