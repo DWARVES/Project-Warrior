@@ -185,7 +185,7 @@ namespace graphics
             oss << "fullscreen ";
 
         if(!ended)
-            oss << "window.";
+            oss << "window";
         else
             oss << "window of " << windowWidth() << "x" << windowHeight() << " size";
 
