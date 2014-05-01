@@ -333,8 +333,8 @@ namespace gameplay
             
     bool Stage::isIn(const geometry::Point& p, const geometry::AABB& rect, const geometry::Point& center) const
     {
-        geometry::Point p1(center.x - rect.width/2.0f, center.y - rect.width/2.0f);
-        geometry::Point p2(center.x + rect.width/2.0f, center.y + rect.width/2.0f);
+        geometry::Point p1(center.x - rect.width/2.0f, center.y - rect.height/2.0f);
+        geometry::Point p2(center.x + rect.width/2.0f, center.y + rect.height/2.0f);
         if(p.x < p1.x
                 || p.x > p2.x
                 || p.y < p1.y
