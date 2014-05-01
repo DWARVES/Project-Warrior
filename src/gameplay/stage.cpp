@@ -136,9 +136,6 @@ namespace gameplay
             m_world.createNamespace(m_namespace);
         m_world.enterNamespace(m_namespace);
 
-        for(int i = 0; i < m_nbPlayers; ++i)
-            m_ctrls[i]->attached()->world(&m_world);
-
         /* Loading the lua script. */
         lua::exposure::Save::expose(&m_script);
         lua::exposure::Graphics::expose(&m_script);
@@ -184,13 +181,15 @@ namespace gameplay
 
         m_justLoaded = true;
         m_beggining = 0;
-        for(int i = 0; i < m_nbPlayers; ++i)
+        for(int i = 0; i < m_nbPlayers; ++i) {
             m_ctrls[i]->attached()->appearancePos(m_appearPos[i]);
+            m_ctrls[i]->attached()->world(&m_world);
+        }
 
         return true;
     }
 
-    void Stage::update(const events::Events& ev)
+    void Stage::update(const events::Events&)
     {
         for(int i = 0; i < m_nbPlayers; ++i)
             m_ctrls[i]->update();
@@ -229,8 +228,12 @@ namespace gameplay
             global::gfx->enterNamespace(m_namespace);
             m_script.callFunction<void>("drawBG", NULL);
             float percent = (float)time / (float)appearTime * 100.0f;
-            for(int i = 0; i < m_nbPlayers; ++i)
+            for(int i = 0; i < m_nbPlayers; ++i) {
+                global::gfx->push();
+                global::gfx->move(-m_appearPos[i].x + m_appearSize.width / 2.0f, -m_appearPos[i].y + m_appearSize.height / 2.0f);
                 m_ctrls[i]->attached()->appear(percent, m_appearSize);
+                global::gfx->pop();
+            }
 
             global::gfx->enterNamespace(m_namespace);
             m_script.callFunction<void>("drawFG", NULL);
