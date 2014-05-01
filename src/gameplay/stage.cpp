@@ -245,14 +245,8 @@ namespace gameplay
         centerView();
         global::gfx->enterNamespace(m_namespace);
         m_script.callFunction<void>("drawBG", NULL);
-        for(int i = 0; i < m_nbPlayers; ++i) {
-            global::gfx->push();
-            gameplay::Character* c = m_ctrls[i]->attached();
-            geometry::Point pos = c->getPos();
-            global::gfx->move(pos.x, pos.y);
-            c->draw();
-            global::gfx->pop();
-        }
+        for(int i = 0; i < m_nbPlayers; ++i)
+            m_ctrls[i]->attached()->draw();
         global::gfx->enterNamespace(m_namespace);
         m_script.callFunction<void>("drawFG", NULL);
         m_world.debugDraw(global::gfx);
