@@ -255,24 +255,25 @@ namespace gameplay
     void Stage::centerView()
     {
         std::vector<geometry::Point> centers;
+        centers.reserve(4);
         for(int i = 0; i < m_nbPlayers; ++i) {
             if(isIn(m_ctrls[i]->attached()->getPos(), m_deathRect, m_center))
                 centers.push_back(m_ctrls[i]->attached()->getPos());
         }
 
         if(centers.size() == 0) {
-            global::gfx->move(-m_center.x / 2.0f, -m_center.y / 2.0f);
             m_windowRect.width = (float)global::gfx->windowWidth() / (float)pixelsPerPhysic;
             m_windowRect.height = (float)global::gfx->windowHeight() / (float)pixelsPerPhysic;
-            geometry::AABB toshow = ratioResize(m_maxSize, m_windowRect, true).first;
+            geometry::AABB toshow = ratioResize(m_windowRect, m_minSize, true).first;
+            global::gfx->move(-m_center.x + toshow.width/2.0f, -m_center.y + toshow.height/2.0f);
             global::gfx->setVirtualSize(toshow.width, toshow.height);
             return;
         }
         else if(centers.size() == 1) {
-            global::gfx->move(-centers[0].x / 2.0f, -centers[0].y / 2.0f);
             m_windowRect.width = (float)global::gfx->windowWidth() / (float)pixelsPerPhysic;
             m_windowRect.height = (float)global::gfx->windowHeight() / (float)pixelsPerPhysic;
-            geometry::AABB toshow = ratioResize(m_maxSize, m_windowRect, true).first;
+            geometry::AABB toshow = ratioResize(m_windowRect, m_minSize, true).first;
+            global::gfx->move(-centers[0].x + toshow.width/2.0f, -centers[0].y + toshow.height/2.0f);
             global::gfx->setVirtualSize(toshow.width, toshow.height);
             return;
         }
@@ -293,7 +294,7 @@ namespace gameplay
         rect.height += 2.0f;
 
         std::pair<geometry::AABB,geometry::Point> englobe = ratioResize(m_windowRect, rect, true);
-        global::gfx->move(-center.x / 2.0f, -center.y / 2.0f);
+        global::gfx->move(-center.x + englobe.first.width/2.0f, -center.y + englobe.first.height/2.0f);
         global::gfx->move(englobe.second.x, englobe.second.y);
         global::gfx->setVirtualSize(englobe.first.width, englobe.first.height);
     }
