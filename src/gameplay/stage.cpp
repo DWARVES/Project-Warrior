@@ -198,7 +198,7 @@ namespace gameplay
         if(m_justLoaded) {
             m_justLoaded = false;
             m_beggining = SDL_GetTicks();
-            auto pair = ratioResize(m_appearView, m_windowRect, true);
+            auto pair = ratioResize(m_windowRect, m_appearView, true);
             m_appearView = pair.first;
             m_appearDec  = pair.second;
             return;
@@ -216,16 +216,18 @@ namespace gameplay
         /* Drawing the appearance. */
         Uint32 time = SDL_GetTicks() - m_beggining;
         if(time <= appearTime) {
-            global::gfx->move(-m_center.x / 2.0f, -m_center.y / 2.0f);
-            global::gfx->move(m_appearDec.x, m_appearDec.y);
             global::gfx->setVirtualSize(m_appearView.width, m_appearView.height);
+            global::gfx->move(-m_center.x + m_appearView.width / 2.0f, -m_center.y + m_appearView.height / 2.0f);
+
             global::gfx->enterNamespace(m_namespace);
             m_script.callFunction<void>("drawBG", NULL);
             float percent = (float)time / (float)appearTime * 100.0f;
             for(int i = 0; i < m_nbPlayers; ++i)
                 m_ctrls[i]->attached()->appear(percent, m_appearSize);
+
             global::gfx->enterNamespace(m_namespace);
             m_script.callFunction<void>("drawFG", NULL);
+            m_world.debugDraw(global::gfx);
             return;
         }
 
@@ -243,6 +245,7 @@ namespace gameplay
         }
         global::gfx->enterNamespace(m_namespace);
         m_script.callFunction<void>("drawFG", NULL);
+        m_world.debugDraw(global::gfx);
     }
             
     void Stage::centerView()
