@@ -23,7 +23,14 @@ namespace gameplay
     {}
 
     Stage::~Stage()
-    {}
+    {
+        global::gfx->enterNamespace("/");
+        global::gfx->deleteNamespace(m_namespace);
+
+        m_world.enterNamespace("/");
+        if(m_world.existsNamespace(m_namespace))
+            m_world.deleteNamespace(m_namespace);
+    }
 
     bool Stage::preload()
     {
