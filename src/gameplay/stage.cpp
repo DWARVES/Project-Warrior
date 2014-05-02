@@ -230,7 +230,7 @@ namespace gameplay
             float percent = (float)time / (float)appearTime * 100.0f;
             for(int i = 0; i < m_nbPlayers; ++i) {
                 global::gfx->push();
-                global::gfx->move(-m_appearPos[i].x + m_appearSize.width / 2.0f, -m_appearPos[i].y + m_appearSize.height / 2.0f);
+                global::gfx->move(m_appearPos[i].x - m_appearSize.width / 2.0f, m_appearPos[i].y - m_appearSize.height / 2.0f);
                 m_ctrls[i]->attached()->appear(percent, m_appearSize);
                 global::gfx->pop();
             }
