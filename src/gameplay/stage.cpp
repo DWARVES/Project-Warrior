@@ -323,9 +323,18 @@ namespace gameplay
         rect.width *= 1.5f;
         rect.height *= 1.5f;
 
-        std::pair<geometry::AABB,geometry::Point> englobe = ratioResize(m_windowRect, rect, true);
-        global::gfx->setVirtualSize(englobe.first.width, englobe.first.height);
-        global::gfx->move(-center.x + englobe.first.width/2.0f, -center.y + englobe.first.height/2.0f);
+        /* Apply m_minSize and m_maxSize. */
+        geometry::AABB maxWin  = ratioResize(m_windowRect, m_maxSize, true).first;
+        geometry::AABB minWin  = ratioResize(m_windowRect, m_minSize, true).first;
+        geometry::AABB englobe = ratioResize(m_windowRect, rect, true).first;
+        if(englobe.width < minWin.width)
+            englobe = minWin;
+        else if(englobe.width > maxWin.width)
+            englobe = maxWin;
+
+        /* Apply in graphics. */
+        global::gfx->setVirtualSize(englobe.width, englobe.height);
+        global::gfx->move(-center.x + englobe.width/2.0f, -center.y + englobe.height/2.0f);
     }
             
     std::pair<geometry::AABB,geometry::Point> Stage::ratioResize(const geometry::AABB& res, const geometry::AABB& fit, bool large) const
