@@ -327,7 +327,8 @@ namespace graphics
                 m_appliedW = k * (float)windowWidth();
             }
         }
-        logVirtual();
+        if(!m_indraw)
+            logVirtual();
     }
 
     void Graphics::invertYAxis(bool inv)
