@@ -253,6 +253,7 @@ namespace graphics
                 glOrtho(0, m_appliedW, 0, m_appliedH, 1, -1);
             else
                 glOrtho(0, m_appliedW, m_appliedH, 0, 1, -1);
+            glMatrixMode(GL_MODELVIEW);
         }
     }
 
