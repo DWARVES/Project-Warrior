@@ -28,6 +28,7 @@ namespace core
 
         /** @brief Differents levels of importance of messages. */
         enum Level {
+            DEBUG,   /**< @brief For ultra-verbose output. */
             MSG,     /**< @brief Simple info */
             WARNING, /**< @brief Warning */
             ERROR,   /**< @brief Error not fatal, will not really matter the execution*/

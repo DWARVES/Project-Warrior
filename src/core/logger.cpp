@@ -88,6 +88,9 @@ namespace core
             }
 
             switch(lvl) {
+                case DEBUG:
+                    whole << "  (?)   ";
+                    break;
                 case MSG:
                     whole << "        ";
                     break;
