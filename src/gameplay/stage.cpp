@@ -153,9 +153,13 @@ namespace gameplay
             core::logger::logm(oss.str(), core::logger::ERROR);
             return false;
         }
-        if(!m_script.existsFunction("drawBG") || !m_script.existsFunction("drawFG")) {
+        m_drawbg       = m_script.existsFunction("drawBG");
+        m_drawstaticbg = m_script.existsFunction("drawStaticBG");
+        m_drawstaticfg = m_script.existsFunction("drawStaticFG");
+        m_drawfg       = m_script.existsFunction("drawFG");
+        if(!m_drawbg && !m_drawstaticbg && !m_drawstaticfg && !m_drawfg) {
             std::ostringstream oss;
-            oss << "The stage script for \"" << m_path << "\" doesn't have the drawing functions drawFG and drawBG.";
+            oss << "The stage script for \"" << m_path << "\" doesn't have any drawing function.";
             core::logger::logm(oss.str(), core::logger::ERROR);
             return false;
         }
@@ -219,14 +223,23 @@ namespace gameplay
 
     void Stage::draw()
     {
+        /* Drawing the static BG. */
+        global::gfx->setVirtualSize(m_windowRect.width, m_windowRect.height);
+        if(m_drawstaticbg) {
+            global::gfx->enterNamespace(m_namespace);
+            m_script.callFunction<void>("drawStaticBG", NULL);
+        }
+
         /* Drawing the appearance. */
         Uint32 time = SDL_GetTicks() - m_beggining;
         if(time <= appearTime) {
             global::gfx->setVirtualSize(m_appearView.width, m_appearView.height);
             global::gfx->move(-m_center.x + m_appearView.width / 2.0f, -m_center.y + m_appearView.height / 2.0f);
 
-            global::gfx->enterNamespace(m_namespace);
-            m_script.callFunction<void>("drawBG", NULL);
+            if(m_drawbg) {
+                global::gfx->enterNamespace(m_namespace);
+                m_script.callFunction<void>("drawBG", NULL);
+            }
             float percent = (float)time / (float)appearTime * 100.0f;
             for(int i = 0; i < m_nbPlayers; ++i) {
                 global::gfx->push();
@@ -235,21 +248,37 @@ namespace gameplay
                 global::gfx->pop();
             }
 
-            global::gfx->enterNamespace(m_namespace);
-            m_script.callFunction<void>("drawFG", NULL);
+            if(m_drawfg) {
+                global::gfx->enterNamespace(m_namespace);
+                m_script.callFunction<void>("drawFG", NULL);
+            }
             m_world.debugDraw(global::gfx);
-            return;
         }
 
         /* Drawing the game. */
-        centerView();
-        global::gfx->enterNamespace(m_namespace);
-        m_script.callFunction<void>("drawBG", NULL);
-        for(int i = 0; i < m_nbPlayers; ++i)
-            m_ctrls[i]->attached()->draw();
-        global::gfx->enterNamespace(m_namespace);
-        m_script.callFunction<void>("drawFG", NULL);
-        m_world.debugDraw(global::gfx);
+        else {
+            centerView();
+            if(m_drawbg) {
+                global::gfx->enterNamespace(m_namespace);
+                m_script.callFunction<void>("drawBG", NULL);
+            }
+            for(int i = 0; i < m_nbPlayers; ++i)
+                m_ctrls[i]->attached()->draw();
+
+            if(m_drawfg) {
+                global::gfx->enterNamespace(m_namespace);
+                m_script.callFunction<void>("drawFG", NULL);
+            }
+            m_world.debugDraw(global::gfx);
+        }
+
+        /* Drawing the static FG. */
+        global::gfx->identity();
+        global::gfx->setVirtualSize(m_windowRect.width, m_windowRect.height);
+        if(m_drawstaticfg) {
+            global::gfx->enterNamespace(m_namespace);
+            m_script.callFunction<void>("drawStaticFG", NULL);
+        }
     }
             
     void Stage::centerView()
@@ -262,16 +291,12 @@ namespace gameplay
         }
 
         if(centers.size() == 0) {
-            m_windowRect.width = (float)global::gfx->windowWidth() / (float)pixelsPerPhysic;
-            m_windowRect.height = (float)global::gfx->windowHeight() / (float)pixelsPerPhysic;
             geometry::AABB toshow = ratioResize(m_windowRect, m_minSize, true).first;
             global::gfx->move(-m_center.x + toshow.width/2.0f, -m_center.y + toshow.height/2.0f);
             global::gfx->setVirtualSize(toshow.width, toshow.height);
             return;
         }
         else if(centers.size() == 1) {
-            m_windowRect.width = (float)global::gfx->windowWidth() / (float)pixelsPerPhysic;
-            m_windowRect.height = (float)global::gfx->windowHeight() / (float)pixelsPerPhysic;
             geometry::AABB toshow = ratioResize(m_windowRect, m_minSize, true).first;
             global::gfx->move(-centers[0].x + toshow.width/2.0f, -centers[0].y + toshow.height/2.0f);
             global::gfx->setVirtualSize(toshow.width, toshow.height);

@@ -69,6 +69,10 @@ namespace gameplay
             gameplay::Controler* m_ctrls[4]; /**< @brief The controlers used. */
             int m_nbPlayers;                 /**< @brief The number of players [1-4]. */
             lua::Script m_script;            /**< @brief The lua script. */
+            bool m_drawbg;                   /**< @brief Indicates if the lua script has a drawBG function. */
+            bool m_drawstaticfg;             /**< @brief Indicates if the lua script has a drawStaticFG function. */
+            bool m_drawstaticbg;             /**< @brief Indicates if the lua script has a drawStaticBG function. */
+            bool m_drawfg;                   /**< @brief Indicates if the lua script has a drawFG function. */
 
             geometry::Point m_center;        /**< @brief The coordinates of the center of m_maxSize and m_deathRect. */
             geometry::AABB m_maxSize;        /**< @brief Characters outside this AABB won't be shown. */
