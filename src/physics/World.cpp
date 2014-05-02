@@ -94,7 +94,7 @@ namespace physics
         if(!existsEntity(name)) {
             Entity *entity = new Entity(name, this, position, bodyType, type, collideWith, gravityScale, fixedRotation);
             m_entities.createEntity(name, entity);
-            core::logger::logm("The entity \"" + name + "\" has been created.", core::logger::MSG);
+            core::logger::logm("The entity \"" + name + "\" has been created.", core::logger::DEBUG);
             return entity;
         }
         else {
@@ -108,7 +108,7 @@ namespace physics
         if(!existsEntity(name)) {
             Character *character = new Character(name, this, position, rect, weight);
             m_entities.createEntity(name, character);
-            core::logger::logm("The character \"" + name + "\" has been created.", core::logger::MSG);
+            core::logger::logm("The character \"" + name + "\" has been created.", core::logger::DEBUG);
             return character;
         }
         else {
@@ -122,7 +122,7 @@ namespace physics
         if(!existsEntity(name)) {
             Attack *attack = new Attack(name, this, position, bodyType, collideWith, gravityScale, fixedRotation);
             m_entities.createEntity(name, attack);
-            core::logger::logm("The attack \"" + name + "\" has been created.", core::logger::MSG);
+            core::logger::logm("The attack \"" + name + "\" has been created.", core::logger::DEBUG);
             return attack;
         }
         else {
@@ -136,7 +136,7 @@ namespace physics
         if(!existsEntity(name)) {
             Platform *platform = new Platform(name, this, position);
             m_entities.createEntity(name, platform);
-            core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::MSG);
+            core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::DEBUG);
             return platform;
         }
         else {
@@ -149,7 +149,7 @@ namespace physics
         if(!existsEntity(name)) {
             Platform *platform = new Platform(name, this, position, rect, friction);
             m_entities.createEntity(name, platform);
-            core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::MSG);
+            core::logger::logm("The platform \"" + name + "\" has been created.", core::logger::DEBUG);
             return platform;
         }       
         else {
@@ -163,7 +163,7 @@ namespace physics
         if(!existsEntity(name)) {
             Obstacle *obstacle = new Obstacle(name, this, position);
             m_entities.createEntity(name, obstacle);
-            core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::MSG);
+            core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::DEBUG);
             return obstacle;
         }
         else {
@@ -176,7 +176,7 @@ namespace physics
         if(!existsEntity(name)) {
             Obstacle *obstacle = new Obstacle(name, this, position, rect, friction);
             m_entities.createEntity(name, obstacle);
-            core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::MSG);
+            core::logger::logm("The obstacle \"" + name + "\" has been created.", core::logger::DEBUG);
             return obstacle;
         }
         else {
@@ -198,7 +198,7 @@ namespace physics
             b2RopeJoint* joint = (b2RopeJoint*)m_world->CreateJoint(&jointDef);
 
             m_joints.createEntity(name, joint);
-            core::logger::logm("The rope joint \"" + name + "\" has been created.", core::logger::MSG);
+            core::logger::logm("The rope joint \"" + name + "\" has been created.", core::logger::DEBUG);
             return joint;
         }
         else {
@@ -212,7 +212,7 @@ namespace physics
         if(existsEntity(name)) {
             m_world->DestroyBody(m_entities.getEntityValue(name)->getBody());
             m_entities.deleteEntity(name);
-            core::logger::logm("The entity \"" + name + "\" has been destroyed.", core::logger::MSG);
+            core::logger::logm("The entity \"" + name + "\" has been destroyed.", core::logger::DEBUG);
         }
         else
             core::logger::logm("Tried to destroy unexisting entity \"" + name + "\" : cancelled operation.", core::logger::WARNING);
@@ -223,7 +223,7 @@ namespace physics
         if(existsJoint(name)) {
             m_world->DestroyJoint(m_joints.getEntityValue(name));
             m_joints.deleteEntity(name);
-            core::logger::logm("The joint \"" + name + "\" has been destroyed.", core::logger::MSG);
+            core::logger::logm("The joint \"" + name + "\" has been destroyed.", core::logger::DEBUG);
         }
         else
             core::logger::logm("Tried to destroy unexisting joint \"" + name + "\" : cancelled operation.", core::logger::WARNING);
@@ -324,7 +324,7 @@ namespace physics
         for(it = jointsNamesList.begin() ; it != jointsNamesList.end() ; ++it) {
             if(m_joints.getEntityValue(*it) == joint) {
                 m_joints.deleteEntity(*it);
-                core::logger::logm("The joint \"" + *it + "\" has been destroyed.", core::logger::MSG);
+                core::logger::logm("The joint \"" + *it + "\" has been destroyed.", core::logger::DEBUG);
                 break;
             }
         }
@@ -338,7 +338,7 @@ namespace physics
         for(it = fixturesNamesList.begin() ; it != fixturesNamesList.end() ; ++it) {
             if(entity->m_fixtures.getEntityValue(*it) == fixture) {
                 entity->m_fixtures.deleteEntity(*it);
-                core::logger::logm("The fixture \"" + *it + "\" in entity \"" + entity->m_name + "\" has been destroyed.", core::logger::MSG);
+                core::logger::logm("The fixture \"" + *it + "\" in entity \"" + entity->m_name + "\" has been destroyed.", core::logger::DEBUG);
                 break;
             }
         }
