@@ -283,6 +283,7 @@ namespace gameplay
             
     void Stage::centerView()
     {
+        /* Getting all the centers of characters. */
         std::vector<geometry::Point> centers;
         centers.reserve(4);
         for(int i = 0; i < m_nbPlayers; ++i) {
@@ -290,12 +291,14 @@ namespace gameplay
                 centers.push_back(m_ctrls[i]->attached()->getPos());
         }
 
+        /* If no character on screen, display the center of mapi with minSize. */
         if(centers.size() == 0) {
             geometry::AABB toshow = ratioResize(m_windowRect, m_minSize, true).first;
             global::gfx->move(-m_center.x + toshow.width/2.0f, -m_center.y + toshow.height/2.0f);
             global::gfx->setVirtualSize(toshow.width, toshow.height);
             return;
         }
+        /* If one character on screen, center on him with minSize. */
         else if(centers.size() == 1) {
             geometry::AABB toshow = ratioResize(m_windowRect, m_minSize, true).first;
             global::gfx->move(-centers[0].x + toshow.width/2.0f, -centers[0].y + toshow.height/2.0f);
@@ -303,6 +306,7 @@ namespace gameplay
             return;
         }
 
+        /* Compute the extremities of the rect with all centers. */
         geometry::Point p1(centers[0]);
         geometry::Point p2(centers[0]);
         for(geometry::Point p : centers) {
@@ -312,16 +316,16 @@ namespace gameplay
             p2.y = std::max(p2.y, p.y);
         }
 
+        /* Compute rect and its center. */
         geometry::Point center((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f);
         geometry::AABB rect(p2.x - p1.x, p2.y - p1.y);
         /* Adding marging in the rect. */
-        rect.width += 2.0f;
-        rect.height += 2.0f;
+        rect.width *= 1.5f;
+        rect.height *= 1.5f;
 
         std::pair<geometry::AABB,geometry::Point> englobe = ratioResize(m_windowRect, rect, true);
-        global::gfx->move(-center.x + englobe.first.width/2.0f, -center.y + englobe.first.height/2.0f);
-        global::gfx->move(englobe.second.x, englobe.second.y);
         global::gfx->setVirtualSize(englobe.first.width, englobe.first.height);
+        global::gfx->move(-center.x + englobe.first.width/2.0f, -center.y + englobe.first.height/2.0f);
     }
             
     std::pair<geometry::AABB,geometry::Point> Stage::ratioResize(const geometry::AABB& res, const geometry::AABB& fit, bool large) const
