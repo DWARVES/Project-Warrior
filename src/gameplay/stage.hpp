@@ -52,8 +52,8 @@ namespace gameplay
             float getWindowWidth() const;
             float getWindowHeight() const;
             void setAppearPos(int id, const geometry::Point& p);
-            bool addPlatform(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect);
-            bool addObstacle(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect);
+            bool addPlatform(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect, float friction = 1.0f);
+            bool addObstacle(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect, float friction = 1.0f);
             void removeEntity(const std::string& nm);
 
         private:
