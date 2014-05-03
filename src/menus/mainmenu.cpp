@@ -57,6 +57,7 @@ bool MainMenu::prepare()
         if(!global::audio->loadMusic("mus", path.str()))
             return false;
     }
+    global::audio->enterNamespace("/menus");
     global::audio->play("mus", false);
 
     if(!loadRcs())
