@@ -778,5 +778,11 @@ namespace gameplay
     {
         m_ch->setPosition(p);
     }
+            
+    geometry::AABB Character::phSize() const
+    {
+        return m_phsize;
+    }
+
 }
 

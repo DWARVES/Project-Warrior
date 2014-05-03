@@ -112,6 +112,8 @@ namespace gameplay
             void appearancePos(const geometry::Point& pos);
             /** @brief Defines the physic size of the character. */
             void phSize(const geometry::AABB& size);
+            /** @brief Get the physic size of the character. */
+            geometry::AABB phSize() const;
             /** @brief Defines the physic weight of the character. */
             void phWeight(float w);
             /** @brief Defines the maximum mana of the character. */
