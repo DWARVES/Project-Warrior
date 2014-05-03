@@ -128,7 +128,8 @@ namespace lua
         int Stage::obstacle(lua_State* st)
         {
             std::vector<Script::VarType> args = helper::listArguments(st);
-            if(args.size() != 5
+            if(!(args.size() == 5
+                    || (args.size() == 6 && args[5] == Script::NUMBER))
                     || args[0] != Script::STRING
                     || args[1] != Script::NUMBER
                     || args[2] != Script::NUMBER
@@ -138,14 +139,18 @@ namespace lua
             geometry::Point center((float)lua_tonumber(st, 2), (float)lua_tonumber(st, 3));
             geometry::AABB  rect  ((float)lua_tonumber(st, 4), (float)lua_tonumber(st, 5));
             std::string name = lua_tostring(st, 1);
-            bool ret = m_used->addObstacle(name, center, rect);
+            float friction = 1.0f;
+            if(args.size() == 6)
+                friction = (float)lua_tonumber(st, 6);
+            bool ret = m_used->addObstacle(name, center, rect, friction);
             return helper::returnBoolean(st, ret);
         }
 
         int Stage::platform(lua_State* st)
         {
             std::vector<Script::VarType> args = helper::listArguments(st);
-            if(args.size() != 5
+            if(!(args.size() == 5
+                    || (args.size() == 6 && args[5] == Script::NUMBER))
                     || args[0] != Script::STRING
                     || args[1] != Script::NUMBER
                     || args[2] != Script::NUMBER
@@ -155,7 +160,10 @@ namespace lua
             geometry::Point center((float)lua_tonumber(st, 2), (float)lua_tonumber(st, 3));
             geometry::AABB  rect  ((float)lua_tonumber(st, 4), (float)lua_tonumber(st, 5));
             std::string name = lua_tostring(st, 1);
-            bool ret = m_used->addPlatform(name, center, rect);
+            float friction = 1.0f;
+            if(args.size() == 6)
+                friction = (float)lua_tonumber(st, 6);
+            bool ret = m_used->addPlatform(name, center, rect, friction);
             return helper::returnBoolean(st, ret);
         }
 
