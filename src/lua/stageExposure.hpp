@@ -37,7 +37,6 @@ namespace lua
                 int windowWidth(lua_State* st);
                 int windowHeight(lua_State* st);
                 int appearPos(lua_State* st);
-                int appearView(lua_State* st);
                 int obstacle(lua_State* st);
                 int platform(lua_State* st);
 

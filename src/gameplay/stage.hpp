@@ -52,7 +52,6 @@ namespace gameplay
             float getWindowWidth() const;
             float getWindowHeight() const;
             void setAppearPos(int id, const geometry::Point& p);
-            void setAppearView(const geometry::AABB& view);
             bool addPlatform(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect);
             bool addObstacle(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect);
             void removeEntity(const std::string& nm);
@@ -83,8 +82,6 @@ namespace gameplay
             bool m_justLoaded;               /**< @brief Is set to true by load and to false by update. */
             Uint32 m_beggining;              /**< @brief The time of the beggining of the game. */
             geometry::Point m_appearPos[4];  /**< @brief The pos of appearance of each character, setted by the script. */
-            geometry::AABB m_appearView;     /**< @brief The AABB to view during appearance. */
-            geometry::Point m_appearDec;     /**< @brief The decalage to apply during appearance. */
             bool m_started;                  /**< @brief Setted to true when the physics are launched, false before. */
 
             /** @brief Create and return the namespace used. */

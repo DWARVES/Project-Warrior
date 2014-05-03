@@ -209,9 +209,6 @@ namespace gameplay
             m_justLoaded = false;
             m_started = false;
             m_beggining = SDL_GetTicks();
-            auto pair = ratioResize(m_windowRect, m_appearView, true);
-            m_appearView = pair.first;
-            m_appearDec  = pair.second;
             return;
         }
 
@@ -415,11 +412,6 @@ namespace gameplay
             m_appearPos[id] = p;
     }
 
-    void Stage::setAppearView(const geometry::AABB& view)
-    {
-        m_appearView = view;
-    }
-            
     bool Stage::addPlatform(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect)
     {
         m_world.enterNamespace(m_namespace);

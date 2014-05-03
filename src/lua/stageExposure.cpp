@@ -17,7 +17,6 @@ namespace lua
             {"width",       &Stage::windowWidth},
             {"height",      &Stage::windowHeight},
             {"appearPos",   &Stage::appearPos},
-            {"appearView",  &Stage::appearView},
             {"obstacle",    &Stage::obstacle},
             {"platform",    &Stage::platform},
             {NULL, NULL}
@@ -101,14 +100,6 @@ namespace lua
 
             geometry::Point pos((float)lua_tonumber(st, 2), (float)lua_tonumber(st, 3));
             m_used->setAppearPos(id, pos);
-            return 0;
-        }
-
-        int Stage::appearView(lua_State* st)
-        {
-            geometry::AABB rect;
-            if(isAABB(st, rect))
-                m_used->setAppearView(rect);
             return 0;
         }
 
