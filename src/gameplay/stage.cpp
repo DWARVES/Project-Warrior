@@ -230,23 +230,22 @@ namespace gameplay
 
     void Stage::draw()
     {
-        /* Drawing the static BG. */
+        /* Drawing the BG. */
         global::gfx->setVirtualSize(m_windowRect.width, m_windowRect.height);
         if(m_drawstaticbg) {
             global::gfx->enterNamespace(m_namespace);
             m_script.callFunction<void>("drawStaticBG", NULL);
         }
 
+        centerView();
+        if(m_drawbg) {
+            global::gfx->enterNamespace(m_namespace);
+            m_script.callFunction<void>("drawBG", NULL);
+        }
+
         /* Drawing the appearance. */
         Uint32 time = SDL_GetTicks() - m_beggining;
         if(time <= appearTime) {
-            global::gfx->setVirtualSize(m_appearView.width, m_appearView.height);
-            global::gfx->move(-m_center.x + m_appearView.width / 2.0f, -m_center.y + m_appearView.height / 2.0f);
-
-            if(m_drawbg) {
-                global::gfx->enterNamespace(m_namespace);
-                m_script.callFunction<void>("drawBG", NULL);
-            }
             float percent = (float)time / (float)appearTime * 100.0f;
             for(int i = 0; i < m_nbPlayers; ++i) {
                 geometry::AABB size = m_ctrls[i]->attached()->phSize();
@@ -255,32 +254,21 @@ namespace gameplay
                 m_ctrls[i]->attached()->appear(percent, size);
                 global::gfx->pop();
             }
-
-            if(m_drawfg) {
-                global::gfx->enterNamespace(m_namespace);
-                m_script.callFunction<void>("drawFG", NULL);
-            }
-            m_world.debugDraw(global::gfx);
         }
 
         /* Drawing the game. */
         else {
-            centerView();
-            if(m_drawbg) {
-                global::gfx->enterNamespace(m_namespace);
-                m_script.callFunction<void>("drawBG", NULL);
-            }
             for(int i = 0; i < m_nbPlayers; ++i)
                 m_ctrls[i]->attached()->draw();
-
-            if(m_drawfg) {
-                global::gfx->enterNamespace(m_namespace);
-                m_script.callFunction<void>("drawFG", NULL);
-            }
-            m_world.debugDraw(global::gfx);
         }
 
-        /* Drawing the static FG. */
+        /* Drawing the FG. */
+        if(m_drawfg) {
+            global::gfx->enterNamespace(m_namespace);
+            m_script.callFunction<void>("drawFG", NULL);
+        }
+        m_world.debugDraw(global::gfx);
+
         global::gfx->identity();
         global::gfx->setVirtualSize(m_windowRect.width, m_windowRect.height);
         if(m_drawstaticfg) {
