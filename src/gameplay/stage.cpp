@@ -249,9 +249,10 @@ namespace gameplay
             }
             float percent = (float)time / (float)appearTime * 100.0f;
             for(int i = 0; i < m_nbPlayers; ++i) {
+                geometry::AABB size = m_ctrls[i]->attached()->phSize();
                 global::gfx->push();
-                global::gfx->move(m_appearPos[i].x - m_appearSize.width / 2.0f, m_appearPos[i].y - m_appearSize.height / 2.0f);
-                m_ctrls[i]->attached()->appear(percent, m_appearSize);
+                global::gfx->move(m_appearPos[i].x - size.width / 2.0f, m_appearPos[i].y - size.height / 2.0f);
+                m_ctrls[i]->attached()->appear(percent, size);
                 global::gfx->pop();
             }
 
@@ -424,11 +425,6 @@ namespace gameplay
     {
         if(id >= 0 && id < 4)
             m_appearPos[id] = p;
-    }
-
-    void Stage::setAppearSize(const geometry::AABB& size)
-    {
-        m_appearSize = size;
     }
 
     void Stage::setAppearView(const geometry::AABB& view)

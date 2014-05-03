@@ -52,7 +52,6 @@ namespace gameplay
             float getWindowWidth() const;
             float getWindowHeight() const;
             void setAppearPos(int id, const geometry::Point& p);
-            void setAppearSize(const geometry::AABB& size);
             void setAppearView(const geometry::AABB& view);
             bool addPlatform(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect);
             bool addObstacle(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect);
@@ -83,7 +82,6 @@ namespace gameplay
             /* Managing appearance. */
             bool m_justLoaded;               /**< @brief Is set to true by load and to false by update. */
             Uint32 m_beggining;              /**< @brief The time of the beggining of the game. */
-            geometry::AABB m_appearSize;     /**< @brief The size of appearance, setted by the script. */
             geometry::Point m_appearPos[4];  /**< @brief The pos of appearance of each character, setted by the script. */
             geometry::AABB m_appearView;     /**< @brief The AABB to view during appearance. */
             geometry::Point m_appearDec;     /**< @brief The decalage to apply during appearance. */
