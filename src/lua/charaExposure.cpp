@@ -16,6 +16,9 @@ namespace lua
             {"requireMana", &Character::requireMana},
             {"onGround",    &Character::onGround},
             {"flip",        &Character::flip},
+            {"force",       &Character::applyForce},
+            {"velocity",    &Character::velocity},
+            {"impulse",     &Character::impulse},
             {NULL, NULL}
         };
         const Script::Properties<Character> Character::properties[] = {
@@ -96,6 +99,43 @@ namespace lua
                 m_char = 3;
             return 0;
         }
+                
+        int Character::applyForce(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 2
+                    || args[0] != Script::NUMBER
+                    || args[1] != Script::NUMBER)
+                return 0;
+            physics::Entity* ent = characters[m_char]->entity();
+            ent->applyForce((float)lua_tonumber(st, 1), (float)lua_tonumber(st, 2));
+            return 0;
+        }
+
+        int Character::impulse(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 2
+                    || args[0] != Script::NUMBER
+                    || args[1] != Script::NUMBER)
+                return 0;
+            physics::Entity* ent = characters[m_char]->entity();
+            ent->applyLinearImpulse((float)lua_tonumber(st, 1), (float)lua_tonumber(st, 2));
+            return 0;
+        }
+
+        int Character::velocity(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 2
+                    || args[0] != Script::NUMBER
+                    || args[1] != Script::NUMBER)
+                return 0;
+            physics::Entity* ent = characters[m_char]->entity();
+            ent->setLinearVelocity((float)lua_tonumber(st, 1), (float)lua_tonumber(st, 2));
+            return 0;
+        }
+
     }
 }
 

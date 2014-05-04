@@ -39,6 +39,11 @@ namespace lua
                 int requireMana(lua_State* st);
                 int flip(lua_State* st);
 
+                /* Physic exposure. */
+                int applyForce(lua_State* st);
+                int impulse(lua_State* st);
+                int velocity(lua_State* st);
+
             private:
                 int m_char; /**< @brief The character to use [0-3]. */
         };
