@@ -783,6 +783,11 @@ namespace gameplay
     {
         return m_phsize;
     }
+            
+    physics::Entity* Character::entity() const
+    {
+        return (physics::Entity*)m_ch;
+    }
 
 }
 
