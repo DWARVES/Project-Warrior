@@ -452,11 +452,11 @@ namespace gameplay
             return;
 
         if(bg) {
-            if(!cbs->begin.empty())
+            if(!cbs->begin.empty() && !cbs->charas[id])
                 cbs->st->m_script.callFunction<void,int>(cbs->begin, NULL, id);
             cbs->charas[id] = true;
         } else {
-            if(!cbs->end.empty())
+            if(!cbs->end.empty() && cbs->charas[id])
                 cbs->st->m_script.callFunction<void,int>(cbs->end, NULL, id);
             cbs->charas[id] = false;
         }
