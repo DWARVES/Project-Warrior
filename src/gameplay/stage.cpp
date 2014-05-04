@@ -431,6 +431,18 @@ namespace gameplay
         m_world.enterNamespace(m_namespace);
         return m_world.createObstacle(nm, center, rect, friction) != NULL;
     }
+            
+    bool Stage::addSensor(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect)
+    {
+        m_world.enterNamespace(m_namespace);
+        physics::Entity* ent = m_world.createEntity(nm, center, b2_staticBody);
+        if(!ent)
+            return false;
+        if(!ent->createFixture("main", rect, 1, 1, physics::Entity::Type::ThisType,
+                    physics::Entity::Type::ThisCollideWith, geometry::Point(0,0), true))
+            return false;
+        return true;
+    }
 
     void Stage::removeEntity(const std::string& nm)
     {

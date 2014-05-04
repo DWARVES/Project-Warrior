@@ -18,6 +18,7 @@ namespace lua
             {"height",      &Stage::windowHeight},
             {"appearPos",   &Stage::appearPos},
             {"obstacle",    &Stage::obstacle},
+            {"sensor",      &Stage::sensors},
             {"platform",    &Stage::platform},
             {"watch",       &Stage::setCallback},
             {"unwatch",     &Stage::unsetCallbacks},
@@ -166,6 +167,23 @@ namespace lua
             if(args.size() == 6)
                 friction = (float)lua_tonumber(st, 6);
             bool ret = m_used->addPlatform(name, center, rect, friction);
+            return helper::returnBoolean(st, ret);
+        }
+                
+        int Stage::sensors(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 5
+                    || args[0] != Script::STRING
+                    || args[1] != Script::NUMBER
+                    || args[2] != Script::NUMBER
+                    || args[3] != Script::NUMBER
+                    || args[4] != Script::NUMBER)
+                return helper::returnBoolean(st, false);
+            geometry::Point center((float)lua_tonumber(st, 2), (float)lua_tonumber(st, 3));
+            geometry::AABB  rect  ((float)lua_tonumber(st, 4), (float)lua_tonumber(st, 5));
+            std::string name = lua_tostring(st, 1);
+            bool ret = m_used->addSensor(name, center, rect);
             return helper::returnBoolean(st, ret);
         }
                 

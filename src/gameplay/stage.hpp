@@ -55,6 +55,7 @@ namespace gameplay
             void setAppearPos(int id, const geometry::Point& p);
             bool addPlatform(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect, float friction = 1.0f);
             bool addObstacle(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect, float friction = 1.0f);
+            bool addSensor(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect);
             void removeEntity(const std::string& nm);
             /** @brief Set the callbacks for an entity.
              * @param nm The entity to set the callbacks to.

@@ -39,6 +39,7 @@ namespace lua
                 int appearPos(lua_State* st);
                 int obstacle(lua_State* st);
                 int platform(lua_State* st);
+                int sensors(lua_State* st);
                 int setCallback(lua_State* st);
                 int unsetCallbacks(lua_State* st);
 
