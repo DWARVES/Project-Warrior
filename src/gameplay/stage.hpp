@@ -6,6 +6,7 @@
 #include "controler.hpp"
 #include "events/events.hpp"
 #include "physics/World.hpp"
+#include "physics/Entity.hpp"
 #include "geometry/aabb.hpp"
 #include "lua/script.hpp"
 #include "lua/stageExposure.hpp"
@@ -55,6 +56,17 @@ namespace gameplay
             bool addPlatform(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect, float friction = 1.0f);
             bool addObstacle(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect, float friction = 1.0f);
             void removeEntity(const std::string& nm);
+            /** @brief Set the callbacks for an entity.
+             * @param nm The entity to set the callbacks to.
+             * @param begincontact The callback called when a character start touching the entity.
+             * @param endcontact The callback when a character stop touching the entity.
+             * @param incontact Called every frame for each character touching the entity.
+             *
+             * The callbacks must be lua functions which accepts one argument : the id of the character.
+             * If the function name is empty or doesn't exists in the lua script, it will be ignored.
+             */
+            bool setEntityCallbacks(const std::string& nm, const std::string& begincontact, const std::string& endcontact, const std::string& incontact);
+            void unsetEntityCallbacks(const std::string& nm);
 
         private:
             static int m_count;              /**< @brief Count of all stages. */
@@ -83,6 +95,21 @@ namespace gameplay
             Uint32 m_beggining;              /**< @brief The time of the beggining of the game. */
             geometry::Point m_appearPos[4];  /**< @brief The pos of appearance of each character, setted by the script. */
             bool m_started;                  /**< @brief Setted to true when the physics are launched, false before. */
+            
+            /* Lua callbacks. */
+            /** @brief A structure to store the callbacks for an entity. */
+            struct EntityCallbacks {
+                physics::Entity* ent;        /**< @brief The physic entity. */
+                std::string begin;           /**< @brief The callback for the beggining of a contact. */
+                std::string end;             /**< @brief The callback for the end of a contact. */
+                std::string in;              /**< @brief Called every frame with the characters in contact. */
+                bool charas[4];              /**< @brief Indicates which characters are in contact. */
+                Stage* st;                   /**< @brief The stage, for use from the callback function. */
+            };
+            /** @brief A map from the entity names to their callbacks. */
+            std::map<std::string, EntityCallbacks> m_callbacks;
+            /** @brief The callback function passed to physics. */
+            static void phcallback(physics::Entity* ground, physics::Entity* chara, bool bg, void* data);
 
             /** @brief Create and return the namespace used. */
             std::string getNamespace();

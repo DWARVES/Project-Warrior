@@ -220,9 +220,17 @@ namespace gameplay
             m_world.start();
         }
 
-        m_world.step();
+        for(auto it = m_callbacks.begin(); it != m_callbacks.end(); ++it) {
+            EntityCallbacks cbs = it->second;
+            if(!cbs.in.empty()) {
+                for(int i = 0; i < m_nbPlayers; ++i) {
+                    if(cbs.charas[i])
+                        m_script.callFunction<void,int>(cbs.in, NULL, i);
+                }
+            }
+        }
 
-        /** @todo Physics callbacks for stage. */
+        m_world.step();
     }
 
     void Stage::draw()
@@ -426,7 +434,66 @@ namespace gameplay
 
     void Stage::removeEntity(const std::string& nm)
     {
+        unsetEntityCallbacks(nm);
         m_world.destroyEntity(nm);
+    }
+            
+    void Stage::phcallback(physics::Entity* ground, physics::Entity* chara, bool bg, void* data)
+    {
+        EntityCallbacks* cbs = (EntityCallbacks*)data;
+        if(ground != cbs->ent) /* Shouldn't happen. */
+            return;
+
+        int id = 0;
+        while(id < 4 && chara != cbs->st->m_ctrls[id]->attached()->entity())
+            ++id;
+        /* The entity in contact is not a character. */
+        if(id >= 4)
+            return;
+
+        if(bg) {
+            if(!cbs->begin.empty())
+                cbs->st->m_script.callFunction<void,int>(cbs->begin, NULL, id);
+            cbs->charas[id] = true;
+        } else {
+            if(!cbs->end.empty())
+                cbs->st->m_script.callFunction<void,int>(cbs->end, NULL, id);
+            cbs->charas[id] = false;
+        }
+    }
+            
+    bool Stage::setEntityCallbacks(const std::string& nm, const std::string& begincontact, const std::string& endcontact, const std::string& incontact)
+    {
+        m_world.enterNamespace(m_namespace);
+        if(!m_world.existsEntity(nm))
+            return false;
+        m_callbacks[nm].ent = m_world.getEntity(nm);
+        m_callbacks[nm].st = this;
+
+        m_callbacks[nm].begin = begincontact;
+        if(!begincontact.empty() && !m_script.existsFunction(begincontact))
+            m_callbacks[nm].begin.clear();
+
+        m_callbacks[nm].end = endcontact;
+        if(!endcontact.empty() && !m_script.existsFunction(endcontact))
+            m_callbacks[nm].end.clear();
+
+        m_callbacks[nm].in = incontact;
+        if(!begincontact.empty() && !m_script.existsFunction(incontact))
+            m_callbacks[nm].in.clear();
+
+        m_world.setCallback(nm, &phcallback, &m_callbacks[nm]);
+
+        return true;
+    }
+            
+    void Stage::unsetEntityCallbacks(const std::string& nm)
+    {
+        auto it = m_callbacks.find(nm);
+        if(it != m_callbacks.end()) {
+            m_callbacks.erase(it);
+            m_world.removeCallback(nm);
+        }
     }
 
 }
