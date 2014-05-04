@@ -706,8 +706,12 @@ namespace gameplay
     {
         if(!m_ch)
             return true;
-        else
-            return m_ch->onGround();
+        else {
+            if(m_ch->getYLinearVelocity() > 0.00001f)
+                return false;
+            else
+                return m_ch->onGround();
+        }
     }
 
     bool Character::requireMana(unsigned int mn)
