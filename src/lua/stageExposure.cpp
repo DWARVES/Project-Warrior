@@ -19,6 +19,8 @@ namespace lua
             {"appearPos",   &Stage::appearPos},
             {"obstacle",    &Stage::obstacle},
             {"platform",    &Stage::platform},
+            {"watch",       &Stage::setCallback},
+            {"unwatch",     &Stage::unsetCallbacks},
             {NULL, NULL}
         };
         const Script::Properties<Stage> Stage::properties[] = {
@@ -165,6 +167,30 @@ namespace lua
                 friction = (float)lua_tonumber(st, 6);
             bool ret = m_used->addPlatform(name, center, rect, friction);
             return helper::returnBoolean(st, ret);
+        }
+                
+        int Stage::setCallback(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 4
+                    || args[0] != Script::STRING
+                    || args[1] != Script::STRING
+                    || args[2] != Script::STRING
+                    || args[3] != Script::STRING)
+                return helper::returnBoolean(st, false);
+            bool ret = m_used->setEntityCallbacks(lua_tostring(st, 1), lua_tostring(st, 2),
+                    lua_tostring(st, 3), lua_tostring(st, 4));
+            return helper::returnBoolean(st, ret);
+        }
+
+        int Stage::unsetCallbacks(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 1
+                    || args[0] != Script::STRING)
+                return 0;
+            m_used->unsetEntityCallbacks(lua_tostring(st, 1));
+            return 0;
         }
 
     }
