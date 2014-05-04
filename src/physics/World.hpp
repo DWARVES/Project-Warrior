@@ -95,8 +95,10 @@ namespace physics
              * The first param passed to the callback is the entity itself and the second is the entity it collide with.
              */
             void setCallback(std::string name, Callback callback, void* data = NULL);
-            /** @brief Set a fixture callback. */
-            void setCallback(Entity* ent, b2Fixture* fixt, Callback callback, void* data = NULL);
+            /** @brief Set a fixture callback. 
+             * @param sensors If false, collisions with sensors won't be reported.
+             */
+            void setCallback(Entity* ent, b2Fixture* fixt, Callback callback, void* data = NULL, bool sensors = true);
             /** @brief Removes the callbacks at [nameA][nameB] and [nameB][nameA] locations */
             void removeCallback(std::string nameA, std::string nameB);
             /** @brief Removes a global callback. */
@@ -154,8 +156,14 @@ namespace physics
             std::map<Entity*, std::map<Entity*, std::pair<Callback, void*>>> m_callbacks;
             /** @brief A map containing the global callbacks. */
             std::map<Entity*, std::pair<Callback, void*>> m_glcallbacks;
+            /** @brief Represents a callback for fixture. */
+            struct FtCallback {
+                Callback cb;  /**< @brief The function to call. */
+                void* data;   /**< @brief The data to pass to the called function. */
+                bool sensors; /**< @brief Indicates if collisions with sensors must be reported. */
+            };
             /** @brief A map containing the fixtures callbacks. */
-            std::map<Entity*, std::map<b2Fixture*, std::pair<Callback, void*>>> m_ftcallbacks;
+            std::map<Entity*, std::map<b2Fixture*, FtCallback>> m_ftcallbacks;
             /** @brief Timestamp used to compute the time of each step. */
             Uint32 m_ltime;
             /** @brief Is the debug draw enabled. */

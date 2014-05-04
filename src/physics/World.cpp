@@ -282,10 +282,11 @@ namespace physics
             m_glcallbacks.erase(ent);
     }
 
-    void World::setCallback(Entity* ent, b2Fixture* fixt, Callback callback, void* data)
+    void World::setCallback(Entity* ent, b2Fixture* fixt, Callback callback, void* data, bool sensors)
     {
-        m_ftcallbacks[ent][fixt].first  = callback;
-        m_ftcallbacks[ent][fixt].second = data;
+        m_ftcallbacks[ent][fixt].cb      = callback;
+        m_ftcallbacks[ent][fixt].data    = data;
+        m_ftcallbacks[ent][fixt].sensors = sensors;;
     }
 
     void World::removeCallback(Entity* ent, b2Fixture* fixt)
@@ -310,11 +311,13 @@ namespace physics
             (*m_glcallbacks[entityB].first)(entityB, entityA, st, m_glcallbacks[entityB].second);
 
         if(m_ftcallbacks.find(entityA) != m_ftcallbacks.end()
-                && m_ftcallbacks[entityA].find(fA) != m_ftcallbacks[entityA].end())
-            (*m_ftcallbacks[entityA][fA].first)(entityA, entityB, st, m_ftcallbacks[entityA][fA].second);
+                && m_ftcallbacks[entityA].find(fA) != m_ftcallbacks[entityA].end()
+                && (m_ftcallbacks[entityA][fA].sensors || !fB->IsSensor()))
+            (*m_ftcallbacks[entityA][fA].cb)(entityA, entityB, st, m_ftcallbacks[entityA][fA].data);
         if(m_ftcallbacks.find(entityB) != m_ftcallbacks.end()
-                && m_ftcallbacks[entityB].find(fB) != m_ftcallbacks[entityB].end())
-            (*m_ftcallbacks[entityB][fB].first)(entityB, entityA, st, m_ftcallbacks[entityB][fB].second);
+                && m_ftcallbacks[entityB].find(fB) != m_ftcallbacks[entityB].end()
+                && (m_ftcallbacks[entityB][fB].sensors || !fA->IsSensor()))
+            (*m_ftcallbacks[entityB][fB].cb)(entityB, entityA, st, m_ftcallbacks[entityB][fB].data);
     }
 
     void World::SayGoodbye(b2Joint* joint)
