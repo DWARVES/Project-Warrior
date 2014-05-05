@@ -154,6 +154,7 @@ namespace gameplay
                 JumpAir,              /**< @brief Do a double jump. */
                 Down,                 /**< @brief Get down from midair. */
                 FastDown,             /**< @brief Get down from midair fast. */
+                Up,                   /**< @brief Going up without jumping. */
                 Land,                 /**< @brief After going down, land on ground. */
                 Stand,                /**< @brief Stay witheout moving. */
                 Shield,               /**< @brief Protect itself with the shield. */

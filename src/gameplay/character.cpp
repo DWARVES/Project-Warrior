@@ -24,6 +24,7 @@ namespace gameplay
         "jumpAir",
         "down",
         "fastDown",
+        "up",
         "land",
         "stand",
         "shield",
@@ -248,6 +249,7 @@ namespace gameplay
         valid = valid && checkFunc(m_perso, "perso.lua", "jumpAir");
         valid = valid && checkFunc(m_perso, "perso.lua", "down");
         valid = valid && checkFunc(m_perso, "perso.lua", "fastDown");
+        valid = valid && checkFunc(m_perso, "perso.lua", "up");
         valid = valid && checkFunc(m_perso, "perso.lua", "land");
         valid = valid && checkFunc(m_perso, "perso.lua", "stand");
         valid = valid && checkFunc(m_perso, "perso.lua", "attack");
@@ -570,11 +572,18 @@ namespace gameplay
                 if(previous.id == ActionID::Walk)
                     m_ch->setXLinearVelocity(0.0f);
                 break;
+            case ActionID::None:
+                if(m_ch->getYLinearVelocity() > 0.0f
+                        && previous.id != ActionID::Jump
+                        && previous.id != ActionID::JumpAir) {
+                    m_actual.id = ActionID::Up;
+                    m_next.id   = ActionID::None;
+                }
+                break;
             case ActionID::Land:
             case ActionID::Down:
             case ActionID::Won:
             case ActionID::Lost:
-            case ActionID::None:
             default:
                 break;
         }
