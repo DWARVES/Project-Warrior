@@ -134,6 +134,17 @@ namespace gameplay
             /** @brief Allocate another character with the same path. */
             Character* clone() const;
 
+            /** @brief Inflict damages to a character. */
+            void inflictDamages(int dm);
+            /** @brief Get the damages of the character. */
+            int getDamages() const;
+            /** @brief Add points to the character. */
+            void addPoints(int pts);
+            /** @brief Get the amount of points of the character. */
+            int getPoints() const;
+            /** @brief Indicates a character he is dead : reset its coordinates of damages, after a laps of time. */
+            void die();
+
         private:
             std::string m_namespace;  /**< @brief The name of the namespace used by this character in gfx, audio and physics. */
             std::string m_path;       /**< @brief The path to the directory of the character. */
@@ -205,6 +216,11 @@ namespace gameplay
             geometry::AABB m_phsize;  /**< @brief The size of the entity in the physic world. */
             float m_phweight;         /**< @brief The weight of the entity on the physic world. */
             geometry::Point m_phpos;  /**< @brief The position of appearance of the character in the physics world. */
+
+            /* Points and damages. */
+            int m_damages;            /**< @brief The amount of damages of the character. */
+            int m_points;             /**< @brief The points of the character. */
+            Uint32 m_death;           /**< @brief Last time of death of the character. */
 
             /* Internal methods. */
             /** @brief Draw the nm texture with a maximum size, can flip it horizontally. */

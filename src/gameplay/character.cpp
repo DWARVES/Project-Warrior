@@ -15,6 +15,8 @@
 
 namespace gameplay
 {
+    /** @brief Time of death in ms. */
+    const Uint32 deathTime = 1000;
     size_t Character::m_count = 0;
     const char* const Character::m_luaCalls[(unsigned int)ActionID::None] = {
         "walk",
@@ -286,6 +288,11 @@ namespace gameplay
             return false;
         }
 
+        /* Initiate the state of the character. */
+        m_death   = 0;
+        m_points  = 0;
+        m_damages = 0;
+
         m_actual.flip = m_next.flip = false;
         action(Walk, Fixed);
         return true;
@@ -293,6 +300,10 @@ namespace gameplay
 
     void Character::action(Control control, Direction dir)
     {
+        /* Don't accept actions when dead. */
+        if(SDL_GetTicks() - m_death < deathTime)
+            return;
+
         Action save = m_actual;
         m_stir = 0.0f;
 
@@ -601,6 +612,10 @@ namespace gameplay
 
     void Character::draw()
     {
+        /* Don't do anything while dead. */
+        if(SDL_GetTicks() - m_death < deathTime)
+            return;
+
         /* Getting physic position. */
         geometry::Point pos(0.0f, 0.0f);
         if(m_ch)
@@ -803,6 +818,40 @@ namespace gameplay
     physics::Entity* Character::entity() const
     {
         return (physics::Entity*)m_ch;
+    }
+
+    void Character::inflictDamages(int dm)
+    {
+        m_damages += dm;
+        if(m_damages < 0)
+            m_damages = 0;
+    }
+
+    int Character::getDamages() const
+    {
+        return m_damages;
+    }
+
+    void Character::addPoints(int pts)
+    {
+        m_points += pts;
+        if(m_points < 0)
+            m_points = 0;
+    }
+
+    int Character::getPoints() const
+    {
+        return m_points;
+    }
+
+    void Character::die()
+    {
+        /* Reset coordinates. */
+        warp(m_phpos);
+        /* Reset damages. */
+        m_damages = 0;
+        /* Set death time. */
+        m_death = SDL_GetTicks();
     }
 
 }
