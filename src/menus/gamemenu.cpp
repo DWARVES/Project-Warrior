@@ -12,15 +12,18 @@ GameMenu::~GameMenu()
 
 bool GameMenu::prepare()
 {
-    /* Nothing to do. */
+    /* The gui isn't used during the game. */
+    global::gui->focus(false);
     return true;
 }
 
 bool GameMenu::update()
 {
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
-            || global::evs->keyJustPressed(events::Key('q')))
+            || global::evs->keyJustPressed(events::Key('q'))) {
+        global::gui->focus(true);
         return false;
+    }
 
     m_stage->update(*global::evs);
     global::gfx->beginDraw();
