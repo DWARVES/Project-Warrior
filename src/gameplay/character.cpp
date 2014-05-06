@@ -312,8 +312,11 @@ namespace gameplay
                             m_actual.id = ActionID::Down;
                         }
                         else { /* going up */
+                            if(save.id == ActionID::Jump || save.id == ActionID::JumpAir)
+                                m_actual.id = save.id;
+                            else
+                                m_actual.id = ActionID::Up;
                             m_stir = 50.0f;
-                            m_actual.id = ActionID::Up;
                         }
                         m_actual.flip = m_flip; 
                         break;
@@ -326,8 +329,11 @@ namespace gameplay
                             m_actual.id = ActionID::Down;
                         }
                         else { /* going up */
+                            if(save.id == ActionID::Jump || save.id == ActionID::JumpAir)
+                                m_actual.id = save.id;
+                            else
+                                m_actual.id = ActionID::Up;
                             m_stir = 50.0f;
-                            m_actual.id = ActionID::Up;
                         }
                         m_actual.flip = !m_flip;
                         break;
@@ -360,6 +366,10 @@ namespace gameplay
                         }
                         else if(m_ch->getYLinearVelocity() < 0.0f)
                             m_actual.id = ActionID::Down;
+                        else if(save.id == ActionID::Jump || save.id == ActionID::JumpAir)
+                            m_actual.id = save.id;
+                        else
+                            m_actual.id = ActionID::Up;
                         break;
 
                     case Up:
@@ -573,13 +583,6 @@ namespace gameplay
                     m_ch->setXLinearVelocity(0.0f);
                 break;
             case ActionID::None:
-                if(m_ch->getYLinearVelocity() > 0.0f
-                        && previous.id != ActionID::Jump
-                        && previous.id != ActionID::JumpAir) {
-                    m_actual.id = ActionID::Up;
-                    m_next.id   = ActionID::None;
-                }
-                break;
             case ActionID::Land:
             case ActionID::Down:
             case ActionID::Won:
