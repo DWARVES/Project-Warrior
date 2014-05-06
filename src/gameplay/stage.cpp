@@ -202,9 +202,11 @@ namespace gameplay
 
     void Stage::update(const events::Events&)
     {
+        /* Controls update. */
         for(int i = 0; i < m_nbPlayers; ++i)
             m_ctrls[i]->update();
 
+        /* First call. */
         if(m_justLoaded) {
             m_justLoaded = false;
             m_started = false;
@@ -212,6 +214,7 @@ namespace gameplay
             return;
         }
 
+        /* Appearance and starts. */
         Uint32 time = SDL_GetTicks() - m_beggining;
         if(time <= appearTime)
             return;
@@ -220,6 +223,7 @@ namespace gameplay
             m_world.start();
         }
 
+        /* Lua in callbacks. */
         for(auto it = m_callbacks.begin(); it != m_callbacks.end(); ++it) {
             EntityCallbacks cbs = it->second;
             if(!cbs.in.empty()) {
@@ -231,6 +235,12 @@ namespace gameplay
         }
 
         m_world.step();
+
+        /* Death of characters. */
+        for(int i = 0; i < m_nbPlayers; ++i) {
+            if(!isIn(m_ctrls[i]->attached()->getPos(), m_deathRect, m_center))
+                m_ctrls[i]->attached()->die();
+        }
     }
 
     void Stage::draw()
