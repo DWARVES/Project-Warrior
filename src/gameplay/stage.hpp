@@ -44,6 +44,9 @@ namespace gameplay
             /** @brief Draw the stage. */
             void draw();
 
+            /** @brief Get the ieme character. Return NULL if no character. */
+            gameplay::Character* getCharacter(int id) const;
+
             
         private: /* The methods to expose to lua. */
             void setWorldCenter(const geometry::Point& c);

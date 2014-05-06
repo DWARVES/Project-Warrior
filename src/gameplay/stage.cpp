@@ -517,6 +517,14 @@ namespace gameplay
             m_world.removeCallback(nm);
         }
     }
+            
+    gameplay::Character* Stage::getCharacter(int id) const
+    {
+        if(id < 0 || id >= m_nbPlayers)
+            return NULL;
+        else
+            return m_ctrls[id]->attached();
+    }
 
 }
 
