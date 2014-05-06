@@ -12,6 +12,17 @@ GameMenu::~GameMenu()
 
 bool GameMenu::prepare()
 {
+    if(!global::gfx->existsNamespace("/gamemenu")) {
+        if(!global::gfx->createNamespace("/gamemenu"))
+            return false;
+        global::gfx->enterNamespace("/gamemenu");
+
+        std::ostringstream path;
+        path << global::cfg->get<std::string>("rcs") << "/gamemenu/font.wf";
+        if(!global::gfx->loadFont("dmgfont", path.str()))
+            return false;
+    }
+
     /* The gui isn't used during the game. */
     global::gui->focus(false);
     return true;
@@ -28,6 +39,27 @@ bool GameMenu::update()
     m_stage->update(*global::evs);
     global::gfx->beginDraw();
     m_stage->draw();
+
+    /* Drawing the damages. */
+    int i = 0;
+    gameplay::Character* act = m_stage->getCharacter(i);
+    global::gfx->enterNamespace("/gamemenu/");
+    while(act) {
+        int dms = act->getDamages();
+        float x = global::gfx->getVirtualWidth() / 6.0f * float(i+1);
+        float y = global::gfx->getVirtualHeight() / 15.0f;
+        float h = global::gfx->getVirtualHeight() / 15.0f;
+        std::ostringstream text;
+        text << dms << "%";
+        global::gfx->push();
+        global::gfx->move(x, y);
+        global::gfx->draw(text.str(), "dmgfont", h);
+        global::gfx->pop();
+
+        ++i;
+        act = m_stage->getCharacter(i);
+    }
+
     global::gfx->endDraw();
     return true;
 }
