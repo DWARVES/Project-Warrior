@@ -307,13 +307,13 @@ namespace gameplay
                     case Left:  
                         if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                             m_actual.id = ActionID::Walk; 
-                        else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
+                        else if(m_ch->getYLinearVelocity() < 0.00001f) { /* going down */
                             m_stir = 50.0f;
                             m_actual.id = ActionID::Down;
                         }
                         else { /* going up */
                             m_stir = 50.0f;
-                            m_actual.id = save.id;
+                            m_actual.id = ActionID::Up;
                         }
                         m_actual.flip = m_flip; 
                         break;
@@ -321,13 +321,13 @@ namespace gameplay
                     case Right: 
                         if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                                 m_actual.id = ActionID::Walk;
-                        else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
+                        else if(m_ch->getYLinearVelocity() < 0.00001f) { /* going down */
                             m_stir = 50.0f;
                             m_actual.id = ActionID::Down;
                         }
                         else { /* going up */
                             m_stir = 50.0f;
-                            m_actual.id = save.id;
+                            m_actual.id = ActionID::Up;
                         }
                         m_actual.flip = !m_flip;
                         break;
