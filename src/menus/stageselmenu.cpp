@@ -109,8 +109,7 @@ bool StageSelMenu::update()
 {
     if(m_menu != NULL) {
         if(!m_menu->update()) {
-            global::gfx->disableVirtualSize();
-            global::gfx->invertYAxis(false);
+            disableStageSize();
             delete m_menu;
             m_menu = NULL;
             return false;
@@ -129,12 +128,17 @@ bool StageSelMenu::update()
     if(m_play->clicked()) {
         gameplay::Stage* sel = (gameplay::Stage*)m_list->selectedData();
         if(!sel->load(m_charas)) {
+            disableStageSize();
             std::ostringstream oss;
             core::logger::logm("Couldn't launch the game because couldn't load the stage.", core::logger::ERROR);
             return false;
         }
         m_menu = new GameMenu(sel);
-        m_menu->prepare();
+        if(!m_menu->prepare()) {
+            disableStageSize();
+            core::logger::logm("Couldn't prepare the game menu", core::logger::ERROR);
+            return false;
+        }
     }
 
     /* Drawing. */
@@ -171,6 +175,12 @@ void StageSelMenu::populateList()
             ++pos;
         }
     }
+}
+        
+void StageSelMenu::disableStageSize()
+{
+    global::gfx->disableVirtualSize();
+    global::gfx->invertYAxis(false);
 }
 
 

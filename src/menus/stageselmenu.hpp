@@ -61,6 +61,8 @@ class StageSelMenu : public Menu
 
         /** @brief Load the stages and populate the list. */
         void populateList();
+        /** @brief Disable all modification of virtual size done by stage. */
+        void disableStageSize();
 };
 
 #endif
