@@ -433,13 +433,13 @@ namespace gameplay
     bool Stage::addPlatform(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect, float friction)
     {
         m_world.enterNamespace(m_namespace);
-        return m_world.createPlatform(nm, center, rect, friction) != NULL;
+        return m_world.createPlatform(nm, center, rect, friction * 5.0f) != NULL;
     }
 
     bool Stage::addObstacle(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect, float friction)
     {
         m_world.enterNamespace(m_namespace);
-        return m_world.createObstacle(nm, center, rect, friction) != NULL;
+        return m_world.createObstacle(nm, center, rect, friction * 5.0f) != NULL;
     }
             
     bool Stage::addSensor(const std::string& nm, const geometry::Point& center, const geometry::AABB& rect)
