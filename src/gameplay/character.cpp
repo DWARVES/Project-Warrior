@@ -441,7 +441,7 @@ namespace gameplay
                         }
                         else {
                             m_stir = 50.0f;
-                            m_actual.id = save.id;
+                            m_actual.id = ActionID::Up;
                         }
                         m_actual.flip = m_flip; 
                         break;
@@ -455,7 +455,7 @@ namespace gameplay
                         }
                         else {
                             m_stir = 50.0f;
-                            m_actual.id = save.id;
+                            m_actual.id = ActionID::Up;
                         }
                         m_actual.flip = !m_flip; 
                         break;
