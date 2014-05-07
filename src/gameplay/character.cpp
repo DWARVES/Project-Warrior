@@ -316,7 +316,16 @@ namespace gameplay
                 m_actual.id = ActionID::None;
                 switch(dir) {
                     case Left:  
-                        if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
+                        if(save.id == ActionID::Attack              || save.id == ActionID::AttackUp
+                                || save.id == ActionID::AttackDown  || save.id == ActionID::AttackSide
+                                || save.id == ActionID::Spell       || save.id == ActionID::SpellUp
+                                || save.id == ActionID::SpellDown   || save.id == ActionID::SpellSide
+                                || save.id == ActionID::SmashUp     || save.id == ActionID::SmashDown || save.id == ActionID::SmashSide
+                                || save.id == ActionID::DashDodge   || save.id == ActionID::FlyingDashDodge
+                                || save.id == ActionID::StaticDodge || save.id == ActionID::FlyingStaticDodge
+                                || save.id == ActionID::Shield      || save.id == ActionID::Catch)
+                            m_actual.id = save.id;
+                        else if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                             m_actual.id = ActionID::Walk; 
                         else if(m_ch->getYLinearVelocity() < 0.00001f) { /* going down */
                             m_stir = 50.0f;
@@ -333,7 +342,16 @@ namespace gameplay
                         break;
 
                     case Right: 
-                        if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
+                        if(save.id == ActionID::Attack              || save.id == ActionID::AttackUp
+                                || save.id == ActionID::AttackDown  || save.id == ActionID::AttackSide
+                                || save.id == ActionID::Spell       || save.id == ActionID::SpellUp
+                                || save.id == ActionID::SpellDown   || save.id == ActionID::SpellSide
+                                || save.id == ActionID::SmashUp     || save.id == ActionID::SmashDown || save.id == ActionID::SmashSide
+                                || save.id == ActionID::DashDodge   || save.id == ActionID::FlyingDashDodge
+                                || save.id == ActionID::StaticDodge || save.id == ActionID::FlyingStaticDodge
+                                || save.id == ActionID::Shield      || save.id == ActionID::Catch)
+                            m_actual.id = save.id;
+                        else if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                                 m_actual.id = ActionID::Walk;
                         else if(m_ch->getYLinearVelocity() < 0.00001f) { /* going down */
                             m_stir = 50.0f;
@@ -361,7 +379,16 @@ namespace gameplay
                         break;
 
                     case Fixed:
-                        if(onGround()) {
+                        if(save.id == ActionID::Attack              || save.id == ActionID::AttackUp
+                                || save.id == ActionID::AttackDown  || save.id == ActionID::AttackSide
+                                || save.id == ActionID::Spell       || save.id == ActionID::SpellUp
+                                || save.id == ActionID::SpellDown   || save.id == ActionID::SpellSide
+                                || save.id == ActionID::SmashUp     || save.id == ActionID::SmashDown || save.id == ActionID::SmashSide
+                                || save.id == ActionID::DashDodge   || save.id == ActionID::FlyingDashDodge
+                                || save.id == ActionID::StaticDodge || save.id == ActionID::FlyingStaticDodge
+                                || save.id == ActionID::Shield      || save.id == ActionID::Catch)
+                            m_actual.id = save.id;
+                        else if(onGround()) {
                             if(save.id == ActionID::Down || save.id == ActionID::FastDown || save.id == ActionID::Land) {
                                 m_actual.id = ActionID::Land;
                                 m_next.id   = ActionID::Stand;
@@ -370,8 +397,6 @@ namespace gameplay
                                 m_actual.id = ActionID::Stop;
                                 m_next.id   = ActionID::Stand;
                             }
-                            else if(save.id == ActionID::Jump || save.id == ActionID::JumpAir)
-                                m_actual.id = save.id;
                             else
                                 m_actual.id = ActionID::Stand;
                         }
@@ -384,6 +409,18 @@ namespace gameplay
                         break;
 
                     case Up:
+                        if(save.id == ActionID::Attack              || save.id == ActionID::AttackUp
+                                || save.id == ActionID::AttackDown  || save.id == ActionID::AttackSide
+                                || save.id == ActionID::Spell       || save.id == ActionID::SpellUp
+                                || save.id == ActionID::SpellDown   || save.id == ActionID::SpellSide
+                                || save.id == ActionID::SmashUp     || save.id == ActionID::SmashDown || save.id == ActionID::SmashSide
+                                || save.id == ActionID::DashDodge   || save.id == ActionID::FlyingDashDodge
+                                || save.id == ActionID::StaticDodge || save.id == ActionID::FlyingStaticDodge
+                                || save.id == ActionID::Shield      || save.id == ActionID::Catch)
+                            m_actual.id = save.id;
+                        else
+                            m_actual.id = ActionID::None;
+                        break;
                     default:
                         m_actual.id = ActionID::None;
                         break;
