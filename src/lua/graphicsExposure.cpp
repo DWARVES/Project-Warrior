@@ -162,7 +162,7 @@ namespace lua
                     || args[1] != Script::NUMBER
                     || args[2] != Script::NUMBER)
                 return 0;
-            bool ret = m_gfx->setTextureHotpoint(lua_tostring(st, 1), lua_tointeger(st, 2), lua_tointeger(st, 3));
+            bool ret = m_gfx->setTextureHotpoint(lua_tostring(st, 1), (int)lua_tointeger(st, 2), (int)lua_tointeger(st, 3));
             return helper::returnBoolean(st, ret);
         }
 
@@ -182,7 +182,7 @@ namespace lua
             if(args.size() != 1
                     || args[0] != Script::NUMBER)
                 return 0;
-            m_gfx->rotate(lua_tonumber(st, 1));
+            m_gfx->rotate((float)lua_tonumber(st, 1));
             return 0;
         }
 
@@ -193,7 +193,7 @@ namespace lua
                     || args[0] != Script::NUMBER
                     || args[1] != Script::NUMBER)
                 return 0;
-            m_gfx->scale(lua_tonumber(st, 1), lua_tonumber(st, 2));
+            m_gfx->scale((float)lua_tonumber(st, 1), (float)lua_tonumber(st, 2));
             return 0;
         }
 
@@ -204,7 +204,7 @@ namespace lua
                     || args[0] != Script::NUMBER
                     || args[1] != Script::NUMBER)
                 return 0;
-            m_gfx->move(lua_tonumber(st, 1), lua_tonumber(st, 2));
+            m_gfx->move((float)lua_tonumber(st, 1), (float)lua_tonumber(st, 2));
             return 0;
         }
 
@@ -247,12 +247,12 @@ namespace lua
 
             float repeatX = 1.0f;
             if(args.size() >= 4 && args[3] == Script::NUMBER)
-                repeatX = lua_tonumber(st, 4);
+                repeatX = (float)lua_tonumber(st, 4);
             float repeatY = 1.0f;
             if(args.size() >= 5 && args[4] == Script::NUMBER)
-                repeatY = lua_tonumber(st, 5);
+                repeatY = (float)lua_tonumber(st, 5);
 
-            m_gfx->draw(geometry::AABB(lua_tonumber(st, 2), lua_tonumber(st, 3)), lua_tostring(st, 1), repeatX, repeatY);
+            m_gfx->draw(geometry::AABB((float)lua_tonumber(st, 2), (float)lua_tonumber(st, 3)), lua_tostring(st, 1), repeatX, repeatY);
             return 0;
         }
 
@@ -266,7 +266,7 @@ namespace lua
 
             float pts = -1.0f;
             if(args.size() >= 3 && args[2] == Script::NUMBER)
-                pts = lua_tonumber(st, 3);
+                pts = (float)lua_tonumber(st, 3);
 
             m_gfx->draw(lua_tostring(st, 1), lua_tostring(st, 2), pts);
             return 0;
@@ -285,7 +285,7 @@ namespace lua
             if(args.size() > 4 && args[3] == Script::BOOL)
                 ratio = lua_toboolean(st, 4);
 
-            bool ret = m_gfx->play(lua_tostring(st, 1), geometry::AABB(lua_tonumber(st, 2), lua_tonumber(st, 3)), ratio);
+            bool ret = m_gfx->play(lua_tostring(st, 1), geometry::AABB((float)lua_tonumber(st, 2), (float)lua_tonumber(st, 3)), ratio);
             return helper::returnBoolean(st, ret);
         }
 

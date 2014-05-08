@@ -39,7 +39,7 @@ namespace lua
                     || args[0] != Script::STRING
                     || args[1] != Script::NUMBER)
                 return helper::returnBoolean(st, false);
-            bool ret = m_sav.createVariable(lua_tostring(st, 1), lua_tonumber(st, 2));
+            bool ret = m_sav.createVariable(lua_tostring(st, 1), lua_tointeger(st, 2));
             return helper::returnBoolean(st, ret);
         }
 
