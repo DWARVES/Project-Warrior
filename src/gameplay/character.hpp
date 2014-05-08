@@ -144,6 +144,8 @@ namespace gameplay
             int getPoints() const;
             /** @brief Indicates a character he is dead : reset its coordinates of damages, after a laps of time. */
             void die();
+            /** @brief Indicates if a character is dead. */
+            bool dead() const;
 
         private:
             std::string m_namespace;  /**< @brief The name of the namespace used by this character in gfx, audio and physics. */

@@ -16,7 +16,7 @@
 namespace gameplay
 {
     /** @brief Time of death in ms. */
-    const Uint32 deathTime = 1000;
+    const Uint32 deathTime = 10000;
     size_t Character::m_count = 0;
     const char* const Character::m_luaCalls[(unsigned int)ActionID::None] = {
         "walk",
@@ -301,7 +301,7 @@ namespace gameplay
     void Character::action(Control control, Direction dir)
     {
         /* Don't accept actions when dead. */
-        if(SDL_GetTicks() - m_death < deathTime)
+        if(dead())
             return;
 
         Action save = m_actual;
@@ -650,7 +650,7 @@ namespace gameplay
     void Character::draw()
     {
         /* Don't do anything while dead. */
-        if(SDL_GetTicks() - m_death < deathTime)
+        if(dead())
             return;
 
         /* Getting physic position. */
@@ -889,6 +889,11 @@ namespace gameplay
         m_damages = 0;
         /* Set death time. */
         m_death = SDL_GetTicks();
+    }
+            
+    bool Character::dead() const
+    {
+        return SDL_GetTicks() - m_death < deathTime;
     }
 
 }
