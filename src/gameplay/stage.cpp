@@ -298,7 +298,7 @@ namespace gameplay
         std::vector<geometry::Point> centers;
         centers.reserve(4);
         for(int i = 0; i < m_nbPlayers; ++i) {
-            if(isIn(m_ctrls[i]->attached()->getPos(), m_deathRect, m_center))
+            if(!m_ctrls[i]->attached()->dead())
                 centers.push_back(m_ctrls[i]->attached()->getPos());
         }
 
