@@ -11,7 +11,6 @@
 namespace gameplay
 {
     /** @brief Reprensents a playable character.
-     * @todo Physic integration.
      * @todo Audio integration.
      */
     class Character
@@ -147,6 +146,12 @@ namespace gameplay
             /** @brief Indicates if a character is dead. */
             bool dead();
 
+            /******* CC *******/
+            /** @brief Inflict a stun of ms millis to the character. */
+            void stun(unsigned int ms);
+            /** @brief Inflict an impact on the character. */
+            void impact(float x, float y);
+
         private:
             std::string m_namespace;  /**< @brief The name of the namespace used by this character in gfx, audio and physics. */
             std::string m_path;       /**< @brief The path to the directory of the character. */
@@ -224,6 +229,11 @@ namespace gameplay
             int m_points;             /**< @brief The points of the character. */
             Uint32 m_death;           /**< @brief Last time of death of the character. */
             bool m_dead;              /**< @brief Indicates if the character is dead. */
+
+            /* CCs */
+            bool m_stuned;            /**< @brief Indicates if the character is stuned. */
+            Uint32 m_stun;            /**< @brief Indicates the beggining of the stun. */
+            Uint32 m_stunTime;        /**< @brief Indicates the duration of the stun. */
 
             /* Internal methods. */
             /** @brief Draw the nm texture with a maximum size, can flip it horizontally. */

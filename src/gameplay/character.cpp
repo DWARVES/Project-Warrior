@@ -11,6 +11,7 @@
 
 #include <sstream>
 #include <fstream>
+#include <cmath>
 #include <SDL.h>
 
 namespace gameplay
@@ -293,6 +294,7 @@ namespace gameplay
         m_points  = 0;
         m_damages = 0;
         m_dead    = false;
+        m_stuned  = false;
 
         m_actual.flip = m_next.flip = false;
         action(Walk, Fixed);
@@ -304,6 +306,11 @@ namespace gameplay
         /* Don't accept actions when dead. */
         if(dead())
             return;
+        if(m_stuned) {
+            if(SDL_GetTicks() - m_stun > m_stunTime)
+                m_stuned = false;
+            return;
+        }
 
         Action save = m_actual;
         m_stir = 0.0f;
@@ -904,6 +911,32 @@ namespace gameplay
         }
         else
             return false;
+    }
+
+    void Character::stun(unsigned int ms)
+    {
+        m_ch->setLinearVelocity(0.0f, 0.0f);
+        if(!m_stuned) {
+            m_stuned   = true;
+            m_stun     = SDL_GetTicks();
+            m_stunTime = ms;
+        } else {
+            Uint32 tmpStun  = SDL_GetTicks();
+            Uint32 duration = std::max(tmpStun + ms, m_stun + m_stunTime);
+            m_stun          = tmpStun;
+            m_stunTime      = duration - m_stun;
+        }
+    }
+            
+    void Character::impact(float x, float y)
+    {
+        float force = std::sqrt(x*x + y*y);
+        float angle = std::atan(y/x);
+
+        force *= (float)m_damages / 100.0f;
+        x = std::cos(angle) * force;
+        y = std::sin(angle) * force;
+        m_ch->applyLinearImpulse(x, y);
     }
 
 }
