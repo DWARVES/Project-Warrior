@@ -31,7 +31,7 @@ namespace lua
                 static void expose(Script* scr);
 
                 /* Methods to expose. */
-                int setUsed(lua_State* st);        /**< @brief Set the character to use (c in [0-3]). */
+                int setUsed(lua_State* st); /**< @brief Set the character to use (c in [0-3]). */
                 int size(lua_State* st);    /**< @brief Set the character size. */
                 int weight(lua_State* st);  /**< @brief Set the character weight. */
                 int setMana(lua_State* st); /**< @brief Set the mana max of the character. */
@@ -43,6 +43,10 @@ namespace lua
                 int applyForce(lua_State* st);
                 int impulse(lua_State* st);
                 int velocity(lua_State* st);
+
+                /* CCs */
+                int stun(lua_State* st);
+                int impact(lua_State* st);
 
             private:
                 int m_char; /**< @brief The character to use [0-3]. */
