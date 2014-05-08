@@ -16,7 +16,7 @@
 namespace gameplay
 {
     /** @brief Time of death in ms. */
-    const Uint32 deathTime = 10000;
+    const Uint32 deathTime = 3000;
     size_t Character::m_count = 0;
     const char* const Character::m_luaCalls[(unsigned int)ActionID::None] = {
         "walk",
