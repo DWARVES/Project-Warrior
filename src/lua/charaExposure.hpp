@@ -45,6 +45,7 @@ namespace lua
                 int velocity(lua_State* st);
 
                 /* CCs */
+                int damage(lua_State* st);
                 int stun(lua_State* st);
                 int impact(lua_State* st);
 

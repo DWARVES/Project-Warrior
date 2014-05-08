@@ -19,6 +19,7 @@ namespace lua
             {"force",       &Character::applyForce},
             {"velocity",    &Character::velocity},
             {"impulse",     &Character::impulse},
+            {"damage",      &Character::damage},
             {"stun",        &Character::stun},
             {"impact",      &Character::impact},
             {NULL, NULL}
@@ -156,6 +157,16 @@ namespace lua
                     || args[1] != Script::NUMBER)
                 return 0;
             characters[m_char]->impact((float)lua_tonumber(st, 1), (float)lua_tonumber(st, 2));
+            return 0;
+        }
+                
+        int Character::damage(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 1
+                    || args[0] != Script::NUMBER)
+                return 0;
+            characters[m_char]->inflictDamages((int)lua_tointeger(st, 1));
             return 0;
         }
 
