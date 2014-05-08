@@ -145,7 +145,7 @@ namespace gameplay
             /** @brief Indicates a character he is dead : reset its coordinates of damages, after a laps of time. */
             void die();
             /** @brief Indicates if a character is dead. */
-            bool dead() const;
+            bool dead();
 
         private:
             std::string m_namespace;  /**< @brief The name of the namespace used by this character in gfx, audio and physics. */
@@ -223,6 +223,7 @@ namespace gameplay
             int m_damages;            /**< @brief The amount of damages of the character. */
             int m_points;             /**< @brief The points of the character. */
             Uint32 m_death;           /**< @brief Last time of death of the character. */
+            bool m_dead;              /**< @brief Indicates if the character is dead. */
 
             /* Internal methods. */
             /** @brief Draw the nm texture with a maximum size, can flip it horizontally. */

@@ -292,6 +292,7 @@ namespace gameplay
         m_death   = 0;
         m_points  = 0;
         m_damages = 0;
+        m_dead    = false;
 
         m_actual.flip = m_next.flip = false;
         action(Walk, Fixed);
@@ -883,17 +884,26 @@ namespace gameplay
 
     void Character::die()
     {
-        /* Reset coordinates. */
-        warp(m_phpos);
         /* Reset damages. */
         m_damages = 0;
         /* Set death time. */
-        m_death = SDL_GetTicks();
+        if(!m_dead)
+            m_death = SDL_GetTicks();
+        /* Indicate death */
+        m_dead = true;
     }
             
-    bool Character::dead() const
+    bool Character::dead()
     {
-        return SDL_GetTicks() - m_death < deathTime;
+        if(SDL_GetTicks() - m_death < deathTime)
+            return true;
+        else if(m_dead) {
+            warp(m_phpos);
+            m_dead = false;
+            return false;
+        }
+        else
+            return false;
     }
 
 }
