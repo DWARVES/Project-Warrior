@@ -209,6 +209,8 @@ namespace gameplay
         if(hp) {
             global::gfx->move(-used.width / 2.0f, -used.height / 2.0f);
             global::gfx->move(0.0f, -(1 - hot.y / theight) * used.height);
+            float fact = flip ? 1.0f : -1.0f;
+            global::gfx->move(fact * (hot.x/twidth - 0.5f) * used.width, 0.0f);
         }
         if(flip) {
             global::gfx->move(used.width, 0.0f);
