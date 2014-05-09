@@ -969,6 +969,14 @@ namespace gameplay
         y = std::sin(angle) * force;
         m_ch->applyLinearImpulse(x, y);
     }
+            
+    float Character::stunProgress() const
+    {
+        if(!m_stuned)
+            return 1.0f;
+        float percent = float(SDL_GetTicks() - m_stun) / (float)m_stunTime;
+        return percent;
+    }
 
 }
 

@@ -149,6 +149,8 @@ namespace gameplay
             /******* CC *******/
             /** @brief Inflict a stun of ms millis to the character. */
             void stun(unsigned int ms);
+            /** @brief Indicates the progress of the stun from 0 to 1 (not stunned). */
+            float stunProgress() const;
             /** @brief Inflict an impact on the character. */
             void impact(float x, float y);
 
