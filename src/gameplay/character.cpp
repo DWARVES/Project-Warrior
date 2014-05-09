@@ -921,6 +921,8 @@ namespace gameplay
             m_death = SDL_GetTicks();
         /* Indicate death */
         m_dead = true;
+        /* Warp far from the map. */
+        warp(geometry::Point(-1e10f,-1e10f));
     }
             
     bool Character::dead()
@@ -929,6 +931,7 @@ namespace gameplay
             return true;
         else if(m_dead) {
             warp(m_phpos);
+            m_ch->setLinearVelocity(0.0f, 0.0f);
             m_dead = false;
             return false;
         }
