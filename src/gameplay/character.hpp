@@ -192,6 +192,7 @@ namespace gameplay
                 SmashUp,              /**< @brief A smash to top. */
                 SmashDown,            /**< @brief A smash to bottom. */
                 Catch,                /**< @brief Catch something. */
+                Stunned,              /**< @brief When the character is stunned. */
                 Won,                  /**< @brief The victory animation. */
                 Lost,                 /**< @brief The defeat animation. */
                 None,                 /**< @brief No action. */

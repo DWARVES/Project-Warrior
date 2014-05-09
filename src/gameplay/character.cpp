@@ -47,6 +47,7 @@ namespace gameplay
         "smashUp",
         "smashDown",
         "catch",
+        "stunned",
         "won",
         "lost",
     };
@@ -272,6 +273,7 @@ namespace gameplay
         valid = valid && checkFunc(m_perso, "perso.lua", "dashDodge");
         valid = valid && checkFunc(m_perso, "perso.lua", "flyingDashDodge");
         valid = valid && checkFunc(m_perso, "perso.lua", "catch");
+        valid = valid && checkFunc(m_perso, "perso.lua", "stunned");
         valid = valid && checkFunc(m_perso, "perso.lua", "appear");
         valid = valid && checkFunc(m_perso, "perso.lua", "won");
         valid = valid && checkFunc(m_perso, "perso.lua", "lost");
@@ -952,6 +954,9 @@ namespace gameplay
             m_stun          = tmpStun;
             m_stunTime      = duration - m_stun;
         }
+
+        m_actual.id = ActionID::Stunned;
+        m_next.id   = ActionID::None;
     }
             
     void Character::impact(float x, float y)
