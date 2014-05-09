@@ -30,7 +30,7 @@ namespace events
 
     bool KeySave::valid(const Events& ev)
     {
-        m_valid = ev.isKeyPressed(m_key);
+        m_valid = ev.keyJustPressed(m_key);
         return m_valid;
     }
 
