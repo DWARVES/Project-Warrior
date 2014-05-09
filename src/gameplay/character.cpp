@@ -734,7 +734,9 @@ namespace gameplay
         global::gfx->enterNamespace(m_namespace);
         global::gfx->enterNamespace("perso");
         m_perso.callFunction<void, float>("appear", NULL, percent);
-        drawPrev("drawed", msize);
+        geometry::AABB used(msize);
+        used.width = 1e10f;
+        drawPrev("drawed", used, false, true);
     }
 
     void Character::lost(const geometry::AABB& msize)

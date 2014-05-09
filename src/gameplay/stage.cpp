@@ -265,7 +265,7 @@ namespace gameplay
             for(int i = 0; i < m_nbPlayers; ++i) {
                 geometry::AABB size = m_ctrls[i]->attached()->phSize();
                 global::gfx->push();
-                global::gfx->move(m_appearPos[i].x - size.width / 2.0f, m_appearPos[i].y - size.height / 2.0f);
+                global::gfx->move(m_appearPos[i].x, m_appearPos[i].y);
                 m_ctrls[i]->attached()->appear(percent, size);
                 global::gfx->pop();
             }
