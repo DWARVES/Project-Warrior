@@ -449,7 +449,10 @@ namespace gameplay
                         }
                         else {
                             m_stir = 50.0f;
-                            m_actual.id = ActionID::Up;
+                            if(save.id == ActionID::Jump || save.id == ActionID::JumpAir)
+                                m_actual.id = save.id;
+                            else
+                                m_actual.id = ActionID::Up;
                         }
                         m_actual.flip = m_flip; 
                         break;
@@ -463,7 +466,10 @@ namespace gameplay
                         }
                         else {
                             m_stir = 50.0f;
-                            m_actual.id = ActionID::Up;
+                            if(save.id == ActionID::Jump || save.id == ActionID::JumpAir)
+                                m_actual.id = save.id;
+                            else
+                                m_actual.id = ActionID::Up;
                         }
                         m_actual.flip = !m_flip; 
                         break;
