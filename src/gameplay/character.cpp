@@ -638,6 +638,21 @@ namespace gameplay
                 if(previous.id == ActionID::Walk)
                     m_ch->setXLinearVelocity(0.0f);
                 break;
+            case ActionID::Attack:
+            case ActionID::AttackUp:
+            case ActionID::AttackDown:
+            case ActionID::AttackSide:
+            case ActionID::Spell:
+            case ActionID::SpellUp:
+            case ActionID::SpellSide:
+            case ActionID::SpellDown:
+                /* TODO physics callbacks. */
+                if(previous.id != ActionID::Attack && previous.id != ActionID::AttackUp
+                        && previous.id != ActionID::AttackDown && previous.id != ActionID::AttackSide
+                        && previous.id != ActionID::Spell      && previous.id != ActionID::SpellUp
+                        && previous.id != ActionID::SpellDown  && previous.id != ActionID::SpellDown)
+                    m_ch->setXLinearVelocity(0.0f);
+                break;
             case ActionID::None:
             case ActionID::Land:
             case ActionID::Down:
