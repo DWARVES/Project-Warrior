@@ -186,6 +186,11 @@ namespace gameplay
                 AttackSide,           /**< @brief A regular attack to the side. */
                 AttackUp,             /**< @brief A regular attack to top. */
                 AttackDown,           /**< @brief A regular attack to bottom. */
+                AttackAir,            /**< @brief A regular attack on the air. */
+                AttackAirFront,       /**< @brief A regular attack on the air to the front. */
+                AttackAirBack,        /**< @brief A regular attack on the air to the back. */
+                AttackAirUp,          /**< @brief A regular attack on the air to the top. */
+                AttackAirDown,        /**< @brief A regular attack on the air to the bottom. */
                 Spell,                /**< @brief A non directional magic attack. */
                 SpellSide,            /**< @brief A magic attack to the side. */
                 SpellDown,            /**< @brief A magic attack to bottom. */

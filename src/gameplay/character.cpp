@@ -39,6 +39,11 @@ namespace gameplay
         "attackSide",
         "attackUp",
         "attackDown",
+        "attackAir",
+        "attackAirFront",
+        "attackAirBack",
+        "attackAirUp",
+        "attackAirDown",
         "spell",
         "spellSide",
         "spellDown",
@@ -262,6 +267,11 @@ namespace gameplay
         valid = valid && checkFunc(m_perso, "perso.lua", "attackSide");
         valid = valid && checkFunc(m_perso, "perso.lua", "attackUp");
         valid = valid && checkFunc(m_perso, "perso.lua", "attackDown");
+        valid = valid && checkFunc(m_perso, "perso.lua", "attackAir");
+        valid = valid && checkFunc(m_perso, "perso.lua", "attackAirFront");
+        valid = valid && checkFunc(m_perso, "perso.lua", "attackAirBack");
+        valid = valid && checkFunc(m_perso, "perso.lua", "attackAirUp");
+        valid = valid && checkFunc(m_perso, "perso.lua", "attackAirDown");
         valid = valid && checkFunc(m_perso, "perso.lua", "spell");
         valid = valid && checkFunc(m_perso, "perso.lua", "spellSide");
         valid = valid && checkFunc(m_perso, "perso.lua", "spellUp");
