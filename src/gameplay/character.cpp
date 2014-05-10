@@ -338,14 +338,17 @@ namespace gameplay
                 m_actual.id = ActionID::None;
                 switch(dir) {
                     case Left:  
-                        if(save.id == ActionID::Attack              || save.id == ActionID::AttackUp
-                                || save.id == ActionID::AttackDown  || save.id == ActionID::AttackSide
-                                || save.id == ActionID::Spell       || save.id == ActionID::SpellUp
-                                || save.id == ActionID::SpellDown   || save.id == ActionID::SpellSide
-                                || save.id == ActionID::SmashUp     || save.id == ActionID::SmashDown || save.id == ActionID::SmashSide
-                                || save.id == ActionID::DashDodge   || save.id == ActionID::FlyingDashDodge
-                                || save.id == ActionID::StaticDodge || save.id == ActionID::FlyingStaticDodge
-                                || save.id == ActionID::Shield      || save.id == ActionID::Catch)
+                        if(save.id == ActionID::Attack                || save.id == ActionID::AttackUp
+                                || save.id == ActionID::AttackDown    || save.id == ActionID::AttackSide
+                                || save.id == ActionID::AttackAir     || save.id == ActionID::AttackAirUp
+                                || save.id == ActionID::AttackAirBack || save.id == ActionID::AttackAirFront
+                                || save.id == ActionID::AttackAirDown
+                                || save.id == ActionID::Spell         || save.id == ActionID::SpellUp
+                                || save.id == ActionID::SpellDown     || save.id == ActionID::SpellSide
+                                || save.id == ActionID::SmashUp       || save.id == ActionID::SmashDown || save.id == ActionID::SmashSide
+                                || save.id == ActionID::DashDodge     || save.id == ActionID::FlyingDashDodge
+                                || save.id == ActionID::StaticDodge   || save.id == ActionID::FlyingStaticDodge
+                                || save.id == ActionID::Shield        || save.id == ActionID::Catch)
                             m_actual.id = save.id;
                         else if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                             m_actual.id = ActionID::Walk; 
@@ -364,14 +367,17 @@ namespace gameplay
                         break;
 
                     case Right: 
-                        if(save.id == ActionID::Attack              || save.id == ActionID::AttackUp
-                                || save.id == ActionID::AttackDown  || save.id == ActionID::AttackSide
-                                || save.id == ActionID::Spell       || save.id == ActionID::SpellUp
-                                || save.id == ActionID::SpellDown   || save.id == ActionID::SpellSide
-                                || save.id == ActionID::SmashUp     || save.id == ActionID::SmashDown || save.id == ActionID::SmashSide
-                                || save.id == ActionID::DashDodge   || save.id == ActionID::FlyingDashDodge
-                                || save.id == ActionID::StaticDodge || save.id == ActionID::FlyingStaticDodge
-                                || save.id == ActionID::Shield      || save.id == ActionID::Catch)
+                        if(save.id == ActionID::Attack                || save.id == ActionID::AttackUp
+                                || save.id == ActionID::AttackDown    || save.id == ActionID::AttackSide
+                                || save.id == ActionID::AttackAir     || save.id == ActionID::AttackAirUp
+                                || save.id == ActionID::AttackAirBack || save.id == ActionID::AttackAirFront
+                                || save.id == ActionID::AttackAirDown
+                                || save.id == ActionID::Spell         || save.id == ActionID::SpellUp
+                                || save.id == ActionID::SpellDown     || save.id == ActionID::SpellSide
+                                || save.id == ActionID::SmashUp       || save.id == ActionID::SmashDown || save.id == ActionID::SmashSide
+                                || save.id == ActionID::DashDodge     || save.id == ActionID::FlyingDashDodge
+                                || save.id == ActionID::StaticDodge   || save.id == ActionID::FlyingStaticDodge
+                                || save.id == ActionID::Shield        || save.id == ActionID::Catch)
                             m_actual.id = save.id;
                         else if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                                 m_actual.id = ActionID::Walk;
@@ -401,14 +407,17 @@ namespace gameplay
                         break;
 
                     case Fixed:
-                        if(save.id == ActionID::Attack              || save.id == ActionID::AttackUp
-                                || save.id == ActionID::AttackDown  || save.id == ActionID::AttackSide
-                                || save.id == ActionID::Spell       || save.id == ActionID::SpellUp
-                                || save.id == ActionID::SpellDown   || save.id == ActionID::SpellSide
-                                || save.id == ActionID::SmashUp     || save.id == ActionID::SmashDown || save.id == ActionID::SmashSide
-                                || save.id == ActionID::DashDodge   || save.id == ActionID::FlyingDashDodge
-                                || save.id == ActionID::StaticDodge || save.id == ActionID::FlyingStaticDodge
-                                || save.id == ActionID::Shield      || save.id == ActionID::Catch)
+                        if(save.id == ActionID::Attack                || save.id == ActionID::AttackUp
+                                || save.id == ActionID::AttackDown    || save.id == ActionID::AttackSide
+                                || save.id == ActionID::AttackAir     || save.id == ActionID::AttackAirUp
+                                || save.id == ActionID::AttackAirBack || save.id == ActionID::AttackAirFront
+                                || save.id == ActionID::AttackAirDown
+                                || save.id == ActionID::Spell         || save.id == ActionID::SpellUp
+                                || save.id == ActionID::SpellDown     || save.id == ActionID::SpellSide
+                                || save.id == ActionID::SmashUp       || save.id == ActionID::SmashDown || save.id == ActionID::SmashSide
+                                || save.id == ActionID::DashDodge     || save.id == ActionID::FlyingDashDodge
+                                || save.id == ActionID::StaticDodge   || save.id == ActionID::FlyingStaticDodge
+                                || save.id == ActionID::Shield        || save.id == ActionID::Catch)
                             m_actual.id = save.id;
                         else if(onGround()) {
                             if(save.id == ActionID::Down || save.id == ActionID::FastDown || save.id == ActionID::Land) {
@@ -431,14 +440,17 @@ namespace gameplay
                         break;
 
                     case Up:
-                        if(save.id == ActionID::Attack              || save.id == ActionID::AttackUp
-                                || save.id == ActionID::AttackDown  || save.id == ActionID::AttackSide
-                                || save.id == ActionID::Spell       || save.id == ActionID::SpellUp
-                                || save.id == ActionID::SpellDown   || save.id == ActionID::SpellSide
-                                || save.id == ActionID::SmashUp     || save.id == ActionID::SmashDown || save.id == ActionID::SmashSide
-                                || save.id == ActionID::DashDodge   || save.id == ActionID::FlyingDashDodge
-                                || save.id == ActionID::StaticDodge || save.id == ActionID::FlyingStaticDodge
-                                || save.id == ActionID::Shield      || save.id == ActionID::Catch)
+                        if(save.id == ActionID::Attack                || save.id == ActionID::AttackUp
+                                || save.id == ActionID::AttackDown    || save.id == ActionID::AttackSide
+                                || save.id == ActionID::AttackAir     || save.id == ActionID::AttackAirUp
+                                || save.id == ActionID::AttackAirBack || save.id == ActionID::AttackAirFront
+                                || save.id == ActionID::AttackAirDown
+                                || save.id == ActionID::Spell         || save.id == ActionID::SpellUp
+                                || save.id == ActionID::SpellDown     || save.id == ActionID::SpellSide
+                                || save.id == ActionID::SmashUp       || save.id == ActionID::SmashDown || save.id == ActionID::SmashSide
+                                || save.id == ActionID::DashDodge     || save.id == ActionID::FlyingDashDodge
+                                || save.id == ActionID::StaticDodge   || save.id == ActionID::FlyingStaticDodge
+                                || save.id == ActionID::Shield        || save.id == ActionID::Catch)
                             m_actual.id = save.id;
                         else
                             m_actual.id = ActionID::None;
@@ -517,15 +529,39 @@ namespace gameplay
             case Attack:
                 m_next.id = ActionID::Stand;
                 switch(dir) {
-                    case Left:  m_actual.id = ActionID::AttackSide;
-                                m_actual.flip = m_flip; 
-                                break;
-                    case Right: m_actual.id = ActionID::AttackSide;
-                                m_actual.flip = !m_flip; 
-                                break;
-                    case Up:    m_actual.id = ActionID::AttackUp;    break;
-                    case Down:  m_actual.id = ActionID::AttackDown;  break;
-                    case Fixed: m_actual.id = ActionID::Attack;      break;
+                    /** @todo Handle font/back attacks. */
+                    case Left:
+                        if(onGround())
+                            m_actual.id = ActionID::AttackSide;
+                        else
+                            m_actual.id = ActionID::AttackAirFront;
+                        m_actual.flip = m_flip; 
+                        break;
+                    case Right:
+                        if(onGround())
+                            m_actual.id = ActionID::AttackSide;
+                        else
+                            m_actual.id = ActionID::AttackAirFront;
+                        m_actual.flip = !m_flip; 
+                        break;
+                    case Up:
+                        if(onGround())
+                            m_actual.id = ActionID::AttackUp;
+                        else
+                            m_actual.id = ActionID::AttackAirUp;
+                        break;
+                    case Down:
+                        if(onGround())
+                            m_actual.id = ActionID::AttackDown;
+                        else
+                            m_actual.id = ActionID::AttackAirDown;
+                        break;
+                    case Fixed:
+                        if(onGround())
+                            m_actual.id = ActionID::Attack;
+                        else
+                            m_actual.id = ActionID::AttackAir;
+                        break;
                     default:    m_actual.id = ActionID::None;        break;
                 }
                 m_next.flip = m_actual.flip;
@@ -662,15 +698,23 @@ namespace gameplay
             case ActionID::AttackUp:
             case ActionID::AttackDown:
             case ActionID::AttackSide:
+            case ActionID::AttackAir:
+            case ActionID::AttackAirUp:
+            case ActionID::AttackAirBack:
+            case ActionID::AttackAirDown:
+            case ActionID::AttackAirFront:
             case ActionID::Spell:
             case ActionID::SpellUp:
             case ActionID::SpellSide:
             case ActionID::SpellDown:
                 /* TODO physics callbacks. */
-                if(previous.id != ActionID::Attack && previous.id != ActionID::AttackUp
-                        && previous.id != ActionID::AttackDown && previous.id != ActionID::AttackSide
-                        && previous.id != ActionID::Spell      && previous.id != ActionID::SpellUp
-                        && previous.id != ActionID::SpellDown  && previous.id != ActionID::SpellDown)
+                if(previous.id != ActionID::Attack                && previous.id != ActionID::AttackUp
+                        && previous.id != ActionID::AttackDown    && previous.id != ActionID::AttackSide
+                        && previous.id != ActionID::AttackAir     && previous.id != ActionID::AttackAirUp
+                        && previous.id != ActionID::AttackAirBack && previous.id != ActionID::AttackAirFront
+                        && previous.id != ActionID::AttackAirDown
+                        && previous.id != ActionID::Spell         && previous.id != ActionID::SpellUp
+                        && previous.id != ActionID::SpellDown     && previous.id != ActionID::SpellDown)
                     m_ch->setXLinearVelocity(0.0f);
                 break;
             case ActionID::None:
