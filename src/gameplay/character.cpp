@@ -1044,6 +1044,66 @@ namespace gameplay
     {
         return (float)mana() / (float)manaMax();
     }
+            
+    bool Character::createAttack(const geometry::AABB& rect, bool physic, const std::string& mvx, const std::string& mvy, const std::string& drw, const std::string& contact)
+    {
+        /* Store the attack. */
+        AttackSt st;
+        st.physic = physic;
+        st.rect   = rect;
+        st.begin  = SDL_GetTicks();
+        if(mvx.empty() || !m_perso.existsFunction(mvx))
+            st.moveX.clear();
+        else
+            st.moveX = mvx;
+        if(mvy.empty() || !m_perso.existsFunction(mvy))
+            st.moveY.clear();
+        else
+            st.moveY = mvy;
+        if(drw.empty() || !m_perso.existsFunction(drw))
+            st.draw.clear();
+        else
+            st.draw = drw;
+        /* Only contact callback is mandatory. */
+        if(contact.empty() || !m_perso.existsFunction(contact)) {
+            std::ostringstream oss;
+            oss << "Tryed to create an attack an unvalid contact callback : \"" << contact << "\"";
+            core::logger::logm(oss.str(), core::logger::DEBUG);
+            return false;
+        }
+
+        /* Getting the position. */
+        geometry::Point pos(0.0f, 0.0f);
+        if(!st.moveX.empty())
+            m_perso.callFunction<float,int>(st.moveX, &pos.x, 0);
+        if(!st.moveY.empty())
+            m_perso.callFunction<float,int>(st.moveY, &pos.y, 0);
+        physics::Entity* used = m_ch;
+
+        /* Creating a new entity if necesary. */
+        std::ostringstream nm;
+        nm << "attack" << m_attackCount;
+        ++m_attackCount;
+        if(!st.physic) {
+            used = m_world->createEntity(nm.str(), pos, b2_dynamicBody);
+            if(!used)
+                return false;
+            if(!used->createFixture("main", st.rect, 1, 1, physics::Entity::Type::ThisType,
+                        physics::Entity::Type::ThisCollideWith, geometry::Point(0,0), true)) {
+                m_world->destroyEntity(nm.str());
+                return false;
+            }
+        }
+        else {
+            if(!used->createFixture(nm.str(), st.rect, 1, 1, physics::Entity::Type::ThisType,
+                    physics::Entity::Type::ThisCollideWith, pos, true))
+                return false;
+        }
+
+        /* Adding it to the list. */
+        m_attacks.insert(m_attacks.end(), st);
+        return true;
+    }
 
 }
 

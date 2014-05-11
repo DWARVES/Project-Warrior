@@ -3,6 +3,7 @@
 #define DEF_GAMEPLAY_CHARACTER
 
 #include <string>
+#include <list>
 #include "geometry/aabb.hpp"
 #include "lua/script.hpp"
 #include "physics/World.hpp"
@@ -156,6 +157,9 @@ namespace gameplay
             /** @brief Inflict an impact on the character. */
             void impact(float x, float y);
 
+            /* Methods exposed to lua. */
+            bool createAttack(const geometry::AABB& rect, bool physic, const std::string& mvx, const std::string& mvy, const std::string& drw, const std::string& contact);
+
         private:
             std::string m_namespace;  /**< @brief The name of the namespace used by this character in gfx, audio and physics. */
             std::string m_path;       /**< @brief The path to the directory of the character. */
@@ -244,6 +248,21 @@ namespace gameplay
             bool m_stuned;            /**< @brief Indicates if the character is stuned. */
             Uint32 m_stun;            /**< @brief Indicates the beggining of the stun. */
             Uint32 m_stunTime;        /**< @brief Indicates the duration of the stun. */
+            
+            /* Attacks */
+            /** @brief Structure used to store attacks. */
+            struct AttackSt {
+                std::string moveX;    /**< @brief The lua callback moving the attack (returns its move along X axis). It takes as argument the number os ms since the creating of the attack. */
+                std::string moveY;    /**< @brief The lua callback moving the attack (returns its move along Y axis). It takes as argument the number os ms since the creating of the attack. */
+                std::string draw;     /**< @brief The lua callback drawing the attack. It takes as argument the number os ms since the creating of the attack. */
+                std::string contact;  /**< @brief The lua callback called when a character touches the attack. It takes as argument the number os ms since the creating of the attack. */
+                bool physic;          /**< @brief Indicates if it is a magic attack or a physic attack. */
+                geometry::AABB rect;  /**< @brief The collison rect. */
+                Uint32 begin;         /**< @brief The local timestamp of the creation of the attack. */
+            };
+            /**< @brief The list of all the attacks occuring. */
+            std::list<AttackSt> m_attacks;  
+            int m_attackCount;        /**< @brief Count the number of attacks created. */
 
             /* Internal methods. */
             /** @brief Draw the nm texture with a maximum size, can flip it horizontally. */
