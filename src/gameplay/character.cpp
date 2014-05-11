@@ -1066,7 +1066,7 @@ namespace gameplay
         return (float)mana() / (float)manaMax();
     }
             
-    bool Character::createAttack(const geometry::AABB& rect, bool physic, const std::string& mvx, const std::string& mvy, const std::string& drw, const std::string& contact)
+    bool Character::createAttack(const geometry::AABB& rect, bool physic, const std::string& mvx, const std::string& mvy, const std::string& drw, const std::string& contact, bool gravity)
     {
         /* Store the attack. */
         AttackSt st;
@@ -1108,12 +1108,14 @@ namespace gameplay
             m_perso.callFunction<float,int>(st.moveY, &pos.y, 0);
         physics::Entity* used = m_ch;
 
-        /* Creating a new entity if necesary. */
+        /* Creating the entity. */
         if(st.physic) {
             pos.x += m_ch->getPosition().x;
             pos.y += m_ch->getPosition().y;
         }
         used = m_world->createEntity(st.name, pos, b2_dynamicBody);
+        if(!gravity)
+            used->setGravityScale(0.0f);
         if(!used)
             return false;
         if(!used->createFixture("main", st.rect, 1, 1, physics::Entity::Type::ThisType,

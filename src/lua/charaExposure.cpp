@@ -174,7 +174,8 @@ namespace lua
         int Character::attack(lua_State* st)
         {
             std::vector<Script::VarType> args = helper::listArguments(st);
-            if(args.size() != 7
+            if(!(args.size() == 7
+                        || (args.size() == 8 && args[7] == Script::BOOL))
                     || args[0] != Script::NUMBER
                     || args[1] != Script::NUMBER
                     || args[2] != Script::BOOL

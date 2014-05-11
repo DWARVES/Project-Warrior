@@ -158,7 +158,7 @@ namespace gameplay
             void impact(float x, float y);
 
             /* Methods exposed to lua. */
-            bool createAttack(const geometry::AABB& rect, bool physic, const std::string& mvx, const std::string& mvy, const std::string& drw, const std::string& contact);
+            bool createAttack(const geometry::AABB& rect, bool physic, const std::string& mvx, const std::string& mvy, const std::string& drw, const std::string& contact, bool gravity = false);
 
         private:
             std::string m_namespace;  /**< @brief The name of the namespace used by this character in gfx, audio and physics. */
