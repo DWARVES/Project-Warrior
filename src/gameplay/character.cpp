@@ -763,16 +763,19 @@ namespace gameplay
 
         /* Drawing the attacks. */
         global::gfx->push();
+        std::vector<AttackSt> toremove;
         for(auto it = m_attacks.begin(); it != m_attacks.end(); ++it) {
             if(it->draw.empty())
                 continue;
             pos = m_world->getEntity(it->name)->getPosition();
             global::gfx->move(pos.x, pos.y);
             bool ret;
-            m_perso.callFunction<void,unsigned int>(it->draw, &ret, SDL_GetTicks() - it->begin);
+            m_perso.callFunction<bool,unsigned int>(it->draw, &ret, SDL_GetTicks() - it->begin);
             if(!ret)
-                m_attacks.remove_if([&] (const AttackSt& st) { return st.name == it->name; });
+                toremove.push_back(*it);
         }
+        for(auto it = toremove.begin(); it != toremove.end(); ++it)
+            removeAttack(*it);
         global::gfx->pop();
     }
 
@@ -1159,7 +1162,14 @@ namespace gameplay
         st->ch->m_perso.callFunction<bool,int>(st->contact, &ret, c->getID());
 
         if(!ret)
-            st->ch->m_attacks.remove_if([&] (const AttackSt& ast) { return ast.name == st->name; } );
+            removeAttack(*st);
+    }
+            
+    void Character::removeAttack(const AttackSt& st)
+    {
+        st.ch->m_world->enterNamespace(st.ch->m_namespace);
+        st.ch->m_world->destroyEntity(st.name);
+        st.ch->m_attacks.remove_if([&] (const AttackSt& ast) { return st.name == ast.name; });
     }
 
 }

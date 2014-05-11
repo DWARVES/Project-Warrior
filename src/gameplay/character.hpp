@@ -284,6 +284,8 @@ namespace gameplay
             void attackCallbacks();
             /** @brief The callback for the collision with attacks. */
             static void attackcallback(physics::Entity* att, physics::Entity* chara, bool bg, void* data);
+            /** @brief Remove an attack callback. */
+            static void removeAttack(const AttackSt& st);
     };
 }
 
