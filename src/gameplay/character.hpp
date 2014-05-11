@@ -92,6 +92,8 @@ namespace gameplay
             void setFlip(bool f);
             /** @brief Draw the character at the position setted by its physics (in the stage repere). */
             void draw();
+            /** @brief Indicates if the character is flipped when drawn. */
+            bool flipped() const;
             /** @brief Draw the character appearing.
              * @param percent The percentage of the animation [0-100].
              * @param msize The maximum size.

@@ -1189,6 +1189,11 @@ namespace gameplay
         st.ch->m_world->destroyEntity(st.name);
         st.ch->m_attacks.remove_if([&] (const AttackSt& ast) { return st.name == ast.name; });
     }
+            
+    bool Character::flipped() const
+    {
+        return m_actual.flip == m_flip;
+    }
 
 }
 
