@@ -15,7 +15,7 @@ namespace physics
             chara->m_underfoot.push_back(ground);
     }
 
-    Character::Character(const std::string& name, World* world, const geometry::Point& position, const geometry::AABB& rect, float weight) : Entity(name, world, position, b2_dynamicBody, Entity::Type::Character), m_world(world)
+    Character::Character(const std::string& name, World* world, const geometry::Point& position, const geometry::AABB& rect, float weight) : Entity(name, world, position, b2_dynamicBody, Entity::Type::Character), m_world(world), m_id(4)
     {
         createFixture("body", rect, weight, 1);
 
@@ -44,4 +44,15 @@ namespace physics
     {
         return !m_underfoot.empty();
     }
+            
+    void Character::setID(int id)
+    {
+        m_id = id;
+    }
+
+    int Character::getID() const
+    {
+        return m_id;
+    }
+
 }

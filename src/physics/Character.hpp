@@ -30,9 +30,15 @@ namespace physics
             /** @brief Indicates if the character is on the ground. */
             bool onGround() const;
 
+            /** @brief Setting the id of the character. */
+            void setID(int id);
+            /** @brief Getting the id of the character. */
+            int getID() const;
+
         private:
             std::vector<Entity*> m_underfoot; /**< @brief A list of all entities under the player foot. */
             World* m_world;
+            int m_id; /**< @brief The ID of the character. */
 
             /** @brief the callback used by Character to keep track of the ground. */
             static void character_foot_callback(Entity* ch, Entity* ground, bool start, void*);
