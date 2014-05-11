@@ -1111,7 +1111,10 @@ namespace gameplay
         }
 
         /* Adding it to the list. */
-        m_attacks.insert(m_attacks.end(), st);
+        auto it = m_attacks.insert(m_attacks.end(), st);
+
+        /* Setting up the callback. */
+        m_world->setCallback(st.name, &attackcallback, &(*it));
         return true;
     }
             
