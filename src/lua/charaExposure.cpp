@@ -19,6 +19,7 @@ namespace lua
             {"force",       &Character::applyForce},
             {"velocity",    &Character::velocity},
             {"impulse",     &Character::impulse},
+            {"attack",      &Character::attack},
             {"damage",      &Character::damage},
             {"stun",        &Character::stun},
             {"impact",      &Character::impact},
@@ -168,6 +169,24 @@ namespace lua
                 return 0;
             characters[m_char]->inflictDamages((int)lua_tointeger(st, 1));
             return 0;
+        }
+
+        int Character::attack(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 7
+                    || args[0] != Script::NUMBER
+                    || args[1] != Script::NUMBER
+                    || args[2] != Script::BOOL
+                    || args[3] != Script::STRING
+                    || args[4] != Script::STRING
+                    || args[5] != Script::STRING
+                    || args[6] != Script::STRING)
+                return helper::returnBoolean(st, false);
+            bool ret = characters[m_char]->createAttack(geometry::AABB((float)lua_tonumber(st, 1), (float)lua_tonumber(st, 2)),
+                    lua_toboolean(st, 3), lua_tostring(st, 4), lua_tostring(st, 5),
+                    lua_tostring(st, 6), lua_tostring(st, 7));
+            return helper::returnBoolean(st, ret);
         }
 
     }

@@ -43,6 +43,7 @@ namespace lua
                 int applyForce(lua_State* st);
                 int impulse(lua_State* st);
                 int velocity(lua_State* st);
+                int attack(lua_State* st);
 
                 /* CCs */
                 int damage(lua_State* st);
