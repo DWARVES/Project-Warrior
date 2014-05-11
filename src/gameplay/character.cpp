@@ -1142,7 +1142,7 @@ namespace gameplay
         }
     }
             
-    void Character::attackcallback(physics::Entity* att, physics::Entity* chara, bool bg, void* data)
+    void Character::attackcallback(physics::Entity*, physics::Entity* chara, bool bg, void* data)
     {
         /* Report only if it is the beggining of a contact. */
         if(!bg)
@@ -1151,10 +1151,9 @@ namespace gameplay
         /* Report only collision with characters. */
         if(chara->getType() != physics::Entity::Type::Character)
             return;
-
+        /* But not with our character. */
         AttackSt* st = (AttackSt*)data;
-        /* Shouldn't happen. */
-        if(att != st->ch->m_ch)
+        if(st->ch->entity() == chara)
             return;
 
         physics::Character* c = (physics::Character*)chara;
