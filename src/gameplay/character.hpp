@@ -261,6 +261,7 @@ namespace gameplay
                 geometry::AABB rect;  /**< @brief The collison rect. */
                 Uint32 begin;         /**< @brief The local timestamp of the creation of the attack. */
                 Character* ch;        /**< @brief Pointer to the character calling. */
+                bool ended;           /**< @brief Indicates if the attack must be deleted. */
             };
             /**< @brief The list of all the attacks occuring. */
             std::list<AttackSt> m_attacks;  

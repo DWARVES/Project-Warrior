@@ -765,6 +765,10 @@ namespace gameplay
         global::gfx->push();
         std::vector<AttackSt> toremove;
         for(auto it = m_attacks.begin(); it != m_attacks.end(); ++it) {
+            if(it->ended) {
+                toremove.push_back(*it);
+                continue;
+            }
             if(it->draw.empty())
                 continue;
             pos = m_world->getEntity(it->name)->getPosition();
@@ -1070,6 +1074,7 @@ namespace gameplay
         st.rect   = rect;
         st.begin  = SDL_GetTicks();
         st.ch     = this;
+        st.ended  = false;
         std::ostringstream nm;
         nm << "attack" << m_attackCount;
         ++m_attackCount;
@@ -1093,6 +1098,7 @@ namespace gameplay
             core::logger::logm(oss.str(), core::logger::DEBUG);
             return false;
         }
+        st.contact = contact;
 
         /* Getting the position. */
         geometry::Point pos(0.0f, 0.0f);
@@ -1161,7 +1167,7 @@ namespace gameplay
         st->ch->m_perso.callFunction<bool,int>(st->contact, &ret, c->getID());
 
         if(!ret)
-            removeAttack(*st);
+            st->ended = true;
     }
             
     void Character::removeAttack(const AttackSt& st)
