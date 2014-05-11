@@ -658,7 +658,7 @@ namespace gameplay
 
         actuateByPhysic(m_actual, save);
         if(save.id != m_actual.id)
-            m_begin = SDL_GetTicks();
+            m_begin = 0;
     }
 
     void Character::actuateByPhysic(Action actual, Action previous)
@@ -789,6 +789,10 @@ namespace gameplay
             return;
 
         unsigned long ms = SDL_GetTicks() - m_begin;
+        if(m_begin == 0) {
+            m_begin = ms;
+            ms = 0;
+        }
         bool ret = true;
         m_perso.callFunction<bool, unsigned long>(m_luaCalls[(unsigned int)m_actual.id], &ret, ms);
 
