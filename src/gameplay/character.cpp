@@ -903,6 +903,7 @@ namespace gameplay
     void Character::setManaMax(unsigned int m)
     {
         m_manamax = m;
+        m_mana = m_manamax;
     }
 
     void Character::enableMSize(bool en, const geometry::AABB& ms)
