@@ -1122,6 +1122,7 @@ namespace gameplay
             pos.x += m_ch->getPosition().x;
             pos.y += m_ch->getPosition().y;
         }
+        m_world->enterNamespace(m_namespace);
         used = m_world->createEntity(st.name, pos, b2_dynamicBody);
         if(!gravity)
             used->setGravityScale(0.0f);
