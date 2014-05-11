@@ -760,6 +760,17 @@ namespace gameplay
         else
             global::gfx->blitTexture("drawed", geometry::Point(0.0f,0.0f), m_actual.flip); /* TODO center */
         global::gfx->pop();
+
+        /* Drawing the attacks. */
+        global::gfx->push();
+        for(auto it = m_attacks.begin(); it != m_attacks.end(); ++it) {
+            if(it->draw.empty())
+                continue;
+            pos = m_world->getEntity(it->name)->getPosition();
+            global::gfx->move(pos.x, pos.y);
+            m_perso.callFunction<void,unsigned int>(it->draw, NULL, SDL_GetTicks() - it->begin);
+        }
+        global::gfx->pop();
     }
 
     void Character::actuateByLua()
