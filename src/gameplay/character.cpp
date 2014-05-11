@@ -1033,6 +1033,11 @@ namespace gameplay
         float percent = float(SDL_GetTicks() - m_stun) / (float)m_stunTime;
         return percent;
     }
+            
+    float Character::manaProgress() const
+    {
+        return (float)mana() / (float)manaMax();
+    }
 
 }
 

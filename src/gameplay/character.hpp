@@ -129,6 +129,8 @@ namespace gameplay
             unsigned int mana() const;
             /** @brief Get the maximum mana of the character. */
             unsigned int manaMax() const;
+            /** @brief Indicates the percent of mana left. */
+            float manaProgress() const;
 
             /** @brief Allocate another character with the same path. */
             Character* clone() const;
