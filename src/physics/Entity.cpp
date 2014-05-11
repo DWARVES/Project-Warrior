@@ -236,4 +236,10 @@ namespace physics
     {
         m_body->SetTransform(b2Vec2(p.x, p.y), m_body->GetAngle());
     }
+            
+    void Entity::setGravityScale(float sc)
+    {
+        m_body->SetGravityScale(sc);
+    }
+
 }

@@ -96,6 +96,8 @@ namespace physics
             b2Fixture* createFixture(const std::string& name, const geometry::Polygon& polygon, float density = 1, float friction = 1, uint16 type = Type::ThisType, uint16 collideWith = Type::ThisCollideWith, bool sensor = false);
             /** @brief Get the mass of the body. */
             float getMass() const;
+            /** @brief Set the importance of gravity on this body. */
+            void setGravityScale(float sc);
 
             /** @brief Destroy the fixture named "name" in the map */
             void destroyFixture(const std::string& name);
