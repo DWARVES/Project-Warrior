@@ -973,8 +973,12 @@ namespace gameplay
 
     void Character::die()
     {
-        /* Reset damages. */
+        /* Reset damages and mana. */
         m_damages = 0;
+        m_mana    = m_manamax;
+        /* Reset CCs. */
+        m_stuned = false;
+        m_stun   = 0;
         /* Set death time. */
         if(!m_dead)
             m_death = SDL_GetTicks();
