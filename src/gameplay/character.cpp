@@ -759,6 +759,7 @@ namespace gameplay
             drawPrev("drawed", m_msize, m_actual.flip, true);
         else
             global::gfx->blitTexture("drawed", geometry::Point(0.0f,0.0f), m_actual.flip); /* TODO center */
+        global::gfx->pop();
     }
 
     void Character::actuateByLua()
