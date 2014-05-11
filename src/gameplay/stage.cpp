@@ -132,8 +132,10 @@ namespace gameplay
         m_nbPlayers = 0;
         for(int i = 0; i < 4; ++i) {
             m_ctrls[i] = ctrls[i];
-            if(m_ctrls[i])
+            if(m_ctrls[i]) {
+                ((physics::Character*)m_ctrls[i]->attached()->entity())->setID(i);
                 ++m_nbPlayers;
+            }
         }
 
         /* Creating the physic world. */
