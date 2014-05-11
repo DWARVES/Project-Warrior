@@ -184,9 +184,12 @@ namespace lua
                     || args[5] != Script::STRING
                     || args[6] != Script::STRING)
                 return helper::returnBoolean(st, false);
+            bool grav = false;
+            if(args.size() == 8)
+                grav = lua_toboolean(st, 8);
             bool ret = characters[m_char]->createAttack(geometry::AABB((float)lua_tonumber(st, 1), (float)lua_tonumber(st, 2)),
                     lua_toboolean(st, 3), lua_tostring(st, 4), lua_tostring(st, 5),
-                    lua_tostring(st, 6), lua_tostring(st, 7));
+                    lua_tostring(st, 6), lua_tostring(st, 7), grav);
             return helper::returnBoolean(st, ret);
         }
 
