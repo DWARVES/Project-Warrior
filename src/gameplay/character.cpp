@@ -774,6 +774,8 @@ namespace gameplay
             pos = m_world->getEntity(it->name)->getPosition();
             global::gfx->move(pos.x, pos.y);
             bool ret;
+            if(it->flip == m_flip)
+                global::gfx->scale(-1.0f, 1.0f);
             m_perso.callFunction<bool,unsigned int>(it->draw, &ret, SDL_GetTicks() - it->begin);
             if(!ret)
                 toremove.push_back(*it);
@@ -1079,6 +1081,7 @@ namespace gameplay
         st.begin  = SDL_GetTicks();
         st.ch     = this;
         st.ended  = false;
+        st.flip   = m_actual.flip;
         std::ostringstream nm;
         nm << "attack" << m_attackCount;
         ++m_attackCount;
@@ -1111,6 +1114,8 @@ namespace gameplay
         if(!st.moveY.empty())
             m_perso.callFunction<float,int>(st.moveY, &pos.y, 0);
         physics::Entity* used = m_ch;
+        if(st.flip == m_flip)
+            pos.x *= -1.0f;
 
         /* Creating the entity. */
         if(st.physic) {
@@ -1143,6 +1148,8 @@ namespace gameplay
             geometry::Point mv(0.0f, 0.0f);
             if(!it->moveX.empty())
                 m_perso.callFunction<float,unsigned int>(it->moveX, &mv.x, ms);
+            if(it->flip == m_flip)
+                mv.x *= -1.0f;
             if(!it->moveY.empty())
                 m_perso.callFunction<float,unsigned int>(it->moveY, &mv.y, ms);
 

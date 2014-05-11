@@ -262,6 +262,7 @@ namespace gameplay
                 Uint32 begin;         /**< @brief The local timestamp of the creation of the attack. */
                 Character* ch;        /**< @brief Pointer to the character calling. */
                 bool ended;           /**< @brief Indicates if the attack must be deleted. */
+                bool flip;            /**< @brief Must the attacks be flipped. */
             };
             /**< @brief The list of all the attacks occuring. */
             std::list<AttackSt> m_attacks;  
