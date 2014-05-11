@@ -26,6 +26,11 @@ bool GameMenu::prepare()
         path << global::cfg->get<std::string>("rcs") << "/gamemenu/stun.png";
         if(!global::gfx->loadTexture("stun", path.str()))
             return false;
+
+        path.str("");
+        path << global::cfg->get<std::string>("rcs") << "/gamemenu/mana.png";
+        if(!global::gfx->loadTexture("mana", path.str()))
+            return false;
     }
 
     /* The gui isn't used during the game. */
@@ -62,8 +67,18 @@ bool GameMenu::update()
         global::gfx->draw(text.str(), "dmgfont", h);
         global::gfx->pop();
 
-        /* Drawing the CCs. */
+        /* Drawing the mana. */
         float w = global::gfx->getVirtualWidth() / 45.0f;
+        x -= w;
+        h = global::gfx->getVirtualHeight() / 15.0f;
+        y = global::gfx->getVirtualHeight() / 15.0f;
+        h *= act->manaProgress();
+        global::gfx->push();
+        global::gfx->move(x,y);
+        global::gfx->draw(geometry::AABB(w,h), "mana", 1.0f, act->manaProgress());
+        global::gfx->pop();
+
+        /* Drawing the CCs. */
         x -= w / 2.0f;
         y += w / 2.0f;
         float fact = 1.0f - act->stunProgress();
