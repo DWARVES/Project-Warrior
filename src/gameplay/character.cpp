@@ -768,7 +768,10 @@ namespace gameplay
                 continue;
             pos = m_world->getEntity(it->name)->getPosition();
             global::gfx->move(pos.x, pos.y);
-            m_perso.callFunction<void,unsigned int>(it->draw, NULL, SDL_GetTicks() - it->begin);
+            bool ret;
+            m_perso.callFunction<void,unsigned int>(it->draw, &ret, SDL_GetTicks() - it->begin);
+            if(!ret)
+                m_attacks.remove_if([&] (const AttackSt& st) { return st.name == it->name; });
         }
         global::gfx->pop();
     }
