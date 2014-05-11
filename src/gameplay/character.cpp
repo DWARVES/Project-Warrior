@@ -1051,11 +1051,11 @@ namespace gameplay
     void Character::impact(float x, float y)
     {
         float force = std::sqrt(x*x + y*y);
-        float angle = std::atan(y/x);
+        float angle = std::abs(std::atan(y/x));
 
         force *= (float)m_damages / 100.0f;
-        x = std::cos(angle) * force;
-        y = std::sin(angle) * force;
+        x = (x < 0.0f ? -1.0f : 1.0f) * std::cos(angle) * force;
+        y = (y < 0.0f ? -1.0f : 1.0f) * std::sin(angle) * force;
         m_ch->applyLinearImpulse(x, y);
     }
             
