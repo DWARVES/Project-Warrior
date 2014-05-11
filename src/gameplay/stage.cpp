@@ -132,10 +132,8 @@ namespace gameplay
         m_nbPlayers = 0;
         for(int i = 0; i < 4; ++i) {
             m_ctrls[i] = ctrls[i];
-            if(m_ctrls[i]) {
-                ((physics::Character*)m_ctrls[i]->attached()->entity())->setID(i);
+            if(m_ctrls[i])
                 ++m_nbPlayers;
-            }
         }
 
         /* Creating the physic world. */
@@ -197,6 +195,7 @@ namespace gameplay
         for(int i = 0; i < m_nbPlayers; ++i) {
             m_ctrls[i]->attached()->appearancePos(m_appearPos[i]);
             m_ctrls[i]->attached()->world(&m_world);
+            ((physics::Character*)m_ctrls[i]->attached()->entity())->setID(i);
         }
 
         return true;
