@@ -252,6 +252,7 @@ namespace gameplay
             /* Attacks */
             /** @brief Structure used to store attacks. */
             struct AttackSt {
+                std::string name;     /**< @brief The physic name of the entity/fixture. */
                 std::string moveX;    /**< @brief The lua callback moving the attack (returns its move along X axis). It takes as argument the number os ms since the creating of the attack. */
                 std::string moveY;    /**< @brief The lua callback moving the attack (returns its move along Y axis). It takes as argument the number os ms since the creating of the attack. */
                 std::string draw;     /**< @brief The lua callback drawing the attack. It takes as argument the number os ms since the creating of the attack. */
@@ -278,6 +279,8 @@ namespace gameplay
             void actuateByLua();
             /** @brief Apply the physic action depending on the control. */
             void actuateByPhysic(Action actual, Action previous);
+            /** @brief Call the lua callbacks about the attacks. */
+            void attackCallbacks();
     };
 }
 

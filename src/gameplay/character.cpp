@@ -1052,6 +1052,10 @@ namespace gameplay
         st.physic = physic;
         st.rect   = rect;
         st.begin  = SDL_GetTicks();
+        std::ostringstream nm;
+        nm << "attack" << m_attackCount;
+        ++m_attackCount;
+        st.name = nm.str();
         if(mvx.empty() || !m_perso.existsFunction(mvx))
             st.moveX.clear();
         else
@@ -1081,28 +1085,40 @@ namespace gameplay
         physics::Entity* used = m_ch;
 
         /* Creating a new entity if necesary. */
-        std::ostringstream nm;
-        nm << "attack" << m_attackCount;
-        ++m_attackCount;
-        if(!st.physic) {
-            used = m_world->createEntity(nm.str(), pos, b2_dynamicBody);
-            if(!used)
-                return false;
-            if(!used->createFixture("main", st.rect, 1, 1, physics::Entity::Type::ThisType,
-                        physics::Entity::Type::ThisCollideWith, geometry::Point(0,0), true)) {
-                m_world->destroyEntity(nm.str());
-                return false;
-            }
+        if(st.physic) {
+            pos.x += m_ch->getPosition().x;
+            pos.y += m_ch->getPosition().y;
         }
-        else {
-            if(!used->createFixture(nm.str(), st.rect, 1, 1, physics::Entity::Type::ThisType,
-                    physics::Entity::Type::ThisCollideWith, pos, true))
-                return false;
+        used = m_world->createEntity(st.name, pos, b2_dynamicBody);
+        if(!used)
+            return false;
+        if(!used->createFixture("main", st.rect, 1, 1, physics::Entity::Type::ThisType,
+                    physics::Entity::Type::ThisCollideWith, geometry::Point(0,0), true)) {
+            m_world->destroyEntity(st.name);
+            return false;
         }
 
         /* Adding it to the list. */
         m_attacks.insert(m_attacks.end(), st);
         return true;
+    }
+            
+    void Character::attackCallbacks()
+    {
+        for(auto it = m_attacks.begin(); it != m_attacks.end(); ++it) {
+            Uint32 ms = SDL_GetTicks() - it->begin;
+            geometry::Point mv(0.0f, 0.0f);
+            if(!it->moveX.empty())
+                m_perso.callFunction<float,unsigned int>(it->moveX, &mv.x, ms);
+            if(!it->moveY.empty())
+                m_perso.callFunction<float,unsigned int>(it->moveY, &mv.y, ms);
+
+            physics::Entity* ent = m_world->getEntity(it->name);
+            geometry::Point pos(ent->getPosition());
+            pos.x += mv.x;
+            pos.y += mv.y;
+            ent->setPosition(pos);
+        }
     }
 
 }
