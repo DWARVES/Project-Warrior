@@ -260,6 +260,7 @@ namespace gameplay
                 bool physic;          /**< @brief Indicates if it is a magic attack or a physic attack. */
                 geometry::AABB rect;  /**< @brief The collison rect. */
                 Uint32 begin;         /**< @brief The local timestamp of the creation of the attack. */
+                Character* ch;        /**< @brief Pointer to the character calling. */
             };
             /**< @brief The list of all the attacks occuring. */
             std::list<AttackSt> m_attacks;  
@@ -281,6 +282,8 @@ namespace gameplay
             void actuateByPhysic(Action actual, Action previous);
             /** @brief Call the lua callbacks about the attacks. */
             void attackCallbacks();
+            /** @brief The callback for the collision with attacks. */
+            static void attackcallback(physics::Entity* att, physics::Entity* chara, bool bg, void* data);
     };
 }
 

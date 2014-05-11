@@ -1063,6 +1063,7 @@ namespace gameplay
         st.physic = physic;
         st.rect   = rect;
         st.begin  = SDL_GetTicks();
+        st.ch     = this;
         std::ostringstream nm;
         nm << "attack" << m_attackCount;
         ++m_attackCount;
@@ -1130,6 +1131,29 @@ namespace gameplay
             pos.y += mv.y;
             ent->setPosition(pos);
         }
+    }
+            
+    void Character::attackcallback(physics::Entity* att, physics::Entity* chara, bool bg, void* data)
+    {
+        /* Report only if it is the beggining of a contact. */
+        if(!bg)
+            return;
+
+        /* Report only collision with characters. */
+        if(chara->getType() != physics::Entity::Type::Character)
+            return;
+
+        AttackSt* st = (AttackSt*)data;
+        /* Shouldn't happen. */
+        if(att != st->ch->m_ch)
+            return;
+
+        physics::Character* c = (physics::Character*)chara;
+        bool ret;
+        st->ch->m_perso.callFunction<bool,int>(st->contact, &ret, c->getID());
+
+        if(!ret)
+            st->ch->m_attacks.remove_if([&] (const AttackSt& ast) { return ast.name == st->name; } );
     }
 
 }
