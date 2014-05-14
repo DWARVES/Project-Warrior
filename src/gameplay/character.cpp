@@ -60,7 +60,7 @@ namespace gameplay
     };
 
     Character::Character(const std::string& path)
-        : m_path(path), m_name("broken"), m_desc("Couldn't load."), m_valid(false), m_flip(false), m_world(NULL), m_ch(NULL)
+        : m_path(path), m_name("broken"), m_desc("Couldn't load."), m_valid(false), m_flip(false), m_manaRecov(manaRecov), m_world(NULL), m_ch(NULL)
     {
         ++m_count;
         std::ostringstream oss;
@@ -311,7 +311,6 @@ namespace gameplay
         m_damages    = 0;
         m_dead       = false;
         m_stuned     = false;
-        m_manaRecov  = manaRecov;
         m_lastReload = SDL_GetTicks();
 
         m_actual.flip = m_next.flip = false;
