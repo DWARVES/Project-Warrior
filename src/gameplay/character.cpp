@@ -324,11 +324,6 @@ namespace gameplay
         /* Don't accept actions when dead. */
         if(dead())
             return;
-        if(m_stuned) {
-            if(SDL_GetTicks() - m_stun > m_stunTime)
-                m_stuned = false;
-            return;
-        }
 
         /* Recovering mana. */
         {
@@ -339,6 +334,13 @@ namespace gameplay
             Uint32 unused = spent - (unsigned int)((float)nmana / m_manaRecov);
             addMana(nmana);
             m_lastReload = ntime - unused;
+        }
+
+        /* Don't accpet actions when stunned. */
+        if(m_stuned) {
+            if(SDL_GetTicks() - m_stun > m_stunTime)
+                m_stuned = false;
+            return;
         }
 
         Action save = m_actual;
