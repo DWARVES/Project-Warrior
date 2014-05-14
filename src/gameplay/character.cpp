@@ -914,7 +914,7 @@ namespace gameplay
 
     void Character::addMana(unsigned int mn)
     {
-        m_mana = std::max(m_mana + mn, m_manamax);
+        m_mana = std::min(m_mana + mn, m_manamax);
     }
 
     unsigned int Character::mana() const
