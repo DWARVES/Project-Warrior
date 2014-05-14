@@ -18,6 +18,8 @@ namespace gameplay
 {
     /** @brief Time of death in ms. */
     const Uint32 deathTime = 3000;
+    /** @brief Speed of mana recovering (in mana per ms). */
+    const float manaRecov = 1.0f/50.0f; /* 100 each 5 seconds. */
     size_t Character::m_count = 0;
     const char* const Character::m_luaCalls[(unsigned int)ActionID::None] = {
         "walk",
@@ -304,11 +306,13 @@ namespace gameplay
         }
 
         /* Initiate the state of the character. */
-        m_death   = 0;
-        m_points  = 0;
-        m_damages = 0;
-        m_dead    = false;
-        m_stuned  = false;
+        m_death     = 0;
+        m_points    = 0;
+        m_damages   = 0;
+        m_dead      = false;
+        m_stuned    = false;
+        m_manaRecov = manaRecov;
+        m_lastAct   = SDL_GetTicks();
 
         m_actual.flip = m_next.flip = false;
         action(Walk, Fixed);
@@ -325,6 +329,10 @@ namespace gameplay
                 m_stuned = false;
             return;
         }
+
+        /* Recovering mana. */
+        Uint32 ntime = SDL_GetTicks();
+        addMana((unsigned int)(float(ntime - m_lastAct) * m_manaRecov));
 
         Action save = m_actual;
         m_stir = 0.0f;
@@ -659,6 +667,7 @@ namespace gameplay
         actuateByPhysic(m_actual, save);
         if(save.id != m_actual.id)
             m_begin = 0;
+        m_lastAct = ntime;
     }
 
     void Character::actuateByPhysic(Action actual, Action previous)
@@ -1194,6 +1203,17 @@ namespace gameplay
     bool Character::flipped() const
     {
         return m_actual.flip == m_flip;
+    }
+            
+    void Character::setManaRecov(float m)
+    {
+        if(m >= 0.0f)
+            m_manaRecov = m;
+    }
+            
+    float Character::getManaRecov() const
+    {
+        return m_manaRecov;
     }
 
 }

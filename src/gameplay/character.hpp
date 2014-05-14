@@ -75,7 +75,7 @@ namespace gameplay
                 Down,   /**< @brief The control is bottom oriented. */
                 Fixed,  /**< @brief The control has no orientation. */
             };
-            /** @brief Send an action to the character.
+            /** @brief Send an action to the character. Must be called on every frame.
              * @param control The control or action the character must do.
              * @param dir     The direction of the control.
              */
@@ -122,6 +122,8 @@ namespace gameplay
             void phWeight(float w);
             /** @brief Defines the maximum mana of the character. */
             void setManaMax(unsigned int m);
+            /** @brief Set the speed of mana recovering in mana units per ms. */
+            void setManaRecov(float m);
             /** @brief Indicates if the character is onGround. */
             bool onGround() const;
             /** @brief Use mana from the character, return false if there were not enough mana. */
@@ -134,6 +136,8 @@ namespace gameplay
             unsigned int manaMax() const;
             /** @brief Indicates the percent of mana left. */
             float manaProgress() const;
+            /** @brief Get the mana recovering speed. */
+            float getManaRecov() const;
 
             /** @brief Allocate another character with the same path. */
             Character* clone() const;
@@ -232,6 +236,8 @@ namespace gameplay
             /* Mana. */
             unsigned int m_mana;      /**< @brief The mana left of the character. */
             unsigned int m_manamax;   /**< @brief The maximum mana of the character. */
+            float m_manaRecov;        /**< @brief Mana recovering speed. */
+            Uint32 m_lastAct;         /**< @brief The timestamp of the previous call to action. */
 
             /* Physics integration. */
             physics::World* m_world;  /**< @brief The physics world. */
