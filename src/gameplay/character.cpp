@@ -306,13 +306,13 @@ namespace gameplay
         }
 
         /* Initiate the state of the character. */
-        m_death     = 0;
-        m_points    = 0;
-        m_damages   = 0;
-        m_dead      = false;
-        m_stuned    = false;
-        m_manaRecov = manaRecov;
-        m_lastAct   = SDL_GetTicks();
+        m_death      = 0;
+        m_points     = 0;
+        m_damages    = 0;
+        m_dead       = false;
+        m_stuned     = false;
+        m_manaRecov  = manaRecov;
+        m_lastReload = SDL_GetTicks();
 
         m_actual.flip = m_next.flip = false;
         action(Walk, Fixed);
@@ -331,8 +331,15 @@ namespace gameplay
         }
 
         /* Recovering mana. */
-        Uint32 ntime = SDL_GetTicks();
-        addMana((unsigned int)(float(ntime - m_lastAct) * m_manaRecov));
+        {
+            Uint32 ntime = SDL_GetTicks();
+            Uint32 spent = ntime - m_lastReload;
+            unsigned int nmana = 0;
+            nmana = (unsigned int)((float)spent * m_manaRecov);
+            Uint32 unused = spent - (unsigned int)((float)nmana / m_manaRecov);
+            addMana(nmana);
+            m_lastReload = ntime - unused;
+        }
 
         Action save = m_actual;
         m_stir = 0.0f;
@@ -667,7 +674,6 @@ namespace gameplay
         actuateByPhysic(m_actual, save);
         if(save.id != m_actual.id)
             m_begin = 0;
-        m_lastAct = ntime;
     }
 
     void Character::actuateByPhysic(Action actual, Action previous)

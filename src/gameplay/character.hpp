@@ -237,7 +237,7 @@ namespace gameplay
             unsigned int m_mana;      /**< @brief The mana left of the character. */
             unsigned int m_manamax;   /**< @brief The maximum mana of the character. */
             float m_manaRecov;        /**< @brief Mana recovering speed. */
-            Uint32 m_lastAct;         /**< @brief The timestamp of the previous call to action. */
+            Uint32 m_lastReload;      /**< @brief The timestamp of the previous mana reload. */
 
             /* Physics integration. */
             physics::World* m_world;  /**< @brief The physics world. */
