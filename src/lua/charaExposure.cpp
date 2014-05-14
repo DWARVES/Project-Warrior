@@ -14,6 +14,7 @@ namespace lua
             {"weight",      &Character::weight},
             {"mana",        &Character::setMana},
             {"requireMana", &Character::requireMana},
+            {"manaRecov",   &Character::setManaRecov},
             {"onGround",    &Character::onGround},
             {"flip",        &Character::flip},
             {"force",       &Character::applyForce},
@@ -199,6 +200,16 @@ namespace lua
                     lua_toboolean(st, 3), lua_tostring(st, 4), lua_tostring(st, 5),
                     lua_tostring(st, 6), lua_tostring(st, 7), grav);
             return helper::returnBoolean(st, ret);
+        }
+                
+        int Character::setManaRecov(lua_State* st)
+        {
+            std::vector<Script::VarType> args = helper::listArguments(st);
+            if(args.size() != 1
+                    || args[0] != Script::NUMBER)
+                return 0;
+            characters[m_char]->setManaRecov((float)lua_tonumber(st,1));
+            return 0;
         }
 
     }

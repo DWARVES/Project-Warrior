@@ -38,6 +38,7 @@ namespace lua
                 int onGround(lua_State* st);
                 int requireMana(lua_State* st);
                 int flip(lua_State* st);
+                int setManaRecov(lua_State* st);
 
                 /* Physic exposure. */
                 int applyForce(lua_State* st);
