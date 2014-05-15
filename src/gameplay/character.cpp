@@ -354,6 +354,7 @@ namespace gameplay
                 m_actual.id = ActionID::None;
                 switch(dir) {
                     case Left:  
+                    case TurnLeft:
                         if(save.id == ActionID::Attack                || save.id == ActionID::AttackUp
                                 || save.id == ActionID::AttackDown    || save.id == ActionID::AttackSide
                                 || save.id == ActionID::AttackAir     || save.id == ActionID::AttackAirUp
@@ -383,6 +384,7 @@ namespace gameplay
                         break;
 
                     case Right: 
+                    case TurnRight:
                         if(save.id == ActionID::Attack                || save.id == ActionID::AttackUp
                                 || save.id == ActionID::AttackDown    || save.id == ActionID::AttackSide
                                 || save.id == ActionID::AttackAir     || save.id == ActionID::AttackAirUp
@@ -483,6 +485,7 @@ namespace gameplay
                 m_actual.id = ActionID::None;
                 switch(dir) {
                     case Left:
+                    case TurnLeft:
                         if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                                 m_actual.id = ActionID::Run;
                         else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
@@ -500,6 +503,7 @@ namespace gameplay
                         break;
 
                     case Right:
+                    case TurnRight:
                         if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
                                 m_actual.id = ActionID::Run;
                         else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
@@ -546,6 +550,11 @@ namespace gameplay
                 m_next.id = ActionID::Stand;
                 switch(dir) {
                     /** @todo Handle font/back attacks. */
+                    case TurnLeft:
+                        if(!onGround()) {
+                            m_actual.id = ActionID::AttackAirBack;
+                            break;
+                        }
                     case Left:
                         if(onGround())
                             m_actual.id = ActionID::AttackSide;
@@ -553,6 +562,11 @@ namespace gameplay
                             m_actual.id = ActionID::AttackAirFront;
                         m_actual.flip = m_flip; 
                         break;
+                    case TurnRight:
+                        if(!onGround()) {
+                            m_actual.id = ActionID::AttackAirBack;
+                            break;
+                        }
                     case Right:
                         if(onGround())
                             m_actual.id = ActionID::AttackSide;
@@ -586,9 +600,11 @@ namespace gameplay
             case Spell:
                 m_next.id = ActionID::Stand;
                 switch(dir) {
+                    case TurnLeft:
                     case Left:  m_actual.id = ActionID::SpellSide;
                                 m_actual.flip = m_flip; 
                                 break;
+                    case TurnRight:
                     case Right: m_actual.id = ActionID::SpellSide;
                                 m_actual.flip = !m_flip; 
                                 break;
@@ -602,9 +618,11 @@ namespace gameplay
             case Smash:
                 m_next.id = ActionID::Stand;
                 switch(dir) {
+                    case TurnLeft:
                     case Left:  m_actual.id = ActionID::SmashSide;
                                 m_actual.flip = m_flip; 
                                 break;
+                    case TurnRight:
                     case Right: m_actual.id = ActionID::SmashSide;
                                 m_actual.flip = !m_flip; 
                                 break;
@@ -618,6 +636,7 @@ namespace gameplay
 
             case Dodge:
                 switch(dir) {
+                    case TurnLeft:
                     case Left:
                         if(onGround())
                             m_actual.id = ActionID::DashDodge;
@@ -626,6 +645,7 @@ namespace gameplay
                         m_actual.flip = m_flip; 
                         break;
 
+                    case TurnRight:
                     case Right:
                         if(onGround())
                             m_actual.id = ActionID::DashDodge;
@@ -656,9 +676,11 @@ namespace gameplay
             case Catch:
                 m_next.id = ActionID::Stand;
                 switch(dir) {
+                    case TurnLeft:
                     case Left:  m_actual.id = ActionID::Catch;
                                 m_actual.flip = m_flip;
                                 break;
+                    case TurnRight:
                     case Right: m_actual.id = ActionID::Catch;
                                 m_actual.flip = !m_flip;
                                 break;
