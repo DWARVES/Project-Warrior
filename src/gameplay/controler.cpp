@@ -9,6 +9,8 @@
 
 namespace gameplay
 {
+    /** @brief The duration of the turning in ms. */
+    const Uint32 turnTime = 300;
     /** @brief The names of all the controls. */
     const char* const controlsNames[(unsigned int)Controler::Last] = {
         "left",
@@ -139,10 +141,18 @@ namespace gameplay
             }
         }
 
-        if(dir == Character::Right && m_prevdir == Character::Left)
+        if(dir == Character::Right && m_prevdir == Character::Left) {
             dir = Character::TurnRight;
-        else if(dir == Character::Left && m_prevdir == Character::Right)
+            m_turned = SDL_GetTicks();
+        }
+        else if(dir == Character::Left && m_prevdir == Character::Right) {
             dir = Character::TurnLeft;
+            m_turned = SDL_GetTicks();
+        }
+        else if(m_prevdir == Character::TurnLeft || m_prevdir == Character::TurnRight) {
+            if(SDL_GetTicks() - m_turned > turnTime)
+                dir = m_prevdir;
+        }
         if(dir != Character::Fixed)
             m_prevdir = dir;
 
