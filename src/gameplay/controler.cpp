@@ -139,6 +139,13 @@ namespace gameplay
             }
         }
 
+        if(dir == Character::Right && m_prevdir == Character::Left)
+            dir = Character::TurnRight;
+        else if(dir == Character::Left && m_prevdir == Character::Right)
+            dir = Character::TurnLeft;
+        if(dir != Character::Fixed)
+            m_prevdir = dir;
+
         m_ch->action(ctrl, dir);
     }
 

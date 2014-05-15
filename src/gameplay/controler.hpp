@@ -76,6 +76,7 @@ namespace gameplay
             Character* m_ch;                             /**< @brief The character controled. */
             events::EvSave* m_ctrls[(unsigned int)Last]; /**< @brief The loaded controls. */
             Controls m_actual;                           /**< @brief The actually selected control. */
+            Character::Direction m_prevdir;              /**< @brief The direction of the previous move. */
     };
 }
 

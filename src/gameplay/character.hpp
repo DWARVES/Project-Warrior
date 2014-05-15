@@ -69,11 +69,13 @@ namespace gameplay
             };
             /** @brief The directions of the controls. */
             enum Direction {
-                Left,   /**< @brief The control is left oriented. */
-                Right,  /**< @brief The control is right oriented. */
-                Up,     /**< @brief The control is top oriented. */
-                Down,   /**< @brief The control is bottom oriented. */
-                Fixed,  /**< @brief The control has no orientation. */
+                Left,      /**< @brief The control is left oriented. */
+                Right,     /**< @brief The control is right oriented. */
+                Up,        /**< @brief The control is top oriented. */
+                Down,      /**< @brief The control is bottom oriented. */
+                Fixed,     /**< @brief The control has no orientation. */
+                TurnLeft,  /**< @brief Going from right to left. */
+                TurnRight, /**< @brief Going from left to right. */
             };
             /** @brief Send an action to the character. Must be called on every frame.
              * @param control The control or action the character must do.
