@@ -354,6 +354,7 @@ namespace gameplay
                 m_actual.id = ActionID::None;
                 switch(dir) {
                     case Left:  
+                        m_actual.flip = m_flip; 
                     case TurnLeft:
                         if(save.id == ActionID::Attack                || save.id == ActionID::AttackUp
                                 || save.id == ActionID::AttackDown    || save.id == ActionID::AttackSide
@@ -380,10 +381,10 @@ namespace gameplay
                                 m_actual.id = ActionID::Up;
                             m_stir = 50.0f;
                         }
-                        m_actual.flip = m_flip; 
                         break;
 
                     case Right: 
+                        m_actual.flip = !m_flip;
                     case TurnRight:
                         if(save.id == ActionID::Attack                || save.id == ActionID::AttackUp
                                 || save.id == ActionID::AttackDown    || save.id == ActionID::AttackSide
@@ -410,7 +411,6 @@ namespace gameplay
                                 m_actual.id = ActionID::Up;
                             m_stir = 50.0f;
                         }
-                        m_actual.flip = !m_flip;
                         break;
 
                     case Down:
@@ -551,11 +551,12 @@ namespace gameplay
                 switch(dir) {
                     /** @todo Handle font/back attacks. */
                     case TurnLeft:
-                        if(!onGround()) {
+                        if(!onGround())
                             m_actual.id = ActionID::AttackAirBack;
-                            break;
-                        }
+                        break;
                     case Left:
+                        if(save.id == ActionID::AttackAirBack)
+                            break;
                         if(onGround())
                             m_actual.id = ActionID::AttackSide;
                         else
@@ -563,11 +564,12 @@ namespace gameplay
                         m_actual.flip = m_flip; 
                         break;
                     case TurnRight:
-                        if(!onGround()) {
+                        if(!onGround())
                             m_actual.id = ActionID::AttackAirBack;
-                            break;
-                        }
+                        break;
                     case Right:
+                        if(save.id == ActionID::AttackAirBack)
+                            break;
                         if(onGround())
                             m_actual.id = ActionID::AttackSide;
                         else
