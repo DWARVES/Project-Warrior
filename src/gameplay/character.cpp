@@ -350,6 +350,9 @@ namespace gameplay
 
         switch(control) {
             case Walk:
+                if(save.id == ActionID::AttackAirBack)
+                    break;
+
                 m_next.id   = ActionID::None;
                 m_actual.id = ActionID::None;
                 switch(dir) {
