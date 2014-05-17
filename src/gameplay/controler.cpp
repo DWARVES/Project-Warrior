@@ -12,7 +12,7 @@ namespace gameplay
     /** @brief The duration of the turning in ms. */
     const Uint32 turnTime = 300;
     /** @brief Time after a move in which a smash can be done in ms. */
-    const Uint32 smashTime = 500;
+    const Uint32 smashTime = 50;
     /** @brief The names of all the controls. */
     const char* const controlsNames[(unsigned int)Controler::Last] = {
         "left",
