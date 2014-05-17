@@ -11,6 +11,8 @@ namespace gameplay
 {
     /** @brief The duration of the turning in ms. */
     const Uint32 turnTime = 300;
+    /** @brief Time after a move in which a smash can be done in ms. */
+    const Uint32 smashTime = 500;
     /** @brief The names of all the controls. */
     const char* const controlsNames[(unsigned int)Controler::Last] = {
         "left",
@@ -102,7 +104,6 @@ namespace gameplay
 
     void Controler::update()
     {
-        /** @todo Handle smash. */
         if(!m_ch || !m_loaded)
             return;
 
@@ -153,6 +154,9 @@ namespace gameplay
         }
         if(dir != Character::Fixed)
             m_prevdir = dir;
+
+        if(ctrl == Character::Attack && SDL_GetTicks() - m_turned < smashTime)
+            ctrl = Character::Smash;
 
         m_ch->action(ctrl, dir);
     }
