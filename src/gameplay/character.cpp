@@ -423,6 +423,8 @@ namespace gameplay
                             m_actual.id = ActionID::Land;
                             m_next.id   = ActionID::Stand;
                         }
+                        else if(save.id == ActionID::AttackDown || save.id == ActionID::AttackAirDown)
+                            m_actual.id = save.id;
                         else
                             m_actual.id = ActionID::Stand;
                         break;
