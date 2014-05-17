@@ -621,6 +621,8 @@ namespace gameplay
                 break;
 
             case Smash:
+                if(!onGround())
+                    action(Attack, dir);
                 m_next.id = ActionID::Stand;
                 switch(dir) {
                     case TurnLeft:
