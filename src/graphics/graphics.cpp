@@ -410,8 +410,12 @@ namespace graphics
 
     bool Graphics::loadTexture(const std::string& name, const std::string& path)
     {
-        if(m_fs.existsEntity(name))
+        if(m_fs.existsEntity(name)) {
+            std::ostringstream oss;
+            oss << "Name \"" << name << "\" already exists in \"" << actualNamespace() << "\"";
+            core::logger::logm(oss.str(), core::logger::ERROR);
             return false;
+        }
 
         internal::Texture* text = new internal::Texture;
         if(!text->load(path)) {
@@ -440,8 +444,12 @@ namespace graphics
 
     bool Graphics::loadMovie(const std::string& name, const std::string& path)
     {
-        if(m_fs.existsEntity(name))
+        if(m_fs.existsEntity(name)) {
+            std::ostringstream oss;
+            oss << "Name \"" << name << "\" already exists in \"" << actualNamespace() << "\"";
+            core::logger::logm(oss.str(), core::logger::ERROR);
             return false;
+        }
 
         internal::Movie* mov = new internal::Movie(&m_shads);
         if(!mov->load(path)) {
@@ -470,8 +478,12 @@ namespace graphics
 
     bool Graphics::loadFont(const std::string& name, const std::string& path)
     {
-        if(m_fs.existsEntity(name))
+        if(m_fs.existsEntity(name)) {
+            std::ostringstream oss;
+            oss << "Name \"" << name << "\" already exists in \"" << actualNamespace() << "\"";
+            core::logger::logm(oss.str(), core::logger::ERROR);
             return false;
+        }
 
         internal::Font* font = new internal::Font(&m_shads);
         if(!font->load(path)) {
@@ -500,9 +512,12 @@ namespace graphics
 
     bool Graphics::loadTextureFromText(const std::string& name, const std::string& font, const std::string& txt, const Color& bgc, float pts, bool alpha, unsigned char precision)
     {
-        if(m_fs.existsEntity(name))
+        if(m_fs.existsEntity(name)) {
+            std::ostringstream oss;
+            oss << "Name \"" << name << "\" already exists in \"" << actualNamespace() << "\"";
+            core::logger::logm(oss.str(), core::logger::ERROR);
             return false;
-        else if(rctype(font) != FONT) {
+        } else if(rctype(font) != FONT) {
             core::logger::logm(std::string("Tryed to use an unvalid font : ") + font, core::logger::WARNING);
             return false;
         }
