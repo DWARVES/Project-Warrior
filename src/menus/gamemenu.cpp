@@ -1,9 +1,10 @@
 
 #include "gamemenu.hpp"
 #include "global.hpp"
+#include "core/i18n.hpp"
 
 /** @brief The duration of a game in ms. */
-const Uint32 gameDuration = 60000;
+const Uint32 gameDuration = 180000;
 
 GameMenu::GameMenu(gameplay::Stage* st)
     : m_stage(st), m_duration(gameDuration), m_first(true)
@@ -21,8 +22,13 @@ bool GameMenu::prepare()
         global::gfx->enterNamespace("/gamemenu");
 
         std::ostringstream path;
-        path << global::cfg->get<std::string>("rcs") << "/gamemenu/font.wf";
+        path << global::cfg->get<std::string>("rcs") << "/gamemenu/dmgfont.wf";
         if(!global::gfx->loadFont("dmgfont", path.str()))
+            return false;
+
+        path.str("");
+        path << global::cfg->get<std::string>("rcs") << "/gamemenu/stfont.wf";
+        if(!global::gfx->loadFont("stfont", path.str()))
             return false;
 
         path.str("");
@@ -43,9 +49,26 @@ bool GameMenu::prepare()
 
 bool GameMenu::update()
 {
-    if(m_first) {
+    std::string status;
+    float prg = m_stage->appearProgress();
+    if(prg < 1.0f) {
+        if(prg < 0.9f)
+            status = _i("Ready ...");
+        else
+            status = _i("Go !");
+    }
+    else if(m_first) {
         m_first = false;
         m_begin = SDL_GetTicks();
+        status = "0:00";
+    }
+    else {
+        Uint32 time = SDL_GetTicks() - m_begin;
+        time = m_duration - time;
+        time /= 1000;
+        std::ostringstream oss;
+        oss << time/60 << ":" << time%60 << std::endl;
+        status = oss.str();
     }
 
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
@@ -63,17 +86,28 @@ bool GameMenu::update()
     m_stage->update(*global::evs);
     global::gfx->beginDraw();
     m_stage->draw();
+    global::gfx->enterNamespace("/gamemenu/");
+
+    /* Drawing the status text on top. */
+    /** @todo Center status text. */
+    float x = global::gfx->getVirtualWidth() / 2.0f;
+    float y = global::gfx->getVirtualHeight() / 5.0f * 4.0f;
+    float h = global::gfx->getVirtualHeight() / 15.0f;
+    y -= (h / 2.0f);
+    global::gfx->push();
+    global::gfx->move(x,y);
+    global::gfx->draw(status, "stfont", h);
+    global::gfx->pop();
 
     /* Drawing the damages. */
     int i = 0;
     gameplay::Character* act = m_stage->getCharacter(i);
-    global::gfx->enterNamespace("/gamemenu/");
     while(act) {
         /* Drawing the damages. */
         int dms = act->getDamages();
-        float x = global::gfx->getVirtualWidth() / 6.0f * float(i+1);
-        float y = global::gfx->getVirtualHeight() / 15.0f;
-        float h = global::gfx->getVirtualHeight() / 15.0f;
+        x = global::gfx->getVirtualWidth() / 6.0f * float(i+1);
+        y = global::gfx->getVirtualHeight() / 15.0f;
+        h = global::gfx->getVirtualHeight() / 15.0f;
         std::ostringstream text;
         text << dms << "%";
         global::gfx->push();
