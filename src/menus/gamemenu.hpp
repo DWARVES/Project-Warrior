@@ -19,6 +19,9 @@ class GameMenu : public Menu
 
     private:
         gameplay::Stage* m_stage; /**< @brief The stage of the game. */
+        Uint32 m_duration;        /**< @brief The duration of the game. */
+        Uint32 m_begin;           /**< @brief Timestamp of the begginig of the game. */
+        bool m_first;             /**< @brief Is this the first time update is called. */
 };
 
 #endif

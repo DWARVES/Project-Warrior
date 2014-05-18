@@ -2,8 +2,11 @@
 #include "gamemenu.hpp"
 #include "global.hpp"
 
+/** @brief The duration of a game in ms. */
+const Uint32 gameDuration = 60000;
+
 GameMenu::GameMenu(gameplay::Stage* st)
-    : m_stage(st)
+    : m_stage(st), m_duration(gameDuration), m_first(true)
 {}
 
 GameMenu::~GameMenu()
@@ -40,9 +43,20 @@ bool GameMenu::prepare()
 
 bool GameMenu::update()
 {
+    if(m_first) {
+        m_first = false;
+        m_begin = SDL_GetTicks();
+    }
+
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
             || global::evs->keyJustPressed(events::Key('q'))) {
         global::gui->focus(true);
+        m_first = true;
+        return false;
+    }
+    if(SDL_GetTicks() - m_begin > m_duration) {
+        global::gui->focus(true);
+        m_first = true;
         return false;
     }
 
