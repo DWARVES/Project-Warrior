@@ -243,6 +243,15 @@ namespace gameplay
                 m_ctrls[i]->attached()->die();
         }
     }
+            
+    float Stage::appearProgress() const
+    {
+        Uint32 time = SDL_GetTicks() - m_beggining;
+        if(time > appearTime)
+            return 1.0f;
+        else
+            return (float)time / (float)appearTime;
+    }
 
     void Stage::draw()
     {

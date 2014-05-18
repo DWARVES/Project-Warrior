@@ -41,6 +41,8 @@ namespace gameplay
             bool load(gameplay::Controler* ctrls[4]);
             /** @brief Update the stage. */
             void update(const events::Events& ev);
+            /** @brief Get the progression of the characters appearances. */
+            float appearProgress() const;
             /** @brief Draw the stage. */
             void draw();
 
