@@ -20,6 +20,8 @@ namespace gameplay
     const Uint32 deathTime = 3000;
     /** @brief Speed of mana recovering (in mana per ms). */
     const float manaRecov = 1.0f/50.0f; /* 100 each 5 seconds. */
+    /** @brief The time between an attack and a death to count as a kill in ms. */
+    const Uint32 attackSuccessTime = 5000;
     size_t Character::m_count = 0;
     const char* const Character::m_luaCalls[(unsigned int)ActionID::None] = {
         "walk",
@@ -306,12 +308,14 @@ namespace gameplay
         }
 
         /* Initiate the state of the character. */
-        m_death      = 0;
-        m_points     = 0;
-        m_damages    = 0;
-        m_dead       = false;
-        m_stuned     = false;
-        m_lastReload = SDL_GetTicks();
+        m_death       = 0;
+        m_points      = 0;
+        m_damages     = 0;
+        m_dead        = false;
+        m_stuned      = false;
+        m_lastReload  = SDL_GetTicks();
+        m_lastAtt     = NULL;
+        m_lastAttTime = 0;
 
         m_actual.flip = m_next.flip = false;
         action(Walk, Fixed);
@@ -1063,6 +1067,11 @@ namespace gameplay
         m_dead = true;
         /* Warp far from the map. */
         warp(geometry::Point(-1e10f,-1e10f));
+
+        /* Handle points. */
+        if(m_lastAtt && SDL_GetTicks() - m_lastAttTime < attackSuccessTime)
+            m_lastAtt->addPoints(1);
+        addPoints(-1);
     }
             
     bool Character::dead()

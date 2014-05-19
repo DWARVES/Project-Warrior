@@ -253,6 +253,8 @@ namespace gameplay
             int m_points;             /**< @brief The points of the character. */
             Uint32 m_death;           /**< @brief Last time of death of the character. */
             bool m_dead;              /**< @brief Indicates if the character is dead. */
+            Character* m_lastAtt;     /**< @brief The last character who attacked this one. */
+            Uint32 m_lastAttTime;     /**< @brief The timestamp of the last attack to this character. */
 
             /* CCs */
             bool m_stuned;            /**< @brief Indicates if the character is stuned. */
