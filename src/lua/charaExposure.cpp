@@ -147,26 +147,23 @@ namespace lua
             if(args.size() != 1
                     || args[0] != Script::NUMBER)
                 return 0;
-            characters[m_char]->stun((unsigned int)lua_tointeger(st, 1));
+            characters[m_char]->stun((unsigned int)lua_tointeger(st, 1), currentChar(st));
             return 0;
         }
 
         int Character::impact(lua_State* st)
         {
             std::vector<Script::VarType> args = helper::listArguments(st);
-            if(!(args.size() == 2
-                        || (args.size() == 3 && args[2] == Script::NUMBER))
+            if(args.size() != 2
                     || args[0] != Script::NUMBER
                     || args[1] != Script::NUMBER)
                 return 0;
-            int id = 4;
-            if(args.size() == 3)
-                id = (int)lua_tonumber(st, 3);
             float x = (float)lua_tonumber(st, 1);
             float y = (float)lua_tonumber(st, 2);
-            if(id < 4 && characters[id]->flipped())
+            gameplay::Character* act = currentChar(st);
+            if(act && act->flipped())
                 x *= -1.0f;
-            characters[m_char]->impact(x, y);
+            characters[m_char]->impact(x, y, act);
             return 0;
         }
                 
@@ -176,7 +173,7 @@ namespace lua
             if(args.size() != 1
                     || args[0] != Script::NUMBER)
                 return 0;
-            characters[m_char]->inflictDamages((int)lua_tointeger(st, 1));
+            characters[m_char]->inflictDamages((int)lua_tointeger(st, 1), currentChar(st));
             return 0;
         }
 
@@ -210,6 +207,17 @@ namespace lua
                 return 0;
             characters[m_char]->setManaRecov((float)lua_tonumber(st,1));
             return 0;
+        }
+                
+        gameplay::Character* Character::currentChar(lua_State* st) const
+        {
+            gameplay::Character* ret = NULL;
+            lua_settop(st, 0);
+            lua_getglobal(st, "characterID");
+            if(lua_isnumber(st, 1))
+                ret = characters[(int)lua_tointeger(st, 1)];
+            lua_pop(st, 1);
+            return ret;
         }
 
     }

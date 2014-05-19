@@ -53,6 +53,8 @@ namespace lua
 
             private:
                 int m_char; /**< @brief The character to use [0-3]. */
+                /** @brief Get the current character from characterID value (NULL if none). */
+                gameplay::Character* currentChar(lua_State* st) const;
         };
     }
 }
