@@ -1054,6 +1054,9 @@ namespace gameplay
 
     void Character::die()
     {
+        if(m_dead)
+            return;
+
         /* Reset damages and mana. */
         m_damages = 0;
         m_mana    = m_manamax;
@@ -1061,8 +1064,7 @@ namespace gameplay
         m_stuned = false;
         m_stun   = 0;
         /* Set death time. */
-        if(!m_dead)
-            m_death = SDL_GetTicks();
+        m_death = SDL_GetTicks();
         /* Indicate death */
         m_dead = true;
         /* Warp far from the map. */
