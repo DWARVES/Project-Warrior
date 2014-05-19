@@ -1028,11 +1028,13 @@ namespace gameplay
         return (physics::Entity*)m_ch;
     }
 
-    void Character::inflictDamages(int dm)
+    void Character::inflictDamages(int dm, Character* from)
     {
         m_damages += dm;
         if(m_damages < 0)
             m_damages = 0;
+        m_lastAtt = from;
+        m_lastAttTime = SDL_GetTicks();
     }
 
     int Character::getDamages() const
@@ -1043,8 +1045,6 @@ namespace gameplay
     void Character::addPoints(int pts)
     {
         m_points += pts;
-        if(m_points < 0)
-            m_points = 0;
     }
 
     int Character::getPoints() const
@@ -1088,7 +1088,7 @@ namespace gameplay
             return false;
     }
 
-    void Character::stun(unsigned int ms)
+    void Character::stun(unsigned int ms, Character* from)
     {
         m_ch->setLinearVelocity(0.0f, 0.0f);
         if(!m_stuned) {
@@ -1104,9 +1104,12 @@ namespace gameplay
 
         m_actual.id = ActionID::Stunned;
         m_next.id   = ActionID::None;
+
+        m_lastAtt = from;
+        m_lastAttTime = SDL_GetTicks();
     }
             
-    void Character::impact(float x, float y)
+    void Character::impact(float x, float y, Character* from)
     {
         float force = std::sqrt(x*x + y*y);
         float angle = std::abs(std::atan(y/x));
@@ -1115,6 +1118,9 @@ namespace gameplay
         x = (x < 0.0f ? -1.0f : 1.0f) * std::cos(angle) * force;
         y = (y < 0.0f ? -1.0f : 1.0f) * std::sin(angle) * force;
         m_ch->applyLinearImpulse(x, y);
+
+        m_lastAtt = from;
+        m_lastAttTime = SDL_GetTicks();
     }
             
     float Character::stunProgress() const

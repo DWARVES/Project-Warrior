@@ -145,7 +145,7 @@ namespace gameplay
             Character* clone() const;
 
             /** @brief Inflict damages to a character. */
-            void inflictDamages(int dm);
+            void inflictDamages(int dm, Character* from = NULL);
             /** @brief Get the damages of the character. */
             int getDamages() const;
             /** @brief Add points to the character. */
@@ -159,11 +159,11 @@ namespace gameplay
 
             /******* CC *******/
             /** @brief Inflict a stun of ms millis to the character. */
-            void stun(unsigned int ms);
+            void stun(unsigned int ms, Character* from = NULL);
             /** @brief Indicates the progress of the stun from 0 to 1 (not stunned). */
             float stunProgress() const;
             /** @brief Inflict an impact on the character. */
-            void impact(float x, float y);
+            void impact(float x, float y, Character* from = NULL);
 
             /* Methods exposed to lua. */
             bool createAttack(const geometry::AABB& rect, bool physic, const std::string& mvx, const std::string& mvy, const std::string& drw, const std::string& contact, bool gravity = false);
