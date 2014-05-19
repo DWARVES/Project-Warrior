@@ -155,7 +155,7 @@ namespace gameplay
         if(dir != Character::Fixed)
             m_prevdir = dir;
 
-        if(ctrl == Character::Attack && SDL_GetTicks() - m_turned < smashTime)
+        if(ctrl == Character::Attack && dir != Character::Fixed && SDL_GetTicks() - m_turned < smashTime)
             ctrl = Character::Smash;
 
         m_ch->action(ctrl, dir);
