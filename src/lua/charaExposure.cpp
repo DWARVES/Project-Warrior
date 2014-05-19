@@ -212,10 +212,13 @@ namespace lua
         gameplay::Character* Character::currentChar(lua_State* st) const
         {
             gameplay::Character* ret = NULL;
-            lua_settop(st, 0);
+            lua_pushnil(st);
             lua_getglobal(st, "characterID");
-            if(lua_isnumber(st, 1))
-                ret = characters[(int)lua_tointeger(st, 1)];
+            if(lua_isnumber(st, 1)) {
+                int id = (int)lua_tointeger(st, 1);
+                if(id >= 0 && id < 4)
+                    ret = characters[id];
+            }
             lua_pop(st, 1);
             return ret;
         }
