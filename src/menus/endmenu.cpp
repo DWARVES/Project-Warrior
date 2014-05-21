@@ -46,6 +46,7 @@ bool EndMenu::prepare()
     /* Setting up the gui. */
     geometry::Point pos;
     global::gfx->disableVirtualSize();
+    global::gfx->invertYAxis(false);
     pos.x = global::gfx->getVirtualWidth() / 3.0f;
     pos.y = global::gfx->getVirtualHeight() * 0.1f;
     global::gui->main(&m_layout, pos, global::gfx->getVirtualWidth() / 3.0f, global::gfx->getVirtualHeight() * 0.8f);
