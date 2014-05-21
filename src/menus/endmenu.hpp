@@ -21,7 +21,7 @@ class EndMenu : public Menu
     private:
         gameplay::Character* m_players[4]; /**< @brief The players. */
         gui::GridLayout m_layout;          /**< @brief The layout used. */
-        gui::Text m_scores[4];             /**< @brief The text displaying the scores. */
+        gui::Text* m_scores[4];            /**< @brief The text displaying the scores. */
         gui::Button m_end;                 /**< @brief The button to quit the menu. */
 };
 
