@@ -309,7 +309,7 @@ namespace gameplay
         centers.reserve(4);
         for(int i = 0; i < m_nbPlayers; ++i) {
             if(!m_ctrls[i]->attached()->dead())
-                centers.push_back(m_ctrls[i]->attached()->getPos());
+                centers.push_back(project(m_ctrls[i]->attached()->getPos(), m_maxSize, m_center));
         }
 
         /* If no character on screen, display the center of map with maxSize. */
@@ -534,6 +534,36 @@ namespace gameplay
             return NULL;
         else
             return m_ctrls[id]->attached();
+    }
+            
+    geometry::Point Stage::project(const geometry::Point& tp, const geometry::AABB& rect, const geometry::Point& center) const
+    {
+        geometry::Point p1(center.x - rect.width/2.0f, center.y - rect.height/2.0f);
+        geometry::Point p2(center.x + rect.width/2.0f, center.y + rect.height/2.0f);
+        if(tp.x < p1.x) {
+            if(tp.y < p1.y)
+                return p1;
+            else if(tp.y > p2.y)
+                return geometry::Point(p1.x, p2.y);
+            else
+                return geometry::Point(p1.x, tp.y);
+        }
+        else if(tp.x > p2.x) {
+            if(tp.y < p1.y)
+                return geometry::Point(p2.x, p1.y);
+            else if(tp.y > p2.y)
+                return p2;
+            else
+                return geometry::Point(p2.x, tp.y);
+        }
+        else {
+            if(tp.y < p1.y)
+                return geometry::Point(tp.x, p1.y);
+            else if(tp.y > p2.y)
+                return geometry::Point(tp.x, p2.y);
+            else
+                return tp;
+        }
     }
 
 }

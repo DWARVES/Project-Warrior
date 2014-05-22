@@ -129,6 +129,8 @@ namespace gameplay
             std::pair<geometry::AABB,geometry::Point> ratioResize(const geometry::AABB& res, const geometry::AABB& fit, bool large = false) const;
             /** @brief Check if a coordinate is in a rect. */
             bool isIn(const geometry::Point& p, const geometry::AABB& rect, const geometry::Point& center) const;
+            /** @brief Will give the nearest coordinates in a rect. */
+            geometry::Point project(const geometry::Point& tp, const geometry::AABB& rect, const geometry::Point& center) const;
     };
 }
 
