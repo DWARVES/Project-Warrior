@@ -312,9 +312,9 @@ namespace gameplay
                 centers.push_back(m_ctrls[i]->attached()->getPos());
         }
 
-        /* If no character on screen, display the center of mapi with minSize. */
+        /* If no character on screen, display the center of map with maxSize. */
         if(centers.size() == 0) {
-            geometry::AABB toshow = ratioResize(m_windowRect, m_minSize, true).first;
+            geometry::AABB toshow = ratioResize(m_windowRect, m_maxSize, true).first;
             global::gfx->move(-m_center.x + toshow.width/2.0f, -m_center.y + toshow.height/2.0f);
             global::gfx->setVirtualSize(toshow.width, toshow.height);
             return;
