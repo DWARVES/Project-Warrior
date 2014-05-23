@@ -421,7 +421,8 @@ namespace gameplay
                         break;
 
                     case Down:
-                        if(save.id == ActionID::AttackDown || save.id == ActionID::AttackAirDown)
+                        if(save.id == ActionID::AttackDown || save.id == ActionID::AttackAirDown
+                                || save.id == ActionID::SpellDown || save.id == ActionID::SmashDown)
                             m_actual.id = save.id;
                         else if(!onGround())
                             m_actual.id = ActionID::FastDown;
