@@ -10,6 +10,7 @@ namespace graphics
     const float epsilon = 0.000001f;
     /** @brief Used to convert degres in radians. */
     const float deg2rad = 0.0174532925199433f;
+    std::map<std::string,std::string> Graphics::Entity::loaded;
 
     Graphics::Graphics()
         : m_win(NULL), m_ctx(0), m_shads(&m_exts),
@@ -385,6 +386,7 @@ namespace graphics
     {
         if(!tofree)
             return;
+        std::cout << "Freeing " << tofree->path << std::endl;
 
         switch(tofree->type) {
             case TEXT:
@@ -401,6 +403,10 @@ namespace graphics
                 /* Invalid entity, shouldn't happen */
                 break;
         }
+
+        auto it = tofree->loaded.find(tofree->path);
+        if(it != tofree->loaded.end())
+            tofree->loaded.erase(it);
         delete tofree;
     }
 
@@ -417,6 +423,12 @@ namespace graphics
             return false;
         }
 
+        auto it = Entity::loaded.find(path);
+        if(it != Entity::loaded.end())
+            return link(name, it->second);
+        else
+            Entity::loaded[path] = m_fs.actualNamespace() + name;
+
         internal::Texture* text = new internal::Texture;
         if(!text->load(path)) {
             delete text;
@@ -429,6 +441,7 @@ namespace graphics
         Entity* ent = new Entity;
         ent->type = TEXT;
         ent->stored.text = text;
+        ent->path = path;
 
         if(!m_fs.createEntity(name, ent)) {
             delete text;
@@ -485,6 +498,12 @@ namespace graphics
             return false;
         }
 
+        auto it = Entity::loaded.find(path);
+        if(it != Entity::loaded.end())
+            return link(name, it->second);
+        else
+            Entity::loaded[path] = m_fs.actualNamespace() + name;
+
         internal::Font* font = new internal::Font(&m_shads);
         if(!font->load(path)) {
             delete font;
@@ -497,6 +516,7 @@ namespace graphics
         Entity* ent = new Entity;
         ent->type = FONT;
         ent->stored.font = font;
+        ent->path = path;
 
         if(!m_fs.createEntity(name, ent)) {
             delete font;

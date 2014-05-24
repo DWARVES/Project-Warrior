@@ -282,6 +282,10 @@ namespace graphics
             /** @brief The internal repressentation of a structure. */
             struct Entity
             {
+                /** @brief List of all the files already loaded. */
+                static std::map<std::string,std::string> loaded;
+                /** @brief The path of the entity. */
+                std::string path;
                 /** @brief An union of the possible types for a ressource. */
                 union Stored {
                     internal::Texture* text; /**< @brief Used if the ressource is a texture. */
