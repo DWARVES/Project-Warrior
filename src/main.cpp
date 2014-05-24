@@ -62,7 +62,6 @@ int main(int argc, char *argv[])
                         global::evs->openJoystick(id);
                 }
 
-                /** @todo Framerate control. */
                 global::audio->update();
             }
         }

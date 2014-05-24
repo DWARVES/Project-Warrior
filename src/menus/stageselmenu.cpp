@@ -124,7 +124,6 @@ bool StageSelMenu::update()
     if(m_list->moved()) 
         m_prev->set((gameplay::Stage*)m_list->selectedData());
 
-    /** @todo click on play. */
     if(m_play->clicked()) {
         gameplay::Stage* sel = (gameplay::Stage*)m_list->selectedData();
         if(!sel->load(m_charas)) {

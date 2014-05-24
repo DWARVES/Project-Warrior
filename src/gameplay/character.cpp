@@ -559,7 +559,6 @@ namespace gameplay
             case Attack:
                 m_next.id = ActionID::Stand;
                 switch(dir) {
-                    /** @todo Handle font/back attacks. */
                     case TurnLeft:
                         if(!onGround())
                             m_actual.id = ActionID::AttackAirBack;

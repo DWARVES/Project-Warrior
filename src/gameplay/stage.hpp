@@ -13,9 +13,7 @@
 
 namespace gameplay
 {
-    /** @brief Represents a stage/map in the game.
-     * @todo End it, it is just a beginning of implementation.
-     */
+    /** @brief Represents a stage/map in the game. */
     class Stage
     {
         friend lua::exposure::Stage;

@@ -6,9 +6,7 @@
 #include "endmenu.hpp"
 #include "gameplay/stage.hpp"
 
-/** @brief The game.
- * @todo Draw status and add ending conditions.
- */
+/** @brief The game. */
 class GameMenu : public Menu
 {
     public:
