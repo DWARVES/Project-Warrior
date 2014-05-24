@@ -93,7 +93,6 @@ namespace events
         m_lastSavedValidated.clear();
         m_lastSavedReleased.clear();
         m_wheel = geometry::Point(0.0f, 0.0f);
-        m_dropped.clear();
 
         /* Processing */
         SDL_Event ev;
@@ -118,9 +117,6 @@ namespace events
                     break;
                 case SDL_WINDOWEVENT:
                     process(&ev.window);
-                    break;
-                case SDL_DROPFILE:
-                    process(&ev.drop);
                     break;
                 case SDL_TEXTINPUT:
                     process(&ev.text);
@@ -195,13 +191,6 @@ namespace events
             m_buttons[ev->button].releaseT = SDL_GetTicks();
             m_buttons[ev->button].releaseP = mousePos();
         }
-    }
-
-    void Events::process(SDL_DropEvent* ev)
-    {
-        std::string path(ev->file);
-        SDL_free(ev->file);
-        m_dropped.push_back(path);
     }
 
     void Events::process(SDL_WindowEvent* ev)
@@ -1027,11 +1016,6 @@ namespace events
     geometry::Point Events::wheel() const
     {
         return m_wheel;
-    }
-
-    std::vector<std::string> Events::dropped() const
-    {
-        return m_dropped;
     }
 
     bool Events::quit() const

@@ -280,10 +280,6 @@ namespace events
              * Left on x axis give negatives values and down on y give negatives too.
              */
             geometry::Point wheel() const;
-            /** @brief Returns the path to files which were dropped onto the window during last call to update.
-             * @todo Doesn't work.
-             */
-            std::vector<std::string> dropped() const;
             /** @brief Indicates if the program was requested to be stop.
              * Once it returned true, it will do so until quitAbort is called.
              */
@@ -373,7 +369,6 @@ namespace events
 
             /* Miscellaneous */
             geometry::Point m_wheel;            /**< @brief Move of the wheel during last call to update. */
-            std::vector<std::string> m_dropped; /**< @brief The files dropped on the window in last call to update. */
             bool m_quit;                        /**< @brief Has the program been requested to stop. */
 
             /* Internal functions */
@@ -393,7 +388,6 @@ namespace events
             void process(SDL_MouseMotionEvent* ev);
             void process(SDL_MouseWheelEvent*  ev);
             void process(SDL_MouseButtonEvent* ev);
-            void process(SDL_DropEvent*        ev);
             void process(SDL_WindowEvent*      ev);
             void process(SDL_TextInputEvent*   ev);
             void process(SDL_JoyAxisEvent*     ev);
