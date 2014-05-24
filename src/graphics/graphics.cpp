@@ -386,7 +386,6 @@ namespace graphics
     {
         if(!tofree)
             return;
-        std::cout << "Freeing " << tofree->path << std::endl;
 
         switch(tofree->type) {
             case TEXT:
