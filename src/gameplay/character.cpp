@@ -904,8 +904,12 @@ namespace gameplay
     Character* Character::clone() const
     {
         Character* cl = new Character(m_path);
-        cl->preload();
-        return cl;
+        if(!cl->preload()) {
+            delete cl;
+            return NULL;
+        }
+        else
+            return cl;
     }
 
     bool Character::world(physics::World* w)
