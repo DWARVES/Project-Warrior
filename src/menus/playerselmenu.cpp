@@ -1,6 +1,5 @@
 
 #include "playerselmenu.hpp"
-#include "charaselmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 #include "gameplay/controler.hpp"
@@ -8,7 +7,7 @@
 
     PlayerSelMenu::PlayerSelMenu()
 : m_act(0), m_layout(NULL), m_list(NULL), m_text(NULL),
-    m_cancel(NULL), m_play(NULL), m_back(NULL), m_game(NULL)
+    m_cancel(NULL), m_play(NULL), m_back(NULL), m_ingame(false)
 {}
 
 PlayerSelMenu::~PlayerSelMenu()
@@ -25,8 +24,6 @@ PlayerSelMenu::~PlayerSelMenu()
         delete m_play;
     if(m_back != NULL)
         delete m_back;
-    if(m_game != NULL)
-        delete m_game;
 }
 
 bool PlayerSelMenu::prepare()
@@ -34,9 +31,7 @@ bool PlayerSelMenu::prepare()
     m_act = 0;
     for(int i = 0; i < 4; ++i)
         m_players[i].clear();
-    if(m_game != NULL)
-        delete m_game;
-    m_game = NULL;
+    m_ingame = false;
 
     if(!m_layout) {
         /* Create GUI elems. */
@@ -83,8 +78,8 @@ bool PlayerSelMenu::prepare()
 
 bool PlayerSelMenu::update()
 {
-    if(m_game)
-        return m_game->update();
+    if(m_ingame)
+        return m_game.update();
 
     if(global::evs->keyJustPressed(events::KeyMap::Escape)
             || m_back->clicked())
@@ -101,8 +96,11 @@ bool PlayerSelMenu::update()
     }
 
     if(m_play->clicked() && m_act > 0) {
-        m_game = new CharaSelMenu(m_act, m_players);
-        m_game->prepare();
+        m_game.set(m_act, m_players);
+        if(!m_game.prepare())
+            return false;
+        else
+            m_ingame = true;
         global::audio->enterNamespace("/menubutton");
         global::audio->play("click");
     }

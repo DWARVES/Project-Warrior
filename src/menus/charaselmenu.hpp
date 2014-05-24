@@ -49,9 +49,9 @@ class CharaSelMenu : public Menu
     };
 
     public:
-        CharaSelMenu(int nb_players, std::string ctrls[4]);
-        CharaSelMenu() = delete;
+        CharaSelMenu();
         virtual ~CharaSelMenu();
+        void set(int nb, std::string ctrls[4]);
 
         virtual bool prepare();
         virtual bool update();

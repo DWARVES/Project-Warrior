@@ -58,15 +58,23 @@ void CharaSelMenu::CharaPrev::draw()
     m_gfx->enterNamespace(actual);
 }
 
-    CharaSelMenu::CharaSelMenu(int nb_players, std::string ctrls[4])
-: Menu(), m_nb(nb_players), m_act(0), m_launched(NULL), m_timem(0), m_layout(NULL),
+    CharaSelMenu::CharaSelMenu()
+: Menu(), m_nb(-1), m_act(0), m_launched(NULL), m_timem(0), m_layout(NULL),
     m_charas(NULL), m_title(NULL), m_desc(NULL), m_prev(NULL),
     m_play(NULL), m_cancel(NULL), m_rules(NULL), m_back(NULL)
 {
-    for(int i = 0; i < 4; ++i) {
-        m_ctrls[i] = ctrls[i];
+    for(int i = 0; i < 4; ++i)
         m_sels[i] = NULL;
-    }
+}
+        
+void CharaSelMenu::set(int nb, std::string ctrls[4])
+{
+    m_nb = nb;
+    if(m_nb < 0 || m_nb > 4)
+        m_nb = -1;
+
+    for(int i = 0; i < 4; ++i)
+        m_ctrls[i] = ctrls[i];
 }
 
 CharaSelMenu::~CharaSelMenu()
@@ -100,6 +108,10 @@ CharaSelMenu::~CharaSelMenu()
 
 bool CharaSelMenu::prepare()
 {
+    /* Has it be setted. */
+    if(m_nb < 0)
+        return false;
+
     /* Loading the characters. */
     if(m_avail.empty())
         loadCharas();
