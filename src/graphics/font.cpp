@@ -69,7 +69,7 @@ namespace graphics
                 return false;
             }
 
-            m_text = new Texture;
+            m_text = new Texture(m_shads->exts());
             SDL_Surface* surf = m_text->preload(imgrw);
             SDL_RWclose(imgrw);
             if(surf == NULL) {

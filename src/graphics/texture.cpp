@@ -6,10 +6,16 @@ namespace graphics
 {
     namespace internal
     {
-        Texture::Texture()
-            : m_loaded(false), m_id(0), m_w(0), m_h(0)
+        Texture::Texture(Extensions* exts)
+            : m_exts(exts), m_loaded(false), m_id(0), m_w(0), m_h(0)
         {
             m_hp.x = m_hp.y = 0.0f;
+            if(m_exts->has("EXT_texture_compression_s3tc"))
+                m_fmt = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+            else if(m_exts->has("ARB_texture_compression"))
+                m_fmt = GL_COMPRESSED_RGBA_ARB;
+            else
+                m_fmt = GL_RGBA;
         }
 
         Texture::~Texture()
@@ -74,7 +80,7 @@ namespace graphics
             glGenTextures(1, &id);
             glBindTexture(GL_TEXTURE_2D, id);
             glTexImage2D(GL_TEXTURE_2D, 0, 4, src->w,
-                    src->h, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                    src->h, 0, m_fmt, GL_UNSIGNED_BYTE,
                     src->pixels);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

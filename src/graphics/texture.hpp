@@ -2,6 +2,7 @@
 #ifndef DEF_GRAPHICS_TEXTURE
 #define DEF_GRAPHICS_TEXTURE
 
+#include "exts.hpp"
 #include <string>
 #include <GL/glu.h>
 #include <SDL.h>
@@ -16,7 +17,8 @@ namespace graphics
         class Texture
         {
             public:
-                Texture();
+                Texture(Extensions* exts);
+                Texture() = delete;
                 Texture(const Texture& cp) = delete;
                 ~Texture();
                 /** @brief Loads the texture from a file. */
@@ -45,11 +47,13 @@ namespace graphics
                 geometry::Point hotpoint() const;
 
             private:
+                Extensions* m_exts;   /**< @brief The GL extensions loader. */
                 bool m_loaded;        /**< @brief Indicates if the texture is loaded. */
                 GLuint m_id;          /**< @brief The id of the opengl texture. */
                 geometry::Point m_hp; /**< @brief The hotpoint. */
                 int m_w;              /**< @brief The width in pixels. */
                 int m_h;              /**< @brief The height in pixels. */
+                int m_fmt;            /**< @brief The format of the textures in memory. */
         };
     }
 }

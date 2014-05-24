@@ -21,7 +21,7 @@ namespace graphics
             : m_playing(false), m_speed(1.0f), m_ltime(0), m_stime(0), m_s(s),
             m_begin(true), m_sbytes(0),
             m_ctx(NULL), m_codecCtx(NULL), m_codec(NULL), m_frame(NULL), m_video(-1),
-            m_swsCtx(NULL), m_first(true)
+            m_text(s->exts()), m_swsCtx(NULL), m_first(true)
         {
             m_rgb.data[0] = NULL;
             m_packet.data = NULL;

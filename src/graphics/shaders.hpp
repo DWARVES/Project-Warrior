@@ -26,6 +26,8 @@ namespace graphics
                 void enable(bool e = true);
                 /** @brief Enable/disable texture rendering in the shaders. */
                 void text(bool t = true);
+                /** @brief Get the extensions used by the shaders. */
+                Extensions* exts() const;
 
             private:
                 Extensions* m_exts; /**< @brief Used to manage the extensions. */

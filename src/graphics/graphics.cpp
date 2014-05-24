@@ -429,7 +429,7 @@ namespace graphics
         else
             Entity::loaded[path] = m_fs.actualNamespace() + name;
 
-        internal::Texture* text = new internal::Texture;
+        internal::Texture* text = new internal::Texture(&m_exts);
         if(!text->load(path)) {
             delete text;
             std::ostringstream oss;
@@ -592,7 +592,7 @@ namespace graphics
 
         /* Storing and freeing */
         glViewport(vp[0], vp[1], vp[2], vp[3]);
-        internal::Texture* t = new internal::Texture;
+        internal::Texture* t = new internal::Texture(&m_exts);
         t->loadgl(text, (int)tsize.width, (int)tsize.height);
         delete[] buffer;
 

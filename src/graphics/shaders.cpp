@@ -195,6 +195,12 @@ namespace graphics
             else
                 glUniform1f(m_text, -1.0f);
         }
+                
+        Extensions* Shaders::exts() const
+        {
+            return m_exts;
+        }
+
     }
 }
 
