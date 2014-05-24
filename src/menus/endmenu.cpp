@@ -32,11 +32,11 @@ bool EndMenu::prepare()
             scrs[i].first  = std::numeric_limits<int>::min();
     }
 
-    std::sort(scrs.begin(), scrs.end(), [] (std::pair<int,int> i, std::pair<int,int>j) { return i.first < j.first; });
+    std::sort(scrs.begin(), scrs.end(), [] (std::pair<int,int> i, std::pair<int,int>j) { return j.first < i.first; });
     for(size_t i = 0; i < 4; ++i) {
         if(m_players[scrs[i].second]) {
             std::ostringstream oss;
-            oss << i << _i("eme : Player ") << scrs[i].second << std::endl;
+            oss << i << _i("eme : Player ") << scrs[i].second << _i(" with ") << m_players[scrs[i].second]->getPoints() << _i(" points.");
             m_scores[i]->setText(oss.str());
         }
         else
