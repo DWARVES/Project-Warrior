@@ -751,25 +751,27 @@ namespace gameplay
             case ActionID::AttackUp:
             case ActionID::AttackDown:
             case ActionID::AttackSide:
+            case ActionID::Spell:
+            case ActionID::SpellUp:
+            case ActionID::SpellSide:
+            case ActionID::SpellDown:
+                if(previous.id != ActionID::Attack                && previous.id != ActionID::AttackUp
+                        && previous.id != ActionID::AttackDown    && previous.id != ActionID::AttackSide
+                        && previous.id != ActionID::Spell         && previous.id != ActionID::SpellUp
+                        && previous.id != ActionID::SpellDown     && previous.id != ActionID::SpellDown)
+                    m_ch->setXLinearVelocity(0.0f);
+                break;
             case ActionID::AttackAir:
             case ActionID::AttackAirUp:
             case ActionID::AttackAirBack:
             case ActionID::AttackAirDown:
             case ActionID::AttackAirFront:
-            case ActionID::Spell:
-            case ActionID::SpellUp:
-            case ActionID::SpellSide:
-            case ActionID::SpellDown:
-                /* TODO physics callbacks. */
-                if(previous.id != ActionID::Attack                && previous.id != ActionID::AttackUp
-                        && previous.id != ActionID::AttackDown    && previous.id != ActionID::AttackSide
-                        && previous.id != ActionID::AttackAir     && previous.id != ActionID::AttackAirUp
-                        && previous.id != ActionID::AttackAirBack && previous.id != ActionID::AttackAirFront
-                        && previous.id != ActionID::AttackAirDown
-                        && previous.id != ActionID::Spell         && previous.id != ActionID::SpellUp
-                        && previous.id != ActionID::SpellDown     && previous.id != ActionID::SpellDown)
-                    m_ch->setXLinearVelocity(0.0f);
+                if(previous.id != ActionID::AttackAir             && previous.id != ActionID::AttackAirUp
+                        && previous.id != ActionID::AttackAirBack && previous.id != ActionID::AttackAirDown
+                        && previous.id != ActionID::AttackAirFront)
+                    m_ch->setXLinearVelocity(m_ch->getXLinearVelocity() / 2.0f);
                 break;
+            case ActionID::Up:
             case ActionID::None:
             case ActionID::Land:
             case ActionID::Down:
