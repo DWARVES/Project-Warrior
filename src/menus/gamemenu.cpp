@@ -85,8 +85,7 @@ bool GameMenu::update()
         status = oss.str();
     }
 
-    if(global::evs->keyJustPressed(events::KeyMap::Escape)
-            || global::evs->keyJustPressed(events::Key('q'))) {
+    if(global::evs->keyJustPressed(events::KeyMap::Escape)) {
         global::gui->focus(true);
         m_first = true;
         return false;
