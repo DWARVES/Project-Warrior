@@ -21,7 +21,7 @@ namespace gameplay
     /** @brief Speed of mana recovering (in mana per ms). */
     const float manaRecov = 1.0f/50.0f; /* 100 each 5 seconds. */
     /** @brief The time between an attack and a death to count as a kill in ms. */
-    const Uint32 attackSuccessTime = 5000;
+    const Uint32 attackSuccessTime = 10000;
     size_t Character::m_count = 0;
     const char* const Character::m_luaCalls[(unsigned int)ActionID::None] = {
         "walk",
