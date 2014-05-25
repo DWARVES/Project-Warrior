@@ -15,7 +15,9 @@ namespace physics
             chara->m_underfoot.push_back(ground);
     }
 
-    Character::Character(const std::string& name, World* world, const geometry::Point& position, const geometry::AABB& rect, float weight) : Entity(name, world, position, b2_dynamicBody, Entity::Type::Character), m_world(world), m_id(4)
+    Character::Character(const std::string& name, World* world, const geometry::Point& position, const geometry::AABB& rect, float weight)
+        : Entity(name, world, position, b2_dynamicBody, Entity::Type::Character, (uint16)~Entity::Type::Character),
+        m_world(world), m_id(4)
     {
         createFixture("body", rect, weight, 1);
 
