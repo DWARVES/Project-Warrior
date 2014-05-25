@@ -154,16 +154,20 @@ namespace lua
         int Character::impact(lua_State* st)
         {
             std::vector<Script::VarType> args = helper::listArguments(st);
-            if(args.size() != 2
+            if(!(args.size() == 2
+                        || (args.size() == 3 && args[2] == Script::BOOL))
                     || args[0] != Script::NUMBER
                     || args[1] != Script::NUMBER)
                 return 0;
             float x = (float)lua_tonumber(st, 1);
             float y = (float)lua_tonumber(st, 2);
+            bool fixe = false;
+            if(args.size() == 3)
+                fixe = lua_toboolean(st, 3);
             gameplay::Character* act = currentChar(st);
             if(act && act->flipped())
                 x *= -1.0f;
-            characters[m_char]->impact(x, y, act);
+            characters[m_char]->impact(x, y, act, fixe);
             return 0;
         }
                 

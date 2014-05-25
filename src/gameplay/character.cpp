@@ -1128,8 +1128,13 @@ namespace gameplay
         m_lastAttTime = SDL_GetTicks();
     }
 
-    void Character::impact(float x, float y, Character* from)
+    void Character::impact(float x, float y, Character* from, bool fixe)
     {
+        if(fixe) {
+            m_ch->applyLinearImpulse(x,y);
+            return;
+        }
+
         float force = std::sqrt(x*x + y*y);
         float angle = std::abs(std::atan(y/x));
 

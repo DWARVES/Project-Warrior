@@ -163,7 +163,7 @@ namespace gameplay
             /** @brief Indicates the progress of the stun from 0 to 1 (not stunned). */
             float stunProgress() const;
             /** @brief Inflict an impact on the character. */
-            void impact(float x, float y, Character* from = NULL);
+            void impact(float x, float y, Character* from = NULL, bool fixe = false);
 
             /* Methods exposed to lua. */
             bool createAttack(const geometry::AABB& rect, bool physic, const std::string& mvx, const std::string& mvy, const std::string& drw, const std::string& contact, bool gravity = false);
