@@ -22,8 +22,11 @@ namespace gameplay
     const float manaRecov = 1.0f/50.0f; /* 100 each 5 seconds. */
     /** @brief Maximum speed when going left or right in the air. */
     const float maxAirSpeed = 8.0f;
+    /** @brief Maximum linear velocity when running. */
+    const float maxRunSpeed = 10.0f;
     /** @brief The time between an attack and a death to count as a kill in ms. */
     const Uint32 attackSuccessTime = 10000;
+
     size_t Character::m_count = 0;
     const char* const Character::m_luaCalls[(unsigned int)ActionID::None] = {
         "walk",
@@ -729,10 +732,13 @@ namespace gameplay
                     m_ch->setXLinearVelocity(-5.0f);
                 break;
             case ActionID::Run:
-                if(actual.flip != m_flip)
-                    m_ch->setXLinearVelocity(10.0f);
-                else
-                    m_ch->setXLinearVelocity(-10.0f);
+                {
+                    float f = (m_actual.flip != m_flip ? 1.0f : -1.0f);
+                    if(std::abs(m_ch->getXLinearVelocity()) > maxRunSpeed)
+                        m_ch->setXLinearVelocity(maxRunSpeed * f);
+                    else
+                        m_ch->applyForce(100.0f * f, 0.0f);
+                }
                 break;
             case ActionID::Jump:
                 if(previous.id != ActionID::Jump)
