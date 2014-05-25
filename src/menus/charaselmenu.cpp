@@ -122,6 +122,7 @@ bool CharaSelMenu::prepare()
             delete m_sels[i];
         m_sels[i] = NULL;
     }
+    m_act = 0;
     m_timem = SDL_GetTicks();
     m_showing = true;
 
@@ -140,7 +141,6 @@ bool CharaSelMenu::prepare()
         m_cancel = new gui::Button(global::gfx); m_cancel->text(_i("Cancel"));
         m_rules  = new gui::Button(global::gfx); m_rules->text(_i("Edit rules"));
         m_back   = new gui::Button(global::gfx); m_back->text(_i("Back"));
-        updateTitle();
 
         /* Applying the theme. */
         global::theme->apply(m_layout);
@@ -156,7 +156,6 @@ bool CharaSelMenu::prepare()
         for(size_t i = 0; i < m_avail.size(); ++i)
             m_charas->addItem(i, m_avail[i]->name(), 0.0f, (void*)m_avail[i]);
         m_charas->addItem(m_avail.size(), _i("Random"), 0.0f, NULL);
-        updateDesc();
 
         /* Setting up the layout. */
         m_layout->addWidget(m_title,  0, 0, 2, 0);
@@ -167,6 +166,8 @@ bool CharaSelMenu::prepare()
         m_layout->addWidget(m_rules,  2, 7, 0, 0);
         m_layout->addWidget(m_back,   2, 8, 0, 0);
     }
+    updateTitle();
+    updateDesc();
 
     /* Setting up the gui. */
     geometry::Point pos;
