@@ -20,6 +20,8 @@ namespace gameplay
     const Uint32 deathTime = 3000;
     /** @brief Speed of mana recovering (in mana per ms). */
     const float manaRecov = 1.0f/50.0f; /* 100 each 5 seconds. */
+    /** @brief Maximum speed when going left or right in the air. */
+    const float maxAirSpeed = 8.0f;
     /** @brief The time between an attack and a death to count as a kill in ms. */
     const Uint32 attackSuccessTime = 10000;
     size_t Character::m_count = 0;
@@ -406,7 +408,7 @@ namespace gameplay
                                 || save.id == ActionID::Shield        || save.id == ActionID::Catch)
                             m_actual.id = save.id;
                         else if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
-                                m_actual.id = ActionID::Walk;
+                            m_actual.id = ActionID::Walk;
                         else if(m_ch->getYLinearVelocity() < 0.00001f) { /* going down */
                             m_stir = 50.0f;
                             m_actual.id = ActionID::Down;
@@ -497,7 +499,7 @@ namespace gameplay
                     case Left:
                     case TurnLeft:
                         if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
-                                m_actual.id = ActionID::Run;
+                            m_actual.id = ActionID::Run;
                         else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
                             m_stir = 50.0f;
                             m_actual.id = ActionID::Down;
@@ -515,7 +517,7 @@ namespace gameplay
                     case Right:
                     case TurnRight:
                         if(onGround() && save.id != ActionID::Jump && save.id != ActionID::JumpAir)
-                                m_actual.id = ActionID::Run;
+                            m_actual.id = ActionID::Run;
                         else if(m_ch->getYLinearVelocity() < 0.0f) { /* going down */
                             m_stir = 50.0f;
                             m_actual.id = ActionID::Down;
@@ -735,17 +737,28 @@ namespace gameplay
             case ActionID::Jump:
                 if(previous.id != ActionID::Jump)
                     m_ch->jump(m_ch->getXLinearVelocity());
+                else if(std::abs(m_ch->getXLinearVelocity()) > maxAirSpeed)
+                    m_ch->setXLinearVelocity(maxAirSpeed * (m_ch->getXLinearVelocity() > 0.0f ? 1.0f : -1.0f));
                 break;
             case ActionID::JumpAir:
                 if(previous.id != ActionID::JumpAir)
                     m_ch->jump(m_ch->getXLinearVelocity());
+                else if(std::abs(m_ch->getXLinearVelocity()) > maxAirSpeed)
+                    m_ch->setXLinearVelocity(maxAirSpeed * (m_ch->getXLinearVelocity() > 0.0f ? 1.0f : -1.0f));
                 break;
             case ActionID::FastDown:
                 m_ch->applyForce(0.0f, -20.0f * m_ch->getMass());
+                if(std::abs(m_ch->getXLinearVelocity()) > maxAirSpeed)
+                    m_ch->setXLinearVelocity(maxAirSpeed * (m_ch->getXLinearVelocity() > 0.0f ? 1.0f : -1.0f));
                 break;
             case ActionID::Stand:
                 if(previous.id == ActionID::Walk)
                     m_ch->setXLinearVelocity(0.0f);
+                break;
+            case ActionID::Down:
+            case ActionID::Up:
+                if(std::abs(m_ch->getXLinearVelocity()) > maxAirSpeed)
+                    m_ch->setXLinearVelocity(maxAirSpeed * (m_ch->getXLinearVelocity() > 0.0f ? 1.0f : -1.0f));
                 break;
             case ActionID::Attack:
             case ActionID::AttackUp:
@@ -771,10 +784,8 @@ namespace gameplay
                         && previous.id != ActionID::AttackAirFront)
                     m_ch->setXLinearVelocity(m_ch->getXLinearVelocity() / 2.0f);
                 break;
-            case ActionID::Up:
             case ActionID::None:
             case ActionID::Land:
-            case ActionID::Down:
             case ActionID::Won:
             case ActionID::Lost:
             default:
@@ -1018,17 +1029,17 @@ namespace gameplay
     {
         return m_ch->getPosition();
     }
-            
+
     void Character::warp(const geometry::Point& p)
     {
         m_ch->setPosition(p);
     }
-            
+
     geometry::AABB Character::phSize() const
     {
         return m_phsize;
     }
-            
+
     physics::Entity* Character::entity() const
     {
         return (physics::Entity*)m_ch;
@@ -1081,7 +1092,7 @@ namespace gameplay
             m_lastAtt->addPoints(1);
         addPoints(-1);
     }
-            
+
     bool Character::dead()
     {
         if(SDL_GetTicks() - m_death < deathTime)
@@ -1116,7 +1127,7 @@ namespace gameplay
         m_lastAtt = from;
         m_lastAttTime = SDL_GetTicks();
     }
-            
+
     void Character::impact(float x, float y, Character* from)
     {
         float force = std::sqrt(x*x + y*y);
@@ -1130,7 +1141,7 @@ namespace gameplay
         m_lastAtt = from;
         m_lastAttTime = SDL_GetTicks();
     }
-            
+
     float Character::stunProgress() const
     {
         if(!m_stuned)
@@ -1138,12 +1149,12 @@ namespace gameplay
         float percent = float(SDL_GetTicks() - m_stun) / (float)m_stunTime;
         return percent;
     }
-            
+
     float Character::manaProgress() const
     {
         return (float)mana() / (float)manaMax();
     }
-            
+
     bool Character::createAttack(const geometry::AABB& rect, bool physic, const std::string& mvx, const std::string& mvy, const std::string& drw, const std::string& contact, bool gravity)
     {
         /* Store the attack. */
@@ -1213,7 +1224,7 @@ namespace gameplay
         m_world->setCallback(st.name, &attackcallback, &(*it));
         return true;
     }
-            
+
     void Character::attackCallbacks()
     {
         for(auto it = m_attacks.begin(); it != m_attacks.end(); ++it) {
@@ -1233,7 +1244,7 @@ namespace gameplay
             ent->setPosition(pos);
         }
     }
-            
+
     void Character::attackcallback(physics::Entity*, physics::Entity* chara, bool bg, void* data)
     {
         /* Report only if it is the beggining of a contact. */
@@ -1255,25 +1266,25 @@ namespace gameplay
         if(!ret)
             st->ended = true;
     }
-            
+
     void Character::removeAttack(const AttackSt& st)
     {
         st.ch->m_world->enterNamespace(st.ch->m_namespace);
         st.ch->m_world->destroyEntity(st.name);
         st.ch->m_attacks.remove_if([&] (const AttackSt& ast) { return st.name == ast.name; });
     }
-            
+
     bool Character::flipped() const
     {
         return m_actual.flip == m_flip;
     }
-            
+
     void Character::setManaRecov(float m)
     {
         if(m >= 0.0f)
             m_manaRecov = m;
     }
-            
+
     float Character::getManaRecov() const
     {
         return m_manaRecov;
