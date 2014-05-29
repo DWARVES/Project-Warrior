@@ -15,7 +15,6 @@ namespace lua
             {"delete",      &Graphics::deleteNamespace},
             {"enter",       &Graphics::enterNamespace},
             {"loadTexture", &Graphics::loadTexture},
-            {"loadMovie",   &Graphics::loadMovie},
             {"loadFont",    &Graphics::loadFont},
             {"exists",      &Graphics::existsEntity},
             {"free",        &Graphics::free},
@@ -98,17 +97,6 @@ namespace lua
                     || args[1] != Script::STRING)
                 return 0;
             bool ret = m_gfx->loadTexture(lua_tostring(st, 1), lua_tostring(st, 2));
-            return helper::returnBoolean(st, ret);
-        }
-
-        int Graphics::loadMovie(lua_State* st)
-        {
-            std::vector<Script::VarType> args = helper::listArguments(st);
-            if(args.size() != 2
-                    || args[0] != Script::STRING
-                    || args[1] != Script::STRING)
-                return 0;
-            bool ret = m_gfx->loadMovie(lua_tostring(st, 1), lua_tostring(st, 2));
             return helper::returnBoolean(st, ret);
         }
 

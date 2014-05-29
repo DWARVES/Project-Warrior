@@ -35,7 +35,6 @@ namespace lua
 
                 /* Ressources loading */
                 int loadTexture(lua_State* st);
-                int loadMovie(lua_State* st);
                 int loadFont(lua_State* st);
                 int existsEntity(lua_State* st);
                 int free(lua_State* st);
