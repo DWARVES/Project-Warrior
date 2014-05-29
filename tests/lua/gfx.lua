@@ -22,10 +22,6 @@ init = function()
         return false
     end
 
-    if not gfx.loadMovie("movie", "movie") then
-        print("Couldn't load movie")
-        return false
-    end
     return true
 end
 
@@ -42,9 +38,6 @@ end
 
 update = function()
     gfx.push()
-    if not gfx.play("movie", 800, 600, true) then
-        gfx.rewind("movie")
-    end
     gfx.move(300,200)
     gfx.drawRect("text", 200, 200, 5, 3)
     gfx.move(100,100);
