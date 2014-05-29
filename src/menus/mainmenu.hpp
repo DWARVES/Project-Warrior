@@ -5,6 +5,9 @@
 #include "menus/menu.hpp"
 #include "gui/gridlayout.hpp"
 #include "gui/button.hpp"
+#include "gameplay/controler.hpp"
+#include "gameplay/character.hpp"
+#include "gameplay/stage.hpp"
 
 /** @brief Manages the main menu. */
 class MainMenu : public Menu
@@ -23,6 +26,8 @@ class MainMenu : public Menu
         gui::Button* m_quit;       /**< @brief The button for quitting. */
         gui::GridLayout* m_layout; /**< @brief The layout. */
         Menu* m_actual;            /**< @brief The actual submenu is in, NULL if none. */
+        gameplay::Controler* m_ctrls[4];
+        gameplay::Stage* m_st;
 };
 
 #endif
