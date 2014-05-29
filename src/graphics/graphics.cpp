@@ -32,7 +32,6 @@ namespace graphics
     {
         m_win = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_OPENGL);
         logWindow(false, false, m_win != NULL, m_win == NULL);
-        internal::Movie::init();
 
         if(m_win != NULL) {
             bool ctx = glContext();
@@ -55,7 +54,6 @@ namespace graphics
         }
 
         m_win = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mode.w, mode.h, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
-        internal::Movie::init();
 
         if(!m_win) {
             logWindow(false, true, false, true);
@@ -83,7 +81,6 @@ namespace graphics
 
     void Graphics::closeWindow()
     {
-        internal::Movie::free();
         if(m_win)
         {
             core::logger::logm("Destroying the window.", core::logger::MSG);
