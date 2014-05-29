@@ -66,7 +66,7 @@ namespace global
         /* Defines the options. */
         /* Global options */
         global::cfg->define("help",    0,  _i("Display an help message and quit."), false);
-        global::cfg->define("config", 'c', _i("The path to the config file."), "/etc/warrior.cfg");
+        global::cfg->define("config", 'c', _i("The path to the config file."), "warrior.cfg");
         global::cfg->define("rcs",    'r', _i("The path to the ressources directory."), "/usr/share/warrior/rcs");
         /* Graphics options */
         global::cfg->define("fullscreen", 'F', _i("A boolean indicating if the game must run in fullscreen mode. You can't precise the size : the desktop size will automaticly be used."), false);
