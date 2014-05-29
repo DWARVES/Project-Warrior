@@ -26,7 +26,6 @@ int main(int argc, char *argv[])
         global::loadLocale();
         global::loadConfig(argc, argv);
         global::initGraphics();
-        global::loadGui();
         global::loadEvents();
         global::loadControlers();
     }
@@ -45,14 +44,12 @@ int main(int argc, char *argv[])
             MainMenu menu;
             if(!menu.prepare())
                 throw global::init_exception("Couldn't prepare the main menu.");
-            global::gui->focus(true);
             global::evs->openJoysticks();
             global::evs->enableInput(false);
 
             while(menu.update())
             {
                 global::evs->update();
-                global::gui->update(*global::evs);
                 if(global::evs->quit() || global::evs->closed())
                     break;
 

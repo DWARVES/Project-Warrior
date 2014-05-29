@@ -9,8 +9,6 @@ namespace global
     graphics::Graphics* gfx = NULL;
     core::Config* cfg = NULL;
     events::Events* evs = NULL;
-    gui::Gui* gui = NULL;
-    gui::Theme* theme = NULL;
             
     init_exception::init_exception(const char* msg) noexcept
         : m_msg(msg)
@@ -21,17 +19,6 @@ namespace global
         return m_msg;
     }
 
-    void loadGui()
-    {
-        /* Loading the gui. */
-        global::gui = new gui::Gui(global::gfx);
-
-        /* Loading the gui theme. */
-        global::theme = new gui::Theme(global::gfx, global::cfg->get<std::string>("guitheme"));
-        if(!global::theme->load())
-            throw init_exception("Couldn't load the gui theme.");
-    }
-
     void freeEverything()
     {
         if(global::cfg)
@@ -40,10 +27,6 @@ namespace global
             delete global::gfx;
         if(global::evs)
             delete global::evs;
-        if(global::gui)
-            delete global::gui;
-        if(global::theme)
-            delete global::theme;
         gameplay::Controler::close();
     }
 
@@ -60,7 +43,6 @@ namespace global
         global::cfg->define("fullscreen", 'F', _i("A boolean indicating if the game must run in fullscreen mode. You can't precise the size : the desktop size will automaticly be used."), false);
         global::cfg->define("resw",       'W', _i("The width of the window in pixels."), 1024);
         global::cfg->define("resh",       'H', _i("The height of the window in pixels."), 768);
-        global::cfg->define("guitheme",   'T', _i("The path to the gui theme."), "/usr/share/warrior/guirc");
         global::cfg->define("name",        0,  _i("The name of the window."), "Project Warror");
         global::cfg->define("phdebug",     0,  _i("Enable debug draw in the physic engine."), false);
 

@@ -45,8 +45,6 @@ bool GameMenu::prepare()
             return false;
     }
 
-    /* The gui isn't used during the game. */
-    global::gui->focus(false);
     return true;
 }
 
@@ -75,12 +73,10 @@ bool GameMenu::update()
     }
 
     if(global::evs->keyJustPressed(events::KeyMap::Escape)) {
-        global::gui->focus(true);
         m_first = true;
         return false;
     }
     if(SDL_GetTicks() - m_begin > m_duration) {
-        global::gui->focus(true);
         m_first = true;
         return false;
     }

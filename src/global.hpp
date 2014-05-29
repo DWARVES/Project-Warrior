@@ -5,8 +5,6 @@
 #include "core/config.hpp"
 #include "graphics/graphics.hpp"
 #include "events/events.hpp"
-#include "gui/gui.hpp"
-#include "gui/theme.hpp"
 
 /** @brief Contains all the global variables. */
 namespace global
@@ -17,10 +15,6 @@ namespace global
     extern graphics::Graphics* gfx;
     /** @brief The events. */
     extern events::Events* evs;
-    /** @brief The gui. */
-    extern gui::Gui* gui;
-    /** @brief The gui theme. */
-    extern gui::Theme* theme;
 
     /** @brief An exception used to report a fatal error while initializing the game. */
     class init_exception : public std::exception
@@ -39,8 +33,6 @@ namespace global
     void loadConfig(int argc, char *argv[]);
     /** @brief Load the SDL and init the graphics. */
     void initGraphics();
-    /** @brief Load the gui and the gui theme. */
-    void loadGui();
     /** @brief Prepare the event handler. */
     void loadEvents();
     /** @brief Load the controlers, must be called after loadConfig */

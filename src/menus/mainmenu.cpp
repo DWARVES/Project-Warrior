@@ -28,7 +28,6 @@ MainMenu::~MainMenu()
 
 bool MainMenu::prepare()
 {
-    global::gui->focus(false);
     return true;
 }
 
