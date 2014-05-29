@@ -23,11 +23,6 @@ find_package(SDL2_image REQUIRED)
 link_directories(${SDL2_IMAGE_LIBRARY_DIR})
 include_directories(SYSTEM ${SDL2_IMAGE_INCLUDE_DIR})
 
-# Including SDL2_mixer
-include(FindSDL2_mixer)
-find_package(SDL2_mixer REQUIRED)
-include_directories(SYSTEM ${SDLMIXER_INCLUDE_DIR})
-
 # Including OpenGL
 include(FindOpenGL)
 find_package(OpenGL REQUIRED)

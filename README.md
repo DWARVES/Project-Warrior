@@ -13,7 +13,7 @@ All files that have a description of the licence have the one described. If a fi
 
 To build this game you need cmake and the following libraries :
 <ul>
-<li> SDL2 and its extension SDL2_image and SDL2_mixer.
+<li> SDL2 and its extension SDL2_image.
 <li> Boost for boost.regex.
 <li> dirent.h (POSIX header, but can also be found under windows).
 <li> OpenGL 2.

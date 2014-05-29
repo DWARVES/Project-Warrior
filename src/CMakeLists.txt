@@ -40,7 +40,6 @@ target_link_libraries(
     ${Boost_FILESYSTEM_LIBRARY}
     ${SDL2_LIBRARIES}
     ${SDL2_IMAGE_LIBRARIES}
-    ${SDLMIXER_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${GLEW_LIBRARIES}
     )
