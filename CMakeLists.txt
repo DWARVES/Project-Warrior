@@ -78,12 +78,6 @@ add_custom_target(extract_text xgettext -d ${DOMAIN} --c++ -i -F -k_i -o ${DOMAI
 include_directories(src/)
 add_subdirectory(src/)
 
-if(TESTS)
-	add_subdirectory(tests/)
-else()
-	add_subdirectory(tests/ EXCLUDE_FROM_ALL)
-endif(TESTS)
-
 if(TOOLS)
     add_subdirectory(tools/)
 else()
