@@ -56,11 +56,6 @@ int main(int argc, char *argv[])
                 global::gui->update(*global::evs);
                 if(global::evs->quit() || global::evs->closed())
                     break;
-                if(global::evs->joysticksChanged()) {
-                    std::vector<events::JoystickID> news = global::evs->lastJoysticksAdded();
-                    for(events::JoystickID id : news)
-                        global::evs->openJoystick(id);
-                }
 
                 global::audio->update();
             }
