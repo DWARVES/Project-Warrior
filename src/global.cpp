@@ -9,7 +9,6 @@ namespace global
     graphics::Graphics* gfx = NULL;
     core::Config* cfg = NULL;
     events::Events* evs = NULL;
-    audio::Audio* audio = NULL;
     gui::Gui* gui = NULL;
     gui::Theme* theme = NULL;
             
@@ -33,15 +32,6 @@ namespace global
             throw init_exception("Couldn't load the gui theme.");
     }
 
-    void loadAudio()
-    {
-        global::audio = new audio::Audio;
-        if(!global::audio->init(global::cfg->get<int>("frequence")))
-            throw init_exception("Couldn't initialize the audio.");
-        global::audio->musicVolume((unsigned char)global::cfg->get<unsigned int>("music"));
-        global::audio->soundsVolume((unsigned char)global::cfg->get<unsigned int>("sounds"));
-    }
-
     void freeEverything()
     {
         if(global::cfg)
@@ -50,8 +40,6 @@ namespace global
             delete global::gfx;
         if(global::evs)
             delete global::evs;
-        if(global::audio)
-            delete global::audio;
         if(global::gui)
             delete global::gui;
         if(global::theme)
@@ -75,10 +63,6 @@ namespace global
         global::cfg->define("guitheme",   'T', _i("The path to the gui theme."), "/usr/share/warrior/guirc");
         global::cfg->define("name",        0,  _i("The name of the window."), "Project Warror");
         global::cfg->define("phdebug",     0,  _i("Enable debug draw in the physic engine."), false);
-        /* Audio options */
-        global::cfg->define("frequence", 0, _i("The frequence of the audio output."), 44100);
-        global::cfg->define("sounds",    0, _i("The volume of the sounds, between 0 and 255."), 255);
-        global::cfg->define("music",     0, _i("The volume of the music, between 0 and 255."), 200);
 
         /* Parses the command line. */
         if(!global::cfg->args(argc, argv))

@@ -27,7 +27,6 @@ int main(int argc, char *argv[])
         global::loadConfig(argc, argv);
         global::initGraphics();
         global::loadGui();
-        global::loadAudio();
         global::loadEvents();
         global::loadControlers();
     }
@@ -57,7 +56,6 @@ int main(int argc, char *argv[])
                 if(global::evs->quit() || global::evs->closed())
                     break;
 
-                global::audio->update();
             }
         }
         catch(const std::exception& e) {

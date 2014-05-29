@@ -4,7 +4,6 @@
 
 #include "core/config.hpp"
 #include "graphics/graphics.hpp"
-#include "audio/audio.hpp"
 #include "events/events.hpp"
 #include "gui/gui.hpp"
 #include "gui/theme.hpp"
@@ -18,8 +17,6 @@ namespace global
     extern graphics::Graphics* gfx;
     /** @brief The events. */
     extern events::Events* evs;
-    /** @brief The sound. */
-    extern audio::Audio* audio;
     /** @brief The gui. */
     extern gui::Gui* gui;
     /** @brief The gui theme. */
@@ -44,8 +41,6 @@ namespace global
     void initGraphics();
     /** @brief Load the gui and the gui theme. */
     void loadGui();
-    /** @brief Init the audio. */
-    void loadAudio();
     /** @brief Prepare the event handler. */
     void loadEvents();
     /** @brief Load the controlers, must be called after loadConfig */
