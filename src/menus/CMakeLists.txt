@@ -8,6 +8,5 @@ add_library(${lib}
     menu.cpp             menu.hpp
     mainmenu.cpp         mainmenu.hpp
     gamemenu.cpp         gamemenu.hpp
-    endmenu.cpp          endmenu.hpp
 	)
 

@@ -101,6 +101,8 @@ bool MainMenu::update()
     if(m_actual) {
         if(m_actual->update())
             return true;
+        global::gfx->disableVirtualSize();
+        global::gfx->invertYAxis(false);
         prepare();
         m_actual = NULL;
         return true;

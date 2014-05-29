@@ -7,7 +7,7 @@
 const Uint32 gameDuration = 180000;
 
 GameMenu::GameMenu(gameplay::Stage* st)
-    : m_stage(st), m_end(NULL), m_duration(gameDuration), m_first(true)
+    : m_stage(st), m_duration(gameDuration), m_first(true)
 {
     for(int i = 0; i < 4; ++i)
         m_pl[i] = m_stage->getCharacter(i);
@@ -15,8 +15,6 @@ GameMenu::GameMenu(gameplay::Stage* st)
 
 GameMenu::~GameMenu()
 {
-    if(m_end)
-        delete m_end;
 }
 
 bool GameMenu::prepare()
@@ -54,15 +52,6 @@ bool GameMenu::prepare()
 
 bool GameMenu::update()
 {
-    if(m_end) {
-        if(!m_end->update()) {
-            delete m_end;
-            m_end = NULL;
-            return false;
-        } else
-            return true;
-    }
-
     std::string status;
     float prg = m_stage->appearProgress();
     if(prg < 1.0f) {
@@ -93,8 +82,7 @@ bool GameMenu::update()
     if(SDL_GetTicks() - m_begin > m_duration) {
         global::gui->focus(true);
         m_first = true;
-        m_end = new EndMenu(m_pl);
-        return m_end->prepare();
+        return false;
     }
 
     m_stage->update(*global::evs);
