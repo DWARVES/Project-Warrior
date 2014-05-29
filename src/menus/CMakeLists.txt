@@ -12,7 +12,6 @@ add_library(${lib}
     configmenu.cpp       configmenu.hpp
     graphicsmenu.cpp     graphicsmenu.hpp
     musicmenu.cpp        musicmenu.hpp
-    videomenu.cpp        videomenu.hpp
     controlermenu.cpp    controlermenu.hpp
     addcontrolermenu.cpp addcontrolermenu.hpp
     playerselmenu.cpp    playerselmenu.hpp
