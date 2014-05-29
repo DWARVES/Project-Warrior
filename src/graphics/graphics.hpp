@@ -12,7 +12,6 @@
 
 #include "graphics/shaders.hpp"
 #include "graphics/texture.hpp"
-#include "graphics/movie.hpp"
 #include "graphics/font.hpp"
 #include "graphics/exts.hpp"
 #include "graphics/color.hpp"
@@ -120,7 +119,6 @@ namespace graphics
             /** @brief The types possible for a ressource. */
             enum RcType {
                 TEXT,  /**< @brief The ressource is a texture. */
-                MOVIE, /**< @brief The ressource is a movie. */
                 FONT,  /**< @brief The ressource is a font. */
                 NONE   /**< @brief The ressource doesn't exists or is invalid. */
             };
@@ -132,8 +130,6 @@ namespace graphics
             /** @brief Load a texture from a file. */
             bool loadTexture(const std::string& name, const std::string& path);
             /** @brief Load a movie from a file. */
-            bool loadMovie(const std::string& name, const std::string& path);
-            /** @brief Load a font from a file. */
             bool loadFont(const std::string& name, const std::string& path);
             /** @brief Load a texture from a rendered text.
              * @param font The font used to render.
@@ -180,20 +176,6 @@ namespace graphics
             geometry::AABB stringSize(const std::string& font, const std::string& str, float size = -1.0f) const;
             /** @} */
             
-            /*************************
-             *   Movies management   *
-             *************************/
-            /** @name Movies management.
-             * @{
-             */
-            /** @brief Get the speed factor of a movie (see internal::Movie::speed for more details). */
-            float getMovieSpeed(const std::string& name) const;
-            /** @brief Set the speed factor of a movie (see internal::Movie::speed for more details). */
-            float setMovieSpeed(const std::string& name, float nspeed) const;
-            /** @brief Allows the movie to be played again from the beggining. */
-            void rewindMovie(const std::string& name);
-            /** @} */
-
             /*************************
              *    Transformations    *
              *************************/
@@ -244,10 +226,6 @@ namespace graphics
             void draw(const geometry::Polygon& poly, const Color& col);
             /** @brief Draw a text width the specified font and size. */
             void draw(const std::string& str, const std::string& font, float pts = -1.0f);
-            /** @brief Display a playing movie, or start it playing.
-             * @return False when the end of the movie was reached : to continue playing, you must call rewindMovie.
-             */
-            bool play(const std::string& movie, const geometry::AABB& rect, bool ratio = true);
             /** @brief Set the default width used when drawing points and lines. */
             float defaultWidth(float nval);
             /** @brief Get the default width. */
@@ -289,7 +267,6 @@ namespace graphics
                 /** @brief An union of the possible types for a ressource. */
                 union Stored {
                     internal::Texture* text; /**< @brief Used if the ressource is a texture. */
-                    internal::Movie* movie;  /**< @brief Used if the ressource is a movie. */
                     internal::Font* font;    /**< @brief Used if the ressource is a font. */
                 };
                 Stored stored; /**< @brief The value stored of the ressource. */

@@ -391,9 +391,6 @@ namespace graphics
             case TEXT:
                 if(tofree->stored.text)  delete tofree->stored.text;
                 break;
-            case MOVIE:
-                if(tofree->stored.movie) delete tofree->stored.movie;
-                break;
             case FONT:
                 if(tofree->stored.font)  delete tofree->stored.font;
                 break;
@@ -447,40 +444,6 @@ namespace graphics
             delete ent;
             std::ostringstream oss;
             oss << "Couldn't create entity for picture file : \"" << path << "\"";
-            core::logger::logm(oss.str(), core::logger::ERROR);
-            return false;
-        }
-        else
-            return true;
-    }
-
-    bool Graphics::loadMovie(const std::string& name, const std::string& path)
-    {
-        if(m_fs.existsEntity(name)) {
-            std::ostringstream oss;
-            oss << "Name \"" << name << "\" already exists in \"" << actualNamespace() << "\"";
-            core::logger::logm(oss.str(), core::logger::ERROR);
-            return false;
-        }
-
-        internal::Movie* mov = new internal::Movie(&m_shads);
-        if(!mov->load(path)) {
-            delete mov;
-            std::ostringstream oss;
-            oss << "Couldn't load movie file : \"" << path << "\"";
-            core::logger::logm(oss.str(), core::logger::ERROR);
-            return false;
-        }
-
-        Entity* ent = new Entity;
-        ent->type = MOVIE;
-        ent->stored.movie = mov;
-
-        if(!m_fs.createEntity(name, ent)) {
-            delete mov;
-            delete ent;
-            std::ostringstream oss;
-            oss << "Couldn't create entity for movie file : \"" << path << "\"";
             core::logger::logm(oss.str(), core::logger::ERROR);
             return false;
         }
@@ -678,42 +641,6 @@ namespace graphics
     float Graphics::stringWidth(const std::string& font, const std::string& str, float size) const
     {
         return stringSize(font, str, size).width;
-    }
-
-    /*************************
-     *   Movies management   *
-     *************************/
-    float Graphics::getMovieSpeed(const std::string& name) const
-    {
-        if(rctype(name) != MOVIE) {
-            core::logger::logm("Tryed to access to non-loaded video : " + name, core::logger::WARNING);
-            return 0.0f;
-        }
-        else
-            return m_fs.getEntityValue(name)->stored.movie->speed();
-    }
-
-    float Graphics::setMovieSpeed(const std::string& name, float nspeed) const
-    {
-        if(rctype(name) != MOVIE) {
-            core::logger::logm("Tryed to access to non-loaded video : " + name, core::logger::WARNING);
-            return 0.0f;
-        }
-        else {
-            internal::Movie* mov = m_fs.getEntityValue(name)->stored.movie;
-            mov->speed(nspeed);
-            return mov->speed();
-        }
-    }
-
-    void Graphics::rewindMovie(const std::string& name)
-    {
-        if(rctype(name) != MOVIE) {
-            core::logger::logm("Tryed to access to non-loaded video : " + name, core::logger::WARNING);
-            return;
-        }
-        else
-            m_fs.getEntityValue(name)->stored.movie->replay();
     }
 
     /*************************
@@ -1005,19 +932,6 @@ namespace graphics
 
         internal::Font* f = m_fs.getEntityValue(font)->stored.font;
         f->draw(str, geometry::Point(0.0f, 0.0f), pts, true, m_yinvert);
-    }
-
-    bool Graphics::play(const std::string& movie, const geometry::AABB& rect, bool ratio)
-    {
-        if(rctype(movie) != MOVIE) {
-            core::logger::logm(std::string("Tried to play an unexistant movie : ") + movie, core::logger::WARNING);
-            return false;
-        }
-
-        internal::Movie* m = m_fs.getEntityValue(movie)->stored.movie;
-        bool ret = m->updateFrame();
-        m->displayFrame(rect, ratio, m_yinvert);
-        return ret;
     }
 
     float Graphics::defaultWidth(float nval)
