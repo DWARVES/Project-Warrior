@@ -1,14 +1,11 @@
 
 #include "mainmenu.hpp"
-#include "aboutmenu.hpp"
-#include "configmenu.hpp"
-#include "playerselmenu.hpp"
 #include "global.hpp"
 #include "core/i18n.hpp"
 #include <sstream>
 
 MainMenu::MainMenu()
-    : Menu(), m_play(NULL), m_cfg(NULL), m_about(NULL), m_quit(NULL), m_layout(NULL), m_actual(NULL)
+    : Menu(), m_play(NULL), m_quit(NULL), m_layout(NULL), m_actual(NULL)
 {}
 
 MainMenu::~MainMenu()
@@ -17,10 +14,6 @@ MainMenu::~MainMenu()
         delete m_layout;
     if(m_play)
         delete m_play;
-    if(m_cfg)
-        delete m_cfg;
-    if(m_about)
-        delete m_about;
     if(m_quit)
         delete m_quit;
 }
@@ -46,28 +39,18 @@ bool MainMenu::prepare()
 
     /* Create the widgets if necessary. */
     if(!m_layout) {
-        m_play = new ButtonMenu(global::gfx, &m_actual, new PlayerSelMenu, true);
+        m_play = new gui::Button(global::gfx);
         m_play->text(_i("Play"));
-        m_play->applyTheme(global::theme);
-
-        m_cfg = new ButtonMenu(global::gfx, &m_actual, new ConfigMenu, true);
-        m_cfg->text(_i("Config"));
-        m_cfg->applyTheme(global::theme);
-
-        m_about = new ButtonMenu(global::gfx, &m_actual, new AboutMenu, true);
-        m_about->text(_i("About"));
-        m_about->applyTheme(global::theme);
+        global::theme->apply(m_play);
 
         m_quit = new gui::Button(global::gfx);
         m_quit->text(_i("Quit"));
         global::theme->apply(m_quit);
 
-        m_layout = new gui::GridLayout(global::gfx, 2, 4);
+        m_layout = new gui::GridLayout(global::gfx, 3, 3);
         global::theme->apply(m_layout);
-        m_layout->addWidget(m_play,  0, 0, 0, 3);
-        m_layout->addWidget(m_cfg,   1, 0, 0, 1);
-        m_layout->addWidget(m_about, 1, 2, 0, 0);
-        m_layout->addWidget(m_quit,  1, 3, 0, 0);
+        m_layout->addWidget(m_play,  0, 0, 2, 1);
+        m_layout->addWidget(m_quit,  0, 2, 2, 0);
     }
 
     /* Set up the gui. */
