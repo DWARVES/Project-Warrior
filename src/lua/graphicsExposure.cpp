@@ -20,7 +20,6 @@ namespace lua
             {"free",        &Graphics::free},
             {"link",        &Graphics::link},
             {"hotpoint",    &Graphics::setTextureHotPoint},
-            {"rewind",      &Graphics::rewindMovie},
             {"rotate",      &Graphics::rotate},
             {"scale",       &Graphics::scale},
             {"move",        &Graphics::move},
@@ -30,7 +29,6 @@ namespace lua
             {"blit",        &Graphics::blitTexture},
             {"drawRect",    &Graphics::drawAABB},
             {"drawText",    &Graphics::drawText},
-            {"play",        &Graphics::play},
             {NULL, NULL}
         };
         const Script::Properties<Graphics> Graphics::properties[] = {
@@ -154,16 +152,6 @@ namespace lua
             return helper::returnBoolean(st, ret);
         }
 
-        int Graphics::rewindMovie(lua_State* st)
-        {
-            std::vector<Script::VarType> args = helper::listArguments(st);
-            if(args.size() != 1
-                    || args[0] != Script::STRING)
-                return 0;
-            m_gfx->rewindMovie(lua_tostring(st, 1));
-            return 0;
-        }
-
         int Graphics::rotate(lua_State* st)
         {
             std::vector<Script::VarType> args = helper::listArguments(st);
@@ -258,23 +246,6 @@ namespace lua
 
             m_gfx->draw(lua_tostring(st, 1), lua_tostring(st, 2), pts);
             return 0;
-        }
-
-        int Graphics::play(lua_State* st)
-        {
-            std::vector<Script::VarType> args = helper::listArguments(st);
-            if(args.size() < 3
-                    || args[0] != Script::STRING
-                    || args[1] != Script::NUMBER
-                    || args[2] != Script::NUMBER)
-                return 0;
-
-            bool ratio = true;
-            if(args.size() > 4 && args[3] == Script::BOOL)
-                ratio = lua_toboolean(st, 4);
-
-            bool ret = m_gfx->play(lua_tostring(st, 1), geometry::AABB((float)lua_tonumber(st, 2), (float)lua_tonumber(st, 3)), ratio);
-            return helper::returnBoolean(st, ret);
         }
 
     }

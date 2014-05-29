@@ -42,7 +42,6 @@ namespace lua
 
                 /* Ressources management */
                 int setTextureHotPoint(lua_State* st);
-                int rewindMovie(lua_State* st);
 
                 /* Transformations */
                 int rotate(lua_State* st);
@@ -57,7 +56,6 @@ namespace lua
                 /* drawAABB is the textured version of the draw method */
                 int drawAABB(lua_State* st);
                 int drawText(lua_State* st);
-                int play(lua_State* st);
 
             private:
                 static graphics::Graphics* m_gfx;
