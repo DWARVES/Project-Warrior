@@ -16,7 +16,6 @@ To build this game you need cmake and the following libraries :
 <li> SDL2 and its extension SDL2_image and SDL2_mixer.
 <li> Boost for boost.regex.
 <li> dirent.h (POSIX header, but can also be found under windows).
-<li> FFMPEG.
 <li> OpenGL 2.
 </ul>
 

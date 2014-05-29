@@ -39,13 +39,6 @@ find_package(GLEW REQUIRED)
 include_directories(SYSTEM ${GLEW_INCLUDE_DIR})
 
 
-# Including FFMPEG
-include(FindFFMPEG)
-find_package(FFMPEG REQUIRED)
-include_directories(SYSTEM ${FFMPEG_INCLUDE_DIR})
-# FIXME improve swscale detection
-set(FFMPEG_LIBRARIES "${FFMPEG_LIBRARIES};/usr/lib/libswscale.so")
-
 # Includes checks
 include(CheckIncludeFiles)
 check_include_files("libintl.h;locale.h" HAVE_LIBINTL_H)

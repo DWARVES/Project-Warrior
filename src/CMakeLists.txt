@@ -44,7 +44,6 @@ target_link_libraries(
     ${SDL2_IMAGE_LIBRARIES}
     ${SDLMIXER_LIBRARY}
     ${OPENGL_LIBRARIES}
-    ${FFMPEG_LIBRARIES}
     ${GLEW_LIBRARIES}
     )
 
