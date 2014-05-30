@@ -70,6 +70,7 @@ namespace global
         /* Init the SDL. */
         if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
             throw init_exception(SDL_GetError());
+        core::logger::logm("SDL initialised.", core::logger::MSG);
 
         /* Open the window. */
         global::gfx = new graphics::Graphics;
