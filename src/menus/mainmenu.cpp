@@ -43,7 +43,7 @@ bool MainMenu::update()
         m_ctrls[1] = loadJoystick();
         if(!m_ctrls[1]) {
             core::logger::logm("No joystick to play with.", core::logger::FATAL);
-            return false;
+            //return false;
         }
 
         /* Creating the characters. */
