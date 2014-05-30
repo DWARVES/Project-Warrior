@@ -2,6 +2,7 @@
 #include <iostream>
 #include <exception>
 #include <sstream>
+#include <fstream>
 #include "global.hpp"
 #include "core/logger.hpp"
 #include "core/i18n.hpp"
@@ -15,8 +16,11 @@ int main(int argc, char *argv[])
     srand((unsigned int)time(NULL));
 
     /* Init the logger. */
+    std::ofstream ofs("warrior.log");
     core::logger::init();
     core::logger::addOutput(&std::cout);
+    if(ofs)
+        core::logger::addOutput(&ofs);
     core::logger::logm(">>> Execution started <<<", core::logger::MSG);
 
     /* Init everything. */
