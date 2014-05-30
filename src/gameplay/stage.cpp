@@ -15,7 +15,7 @@ namespace gameplay
     /** @brief Number of pixels per physic unit. */
     const int pixelsPerPhysic = 100;
     /** @brief Time of appearance of characters in milliseconds. */
-    const Uint32 appearTime = 5000;
+    const Uint32 appearTime = 0;
     int Stage::m_count = 0;
 
     Stage::Stage(const std::string& path)
