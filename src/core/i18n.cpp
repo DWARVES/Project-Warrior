@@ -4,8 +4,8 @@
 #ifdef HAVE_LIBINTL_H
 #  include <locale.h>
 #  include <sstream>
-#  include "core/logger.hpp"
 #endif
+#include "core/logger.hpp"
 
 namespace core
 {
