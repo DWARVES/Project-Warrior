@@ -23,7 +23,7 @@ namespace graphics
             if(m_loaded)
                 glDeleteTextures(1, &m_id);
         }
-                
+
         SDL_Surface* Texture::preload(const std::string& path)
         {
             SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
@@ -31,7 +31,7 @@ namespace graphics
                 return NULL;
             return preload(rw, true);
         }
-                
+
         SDL_Surface* Texture::preload(SDL_RWops* rw, bool freerw)
         {
             /* Load the picture with SDL_image */
@@ -93,7 +93,7 @@ namespace graphics
 
             return true;
         }
-                
+
         bool Texture::loadgl(GLuint id, int w, int h)
         {
             m_id = id;

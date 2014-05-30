@@ -9,7 +9,7 @@ namespace core
         : m_name(mname)
     {}
 
-    ConfigBadKeyException::~ConfigBadKeyException()
+    ConfigBadKeyException::~ConfigBadKeyException() noexcept
     {
         /* Nothing to do */
     }

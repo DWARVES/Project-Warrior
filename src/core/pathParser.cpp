@@ -160,8 +160,8 @@ namespace core
                 return Type::Reg;
             else if(S_ISDIR(buffer.st_mode))
                 return Type::Dir;
-            else if(S_ISSOCK(buffer.st_mode))
-                return Type::Socket;
+            //else if(S_ISSOCK(buffer.st_mode))
+            //    return Type::Socket;
             else
                 return Type::Unknown;
 

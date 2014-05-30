@@ -24,7 +24,7 @@ namespace core
              */
             ConfigBadKeyException(const char* name) noexcept;
             ConfigBadKeyException() = delete;
-            virtual ~ConfigBadKeyException();
+            virtual ~ConfigBadKeyException() noexcept;
             /** @brief Return a generic error message. */
             virtual const char* what() const noexcept;
             const char* name() const noexcept;
