@@ -23,6 +23,7 @@ class MainMenu : public Menu
         Menu* m_actual;            /**< @brief The actual submenu is in, NULL if none. */
         gameplay::Controler* m_ctrls[4];
         gameplay::Stage* m_st;
+        gameplay::Controler* loadJoystick();
 };
 
 #endif

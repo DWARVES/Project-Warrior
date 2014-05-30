@@ -6,11 +6,8 @@
 #include "lua/charaExposure.hpp"
 #include <sstream>
 
-const char* ctrl0 = "Keyboard";
-const char* ctrl1 = "Mega World Thrustmaster dual analog 3.2";
-
     MainMenu::MainMenu()
-: Menu(), m_actual(NULL)
+: Menu(), m_actual(NULL), m_st(NULL)
 {
     for(int i = 0; i < 4; ++i)
         m_ctrls[i] = NULL;
@@ -42,8 +39,12 @@ bool MainMenu::update()
                 delete m_ctrls[i];
             m_ctrls[i] = NULL;
         }
-        m_ctrls[0] = new gameplay::Controler(ctrl0);
-        m_ctrls[1] = new gameplay::Controler(ctrl1);
+        m_ctrls[0] = new gameplay::Controler("Keyboard");
+        m_ctrls[1] = loadJoystick();
+        if(!m_ctrls[1]) {
+            core::logger::logm("No joystick to play with.", core::logger::FATAL);
+            return false;
+        }
 
         /* Creating the characters. */
         std::string path = global::cfg->get<std::string>("rcs") + "/chara/";
@@ -77,4 +78,31 @@ bool MainMenu::update()
     return true;
 }
 
+gameplay::Controler* MainMenu::loadJoystick()
+{
+    std::string name;
+    std::vector<std::string> ids   = gameplay::Controler::getIDs();
+    std::vector<std::string> names = global::evs->joyNames();
+
+    /* Check if there is one already configured. */
+    if(ids.size() > 1) {
+        unsigned int i = 0;
+        while(ids[i] == "Keyboard") {
+            ++i;
+            if(i >= ids.size())
+                return NULL;
+        }
+        name = ids[i];
+    }
+    /* Add a new one */
+    else if(!names.empty())
+        name = names[0];
+    /* Fail */
+    else
+        return NULL;
+
+    /* Loading the controler. */
+    gameplay::Controler::create(name);
+    return new gameplay::Controler(name);
+}
 
