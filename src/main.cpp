@@ -7,9 +7,10 @@
 #include "core/i18n.hpp"
 #include "menus/mainmenu.hpp"
 
+#include <windows.h>
 
 /** @brief The entry point of the program. */
-int main(int argc, char *argv[])
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
     int retcode = 0;
     srand((unsigned int)time(NULL));
@@ -24,7 +25,6 @@ int main(int argc, char *argv[])
     core::logger::logm("Initialization.", core::logger::MSG);
     try {
         global::loadLocale();
-        global::loadConfig(argc, argv);
         global::initGraphics();
         global::loadEvents();
         global::loadControlers();
