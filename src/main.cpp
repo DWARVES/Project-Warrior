@@ -18,10 +18,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     /* Init the logger. */
     core::logger::init();
     core::logger::addOutput(&std::cout);
-    core::logger::logm(">>> Execution started <<<", core::logger::MSG);
-    std::ostream ofs("warrior.log");
+    std::ofstream ofs("warrior.log");
     if(ofs)
         core::logger::addOutput(&ofs);
+    core::logger::logm(">>> Execution started <<<", core::logger::MSG);
 
     /* Init everything. */
     core::logger::pushBlock();
