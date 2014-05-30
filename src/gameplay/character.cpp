@@ -997,6 +997,7 @@ namespace gameplay
     void Character::phSize(const geometry::AABB& size)
     {
         m_phsize = size;
+        physicMSize(1.0f, true);
     }
 
     void Character::phWeight(float w)
