@@ -312,46 +312,75 @@ namespace gameplay
                 centers.push_back(project(m_ctrls[i]->attached()->getPos(), m_maxSize, m_center));
         }
 
+        geometry::AABB englobe;
+        geometry::Point center;
+
         /* If no character on screen, display the center of map with maxSize. */
         if(centers.size() == 0) {
-            geometry::AABB toshow = ratioResize(m_windowRect, m_maxSize, true).first;
-            global::gfx->move(-m_center.x + toshow.width/2.0f, -m_center.y + toshow.height/2.0f);
-            global::gfx->setVirtualSize(toshow.width, toshow.height);
-            return;
+            englobe = ratioResize(m_windowRect, m_maxSize, true).first;
+            center = m_center;
         }
         /* If one character on screen, center on him with minSize. */
         else if(centers.size() == 1) {
-            geometry::AABB toshow = ratioResize(m_windowRect, m_minSize, true).first;
-            global::gfx->move(-centers[0].x + toshow.width/2.0f, -centers[0].y + toshow.height/2.0f);
-            global::gfx->setVirtualSize(toshow.width, toshow.height);
-            return;
+            englobe = ratioResize(m_windowRect, m_minSize, true).first;
+            center = centers[0];
         }
 
         /* Compute the extremities of the rect with all centers. */
-        geometry::Point p1(centers[0]);
-        geometry::Point p2(centers[0]);
-        for(geometry::Point p : centers) {
-            p1.x = std::min(p1.x, p.x);
-            p1.y = std::min(p1.y, p.y);
-            p2.x = std::max(p2.x, p.x);
-            p2.y = std::max(p2.y, p.y);
+        else {
+            geometry::Point p1(centers[0]);
+            geometry::Point p2(centers[0]);
+            for(geometry::Point p : centers) {
+                p1.x = std::min(p1.x, p.x);
+                p1.y = std::min(p1.y, p.y);
+                p2.x = std::max(p2.x, p.x);
+                p2.y = std::max(p2.y, p.y);
+            }
+
+            /* Compute rect and its center. */
+            center.x = (p1.x + p2.x) / 2.0f;
+            center.y = (p1.y + p2.y) / 2.0f;
+            geometry::AABB rect(p2.x - p1.x, p2.y - p1.y);
+            /* Adding marging in the rect. */
+            rect.width *= 1.5f;
+            rect.height *= 1.5f;
+
+            /* Apply m_minSize and m_maxSize. */
+            geometry::AABB minWin  = ratioResize(m_windowRect, m_minSize, true).first;
+            englobe = ratioResize(m_windowRect, rect, true).first;
+            if(englobe.width < minWin.width)
+                englobe = minWin;
         }
 
-        /* Compute rect and its center. */
-        geometry::Point center((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f);
-        geometry::AABB rect(p2.x - p1.x, p2.y - p1.y);
-        /* Adding marging in the rect. */
-        rect.width *= 1.5f;
-        rect.height *= 1.5f;
+        /* Resize to fit in m_maxSize. */
+        float resw = m_maxSize.width / englobe.width;
+        float resh = m_maxSize.height / englobe.height;
+        if(resw < 1.0f || resh < 1.0f) {
+            float fact = (resw < resh ? resw : resh);
+            englobe.width  *= fact;
+            englobe.height *= fact;
+        }
 
-        /* Apply m_minSize and m_maxSize. */
-        geometry::AABB maxWin  = ratioResize(m_windowRect, m_maxSize, true).first;
-        geometry::AABB minWin  = ratioResize(m_windowRect, m_minSize, true).first;
-        geometry::AABB englobe = ratioResize(m_windowRect, rect, true).first;
-        if(englobe.width < minWin.width)
-            englobe = minWin;
-        else if(englobe.width > maxWin.width)
-            englobe = maxWin;
+        /* Move to be in m_maxSize. */
+        float decx = 0.0f;
+        float decy = 0.0f;
+        geometry::Point p1ms(m_center.x - m_maxSize.width / 2.0f, m_center.y - m_maxSize.height / 2.0f);
+        geometry::Point p2ms(m_center.x + m_maxSize.width / 2.0f, m_center.y + m_maxSize.height / 2.0f);
+        geometry::Point p1cv(center.x - englobe.width / 2.0f, center.y - englobe.height / 2.0f);
+        geometry::Point p2cv(center.x + englobe.width / 2.0f, center.y + englobe.height / 2.0f);
+
+        if(p1cv.y < p1ms.y)
+            decy = (p1ms.y - p1cv.y);
+        else if(p2cv.y > p2ms.y)
+            decy = (p2ms.y - p2cv.y);
+
+        if(p1cv.x < p1ms.x)
+            decx = (p1ms.x - p1cv.x);
+        else if(p2cv.x > p2ms.x)
+            decx = (p2ms.x - p2cv.x);
+
+        center.x += decx;
+        center.y += decy;
 
         /* Apply in graphics. */
         global::gfx->setVirtualSize(englobe.width, englobe.height);
