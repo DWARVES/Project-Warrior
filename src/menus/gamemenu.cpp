@@ -57,6 +57,7 @@ bool GameMenu::update()
             status = _i("Ready ...");
         else
             status = _i("Go !");
+        m_begin = SDL_GetTicks();
     }
     else if(m_first) {
         m_first = false;
