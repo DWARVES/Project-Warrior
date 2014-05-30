@@ -30,7 +30,7 @@ namespace global
         gameplay::Controler::close();
     }
 
-    void loadConfig(int argc, char *argv[])
+    void loadConfig()
     {
         global::cfg = new core::Config;
 
@@ -45,10 +45,6 @@ namespace global
         global::cfg->define("resh",       'H', _i("The height of the window in pixels."), 768);
         global::cfg->define("name",        0,  _i("The name of the window."), "Project Warror");
         global::cfg->define("phdebug",     0,  _i("Enable debug draw in the physic engine."), false);
-
-        /* Parses the command line. */
-        if(!global::cfg->args(argc, argv))
-            throw init_exception("Couldn't parse the command line arguments.");
 
         /* Print the help. */
         if(global::cfg->get<bool>("help")) {

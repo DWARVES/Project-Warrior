@@ -30,7 +30,7 @@ namespace global
     /** @brief Load the locale. */
     void loadLocale();
     /** @brief Parses the command line argument and config file. */
-    void loadConfig(int argc, char *argv[]);
+    void loadConfig();
     /** @brief Load the SDL and init the graphics. */
     void initGraphics();
     /** @brief Prepare the event handler. */

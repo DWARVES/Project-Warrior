@@ -28,6 +28,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     core::logger::logm("Initialization.", core::logger::MSG);
     try {
         global::loadLocale();
+        global::loadConfig();
         global::initGraphics();
         global::loadEvents();
         global::loadControlers();
