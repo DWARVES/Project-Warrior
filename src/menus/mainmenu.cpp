@@ -41,10 +41,6 @@ bool MainMenu::update()
         }
         m_ctrls[0] = new gameplay::Controler("Keyboard");
         m_ctrls[1] = new gameplay::Controler("Keyboard");
-        //if(!m_ctrls[1]) {
-            //core::logger::logm("No joystick to play with.", core::logger::FATAL);
-            //return false;
-        //}
 
         /* Creating the characters. */
         std::string path = global::cfg->get<std::string>("rcs") + "/chara/";
