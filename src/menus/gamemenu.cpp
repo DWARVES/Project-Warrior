@@ -50,6 +50,11 @@ bool GameMenu::prepare()
             return false;
 
         path.str("");
+        path << global::cfg->get<std::string>("rcs") << "/gamemenu/manabg.png";
+        if(!global::gfx->loadTexture("manabg", path.str()))
+            return false;
+
+        path.str("");
         path << global::cfg->get<std::string>("rcs") << "/gamemenu/mana.png";
         if(!global::gfx->loadTexture("mana", path.str()))
             return false;
