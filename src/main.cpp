@@ -7,10 +7,13 @@
 #include "core/i18n.hpp"
 #include "menus/mainmenu.hpp"
 
-#include <windows.h>
-
 /** @brief The entry point of the program. */
+#ifdef OS_WINDOWS
+#include <windows.h>
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+#else
+int main(int argc, char *argv[])
+#endif
 {
     int retcode = 0;
     srand((unsigned int)time(NULL));
