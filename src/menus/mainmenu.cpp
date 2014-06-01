@@ -90,6 +90,7 @@ bool MainMenu::update()
     global::gfx->beginDraw();
     global::gfx->push();
     global::gfx->draw(geometry::AABB(global::gfx->getVirtualWidth(), global::gfx->getVirtualHeight()), "bg");
+    global::gfx->draw(geometry::AABB(global::gfx->getVirtualWidth(), global::gfx->getVirtualHeight()), "st");
     global::gfx->pop();
     global::gfx->endDraw();
     return true;
