@@ -45,6 +45,11 @@ bool GameMenu::prepare()
         path << global::cfg->get<std::string>("rcs") << "/gamemenu/mana.png";
         if(!global::gfx->loadTexture("mana", path.str()))
             return false;
+
+        path.str("");
+        path << global::cfg->get<std::string>("rcs") << "/gamemenu/manabg.png";
+        if(!global::gfx->loadTexture("manabg", path.str()))
+            return false;
     }
 
     /* The gui isn't used during the game. */
@@ -135,9 +140,11 @@ bool GameMenu::update()
         x -= w;
         h = global::gfx->getVirtualHeight() / 15.0f;
         y = global::gfx->getVirtualHeight() / 15.0f;
-        h *= act->manaProgress();
         global::gfx->push();
         global::gfx->move(x,y);
+        global::gfx->draw(geometry::AABB(w,h), "manabg", 1.0f, act->manaProgress());
+
+        h *= act->manaProgress();
         global::gfx->draw(geometry::AABB(w,h), "mana", 1.0f, act->manaProgress());
         global::gfx->pop();
 
