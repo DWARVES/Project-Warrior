@@ -42,6 +42,16 @@ bool GameMenu::prepare()
             return false;
 
         path.str("");
+        path << global::cfg->get<std::string>("rcs") << "/gamemenu/ready.png";
+        if(!global::gfx->loadTexture("ready", path.str()))
+            return false;
+
+        path.str("");
+        path << global::cfg->get<std::string>("rcs") << "/gamemenu/go.png";
+        if(!global::gfx->loadTexture("go", path.str()))
+            return false;
+
+        path.str("");
         path << global::cfg->get<std::string>("rcs") << "/gamemenu/mana.png";
         if(!global::gfx->loadTexture("mana", path.str()))
             return false;
@@ -71,10 +81,7 @@ bool GameMenu::update()
     std::string status;
     float prg = m_stage->appearProgress();
     if(prg < 1.0f) {
-        if(prg < 0.9f)
-            status = _i("Ready ...");
-        else
-            status = _i("Go !");
+        status.clear();
         m_begin = SDL_GetTicks();
     }
     else if(m_first) {
@@ -109,15 +116,33 @@ bool GameMenu::update()
     global::gfx->enterNamespace("/gamemenu/");
 
     /* Drawing the status text on top. */
-    /** @todo Center status text. */
-    float x = global::gfx->getVirtualWidth() / 2.0f;
-    float y = global::gfx->getVirtualHeight() / 5.0f * 4.0f;
-    float h = global::gfx->getVirtualHeight() / 15.0f;
-    y -= (h / 2.0f);
-    global::gfx->push();
-    global::gfx->move(x,y);
-    global::gfx->draw(status, "stfont", h);
-    global::gfx->pop();
+    float x, y, w, h;
+    if(!status.empty()) {
+        /** @todo Center status text. */
+        x = global::gfx->getVirtualWidth() / 2.0f;
+        y = global::gfx->getVirtualHeight() / 5.0f * 4.0f;
+        h = global::gfx->getVirtualHeight() / 15.0f;
+        y -= (h / 2.0f);
+        global::gfx->push();
+        global::gfx->move(x,y);
+        global::gfx->draw(status, "stfont", h);
+        global::gfx->pop();
+    } else {
+        if(prg < 0.9f)
+            status = "ready";
+        else
+            status = "go";
+        x = global::gfx->getVirtualWidth() / 2.0f;
+        y = global::gfx->getVirtualHeight() / 5.0f * 4.0f;
+        w = global::gfx->getVirtualWidth() / 5.0f;
+        h = (float)global::gfx->getTextureHeight(status) / (float)global::gfx->getTextureWidth(status) * w;
+        x -= w/2.0f;
+        y -= h/2.0f;
+        global::gfx->push();
+        global::gfx->move(x,y);
+        global::gfx->draw(geometry::AABB(w,h), status);
+        global::gfx->pop();
+    }
 
     /* Drawing the damages. */
     int i = 0;
@@ -136,7 +161,7 @@ bool GameMenu::update()
         global::gfx->pop();
 
         /* Drawing the mana. */
-        float w = global::gfx->getVirtualWidth() / 8.0f;
+        w = global::gfx->getVirtualWidth() / 8.0f;
         x -= w / 2.0f;
         h = global::gfx->getVirtualHeight() / 45.0f;
         y = global::gfx->getVirtualHeight() / 15.0f;
