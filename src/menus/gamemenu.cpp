@@ -136,10 +136,11 @@ bool GameMenu::update()
         global::gfx->pop();
 
         /* Drawing the mana. */
-        float w = global::gfx->getVirtualWidth() / 45.0f;
-        x -= w;
-        h = global::gfx->getVirtualHeight() / 15.0f;
+        float w = global::gfx->getVirtualWidth() / 8.0f;
+        x -= w / 2.0f;
+        h = global::gfx->getVirtualHeight() / 45.0f;
         y = global::gfx->getVirtualHeight() / 15.0f;
+        y -= h;
         global::gfx->push();
         global::gfx->move(x,y);
         global::gfx->draw(geometry::AABB(w,h), "manabg", 1.0f, act->manaProgress());
@@ -149,6 +150,9 @@ bool GameMenu::update()
         global::gfx->pop();
 
         /* Drawing the CCs. */
+        w = global::gfx->getVirtualWidth() / 45.0f;
+        x = global::gfx->getVirtualWidth() / 6.0f * float(i+1);
+        y = global::gfx->getVirtualHeight() / 15.0f;
         x -= w / 2.0f;
         y += w / 2.0f;
         float fact = 1.0f - act->stunProgress();
