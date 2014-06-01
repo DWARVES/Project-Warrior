@@ -47,9 +47,6 @@ else()
     set(HAVE_BOOST_FILESYSTEM 0)
 endif()
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
 # Documentation generation
 include(FindDoxygen)
 find_package(Doxygen)
@@ -74,6 +71,12 @@ add_custom_target(extract_text xgettext -d ${DOMAIN} --c++ -i -F -k_i -o ${DOMAI
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Extract the translatable texts from the source code with xgettext." VERBATIM
     )
+
+# Detect windows
+try_compile(OS_WINDOWS ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/cmake-modules/codes/is_windows.c ${CMAKE_FLAGS})
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 include_directories(src/)
 add_subdirectory(src/)

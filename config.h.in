@@ -7,5 +7,7 @@
 #cmakedefine HAVE_BOOST_FILESYSTEM
 #cmakedefine HAVE_LIBINTL_H
 
+#cmakedefine OS_WINDOWS
+
 #endif//DEF_CONFIG
 
