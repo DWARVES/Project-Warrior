@@ -47,7 +47,7 @@ bool MainMenu::update()
     if(global::evs->isKeyPressed(events::KeyMap::Escape))
         return false;
 
-    if(!global::evs->lastKeysPressed().empty()) {
+    if(global::evs->keyJustPressed(events::KeyMap::Enter)) {
         /* Creating the controlers. */
         for(int i = 0; i < 4; ++i) {
             if(m_ctrls[i])
