@@ -25,6 +25,17 @@ MainMenu::~MainMenu()
 
 bool MainMenu::prepare()
 {
+    if(!global::gfx->existsNamespace("/mainmenu")) {
+        global::gfx->createNamespace("/mainmenu");
+        global::gfx->enterNamespace("/mainmenu");
+
+        std::ostringstream oss;
+        oss << global::cfg->get<std::string>("rcs") << "/gamemenu/";
+        if(!global::gfx->loadTexture("bg", oss.str() + "bg.png"))
+            return false;
+        if(!global::gfx->loadTexture("st", oss.str() + "st.png"))
+            return false;
+    }
     return true;
 }
 
@@ -32,7 +43,11 @@ bool MainMenu::update()
 {
     if(m_actual)
         return m_actual->update();
-    else {
+
+    if(global::evs->isKeyPressed(events::KeyMap::Escape))
+        return false;
+
+    if(!global::evs->lastKeysPressed().empty()) {
         /* Creating the controlers. */
         for(int i = 0; i < 4; ++i) {
             if(m_ctrls[i])
@@ -69,8 +84,14 @@ bool MainMenu::update()
         m_actual = new GameMenu(m_st);
         if(!m_actual->prepare())
             return false;
+        return true;
     }
 
+    global::gfx->beginDraw();
+    global::gfx->push();
+    global::gfx->draw(geometry::AABB(global::gfx->getVirtualWidth(), global::gfx->getVirtualHeight()), "bg");
+    global::gfx->pop();
+    global::gfx->endDraw();
     return true;
 }
 
