@@ -14,7 +14,7 @@ All files that have a description of the licence have the one described. If a fi
 To build this game you need cmake and the following libraries :
  - `SDL2` and its extension `SDL2_image` and `SDL2_mixer`.
  - `Boost` for `boost.regex`.
- - `dirent.h` (POSIX header, but can also be found under windows).
+ - `dirent.h` (POSIX header, but can also be found under windows) with `sys/stat.h` or `boost.filesystem`.
  - `FFMPEG`.
  - `OpenGL 2`.
 
@@ -26,6 +26,8 @@ cd warrior/build
 cmake -DTESTS=0 ..
 make
 ```
+
+*Please note that the project is still under development, so the source code may not compile.*
 
 Replace `-DTESTS=0` by `-DTESTS=1` if you want to compile the tests.
 
