@@ -1,5 +1,6 @@
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/src/liblua/lua-5.2.3/src)
 include_directories(${CMAKE_SOURCE_DIR}/tests)
 link_directories(${CMAKE_BINARY_DIR}/src)
 link_directories(${CMAKE_BINARY_DIR}/tests)

@@ -1,5 +1,6 @@
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/src/liblua/lua-5.2.3/src)
 link_directories(${CMAKE_BINARY_DIR}/src)
 set(exe warrior)
 
