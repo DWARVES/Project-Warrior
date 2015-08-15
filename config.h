@@ -1,0 +1,11 @@
+
+#ifndef DEF_CONFIG
+#define DEF_CONFIG
+
+#define HAVE_SYSSTAT_H
+#define HAVE_DIRENT_H
+#define HAVE_BOOST_FILESYSTEM
+#define HAVE_LIBINTL_H
+
+#endif//DEF_CONFIG
+

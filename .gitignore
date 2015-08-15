@@ -47,3 +47,8 @@ install_manifest.txt
 *.xz
 *.bz2
 
+## Project specific files
+build/
+guirc/
+rcs/
+src/warrior
