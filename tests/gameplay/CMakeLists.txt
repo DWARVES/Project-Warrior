@@ -1,8 +1,8 @@
 
-include_directories(${DEMO_SOURCE_DIR}/src)
-include_directories(${DEMO_SOURCE_DIR}/tests/gameplay)
-link_directories(${DEMO_BINARY_DIR}/src)
-link_directories(${DEMO_BINARY_DIR}/tests/gameplay)
+include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/tests/gameplay)
+link_directories(${CMAKE_BINARY_DIR}/src)
+link_directories(${CMAKE_BINARY_DIR}/tests/gameplay)
 
 # Each test here
 add_executable(save-test save-test.cpp)

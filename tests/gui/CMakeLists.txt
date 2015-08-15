@@ -1,8 +1,8 @@
 
-include_directories(${DEMO_SOURCE_DIR}/src)
-include_directories(${DEMO_SOURCE_DIR}/tests/gui)
-link_directories(${DEMO_BINARY_DIR}/src)
-link_directories(${DEMO_BINARY_DIR}/tests/gui)
+include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/tests/gui)
+link_directories(${CMAKE_BINARY_DIR}/src)
+link_directories(${CMAKE_BINARY_DIR}/tests/gui)
 
 # Each test here
 add_executable(gui-test gui-test.cpp)

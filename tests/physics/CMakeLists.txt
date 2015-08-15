@@ -1,7 +1,7 @@
-include_directories(${DEMO_SOURCE_DIR}/src)
-include_directories(${DEMO_SOURCE_DIR}/tests/physics)
-link_directories(${DEMO_BINARY_DIR}/src)
-link_directories(${DEMO_BINARY_DIR}/tests/physics)
+include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/tests/physics)
+link_directories(${CMAKE_BINARY_DIR}/src)
+link_directories(${CMAKE_BINARY_DIR}/tests/physics)
 
 add_executable(physics-test
 	testbed/Main.cpp

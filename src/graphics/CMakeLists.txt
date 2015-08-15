@@ -1,6 +1,6 @@
 
-include_directories(${DEMO_SOURCE_DIR}/src)
-link_directories(${DEMO_BINARY_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/src)
+link_directories(${CMAKE_BINARY_DIR}/src)
 set(lib libgraphics)
 
 # List file here

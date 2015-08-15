@@ -1,8 +1,8 @@
 
-include_directories(${DEMO_SOURCE_DIR}/src)
-include_directories(${DEMO_SOURCE_DIR}/tests/graphics)
-link_directories(${DEMO_BINARY_DIR}/src)
-link_directories(${DEMO_BINARY_DIR}/tests/graphics)
+include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/tests/graphics)
+link_directories(${CMAKE_BINARY_DIR}/src)
+link_directories(${CMAKE_BINARY_DIR}/tests/graphics)
 
 # Each test here
 add_executable(graphics-test graphics-test.cpp)
