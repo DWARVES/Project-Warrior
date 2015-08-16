@@ -30,35 +30,35 @@ MainMenu::~MainMenu()
 bool MainMenu::prepare()
 {
     /* Load the intro if necessary. */
-    if(m_first) {
-        m_intro = new VideoMenu(global::cfg->get<std::string>("rcs") + "/intro_mov",
-                global::cfg->get<std::string>("rcs") + "/intro_mus");
-        m_first = false;
-        if(m_intro->prepare()) {
-            m_actual = m_intro;
-            return true;
-        }
-        else
-            core::logger::logm("Couldn't play the intro.", core::logger::MSG);
-    }
-    else if(m_intro) {
-        delete m_intro;
-        m_intro = NULL;
-    }
+    //if(m_first) {
+        //m_intro = new VideoMenu(global::cfg->get<std::string>("rcs") + "/intro_mov",
+                //global::cfg->get<std::string>("rcs") + "/intro_mus");
+        //m_first = false;
+        //if(m_intro->prepare()) {
+            //m_actual = m_intro;
+            //return true;
+        //}
+        //else
+            //core::logger::logm("Couldn't play the intro.", core::logger::MSG);
+    //}
+    //else if(m_intro) {
+        //delete m_intro;
+        //m_intro = NULL;
+    //}
 
     /* Load the music if necessary. */
-    if(!global::audio->existsNamespace("/menus")) {
-        if(!global::audio->createNamespace("/menus"))
-            return false;
-        global::audio->enterNamespace("/menus");
+    //if(!global::audio->existsNamespace("/menus")) {
+        //if(!global::audio->createNamespace("/menus"))
+            //return false;
+        //global::audio->enterNamespace("/menus");
 
-        std::ostringstream path;
-        path << global::cfg->get<std::string>("rcs") << "/sounds/menu.music";
-        if(!global::audio->loadMusic("mus", path.str()))
-            return false;
-    }
-    global::audio->enterNamespace("/menus");
-    global::audio->play("mus", false);
+        //std::ostringstream path;
+        //path << global::cfg->get<std::string>("rcs") << "/sounds/menu.music";
+        //if(!global::audio->loadMusic("mus", path.str()))
+            //return false;
+    //}
+    //global::audio->enterNamespace("/menus");
+    //global::audio->play("mus", false);
 
     if(!loadRcs())
         return false;
@@ -111,8 +111,8 @@ bool MainMenu::loadRcs()
         path << global::cfg->get<std::string>("rcs") << "/mainmenu/";
         if(!global::gfx->loadTexture("bg", path.str() + "bg.png"))
             return false;
-        if(!global::gfx->loadTexture("title", path.str() + "title.png"))
-            return false;
+        //if(!global::gfx->loadTexture("title", path.str() + "title.png"))
+            //return false;
     }
 
     return true;
@@ -140,11 +140,11 @@ bool MainMenu::update()
     global::gfx->push();
     global::gfx->draw(rect, "bg");
 
-    rect.width *= 0.8f;
-    rect.height *= 0.1f;
-    global::gfx->move(global::gfx->getVirtualWidth() * 0.1f, 0.0f);
-    global::gfx->draw(rect, "title");
-    global::gfx->pop();
+    //rect.width *= 0.8f;
+    //rect.height *= 0.1f;
+    //global::gfx->move(global::gfx->getVirtualWidth() * 0.1f, 0.0f);
+    //global::gfx->draw(rect, "title");
+    //global::gfx->pop();
 
     global::theme->guiNamespace();
     global::gui->draw();
